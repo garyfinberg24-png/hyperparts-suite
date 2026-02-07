@@ -14,14 +14,25 @@ HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 30+ web parts fo
 - **Phase 1, Step 1** — Solution scaffold + shared service layer
   - All shared services, hooks, components, and models are built
   - `gulp build` passes with 0 errors, 0 warnings
-  - HyperHero web part exists as a vanilla SPFx scaffold shell (not yet converted to use BaseHyperWebPart or any real HyperHero features)
+
+- **Phase 1, Step 2** — HyperHero web part (all 12 PRD features)
+  - CSS Grid layout, video backgrounds (MP4/Stream/YouTube/Vimeo), Lottie backgrounds
+  - Parallax scrolling, countdown timers, auto-rotation with 4 transition effects
+  - Dynamic list binding, content scheduling, audience targeting, A/B testing
+  - 3-page property pane, Zustand store, `gulp build` passes clean
+
+- **Phase 1, Step 3** — HyperNews web part (all 14 PRD features)
+  - 12 layouts: CardGrid, List, Magazine, Newspaper, Timeline, Carousel, HeroGrid, Compact, Filmstrip, Mosaic, SideBySide, Tiles
+  - Quick Read Modal (iframe + reactions footer), 5 emoji reaction types
+  - Infinite scroll, client-side filtering (category/author/date), reading progress tracking
+  - Multi-source news aggregation, content scheduling, featured articles
+  - 3-page property pane, Zustand store, full ARIA accessibility
+  - `gulp build` passes clean (0 errors, 0 warnings)
 
 ### Next Up
 
-- **Phase 1, Step 2** — HyperHero web part implementation
-  - CSS Grid layout engine, video backgrounds, dynamic list binding, parallax, gradient overlays, CTA builder, responsive breakpoints, transition effects
-  - The HyperHeroWebPart.ts must be converted from `BaseClientSideWebPart` to `BaseHyperWebPart`
-  - See MASTER_CONTEXT.md Section 6.1 for the full HyperHero spec
+- **Phase 1, Step 4** — HyperTabs web part
+  - See MASTER_CONTEXT.md Section 6.3 for the full HyperTabs spec
 
 ### Full Roadmap (from MASTER_CONTEXT.md Addendum B)
 
@@ -119,23 +130,35 @@ src/
 │   └── models/
 │       └── index.ts                   # All shared interfaces
 └── webparts/
-    └── hyperHero/                     # Scaffold shell (to be replaced)
-        ├── HyperHeroWebPart.ts
-        ├── HyperHeroWebPart.manifest.json
+    ├── hyperHero/                     # Hero banners (12 features)
+    │   ├── HyperHeroWebPart.ts
+    │   ├── HyperHeroWebPart.manifest.json
+    │   ├── models/                    # Tile, layout, rotation, content binding models
+    │   ├── hooks/                     # useParallax, useCountdown, useAutoRotation, etc.
+    │   ├── store/                     # Zustand store for hero state
+    │   ├── components/                # HyperHero + sub-components
+    │   └── loc/
+    └── hyperNews/                     # News aggregation (14 features)
+        ├── HyperNewsWebPart.ts
+        ├── HyperNewsWebPart.manifest.json
+        ├── models/                    # Article, layout, source, filter, reaction models
+        ├── hooks/                     # useNewsArticles, useReadingProgress, useNewsFilters, etc.
+        ├── store/                     # Zustand store for news state
         ├── components/
-        │   ├── HyperHero.tsx
-        │   ├── HyperHero.module.scss
-        │   └── IHyperHeroProps.ts
-        ├── loc/
-        │   ├── en-us.js
-        │   └── mystrings.d.ts
-        └── assets/
+        │   ├── HyperNews.tsx          # Main component
+        │   ├── HyperNewsArticleCard   # Article card wrapper
+        │   ├── HyperNewsQuickReadModal # Quick read modal
+        │   ├── HyperNewsReactions     # Emoji reactions
+        │   ├── HyperNewsFilterBar     # Filter chips
+        │   └── layouts/               # 12 layout components
+        └── loc/
 ```
 
 ### Key IDs
 
 - **Solution ID:** `ced7606b-d2d6-418f-b0cf-40b5691109f2`
 - **HyperHero Web Part ID:** `1ecae9e2-86c8-4dc2-a850-f404c2d9793c`
+- **HyperNews Web Part ID:** `a7f3e8c4-9b2d-4e5f-a6c8-3d7b9e1f2a4c`
 - **Feature ID:** `4c137d6a-7e80-46c6-8936-e7f7639893bc`
 
 ---
@@ -375,7 +398,7 @@ Extends `@microsoft/eslint-config-spfx/lib/profiles/react`. Key enforced rules:
 | `@fluentui/react-components` | 9.72.11 | Fluent UI v9                | No        |
 | `@fluentui/react-icons`      | 2.0.318 | Fluent icons                | No        |
 | `@microsoft/mgt-spfx`        | 3.1.3   | Graph Toolkit for SPFx      | No        |
-| `zustand`                    | 4.5.7   | State management            | No        |
+| `zustand`                    | 4.5.7   | State management            | Yes       |
 | `immer`                      | 11.1.3  | Immutable state updates     | No        |
 | `date-fns`                   | 4.1.0   | Date utilities              | No        |
 | `react` / `react-dom`        | 17.0.1  | React (SPFx pinned)         | Yes       |
@@ -460,6 +483,56 @@ class ExampleService {
 export const exampleService = new ExampleService();
 ```
 
+### Zustand Store Pattern (per web part)
+
+```typescript
+import { create } from "zustand";
+
+interface IStoreState { selectedLayout: string; isModalOpen: boolean; }
+interface IStoreActions { setLayout: (layout: string) => void; openModal: () => void; reset: () => void; }
+type IStore = IStoreState & IStoreActions;
+
+const initialState: IStoreState = { selectedLayout: "cardGrid", isModalOpen: false };
+
+export const useMyStore = create<IStore>()((set) => ({
+  ...initialState,
+  setLayout: (layout) => set({ selectedLayout: layout }),
+  openModal: () => set({ isModalOpen: true }),
+  reset: () => set(initialState),
+}));
+```
+
+### Web Part Model Pattern (separate files per concept)
+
+```typescript
+// models/IMyModel.ts — one interface + defaults + helpers per file
+export interface IMyModel { id: number; name: string; }
+export const DEFAULT_MY_MODEL: IMyModel = { id: 0, name: "" };
+export function isModelValid(m: IMyModel): boolean { return m.id > 0; }
+
+// models/index.ts — barrel export with explicit `export type {}`
+export type { IMyModel } from "./IMyModel";
+export { DEFAULT_MY_MODEL, isModelValid } from "./IMyModel";
+```
+
+### Layout Component Pattern (for multi-layout web parts)
+
+```typescript
+// All layouts share the same props interface
+export interface ILayoutProps {
+  articles: IArticle[];
+  onCardClick?: (article: IArticle) => void;
+}
+
+// Each layout wraps HyperNewsArticleCard (or equivalent)
+const LayoutInner: React.FC<ILayoutProps> = (props) => {
+  const containerRef = useRef<HTMLDivElement>(null); // eslint-disable-next-line @rushstack/no-new-null
+  const breakpoint = useResponsive(containerRef as React.RefObject<HTMLElement>);
+  // ... render
+};
+export const Layout = React.memo(LayoutInner);
+```
+
 ### ES5-Safe Map Iteration
 
 ```typescript
@@ -519,7 +592,7 @@ These packages are installed and ready but have zero imports in the codebase so 
 - `@fluentui/react-components` (v9) — use for new component UI
 - `@fluentui/react-icons` — use for icon rendering
 - `@microsoft/mgt-spfx` — use for Graph Toolkit components (People, Person card, etc.)
-- `zustand` (v4) — use for complex cross-component state
+- ~~`zustand` (v4)~~ — **now used** in HyperHero and HyperNews stores
 - `immer` — use with zustand for immutable state updates
 - `date-fns` — use for date formatting, relative time, scheduling logic
 

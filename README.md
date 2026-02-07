@@ -43,7 +43,8 @@ src/
 │   │   └── HyperModal           # Accessible modal/dialog
 │   └── models/                    # Shared TypeScript interfaces
 └── webparts/
-    └── hyperHero/                 # First web part (shell)
+    ├── hyperHero/                 # Hero banners (12 features)
+    └── hyperNews/                 # News aggregation (14 features)
 ```
 
 ## Prerequisites
@@ -89,8 +90,8 @@ gulp package-solution --ship  # Create .sppkg
 ### Phase 1 — Foundation (Current)
 
 - [x] Shared service layer + base architecture
-- [ ] HyperHero — CSS Grid hero with video/Lottie/parallax
-- [ ] HyperNews — Infinite scroll news with social metrics
+- [x] HyperHero — CSS Grid hero with video/Lottie/parallax (12 features)
+- [x] HyperNews — 12 layouts, reactions, infinite scroll, quick read modal (14 features)
 - [ ] HyperTabs — Tab/accordion/wizard container
 - [ ] HyperRollup — Cross-site content rollup with query builder
 
@@ -117,6 +118,8 @@ gulp package-solution --ship  # Create .sppkg
 | Version | Date              | Comments                                                      |
 | ------- | ----------------- | ------------------------------------------------------------- |
 | 0.0.1   | February 7, 2026  | Phase 1, Step 1: Solution scaffold + shared service layer     |
+| 0.0.2   | February 7, 2026  | Phase 1, Step 2: HyperHero web part (all 12 features)         |
+| 0.0.3   | February 7, 2026  | Phase 1, Step 3: HyperNews web part (all 14 features)         |
 
 ## References
 
