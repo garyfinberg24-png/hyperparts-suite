@@ -1,0 +1,46 @@
+.reactionsContainer {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.reactionButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border: 1px solid #d1d1d1;
+  border-radius: 16px;
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  line-height: 1;
+
+  &:hover {
+    background-color: #f3f2f1;
+    border-color: #0078d4;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #0078d4;
+    outline-offset: 1px;
+  }
+
+  &.active {
+    background-color: #e6f3ff;
+    border-color: #0078d4;
+  }
+}
+
+.emoji {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.count {
+  font-size: 12px;
+  font-weight: 600;
+  color: #605e5c;
+}

@@ -9,10 +9,19 @@
           "manifest": "./src/webparts/hyperHero/HyperHeroWebPart.manifest.json"
         }
       ]
+    },
+    "hyper-news-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hyperNews/HyperNewsWebPart.js",
+          "manifest": "./src/webparts/hyperNews/HyperNewsWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
   "localizedResources": {
-    "HyperHeroWebPartStrings": "lib/webparts/hyperHero/loc/{locale}.js"
+    "HyperHeroWebPartStrings": "lib/webparts/hyperHero/loc/{locale}.js",
+    "HyperNewsWebPartStrings": "lib/webparts/hyperNews/loc/{locale}.js"
   }
 }

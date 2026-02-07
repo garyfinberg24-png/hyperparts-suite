@@ -1,0 +1,25 @@
+.magazineDesktop {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.magazineMobile {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.featuredArea {
+  min-height: 300px;
+}
+
+.sidebarArea {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sidebarItem {
+  flex: 1;
+}

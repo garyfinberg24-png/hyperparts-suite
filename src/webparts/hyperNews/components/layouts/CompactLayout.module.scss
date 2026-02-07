@@ -1,0 +1,14 @@
+.compactLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.compactItem {
+  padding: 8px 0;
+  border-bottom: 1px solid #edebe9;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}

@@ -1,0 +1,67 @@
+.timelineLayout {
+  position: relative;
+  padding-left: 32px;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 11px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #d1d1d1;
+  }
+}
+
+.timelineGroup {
+  margin-bottom: 24px;
+}
+
+.monthHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.monthDot {
+  position: absolute;
+  left: -32px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: #0078d4;
+  border: 3px solid #ffffff;
+  z-index: 1;
+}
+
+.monthLabel {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #323130;
+}
+
+.timelineItems {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.timelineItem {
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: -28px;
+    top: 16px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #f3f2f1;
+    border: 2px solid #d1d1d1;
+    z-index: 1;
+  }
+}

@@ -1,0 +1,25 @@
+.sideBySideLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.rowImageLeft {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.rowImageRight {
+  display: grid;
+  grid-template-columns: 1fr;
+  direction: rtl;
+
+  > * {
+    direction: ltr;
+  }
+}
+
+.rowMobile {
+  display: flex;
+  flex-direction: column;
+}

@@ -5,7 +5,7 @@ export interface IHyperModalProps {
   onClose: () => void;
   title: string;
   size?: "small" | "medium" | "large";
-  children: React.ReactNode;
+  children?: React.ReactNode;
   footer?: React.ReactNode;
 }
 

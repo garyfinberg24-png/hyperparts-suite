@@ -1,0 +1,27 @@
+.filmstripLayout {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #c8c6c4;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #f3f2f1;
+  }
+}
+
+.filmstripCard {
+  flex: 0 0 280px;
+  scroll-snap-align: start;
+  min-width: 280px;
+}

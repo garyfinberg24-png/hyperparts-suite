@@ -1,0 +1,16 @@
+.tilesLayout {
+  display: grid;
+  gap: 12px;
+  grid-auto-rows: 1fr;
+}
+
+.tile {
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}

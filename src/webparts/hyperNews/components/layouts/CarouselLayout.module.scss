@@ -1,0 +1,80 @@
+.carouselLayout {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.arrowButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #d1d1d1;
+  border-radius: 50%;
+  background-color: #ffffff;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  color: #323130;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    background-color: #f3f2f1;
+    border-color: #0078d4;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #0078d4;
+    outline-offset: 2px;
+  }
+}
+
+.arrowLeft {
+  order: -1;
+}
+
+.arrowRight {
+  order: 1;
+}
+
+.slide {
+  flex: 1;
+  min-width: 0;
+}
+
+.dots {
+  position: absolute;
+  bottom: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid #d1d1d1;
+  background-color: #e1dfdd;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #a19f9d;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #0078d4;
+    outline-offset: 1px;
+  }
+}
+
+.dotActive {
+  background-color: #0078d4;
+  border-color: #0078d4;
+}

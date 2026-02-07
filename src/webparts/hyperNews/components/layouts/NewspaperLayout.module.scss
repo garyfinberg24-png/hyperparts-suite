@@ -1,0 +1,38 @@
+.newspaperLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.headline {
+  border-bottom: 2px solid #323130;
+  padding-bottom: 16px;
+}
+
+.headlineCard {
+  font-size: 1.2em;
+}
+
+.secondaryRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.secondaryMobile {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.restGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.restMobile {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

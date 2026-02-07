@@ -1,0 +1,19 @@
+.newsContainer {
+  padding: 16px;
+  min-height: 200px;
+}
+
+.newsTitle {
+  margin: 0 0 16px 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: "[theme:neutralPrimary, default: #323130]";
+}
+
+.loadingMore {
+  display: flex;
+  justify-content: center;
+  padding: 24px 0;
+  font-size: 14px;
+  color: #605e5c;
+}

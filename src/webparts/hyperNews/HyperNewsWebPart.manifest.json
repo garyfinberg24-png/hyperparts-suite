@@ -1,0 +1,41 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "a7f3e8c4-9b2d-4e5f-a6c8-3d7b9e1f2a4c",
+  "alias": "HyperNewsWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart", "TeamsPersonalApp", "TeamsTab", "SharePointFullPage"],
+  "supportsThemeVariants": true,
+
+  "preconfiguredEntries": [{
+    "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+    "group": { "default": "HyperParts" },
+    "title": { "default": "HyperNews" },
+    "description": { "default": "Advanced news aggregator with 12+ layouts, infinite scroll, quick read modal, emoji reactions, reading progress, content scheduling, and multi-source aggregation." },
+    "officeFabricIconFontName": "News",
+    "properties": {
+      "title": "Latest News",
+      "layoutType": "cardGrid",
+      "pageSize": 12,
+      "sources": [],
+      "enableInfiniteScroll": true,
+      "enableQuickRead": true,
+      "enableReactions": true,
+      "enableBookmarks": true,
+      "enableReadTracking": true,
+      "enableScheduling": true,
+      "showFeatured": true,
+      "maxFeatured": 3,
+      "filterConfig": {
+        "enabled": true,
+        "categories": [],
+        "authors": [],
+        "dateRange": "all"
+      },
+      "reactionListName": "HyperNewsReactions",
+      "bookmarkListName": "HyperNewsBookmarks"
+    }
+  }]
+}
