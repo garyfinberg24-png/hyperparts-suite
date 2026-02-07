@@ -1,16 +1,26 @@
 define([], function() {
   return {
-    "PropertyPaneDescription": "Description",
-    "BasicGroupName": "Group Name",
-    "DescriptionFieldLabel": "Description Field",
-    "AppLocalEnvironmentSharePoint": "The app is running on your local environment as SharePoint web part",
-    "AppLocalEnvironmentTeams": "The app is running on your local environment as Microsoft Teams app",
-    "AppLocalEnvironmentOffice": "The app is running on your local environment in office.com",
-    "AppLocalEnvironmentOutlook": "The app is running on your local environment in Outlook",
-    "AppSharePointEnvironment": "The app is running on SharePoint page",
-    "AppTeamsTabEnvironment": "The app is running in Microsoft Teams",
-    "AppOfficeEnvironment": "The app is running in office.com",
-    "AppOutlookEnvironment": "The app is running in Outlook",
-    "UnknownEnvironment": "The app is running in an unknown environment"
+    "PropertyPaneDescription": "Configure the HyperHero web part",
+    "LayoutGroupName": "Hero Settings",
+    "TilesGroupName": "Tile Management",
+    "RotationGroupName": "Auto-Rotation",
+    "ContentBindingGroupName": "Dynamic Content",
+    "AdvancedGroupName": "Advanced",
+    "TitleFieldLabel": "Title",
+    "HeroHeightFieldLabel": "Hero Height (px)",
+    "BorderRadiusFieldLabel": "Border Radius (px)",
+    "FullBleedFieldLabel": "Full Bleed (full width)",
+    "ConfigureTilesLabel": "Configure Tiles",
+    "ConfigureLayoutLabel": "Configure Layout",
+    "RotationEnabledLabel": "Enable Auto-Rotation",
+    "RotationIntervalLabel": "Rotation Interval (ms)",
+    "TransitionEffectLabel": "Transition Effect",
+    "TransitionDurationLabel": "Transition Duration (ms)",
+    "PauseOnHoverLabel": "Pause on Hover",
+    "ShowDotsLabel": "Show Navigation Dots",
+    "ShowArrowsLabel": "Show Navigation Arrows",
+    "ContentBindingEnabledLabel": "Enable Dynamic Content",
+    "ListNameLabel": "List Name",
+    "MaxItemsLabel": "Max Items"
   }
 });

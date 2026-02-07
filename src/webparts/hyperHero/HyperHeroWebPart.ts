@@ -1,92 +1,70 @@
-import * as React from 'react';
-import * as ReactDom from 'react-dom';
-import { Version } from '@microsoft/sp-core-library';
+import * as React from "react";
+import * as ReactDom from "react-dom";
+import { Version } from "@microsoft/sp-core-library";
 import {
   type IPropertyPaneConfiguration,
-  PropertyPaneTextField
-} from '@microsoft/sp-property-pane';
-import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
-import { IReadonlyTheme } from '@microsoft/sp-component-base';
+  PropertyPaneTextField,
+  PropertyPaneSlider,
+  PropertyPaneToggle,
+  PropertyPaneDropdown,
+} from "@microsoft/sp-property-pane";
 
-import * as strings from 'HyperHeroWebPartStrings';
-import HyperHero from './components/HyperHero';
-import { IHyperHeroProps } from './components/IHyperHeroProps';
+import * as strings from "HyperHeroWebPartStrings";
+import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
+import HyperHero from "./components/HyperHero";
+import type { IHyperHeroComponentProps } from "./components/HyperHero";
+import type { IHyperHeroWebPartProps } from "./models";
+import {
+  DEFAULT_TILE,
+  DEFAULT_RESPONSIVE_LAYOUTS,
+  DEFAULT_ROTATION,
+  DEFAULT_CONTENT_BINDING,
+  DEFAULT_AB_TESTING,
+} from "./models";
 
-export interface IHyperHeroWebPartProps {
-  description: string;
-}
-
-export default class HyperHeroWebPart extends BaseClientSideWebPart<IHyperHeroWebPartProps> {
-
-  private _isDarkTheme: boolean = false;
-  private _environmentMessage: string = '';
+export default class HyperHeroWebPart extends BaseHyperWebPart<IHyperHeroWebPartProps> {
 
   public render(): void {
-    const element: React.ReactElement<IHyperHeroProps> = React.createElement(
-      HyperHero,
-      {
-        description: this.properties.description,
-        isDarkTheme: this._isDarkTheme,
-        environmentMessage: this._environmentMessage,
-        hasTeamsContext: !!this.context.sdks.microsoftTeams,
-        userDisplayName: this.context.pageContext.user.displayName
-      }
-    );
-
+    const props: IHyperHeroComponentProps = {
+      ...this.properties,
+      instanceId: this.instanceId,
+    };
+    const element: React.ReactElement<IHyperHeroComponentProps> =
+      React.createElement(HyperHero, props);
     ReactDom.render(element, this.domElement);
   }
 
-  protected onInit(): Promise<void> {
-    return this._getEnvironmentMessage().then(message => {
-      this._environmentMessage = message;
-    });
-  }
+  protected async onInit(): Promise<void> {
+    await super.onInit();
 
-
-
-  private _getEnvironmentMessage(): Promise<string> {
-    if (!!this.context.sdks.microsoftTeams) { // running in Teams, office.com or Outlook
-      return this.context.sdks.microsoftTeams.teamsJs.app.getContext()
-        .then(context => {
-          let environmentMessage: string = '';
-          switch (context.app.host.name) {
-            case 'Office': // running in Office
-              environmentMessage = this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentOffice : strings.AppOfficeEnvironment;
-              break;
-            case 'Outlook': // running in Outlook
-              environmentMessage = this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentOutlook : strings.AppOutlookEnvironment;
-              break;
-            case 'Teams': // running in Teams
-            case 'TeamsModern':
-              environmentMessage = this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentTeams : strings.AppTeamsTabEnvironment;
-              break;
-            default:
-              environmentMessage = strings.UnknownEnvironment;
-          }
-
-          return environmentMessage;
-        });
+    // Ensure defaults for all top-level properties
+    if (!this.properties.tiles || this.properties.tiles.length === 0) {
+      this.properties.tiles = [DEFAULT_TILE];
     }
-
-    return Promise.resolve(this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentSharePoint : strings.AppSharePointEnvironment);
-  }
-
-  protected onThemeChanged(currentTheme: IReadonlyTheme | undefined): void {
-    if (!currentTheme) {
-      return;
+    if (!this.properties.layouts) {
+      this.properties.layouts = DEFAULT_RESPONSIVE_LAYOUTS;
     }
-
-    this._isDarkTheme = !!currentTheme.isInverted;
-    const {
-      semanticColors
-    } = currentTheme;
-
-    if (semanticColors) {
-      this.domElement.style.setProperty('--bodyText', semanticColors.bodyText || null);
-      this.domElement.style.setProperty('--link', semanticColors.link || null);
-      this.domElement.style.setProperty('--linkHovered', semanticColors.linkHovered || null);
+    if (!this.properties.rotation) {
+      this.properties.rotation = DEFAULT_ROTATION;
     }
-
+    if (!this.properties.contentBinding) {
+      this.properties.contentBinding = DEFAULT_CONTENT_BINDING;
+    }
+    if (!this.properties.abTesting) {
+      this.properties.abTesting = DEFAULT_AB_TESTING;
+    }
+    if (this.properties.heroHeight === undefined) {
+      this.properties.heroHeight = 400;
+    }
+    if (this.properties.borderRadius === undefined) {
+      this.properties.borderRadius = 0;
+    }
+    if (this.properties.fullBleed === undefined) {
+      this.properties.fullBleed = false;
+    }
+    if (this.properties.title === undefined) {
+      this.properties.title = "";
+    }
   }
 
   protected onDispose(): void {
@@ -94,28 +72,110 @@ export default class HyperHeroWebPart extends BaseClientSideWebPart<IHyperHeroWe
   }
 
   protected get dataVersion(): Version {
-    return Version.parse('1.0');
+    return Version.parse("1.0");
   }
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     return {
       pages: [
+        // ─── Page 1: Layout & Appearance ───
         {
-          header: {
-            description: strings.PropertyPaneDescription
-          },
+          header: { description: strings.PropertyPaneDescription },
           groups: [
             {
-              groupName: strings.BasicGroupName,
+              groupName: strings.LayoutGroupName,
               groupFields: [
-                PropertyPaneTextField('description', {
-                  label: strings.DescriptionFieldLabel
-                })
-              ]
-            }
-          ]
-        }
-      ]
+                PropertyPaneTextField("title", {
+                  label: strings.TitleFieldLabel,
+                }),
+                PropertyPaneSlider("heroHeight", {
+                  label: strings.HeroHeightFieldLabel,
+                  min: 100,
+                  max: 800,
+                  step: 10,
+                }),
+                PropertyPaneSlider("borderRadius", {
+                  label: strings.BorderRadiusFieldLabel,
+                  min: 0,
+                  max: 48,
+                  step: 2,
+                }),
+                PropertyPaneToggle("fullBleed", {
+                  label: strings.FullBleedFieldLabel,
+                }),
+              ],
+            },
+          ],
+        },
+        // ─── Page 2: Rotation ───
+        {
+          header: { description: strings.PropertyPaneDescription },
+          groups: [
+            {
+              groupName: strings.RotationGroupName,
+              groupFields: [
+                PropertyPaneToggle("rotation.enabled", {
+                  label: strings.RotationEnabledLabel,
+                }),
+                PropertyPaneSlider("rotation.intervalMs", {
+                  label: strings.RotationIntervalLabel,
+                  min: 1000,
+                  max: 30000,
+                  step: 500,
+                }),
+                PropertyPaneDropdown("rotation.effect", {
+                  label: strings.TransitionEffectLabel,
+                  options: [
+                    { key: "fade", text: "Fade" },
+                    { key: "slide", text: "Slide" },
+                    { key: "zoom", text: "Zoom" },
+                    { key: "kenBurns", text: "Ken Burns" },
+                    { key: "none", text: "None" },
+                  ],
+                }),
+                PropertyPaneSlider("rotation.transitionDurationMs", {
+                  label: strings.TransitionDurationLabel,
+                  min: 100,
+                  max: 2000,
+                  step: 100,
+                }),
+                PropertyPaneToggle("rotation.pauseOnHover", {
+                  label: strings.PauseOnHoverLabel,
+                }),
+                PropertyPaneToggle("rotation.showDots", {
+                  label: strings.ShowDotsLabel,
+                }),
+                PropertyPaneToggle("rotation.showArrows", {
+                  label: strings.ShowArrowsLabel,
+                }),
+              ],
+            },
+          ],
+        },
+        // ─── Page 3: Content Binding ───
+        {
+          header: { description: strings.PropertyPaneDescription },
+          groups: [
+            {
+              groupName: strings.ContentBindingGroupName,
+              groupFields: [
+                PropertyPaneToggle("contentBinding.enabled", {
+                  label: strings.ContentBindingEnabledLabel,
+                }),
+                PropertyPaneTextField("contentBinding.listName", {
+                  label: strings.ListNameLabel,
+                }),
+                PropertyPaneSlider("contentBinding.maxItems", {
+                  label: strings.MaxItemsLabel,
+                  min: 1,
+                  max: 50,
+                  step: 1,
+                }),
+              ],
+            },
+          ],
+        },
+      ],
     };
   }
 }
