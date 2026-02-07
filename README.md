@@ -44,7 +44,9 @@ src/
 │   └── models/                    # Shared TypeScript interfaces
 └── webparts/
     ├── hyperHero/                 # Hero banners (12 features)
-    └── hyperNews/                 # News aggregation (14 features)
+    ├── hyperNews/                 # News aggregation (14 features)
+    ├── hyperSpotlight/            # Employee spotlight (6 layouts, 7 categories)
+    └── hyperProfile/              # User profile card (7 templates, 9 actions)
 ```
 
 ## Prerequisites
@@ -83,6 +85,8 @@ gulp package-solution --ship  # Create .sppkg
 | State            | Zustand v4 + Immer               |
 | Dates            | date-fns                         |
 | Graph Components | MGT-SPFx                         |
+| Animation        | lottie-web                       |
+| Layout           | react-masonry-css                |
 | Testing          | Jest + React Testing Library     |
 
 ## Web Parts Roadmap
@@ -92,12 +96,14 @@ gulp package-solution --ship  # Create .sppkg
 - [x] Shared service layer + base architecture
 - [x] HyperHero — CSS Grid hero with video/Lottie/parallax (12 features)
 - [x] HyperNews — 12 layouts, reactions, infinite scroll, quick read modal (14 features)
+- [x] HyperSpotlight — Employee spotlight with 6 layouts, 5 card styles, 7 categories (Hyperized)
+- [x] HyperProfile — User profile card with 7 templates, 9 quick actions, presence (Hyperized)
 - [ ] HyperTabs — Tab/accordion/wizard container
 - [ ] HyperRollup — Cross-site content rollup with query builder
 
 ### Phase 2 — Expansion
 
-- [ ] HyperNav, HyperProfile, HyperDirectory, HyperEvents
+- [ ] HyperNav, HyperDirectory, HyperEvents
 - [ ] HyperPoll, HyperMetrics, HyperSearch
 
 ### Phase 3 — Completion
@@ -115,11 +121,12 @@ gulp package-solution --ship  # Create .sppkg
 
 ## Version History
 
-| Version | Date              | Comments                                                      |
-| ------- | ----------------- | ------------------------------------------------------------- |
-| 0.0.1   | February 7, 2026  | Phase 1, Step 1: Solution scaffold + shared service layer     |
-| 0.0.2   | February 7, 2026  | Phase 1, Step 2: HyperHero web part (all 12 features)         |
-| 0.0.3   | February 7, 2026  | Phase 1, Step 3: HyperNews web part (all 14 features)         |
+| Version | Date              | Comments                                                             |
+| ------- | ----------------- | -------------------------------------------------------------------- |
+| 0.0.1   | February 7, 2026  | Phase 1, Step 1: Solution scaffold + shared service layer            |
+| 0.0.2   | February 7, 2026  | Phase 1, Step 2: HyperHero web part (all 12 features)                |
+| 0.0.3   | February 7, 2026  | Phase 1, Step 3: HyperNews web part (all 14 features)                |
+| 0.0.4   | February 8, 2026  | Phase 1, Steps 4-5: HyperSpotlight + HyperProfile (Hyperized ports)  |
 
 ## References
 

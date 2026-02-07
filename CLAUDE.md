@@ -29,17 +29,22 @@ HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 30+ web parts fo
   - 3-page property pane, Zustand store, full ARIA accessibility
   - `gulp build` passes clean (0 errors, 0 warnings)
 
+- **Phase 1, Steps 4-5** — HyperSpotlight + HyperProfile (Hyperized from standalone web parts)
+  - HyperSpotlight: 6 layouts (Grid/List/Carousel/Tiled/Masonry/FeaturedHero), 5 card styles, 7 celebration categories, token-based messages, action buttons, auto-refresh, entrance animations
+  - HyperProfile: 7 templates, real-time presence (8 statuses) with auto-refresh, 9 quick actions, 4 completeness score styles, manager display, overlay messages, photo with presence badge
+  - Both converted from MSGraphClientV3/class components to PnP hooks/functional components
+  - `gulp build` passes clean (0 errors, 0 warnings)
+
 ### Next Up
 
-- **Phase 1, Step 4** — HyperTabs web part
-  - See MASTER_CONTEXT.md Section 6.3 for the full HyperTabs spec
+- **Phase 1, Step 6** — Next web part from PRD (check MASTER_CONTEXT.md Section 6.3+)
 
 ### Full Roadmap (from MASTER_CONTEXT.md Addendum B)
 
 | Phase | Web Parts                                                                                                                                                                                           |
 | ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | HyperHero, HyperNews, HyperTabs, HyperRollup                                                                                                                                                        |
-| 2     | HyperNav, HyperProfile, HyperDirectory, HyperEvents, HyperPoll, HyperMetrics, HyperSearch                                                                                                           |
+| 1     | HyperHero, HyperNews, ~~HyperTabs~~, ~~HyperRollup~~, **HyperSpotlight**, **HyperProfile**                                                                                                          |
+| 2     | HyperNav, HyperDirectory, HyperEvents, HyperPoll, HyperMetrics, HyperSearch, HyperTabs, HyperRollup                                                                                                 |
 | 3     | HyperAction, HyperTicker, HyperFAQ, HyperBirthdays, HyperRecognition, HyperExplorer, HyperExternal, HyperTimeline, HyperBreadcrumb, HyperFeedback, HyperLocal, HyperLayout, HyperForms, HyperBanner |
 
 ---
@@ -138,19 +143,43 @@ src/
     │   ├── store/                     # Zustand store for hero state
     │   ├── components/                # HyperHero + sub-components
     │   └── loc/
-    └── hyperNews/                     # News aggregation (14 features)
-        ├── HyperNewsWebPart.ts
-        ├── HyperNewsWebPart.manifest.json
-        ├── models/                    # Article, layout, source, filter, reaction models
-        ├── hooks/                     # useNewsArticles, useReadingProgress, useNewsFilters, etc.
-        ├── store/                     # Zustand store for news state
+    ├── hyperNews/                     # News aggregation (14 features)
+    │   ├── HyperNewsWebPart.ts
+    │   ├── HyperNewsWebPart.manifest.json
+    │   ├── models/                    # Article, layout, source, filter, reaction models
+    │   ├── hooks/                     # useNewsArticles, useReadingProgress, useNewsFilters, etc.
+    │   ├── store/                     # Zustand store for news state
+    │   ├── components/
+    │   │   ├── HyperNews.tsx          # Main component
+    │   │   ├── HyperNewsArticleCard   # Article card wrapper
+    │   │   ├── HyperNewsQuickReadModal # Quick read modal
+    │   │   ├── HyperNewsReactions     # Emoji reactions
+    │   │   ├── HyperNewsFilterBar     # Filter chips
+    │   │   └── layouts/               # 12 layout components
+    │   └── loc/
+    ├── hyperSpotlight/                # Employee spotlight (6 layouts, 7 categories)
+    │   ├── HyperSpotlightWebPart.ts   # ID: 7220d21d-e08c-4ef7-9b62-eff134300498
+    │   ├── models/                    # Employee, category, layout, style, enums
+    │   ├── hooks/                     # useSpotlightEmployees, useGraphProfiles/Photos, useAutoRefresh
+    │   ├── store/                     # Zustand store for spotlight state
+    │   ├── components/
+    │   │   ├── HyperSpotlight.tsx     # Main component
+    │   │   ├── HyperSpotlightCard     # Card with 5 styles
+    │   │   ├── HyperSpotlightCategoryBadge, ActionButtons, AttributeDisplay, CustomMessage
+    │   │   └── layouts/               # Grid, List, Carousel, Tiled, Masonry, FeaturedHero
+    │   └── loc/
+    └── hyperProfile/                  # User profile card (7 templates, 9 actions)
+        ├── HyperProfileWebPart.ts     # ID: a8f9e6d3-5c2a-4b7e-9f1d-8c3e5a7b9d2f
+        ├── models/                    # Profile, presence, quick actions, templates, completeness
+        ├── hooks/                     # useProfileData, usePresence, useProfileSearch
+        ├── store/                     # Zustand store for profile state
+        ├── constants/                 # templates.ts, quickActions.ts
+        ├── utils/                     # deepLinkUtils, vCardUtils, presenceUtils, scoreCalculator
         ├── components/
-        │   ├── HyperNews.tsx          # Main component
-        │   ├── HyperNewsArticleCard   # Article card wrapper
-        │   ├── HyperNewsQuickReadModal # Quick read modal
-        │   ├── HyperNewsReactions     # Emoji reactions
-        │   ├── HyperNewsFilterBar     # Filter chips
-        │   └── layouts/               # 12 layout components
+        │   ├── HyperProfile.tsx       # Main component
+        │   ├── HyperProfilePhoto, PresenceBadge, Field
+        │   ├── HyperProfileQuickActions, Completeness, Overlay
+        │   └── (SCSS modules for each)
         └── loc/
 ```
 
@@ -159,6 +188,8 @@ src/
 - **Solution ID:** `ced7606b-d2d6-418f-b0cf-40b5691109f2`
 - **HyperHero Web Part ID:** `1ecae9e2-86c8-4dc2-a850-f404c2d9793c`
 - **HyperNews Web Part ID:** `a7f3e8c4-9b2d-4e5f-a6c8-3d7b9e1f2a4c`
+- **HyperSpotlight Web Part ID:** `7220d21d-e08c-4ef7-9b62-eff134300498` (preserved from Employee Spotlight)
+- **HyperProfile Web Part ID:** `a8f9e6d3-5c2a-4b7e-9f1d-8c3e5a7b9d2f` (preserved from Power Profile)
 - **Feature ID:** `4c137d6a-7e80-46c6-8936-e7f7639893bc`
 
 ---
@@ -401,6 +432,8 @@ Extends `@microsoft/eslint-config-spfx/lib/profiles/react`. Key enforced rules:
 | `zustand`                    | 4.5.7   | State management            | Yes       |
 | `immer`                      | 11.1.3  | Immutable state updates     | No        |
 | `date-fns`                   | 4.1.0   | Date utilities              | No        |
+| `lottie-web`                 | 5.12.2  | Lottie animations           | Yes       |
+| `react-masonry-css`          | 1.0.16  | Masonry layout              | Yes       |
 | `react` / `react-dom`        | 17.0.1  | React (SPFx pinned)         | Yes       |
 
 ### Dev
@@ -533,6 +566,75 @@ const LayoutInner: React.FC<ILayoutProps> = (props) => {
 export const Layout = React.memo(LayoutInner);
 ```
 
+### Dynamic SCSS Module Index (Avoiding TS7053)
+
+```typescript
+// FORBIDDEN — TS7053: Element implicitly has 'any' type
+const cls = styles["theme" + category];
+
+// CORRECT — cast styles module to Record
+const cls = (styles as Record<string, string>)["theme" + category] || "";
+```
+
+### Async Cache Calls (hyperCache is async)
+
+```typescript
+// FORBIDDEN — no-floating-promises lint error
+hyperCache.set(key, data, ttl);
+const cached = hyperCache.get<T>(key);  // Returns Promise, not T!
+
+// CORRECT — always await
+await hyperCache.set(key, data, ttl);
+const cached = await hyperCache.get<T>(key);
+```
+
+### Async Calls in useEffect
+
+```typescript
+// FORBIDDEN — no-floating-promises
+useEffect(() => { fetchData(); return () => { cancelled = true; }; }, []);
+
+// CORRECT — add .catch()
+useEffect(() => {
+  fetchData().catch(function () { /* handled inside */ });
+  return () => { cancelled = true; };
+}, []);
+```
+
+### Dynamic Import with Webpack Chunk Name
+
+```typescript
+// FORBIDDEN — spfx/import-requires-chunk-name lint error
+const { ResponseType } = await import("@microsoft/microsoft-graph-client");
+
+// CORRECT — add webpackChunkName comment
+const { ResponseType } = await import(/* webpackChunkName: 'ms-graph-client' */ "@microsoft/microsoft-graph-client");
+```
+
+### PnP Graph User Type Cast
+
+```typescript
+// FORBIDDEN — TS2345: 'User' not assignable to 'Record<string, unknown>'
+const raw = await graph.users.getById(id).select(fields)();
+mapUser(raw);
+
+// CORRECT — double cast
+const raw = await graph.users.getById(id).select(fields)();
+mapUser(raw as unknown as Record<string, unknown>);
+```
+
+### ReactNode Array Building (Avoid .concat())
+
+```typescript
+// FORBIDDEN — TS2769: strict typing prevents concat of ReactNode[]
+const all = [overlayEl].concat(children);
+
+// CORRECT — use forEach + push
+const all: React.ReactNode[] = [];
+if (overlayEl) all.push(overlayEl);
+children.forEach(function (c) { all.push(c); });
+```
+
 ### ES5-Safe Map Iteration
 
 ```typescript
@@ -592,7 +694,7 @@ These packages are installed and ready but have zero imports in the codebase so 
 - `@fluentui/react-components` (v9) — use for new component UI
 - `@fluentui/react-icons` — use for icon rendering
 - `@microsoft/mgt-spfx` — use for Graph Toolkit components (People, Person card, etc.)
-- ~~`zustand` (v4)~~ — **now used** in HyperHero and HyperNews stores
+- ~~`zustand` (v4)~~ — **now used** in HyperHero, HyperNews, HyperSpotlight, HyperProfile stores
 - `immer` — use with zustand for immutable state updates
 - `date-fns` — use for date formatting, relative time, scheduling logic
 
