@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "hyperparts-suite-client-side-solution",
+    "id": "ced7606b-d2d6-418f-b0cf-40b5691109f2",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.20.0"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "hyperparts-suite description"
+      },
+      "longDescription": {
+        "default": "hyperparts-suite description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "hyperparts-suite Feature",
+        "description": "The feature that activates elements of the hyperparts-suite solution.",
+        "id": "4c137d6a-7e80-46c6-8936-e7f7639893bc",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/hyperparts-suite.sppkg"
+  }
+}

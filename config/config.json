@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "hyper-hero-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hyperHero/HyperHeroWebPart.js",
+          "manifest": "./src/webparts/hyperHero/HyperHeroWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "HyperHeroWebPartStrings": "lib/webparts/hyperHero/loc/{locale}.js"
+  }
+}

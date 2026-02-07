@@ -1,0 +1,24 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "whichFolder": "subdir",
+    "solutionName": "hyperparts-suite",
+    "environment": "spo",
+    "isDomainIsolated": false,
+    "componentType": "webpart",
+    "template": "react",
+    "componentName": "HyperHero",
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "18.20.8",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.24.0"
+    },
+    "version": "1.20.0",
+    "libraryName": "hyperparts-suite",
+    "libraryId": "ced7606b-d2d6-418f-b0cf-40b5691109f2",
+    "packageManager": "npm",
+    "solutionShortDescription": "hyperparts-suite description",
+    "skipFeatureDeployment": true
+  }
+}
