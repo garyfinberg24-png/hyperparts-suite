@@ -1,0 +1,30 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.masonryContainer {
+  padding: 20px;
+
+  @media (max-width: 768px) {
+    padding: 12px;
+  }
+}
+
+/* react-masonry-css generates class names; we target via :global */
+.masonryGrid {
+  display: flex;
+  margin-left: calc(var(--gutter-spacing, 20px) * -1);
+  width: auto;
+}
+
+.masonryColumn {
+  padding-left: var(--gutter-spacing, 20px);
+  background-clip: padding-box;
+
+  > div {
+    margin-bottom: var(--gutter-spacing, 20px);
+  }
+}
+
+.masonryItem {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}

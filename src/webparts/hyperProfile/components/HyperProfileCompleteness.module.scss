@@ -1,0 +1,116 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.completeness {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.encouragement {
+  font-size: 11px;
+  color: #8a8886;
+}
+
+/* Percentage style */
+.percentageValue {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.percentageLabel {
+  font-size: 11px;
+  color: #605e5c;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Progress bar style */
+.progressBarContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.progressBarLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #605e5c;
+}
+
+.progressBarTrack {
+  height: 6px;
+  background-color: #edebe9;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+/* Circular style */
+.circularContainer {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.circularSvg {
+  flex-shrink: 0;
+}
+
+.circularTrack,
+.circularFill {
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+.circularScore {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* Stars style */
+.starsRow {
+  display: flex;
+  gap: 2px;
+  font-size: 18px;
+}
+
+.starFilled {
+  color: #ffaa44;
+}
+
+.starEmpty {
+  color: #c8c6c4;
+}
+
+.starsLabel {
+  font-size: 12px;
+  color: #605e5c;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .progressBarFill {
+    transition: none;
+  }
+
+  .circularTrack,
+  .circularFill {
+    transition: none;
+  }
+}
+
+/* High Contrast */
+@media (prefers-contrast: high) {
+  .progressBarTrack {
+    border: 1px solid currentColor;
+  }
+}

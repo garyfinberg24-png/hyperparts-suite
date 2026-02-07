@@ -1,0 +1,23 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.categoryBadge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.badgebirthday { background-color: #ff6b6b; }
+.badgeworkAnniversary { background-color: #4ecdc4; }
+.badgeanniversary { background-color: #ff69b4; }
+.badgegraduation { background-color: #95e1d3; }
+.badgewedding { background-color: #ffd93d; color: #333; }
+.badgeengagement { background-color: #ff85a2; }
+.badgeachievement { background-color: #ffa502; }
+.badgeDefault { background-color: #0078d4; }

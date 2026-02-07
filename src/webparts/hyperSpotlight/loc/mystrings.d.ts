@@ -1,0 +1,47 @@
+declare interface IHyperSpotlightWebPartStrings {
+  DataSourceGroupName: string;
+  LayoutGroupName: string;
+  ContentGroupName: string;
+  ActionsGroupName: string;
+  StylingGroupName: string;
+  PerformanceGroupName: string;
+  AdvancedGroupName: string;
+  SelectionModeLabel: string;
+  CategoryLabel: string;
+  DateRangeLabel: string;
+  ManualEmployeeIdsLabel: string;
+  MaxEmployeesLabel: string;
+  SortOrderLabel: string;
+  AutoRefreshLabel: string;
+  AutoRefreshIntervalLabel: string;
+  LayoutModeLabel: string;
+  CardStyleLabel: string;
+  AnimationLabel: string;
+  MobileColumnsLabel: string;
+  TabletColumnsLabel: string;
+  ShowProfilePictureLabel: string;
+  ShowEmployeeNameLabel: string;
+  ShowJobTitleLabel: string;
+  ShowDepartmentLabel: string;
+  ShowCategoryBadgeLabel: string;
+  ShowCustomMessageLabel: string;
+  CustomMessageLabel: string;
+  MessagePositionLabel: string;
+  ShowActionButtonsLabel: string;
+  EnableEmailLabel: string;
+  EnableTeamsLabel: string;
+  EnableProfileLabel: string;
+  UseCategoryThemesLabel: string;
+  ShowAttributeLabelsLabel: string;
+  ShowAttributeIconsLabel: string;
+  LazyLoadLabel: string;
+  ImageQualityLabel: string;
+  CacheEnabledLabel: string;
+  CacheDurationLabel: string;
+  DebugModeLabel: string;
+}
+
+declare module "HyperSpotlightWebPartStrings" {
+  const strings: IHyperSpotlightWebPartStrings;
+  export = strings;
+}

@@ -17,11 +17,29 @@
           "manifest": "./src/webparts/hyperNews/HyperNewsWebPart.manifest.json"
         }
       ]
+    },
+    "hyper-spotlight-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hyperSpotlight/HyperSpotlightWebPart.js",
+          "manifest": "./src/webparts/hyperSpotlight/HyperSpotlightWebPart.manifest.json"
+        }
+      ]
+    },
+    "hyper-profile-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hyperProfile/HyperProfileWebPart.js",
+          "manifest": "./src/webparts/hyperProfile/HyperProfileWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
   "localizedResources": {
     "HyperHeroWebPartStrings": "lib/webparts/hyperHero/loc/{locale}.js",
-    "HyperNewsWebPartStrings": "lib/webparts/hyperNews/loc/{locale}.js"
+    "HyperNewsWebPartStrings": "lib/webparts/hyperNews/loc/{locale}.js",
+    "HyperSpotlightWebPartStrings": "lib/webparts/hyperSpotlight/loc/{locale}.js",
+    "HyperProfileWebPartStrings": "lib/webparts/hyperProfile/loc/{locale}.js"
   }
 }

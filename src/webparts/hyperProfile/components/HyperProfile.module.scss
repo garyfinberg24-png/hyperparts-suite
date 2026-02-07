@@ -1,0 +1,213 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.hyperProfile {
+  position: relative;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Shadow variants */
+.shadowLight {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.shadowMedium {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.shadowStrong {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+}
+
+/* Card styles */
+.compact {
+  padding: 12px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.standard {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.expanded {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Loading / Error */
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+/* Header section */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.compact .header {
+  gap: 12px;
+}
+
+/* Name block */
+.nameBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.displayName {
+  font-size: 20px;
+  font-weight: 600;
+  color: #323130;
+  line-height: 1.3;
+}
+
+.compact .displayName {
+  font-size: 16px;
+}
+
+.expanded .displayName {
+  font-size: 24px;
+}
+
+.jobTitle {
+  font-size: 14px;
+  color: #605e5c;
+  line-height: 1.4;
+}
+
+.statusMessage {
+  font-size: 12px;
+  color: #8a8886;
+  font-style: italic;
+}
+
+/* Presence inline (next to name) */
+.presenceInline {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.presenceLabel {
+  font-size: 12px;
+  color: #605e5c;
+}
+
+/* Presence separate (below header) */
+.presenceSeparate {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-top: 1px solid #edebe9;
+  border-bottom: 1px solid #edebe9;
+}
+
+/* Fields section */
+.fieldsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Manager section */
+.managerSection {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #edebe9;
+  flex-wrap: wrap;
+}
+
+.managerLabel {
+  font-size: 11px;
+  color: #8a8886;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.managerLink {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 14px;
+  color: #0078d4;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: inherit;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: 1px;
+  }
+}
+
+.managerTitle {
+  font-size: 12px;
+  color: #605e5c;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .compact {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .standard {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .expanded {
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .header {
+    gap: 12px;
+  }
+
+  .displayName {
+    font-size: 16px;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .hyperProfile {
+    border: 2px solid currentColor;
+  }
+
+  .managerLink {
+    text-decoration: underline;
+  }
+}

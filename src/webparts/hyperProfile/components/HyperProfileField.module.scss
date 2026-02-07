@@ -1,0 +1,52 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.profileField {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.fieldIcon {
+  flex-shrink: 0;
+  font-size: 14px;
+  color: #605e5c;
+  width: 20px;
+  text-align: center;
+}
+
+.fieldContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.fieldLabel {
+  font-size: 11px;
+  color: #8a8886;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.fieldValue {
+  font-size: 14px;
+  color: #323130;
+  word-break: break-word;
+}
+
+.fieldLink {
+  color: #0078d4;
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: 1px;
+  }
+}

@@ -1,0 +1,45 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.actionButtons {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid #d1d1d1;
+  border-radius: 4px;
+  background-color: white;
+  color: #323130;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover { background-color: #f3f2f1; border-color: #8a8886; }
+  &:active { background-color: #edebe9; }
+  &:focus { outline: 2px solid #0078d4; outline-offset: 2px; }
+}
+
+.buttonIcon { font-size: 16px; }
+
+.buttonText {
+  @media (max-width: 480px) { display: none; }
+}
+
+.emailButton {
+  &:hover { background-color: #e3f2fd; border-color: #0078d4; color: #0078d4; }
+}
+
+.teamsButton {
+  &:hover { background-color: #f3e5f5; border-color: #6264a7; color: #6264a7; }
+}
+
+.profileButton {
+  &:hover { background-color: #e8f5e9; border-color: #107c10; color: #107c10; }
+}

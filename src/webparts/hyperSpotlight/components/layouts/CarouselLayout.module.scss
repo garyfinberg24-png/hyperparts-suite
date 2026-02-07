@@ -1,0 +1,116 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.carouselContainer {
+  position: relative;
+  width: 100%;
+  padding: 20px 60px;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    padding: 20px 40px;
+  }
+}
+
+.carouselTrack {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  gap: 20px;
+}
+
+.carouselSlide {
+  flex: 0 0 calc(100% / var(--cards-visible, 3));
+  min-width: 0;
+  padding: 0 10px;
+
+  @media (max-width: 768px) {
+    flex: 0 0 100%;
+  }
+}
+
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 32px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: 2px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #0078d4;
+    outline-offset: 2px;
+  }
+
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+.navPrevious {
+  left: 10px;
+}
+
+.navNext {
+  right: 10px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #d1d1d1;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+
+  &:hover {
+    background-color: #a8a8a8;
+  }
+}
+
+.dotActive {
+  background-color: #0078d4;
+  width: 32px;
+  border-radius: 6px;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .carouselTrack {
+    transition: none;
+  }
+
+  .navButton {
+    transition: none;
+  }
+
+  .dot {
+    transition: none;
+  }
+}

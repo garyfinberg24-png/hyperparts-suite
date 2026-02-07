@@ -1,0 +1,39 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.gridLayout {
+  display: grid;
+  gap: var(--grid-gap, 20px);
+  width: 100%;
+  padding: 20px;
+
+  /* Desktop - auto-fill or fixed columns */
+  grid-template-columns: repeat(var(--desktop-columns, auto-fill), minmax(var(--min-card-width, 280px), 1fr));
+
+  /* Tablet */
+  @media (max-width: 1024px) and (min-width: 769px) {
+    grid-template-columns: repeat(var(--tablet-columns, 2), 1fr);
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(var(--mobile-columns, 1), 1fr);
+    padding: 12px;
+    gap: calc(var(--grid-gap, 20px) * 0.75);
+  }
+}
+
+.equalHeight {
+  .gridItem {
+    display: flex;
+
+    > * {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
+
+.gridItem {
+  min-width: 0;
+}

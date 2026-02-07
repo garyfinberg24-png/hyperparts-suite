@@ -1,0 +1,72 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.tiledLayout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 20px;
+  align-items: flex-start;
+  justify-content: flex-start;
+
+  @media (max-width: 768px) {
+    padding: 12px;
+    gap: 12px;
+  }
+}
+
+.tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.02);
+    z-index: 10;
+  }
+
+  > * {
+    height: 100%;
+  }
+}
+
+.tileSmall {
+  width: var(--tile-small, 100px);
+  height: var(--tile-small, 100px);
+
+  @media (max-width: 768px) {
+    width: calc(50% - 6px);
+    height: 120px;
+  }
+}
+
+.tileMedium {
+  width: var(--tile-medium, 150px);
+  height: var(--tile-medium, 150px);
+
+  @media (max-width: 768px) {
+    width: calc(50% - 6px);
+    height: 150px;
+  }
+}
+
+.tileLarge {
+  width: var(--tile-large, 200px);
+  height: var(--tile-large, 200px);
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 200px;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .tile {
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
+  }
+}

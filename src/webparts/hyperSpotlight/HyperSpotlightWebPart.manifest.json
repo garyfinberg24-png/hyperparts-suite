@@ -1,0 +1,54 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "7220d21d-e08c-4ef7-9b62-eff134300498",
+  "alias": "HyperSpotlightWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": [
+    "SharePointWebPart",
+    "TeamsPersonalApp",
+    "TeamsTab",
+    "SharePointFullPage"
+  ],
+  "supportsThemeVariants": true,
+  "preconfiguredEntries": [
+    {
+      "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+      "group": { "default": "HyperParts" },
+      "title": { "default": "HyperSpotlight" },
+      "description": {
+        "default": "Spotlight employees with celebrations, milestones, and recognition across 6 layouts and 5 card styles"
+      },
+      "officeFabricIconFontName": "People",
+      "properties": {
+        "selectionMode": "automatic",
+        "category": "birthday",
+        "dateRange": "thisMonth",
+        "maxEmployees": 10,
+        "sortOrder": "nameAsc",
+        "layoutMode": "grid",
+        "cardStyle": "standard",
+        "animationEntrance": "fade",
+        "showProfilePicture": true,
+        "showEmployeeName": true,
+        "showJobTitle": true,
+        "showDepartment": true,
+        "showCategoryBadge": true,
+        "showCustomMessage": true,
+        "customMessage": "Congratulations, {firstName}!",
+        "messagePosition": "below",
+        "showActionButtons": true,
+        "enableEmailButton": true,
+        "enableTeamsButton": true,
+        "enableProfileButton": true,
+        "useCategoryThemes": true,
+        "imageQuality": "medium",
+        "lazyLoadImages": true,
+        "cacheEnabled": true,
+        "cacheDuration": 60
+      }
+    }
+  ]
+}

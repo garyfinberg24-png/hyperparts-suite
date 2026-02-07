@@ -1,0 +1,68 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "a8f9e6d3-5c2a-4b7e-9f1d-8c3e5a7b9d2f",
+  "alias": "HyperProfileWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": [
+    "SharePointWebPart",
+    "TeamsPersonalApp",
+    "TeamsTab",
+    "SharePointFullPage"
+  ],
+  "supportsThemeVariants": true,
+  "preconfiguredEntries": [
+    {
+      "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+      "group": { "default": "HyperParts" },
+      "title": { "default": "HyperProfile" },
+      "description": {
+        "default": "Advanced user profile with real-time presence, 7 templates, 9 quick actions, and profile completeness scoring"
+      },
+      "officeFabricIconFontName": "ContactCard",
+      "properties": {
+        "displayMode": "myProfile",
+        "selectedTemplate": "standard",
+        "showQuickActions": true,
+        "enabledActions": ["email", "teams_chat", "teams_call", "schedule"],
+        "actionsLayout": "horizontal",
+        "buttonSize": "medium",
+        "showActionLabels": true,
+        "showPresence": true,
+        "showStatusMessage": true,
+        "presenceRefreshInterval": 30,
+        "presencePosition": "onPhoto",
+        "showCompletenessScore": true,
+        "scorePosition": "bottom",
+        "scoreStyle": "progressBar",
+        "visibleFields": [
+          "displayName",
+          "jobTitle",
+          "department",
+          "mail",
+          "mobilePhone",
+          "businessPhones",
+          "officeLocation",
+          "city"
+        ],
+        "width": "auto",
+        "height": "auto",
+        "cardStyle": "standard",
+        "photoSize": "medium",
+        "backgroundType": "color",
+        "backgroundColor": "#FFFFFF",
+        "enableOverlay": false,
+        "overlayColor": "#0078D4",
+        "overlayTransparency": 50,
+        "overlayPosition": "bottom",
+        "overlayTextColor": "#FFFFFF",
+        "overlayTextAlignment": "center",
+        "borderRadius": 8,
+        "shadow": "medium",
+        "useThemeColors": false
+      }
+    }
+  ]
+}

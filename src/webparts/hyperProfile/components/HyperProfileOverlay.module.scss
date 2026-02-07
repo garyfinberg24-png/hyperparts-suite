@@ -1,0 +1,40 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.overlayTop {
+  top: 0;
+}
+
+.overlayBottom {
+  bottom: 0;
+}
+
+.overlayFull {
+  top: 0;
+  bottom: 0;
+}
+
+.overlayText {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* High Contrast */
+@media (prefers-contrast: high) {
+  .overlay {
+    border: 1px solid currentColor;
+  }
+}

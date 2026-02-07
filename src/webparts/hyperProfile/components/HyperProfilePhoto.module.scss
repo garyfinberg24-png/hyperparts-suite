@@ -1,0 +1,60 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.photoContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.photo {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.photoSmall {
+  width: 48px;
+  height: 48px;
+}
+
+.photoMedium {
+  width: 80px;
+  height: 80px;
+}
+
+.photoLarge {
+  width: 120px;
+  height: 120px;
+}
+
+.placeholder {
+  border-radius: 50%;
+  background-color: #0078d4;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.placeholderSmall {
+  width: 48px;
+  height: 48px;
+  font-size: 18px;
+}
+
+.placeholderMedium {
+  width: 80px;
+  height: 80px;
+  font-size: 28px;
+}
+
+.placeholderLarge {
+  width: 120px;
+  height: 120px;
+  font-size: 42px;
+}
+
+.presenceOverlay {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+}

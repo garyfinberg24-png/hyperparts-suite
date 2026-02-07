@@ -1,0 +1,228 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.employeeCard {
+  position: relative;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 1px solid transparent;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: 2px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #0078d4;
+    outline-offset: 2px;
+  }
+
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+/* Card Styles */
+.cardStandard {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cardOverlay {
+  position: relative;
+
+  .employeeInfo {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    color: white;
+    padding: 20px;
+  }
+}
+
+.cardSplit {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  padding: 20px;
+}
+
+.cardCompact {
+  padding: 12px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.cardCelebration {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+
+  .employeeName,
+  .jobTitle,
+  .department {
+    color: white;
+  }
+}
+
+/* Profile Picture */
+.profilePicture {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.profileImage {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profilePlaceholder {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background-color: #0078d4;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 600;
+}
+
+/* Compact style profile picture */
+.cardCompact .profileImage,
+.cardCompact .profilePlaceholder {
+  width: 48px;
+  height: 48px;
+  font-size: 20px;
+}
+
+/* Employee Info */
+.employeeInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.employeeName {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #323130;
+}
+
+.jobTitle {
+  margin: 0;
+  font-size: 14px;
+  color: #605e5c;
+}
+
+.department {
+  margin: 0;
+  font-size: 14px;
+  color: #8a8886;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes zoomIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes bounceIn {
+  0% { opacity: 0; transform: scale(0.3); }
+  50% { opacity: 1; transform: scale(1.05); }
+  70% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+.animationFade { animation: fadeIn 0.5s ease-out; }
+.animationSlide { animation: slideUp 0.5s ease-out; }
+.animationZoom { animation: zoomIn 0.5s ease-out; }
+.animationBounce { animation: bounceIn 0.6s ease-out; }
+
+/* Category Themes */
+.themebirthday { border-left: 4px solid #ff6b6b; }
+.themeworkAnniversary { border-left: 4px solid #4ecdc4; }
+.themeanniversary { border-left: 4px solid #ff69b4; }
+.themegraduation { border-left: 4px solid #95e1d3; }
+.themewedding { border-left: 4px solid #ffd93d; }
+.themeengagement { border-left: 4px solid #ff85a2; }
+.themeachievement { border-left: 4px solid #ffa502; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cardStandard,
+  .cardCelebration { padding: 16px; }
+  .cardSplit { grid-template-columns: 1fr; padding: 16px; }
+  .cardCompact { padding: 10px; gap: 10px; }
+  .profileImage,
+  .profilePlaceholder { width: 72px; height: 72px; font-size: 28px; }
+  .employeeName { font-size: 16px; }
+  .jobTitle,
+  .department { font-size: 13px; }
+}
+
+@media (max-width: 480px) {
+  .cardStandard,
+  .cardCelebration { padding: 12px; }
+  .cardSplit { padding: 12px; }
+  .profileImage,
+  .profilePlaceholder { width: 64px; height: 64px; font-size: 24px; }
+  .cardCompact .profileImage,
+  .cardCompact .profilePlaceholder { width: 40px; height: 40px; font-size: 16px; }
+  .employeeName { font-size: 15px; }
+  .jobTitle,
+  .department { font-size: 12px; }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .employeeCard { border: 2px solid currentColor; }
+  .employeeName { font-weight: 700; }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .employeeCard {
+    transition: none;
+    &:hover { transform: none; }
+  }
+  .animationFade,
+  .animationSlide,
+  .animationZoom,
+  .animationBounce { animation: none; }
+}
