@@ -1,73 +1,126 @@
-# hyperparts-suite
+# HyperParts Suite
 
-## Summary
+A next-generation ecosystem of **30+ SPFx web parts** that extend and replace every standard SharePoint Online web part with richer features, deeper Graph integration, and full visual customization.
 
-Short summary on functionality and used technologies.
+![SPFx](https://img.shields.io/badge/SPFx-1.20.0-green.svg)
+![React](https://img.shields.io/badge/React-17.0.1-blue.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-4.7-blue.svg)
+![PnPjs](https://img.shields.io/badge/PnPjs-4.x-orange.svg)
 
-[picture of the solution in action, if possible]
+## Overview
 
-## Used SharePoint Framework Version
+HyperParts ships as a **single `.sppkg` solution package** containing all web parts. Every HyperPart is:
 
-![version](https://img.shields.io/badge/version-1.20.0-green.svg)
+- Configurable by non-developers through rich property panes
+- Audience-targetable out of the box
+- JSON config exportable/importable
+- Responsive from 320px to 4K
+- WCAG 2.1 AA accessible
 
-## Applies to
+## Architecture
 
-- [SharePoint Framework](https://aka.ms/spfx)
-- [Microsoft 365 tenant](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/set-up-your-developer-tenant)
-
-> Get your own free development tenant by subscribing to [Microsoft 365 developer program](http://aka.ms/o365devprogram)
+```text
+src/
+├── common/                        # Shared foundation
+│   ├── BaseHyperWebPart.ts       # Base class for all web parts
+│   ├── services/                  # Singleton services
+│   │   ├── HyperPnP.ts          # PnP SP + Graph initialization
+│   │   ├── HyperCache.ts        # In-memory cache with TTL
+│   │   ├── HyperTheme.ts        # SP theme → design tokens
+│   │   ├── HyperConfig.ts       # JSON config import/export
+│   │   ├── HyperAnalytics.ts    # Usage tracking (stub)
+│   │   └── HyperPermissions.ts  # Permission checks (stub)
+│   ├── hooks/                     # Shared React hooks
+│   │   ├── useResponsive.ts     # Breakpoint detection
+│   │   ├── useGraphUser.ts      # Graph user profile + caching
+│   │   ├── useListItems.ts      # SP list queries + caching
+│   │   └── useAudienceTarget.ts # AD group targeting
+│   ├── components/                # Shared UI components
+│   │   ├── HyperErrorBoundary   # Error boundary with retry
+│   │   ├── HyperSkeleton        # Loading skeleton
+│   │   ├── HyperEmptyState      # Empty state with CTA
+│   │   ├── HyperCard            # Reusable card
+│   │   └── HyperModal           # Accessible modal/dialog
+│   └── models/                    # Shared TypeScript interfaces
+└── webparts/
+    └── hyperHero/                 # First web part (shell)
+```
 
 ## Prerequisites
 
-> Any special pre-requisites?
+| Tool     | Version   |
+| -------- | --------- |
+| Node.js  | 18.x LTS  |
+| npm      | 9.x+      |
+| Gulp CLI | Latest    |
+
+## Getting Started
+
+```bash
+git clone https://github.com/garyfinberg24-png/hyperparts-suite.git
+cd hyperparts-suite
+npm install
+gulp serve
+```
+
+## Build
+
+```bash
+gulp build              # Development build
+gulp test               # Run tests
+gulp bundle --ship      # Production bundle
+gulp package-solution --ship  # Create .sppkg
+```
+
+## Tech Stack
+
+| Layer            | Technology                       |
+| ---------------- | -------------------------------- |
+| Framework        | SharePoint Framework 1.20.0      |
+| UI Library       | React 17 + Fluent UI v9          |
+| Data             | PnPjs v4 (SP + Graph)            |
+| State            | Zustand v4 + Immer               |
+| Dates            | date-fns                         |
+| Graph Components | MGT-SPFx                         |
+| Testing          | Jest + React Testing Library     |
+
+## Web Parts Roadmap
+
+### Phase 1 — Foundation (Current)
+
+- [x] Shared service layer + base architecture
+- [ ] HyperHero — CSS Grid hero with video/Lottie/parallax
+- [ ] HyperNews — Infinite scroll news with social metrics
+- [ ] HyperTabs — Tab/accordion/wizard container
+- [ ] HyperRollup — Cross-site content rollup with query builder
+
+### Phase 2 — Expansion
+
+- [ ] HyperNav, HyperProfile, HyperDirectory, HyperEvents
+- [ ] HyperPoll, HyperMetrics, HyperSearch
+
+### Phase 3 — Completion
+
+- [ ] HyperAction, HyperTicker, HyperFAQ, HyperBirthdays
+- [ ] HyperRecognition, HyperExplorer, HyperExternal
+- [ ] HyperTimeline, HyperBreadcrumb, HyperFeedback
+- [ ] HyperLocal, HyperLayout, HyperForms, HyperBanner
 
 ## Solution
 
-| Solution    | Author(s)                                               |
-| ----------- | ------------------------------------------------------- |
-| folder name | Author details (name, company, twitter alias with link) |
+| Solution         | Author       |
+| ---------------- | ------------ |
+| hyperparts-suite | Gary Finberg |
 
-## Version history
+## Version History
 
-| Version | Date             | Comments        |
-| ------- | ---------------- | --------------- |
-| 1.1     | March 10, 2021   | Update comment  |
-| 1.0     | January 29, 2021 | Initial release |
-
-## Disclaimer
-
-**THIS CODE IS PROVIDED _AS IS_ WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.**
-
----
-
-## Minimal Path to Awesome
-
-- Clone this repository
-- Ensure that you are at the solution folder
-- in the command-line run:
-  - **npm install**
-  - **gulp serve**
-
-> Include any additional steps as needed.
-
-## Features
-
-Description of the extension that expands upon high-level summary above.
-
-This extension illustrates the following concepts:
-
-- topic 1
-- topic 2
-- topic 3
-
-> Notice that better pictures and documentation will increase the sample usage and the value you are providing for others. Thanks for your submissions advance.
-
-> Share your web part with others through Microsoft 365 Patterns and Practices program to get visibility and exposure. More details on the community, open-source projects and other activities from http://aka.ms/m365pnp.
+| Version | Date              | Comments                                                      |
+| ------- | ----------------- | ------------------------------------------------------------- |
+| 0.0.1   | February 7, 2026  | Phase 1, Step 1: Solution scaffold + shared service layer     |
 
 ## References
 
-- [Getting started with SharePoint Framework](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/set-up-your-developer-tenant)
-- [Building for Microsoft teams](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/build-for-teams-overview)
-- [Use Microsoft Graph in your solution](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/web-parts/get-started/using-microsoft-graph-apis)
-- [Publish SharePoint Framework applications to the Marketplace](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/publish-to-marketplace-overview)
-- [Microsoft 365 Patterns and Practices](https://aka.ms/m365pnp) - Guidance, tooling, samples and open-source controls for your Microsoft 365 development
+- [MASTER_CONTEXT.md](../MASTER_CONTEXT.md) — Full PRD
+- [SharePoint Framework docs](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/sharepoint-framework-overview)
+- [PnPjs v4 docs](https://pnp.github.io/pnpjs/)
+- [Fluent UI React v9](https://react.fluentui.dev/)
