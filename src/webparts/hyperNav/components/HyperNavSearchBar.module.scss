@@ -1,0 +1,28 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 6px 12px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  font-size: $ms-font-size-14;
+  font-family: $ms-font-family-fallbacks;
+  outline: none;
+
+  &:focus {
+    border-color: $ms-color-themePrimary;
+    box-shadow: 0 0 0 1px $ms-color-themePrimary;
+  }
+}
+
+.searchIcon {
+  color: $ms-color-neutralSecondary;
+  font-size: $ms-font-size-16;
+}

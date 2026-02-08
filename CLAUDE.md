@@ -82,6 +82,25 @@ HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 30+ web parts fo
   - New dep: `handlebars` (^4.7, dynamic import)
   - `gulp build` passes clean (0 errors, 0 warnings)
 
+### Phase 2, Step 1 Completed: HyperNav (Navigation & Quick Links)
+
+- All 13 features implemented across 3 sub-steps (N1/N2/N3)
+- 8 layouts: Compact, Tiles, Grid, List, IconOnly, Card, MegaMenu, Sidebar
+- Debounced search with weighted scoring (title:3, description:2, url:1)
+- Batch audience targeting: collects unique groups, Promise.all check, recursive tree filter
+- Personalized link pinning via localStorage
+- Link health monitoring: HEAD fetch in edit mode, same-origin vs no-cors
+- Collapsible group sections with count badges
+- External link auto-detection + configurable badge icon
+- Deep link detection: Teams, PowerApp, Viva URL patterns
+- Analytics tracking via hyperAnalytics
+- Recursive link model (children[], max 4 levels) for mega menu
+- 3-page property pane with dynamic per-link fields (title, url, description, icon, openInNewTab, group)
+- Group management (add/remove groups) in property pane
+- Web part ID: `d7a1f3e5-9b4c-4a8e-b2d6-1c5f8e3a7b9d`
+- No new dependencies
+- `gulp build` passes clean (0 errors, 0 warnings)
+
 ### Next Up
 
 - Check MASTER_CONTEXT.md for next web part to build
@@ -91,7 +110,7 @@ HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 30+ web parts fo
 | Phase | Web Parts                                                                                                                                                                                              |
 | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 1     | HyperHero, HyperNews, **HyperTabs**, **HyperRollup**, **HyperSpotlight**, **HyperProfile**, **HyperDirectory** — ALL COMPLETE                                                                          |
-| 2     | HyperNav, HyperEvents, HyperPoll, HyperMetrics, HyperSearch                                                                                                                                            |
+| 2     | **HyperNav** — COMPLETE, HyperEvents, HyperPoll, HyperMetrics, HyperSearch                                                                                                                             |
 | 3     | HyperAction, HyperTicker, HyperFAQ, HyperBirthdays, HyperRecognition, HyperExplorer, HyperExternal, HyperTimeline, HyperBreadcrumb, HyperFeedback, HyperLocal, HyperLayout, HyperForms, HyperBanner    |
 
 ---
@@ -252,18 +271,29 @@ src/
     │   │   ├── HyperDirectoryProfileCard, PresenceBadge, QuickActions, Pagination
     │   │   └── layouts/               # Grid, List, Compact, Card, Masonry, RollerDex, OrgChart
     │   └── loc/
-    └── hyperRollup/                   # Cross-site content rollup (15 features)
-        ├── HyperRollupWebPart.ts      # ID: b4e2c8a1-7f3d-4e9a-b5c6-2d8f1a3e7b9c
-        ├── models/                    # IHyperRollupItem, Source, Query, Column, View, WebPartProps
-        ├── hooks/                     # useRollupItems, useRollupFilters, useRollupGrouping, useRollupAggregation
-        ├── store/                     # Zustand store (~20 actions: view, search, facets, sort, group, page, edit)
-        ├── utils/                     # queryBuilder, exportUtils, columnFormatter, searchResultMapper
-        ├── templates/                 # builtInTemplates.ts (10 Handlebars templates)
+    ├── hyperRollup/                   # Cross-site content rollup (15 features)
+    │   ├── HyperRollupWebPart.ts      # ID: b4e2c8a1-7f3d-4e9a-b5c6-2d8f1a3e7b9c
+    │   ├── models/                    # IHyperRollupItem, Source, Query, Column, View, WebPartProps
+    │   ├── hooks/                     # useRollupItems, useRollupFilters, useRollupGrouping, useRollupAggregation
+    │   ├── store/                     # Zustand store (~20 actions: view, search, facets, sort, group, page, edit)
+    │   ├── utils/                     # queryBuilder, exportUtils, columnFormatter, searchResultMapper
+    │   ├── templates/                 # builtInTemplates.ts (10 Handlebars templates)
+    │   ├── components/
+    │   │   ├── HyperRollup.tsx        # Main component with layout/template delegation
+    │   │   ├── HyperRollupToolbar, FilterPanel, AggregationBar, ItemCard, GroupHeader, Pagination
+    │   │   ├── HyperRollupTemplateView, DocPreview, InlineEdit, ViewManager, ActionButtons
+    │   │   └── layouts/               # CardLayout (CSS Grid), TableLayout (sortable), KanbanLayout (lanes)
+    │   └── loc/
+    └── hyperNav/                      # Navigation & quick links (13 features, 8 layouts)
+        ├── HyperNavWebPart.ts         # ID: d7a1f3e5-9b4c-4a8e-b2d6-1c5f8e3a7b9d
+        ├── models/                    # IHyperNavLink (recursive), IHyperNavGroup, IHyperNavIcon
+        ├── hooks/                     # useNavSearch, useNavAudienceFilter, useNavPersonalization, useNavLinkHealth, useNavAnalytics
+        ├── store/                     # Zustand store (~10 actions: search, groups, megaMenu, pins, health)
+        ├── utils/                     # linkUtils, searchUtils, audienceUtils, deepLinkUtils, externalLinkUtils
         ├── components/
-        │   ├── HyperRollup.tsx        # Main component with layout/template delegation
-        │   ├── HyperRollupToolbar, FilterPanel, AggregationBar, ItemCard, GroupHeader, Pagination
-        │   ├── HyperRollupTemplateView, DocPreview, InlineEdit, ViewManager, ActionButtons
-        │   └── layouts/               # CardLayout (CSS Grid), TableLayout (sortable), KanbanLayout (lanes)
+        │   ├── HyperNav.tsx           # Main component with layout delegation + grouping
+        │   ├── HyperNavSearchBar, PinnedSection, LinkItem, GroupSection, HealthIndicator
+        │   └── layouts/               # Compact, Tiles, Grid, List, IconOnly, Card, MegaMenu, Sidebar
         └── loc/
 ```
 
@@ -277,6 +307,7 @@ src/
 - **HyperTabs Web Part ID:** `8f3c7a9e-2d6b-4e1f-a9c8-5b7d3e9f1a2c`
 - **HyperDirectory Web Part ID:** `ac081972-faae-443f-82f9-da64e3139485`
 - **HyperRollup Web Part ID:** `b4e2c8a1-7f3d-4e9a-b5c6-2d8f1a3e7b9c`
+- **HyperNav Web Part ID:** `d7a1f3e5-9b4c-4a8e-b2d6-1c5f8e3a7b9d`
 - **Feature ID:** `4c137d6a-7e80-46c6-8936-e7f7639893bc`
 
 ---
@@ -818,7 +849,7 @@ These packages are installed and ready but have zero imports in the codebase so 
 - `@fluentui/react-components` (v9) — use for new component UI
 - `@fluentui/react-icons` — use for icon rendering
 - `@microsoft/mgt-spfx` — use for Graph Toolkit components (People, Person card, etc.)
-- ~~`zustand` (v4)~~ — **now used** in all web part stores (HyperHero, HyperNews, HyperSpotlight, HyperProfile, HyperTabs, HyperDirectory, HyperRollup)
+- ~~`zustand` (v4)~~ — **now used** in all web part stores (HyperHero, HyperNews, HyperSpotlight, HyperProfile, HyperTabs, HyperDirectory, HyperRollup, HyperNav)
 - `immer` — use with zustand for immutable state updates
 - `date-fns` — use for date formatting, relative time, scheduling logic
 

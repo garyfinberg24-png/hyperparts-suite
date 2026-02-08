@@ -1,0 +1,58 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.cards {
+  display: grid;
+  gap: 16px;
+}
+
+.card {
+  border: 1px solid $ms-color-neutralLight;
+  border-radius: 8px;
+  padding: 20px;
+  background: #ffffff;
+  text-decoration: none;
+  color: $ms-color-neutralPrimary;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.cardIcon {
+  font-size: $ms-font-size-28;
+  color: $ms-color-themePrimary;
+}
+
+.cardTitle {
+  font-size: $ms-font-size-16;
+  font-weight: $ms-font-weight-semibold;
+}
+
+.cardDescription {
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralSecondary;
+  line-height: 1.4;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.cardExternal {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralTertiary;
+}

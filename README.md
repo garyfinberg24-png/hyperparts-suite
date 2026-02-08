@@ -49,7 +49,8 @@ src/
     ├── hyperProfile/              # User profile card (7 templates, 9 actions)
     ├── hyperTabs/                 # Tab/accordion/wizard container (12 features)
     ├── hyperDirectory/            # Employee directory with RollerDex (14 features)
-    └── hyperRollup/               # Cross-site content rollup (15 features)
+    ├── hyperRollup/               # Cross-site content rollup (15 features)
+    └── hyperNav/                  # Navigation & quick links (13 features, 8 layouts)
 ```
 
 ## Prerequisites
@@ -108,7 +109,8 @@ gulp package-solution --ship  # Create .sppkg
 
 ### Phase 2 — Expansion
 
-- [ ] HyperNav, HyperEvents
+- [x] HyperNav — Navigation & quick links with 8 layouts, search, pins, grouping, health check (13 features)
+- [ ] HyperEvents
 - [ ] HyperPoll, HyperMetrics, HyperSearch
 
 ### Phase 3 — Completion
@@ -135,6 +137,7 @@ gulp package-solution --ship  # Create .sppkg
 | 0.0.5   | February 8, 2026  | Phase 1, Step 6: HyperTabs web part (all 12 features)                |
 | 0.0.6   | February 8, 2026  | Phase 1, Step 7: HyperDirectory web part (all 14 features)           |
 | 0.0.7   | February 8, 2026  | Phase 1, Step 8: HyperRollup web part (all 15 features)              |
+| 0.0.8   | February 8, 2026  | Phase 2, Step 1: HyperNav web part (all 13 features, 8 layouts)      |
 
 ## References
 

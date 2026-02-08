@@ -1,0 +1,61 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  text-decoration: none;
+  color: $ms-color-neutralPrimary;
+  border-bottom: 1px solid $ms-color-neutralLighter;
+  transition: background 0.15s ease;
+  cursor: pointer;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: $ms-color-neutralLighter;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.listIcon {
+  font-size: $ms-font-size-18;
+  color: $ms-color-themePrimary;
+  flex-shrink: 0;
+  width: 24px;
+  text-align: center;
+}
+
+.listContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.listTitle {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+}
+
+.listDescription {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  margin-top: 2px;
+}
+
+.listExternal {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralTertiary;
+  flex-shrink: 0;
+}

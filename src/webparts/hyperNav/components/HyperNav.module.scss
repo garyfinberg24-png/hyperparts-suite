@@ -1,0 +1,20 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.hyperNav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  font-family: $ms-font-family-fallbacks;
+}
+
+.hyperNavToolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hyperNavContent {
+  display: flex;
+  flex-direction: column;
+}

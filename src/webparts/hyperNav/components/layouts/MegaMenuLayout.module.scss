@@ -1,0 +1,89 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.megaMenu {
+  position: relative;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  background: #ffffff;
+  color: $ms-color-neutralPrimary;
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  cursor: pointer;
+
+  &:hover {
+    background: $ms-color-neutralLighter;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+  }
+}
+
+.triggerIcon {
+  font-size: $ms-font-size-12;
+  transition: transform 0.2s ease;
+}
+
+.triggerIconOpen {
+  transform: rotate(180deg);
+}
+
+.flyout {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  gap: 24px;
+  padding: 20px 24px;
+  background: #ffffff;
+  border: 1px solid $ms-color-neutralLight;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  min-width: 400px;
+  max-width: 900px;
+}
+
+.column {
+  flex: 1;
+  min-width: 160px;
+}
+
+.columnHeader {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  border-bottom: 2px solid $ms-color-themePrimary;
+}
+
+.columnLink {
+  display: block;
+  padding: 6px 0;
+  text-decoration: none;
+  color: $ms-color-neutralPrimary;
+  font-size: $ms-font-size-14;
+
+  &:hover {
+    color: $ms-color-themePrimary;
+    text-decoration: underline;
+  }
+}
+
+.childLink {
+  padding-left: 12px;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+
+  &:hover {
+    color: $ms-color-themePrimary;
+  }
+}

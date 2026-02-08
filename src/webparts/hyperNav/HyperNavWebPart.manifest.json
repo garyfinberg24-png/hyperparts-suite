@@ -1,0 +1,37 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "d7a1f3e5-9b4c-4a8e-b2d6-1c5f8e3a7b9d",
+  "alias": "HyperNavWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart", "TeamsPersonalApp", "TeamsTab", "SharePointFullPage"],
+  "supportsThemeVariants": true,
+
+  "preconfiguredEntries": [{
+    "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+    "group": { "default": "HyperParts" },
+    "title": { "default": "HyperNav" },
+    "description": { "default": "Navigation & quick links web part with 8 layouts, search, audience targeting, personalized pins, link health monitoring, grouping, deep links, and mega menu." },
+    "officeFabricIconFontName": "Nav2DMapView",
+    "properties": {
+      "title": "Quick Links",
+      "layoutMode": "tiles",
+      "links": "[]",
+      "groups": "[]",
+      "gridColumns": 4,
+      "showIcons": true,
+      "showDescriptions": false,
+      "showSearch": false,
+      "showExternalBadge": true,
+      "externalBadgeIcon": "OpenInNewTab",
+      "enableAudienceTargeting": false,
+      "enablePersonalization": false,
+      "enableAnalytics": false,
+      "enableLinkHealthCheck": false,
+      "enableGrouping": false,
+      "enableDeepLinks": false
+    }
+  }]
+}

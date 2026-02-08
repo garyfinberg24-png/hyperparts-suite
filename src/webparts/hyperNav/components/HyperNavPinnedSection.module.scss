@@ -1,0 +1,43 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.pinnedSection {
+  padding: 8px 0;
+  border-bottom: 1px solid $ms-color-neutralLight;
+  margin-bottom: 8px;
+}
+
+.pinnedHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralSecondary;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pinnedLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pinnedChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 16px;
+  background: $ms-color-themeLighter;
+  color: $ms-color-themeDarker;
+  font-size: $ms-font-size-14;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: $ms-color-themeLight;
+  }
+}

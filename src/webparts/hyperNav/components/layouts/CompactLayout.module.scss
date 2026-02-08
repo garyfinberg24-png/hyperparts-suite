@@ -1,0 +1,37 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.compact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: $ms-color-neutralLighter;
+  color: $ms-color-neutralPrimary;
+  font-size: $ms-font-size-14;
+  text-decoration: none;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+
+  &:hover {
+    background: $ms-color-neutralLight;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.chipIcon {
+  font-size: $ms-font-size-14;
+  color: $ms-color-themePrimary;
+}

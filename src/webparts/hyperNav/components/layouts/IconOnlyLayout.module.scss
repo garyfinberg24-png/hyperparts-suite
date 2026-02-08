@@ -1,0 +1,32 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.iconGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.iconItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: $ms-color-neutralLighter;
+  text-decoration: none;
+  color: $ms-color-themePrimary;
+  font-size: $ms-font-size-20;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+
+  &:hover {
+    background: $ms-color-themeLight;
+    transform: scale(1.1);
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}

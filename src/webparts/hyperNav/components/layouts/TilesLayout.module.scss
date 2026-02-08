@@ -1,0 +1,56 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.tiles {
+  display: grid;
+  gap: 12px;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px 12px;
+  border: 1px solid $ms-color-neutralLight;
+  border-radius: 8px;
+  background: #ffffff;
+  text-decoration: none;
+  color: $ms-color-neutralPrimary;
+  cursor: pointer;
+  text-align: center;
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+  min-height: 100px;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.tileIcon {
+  font-size: $ms-font-size-28;
+  color: $ms-color-themePrimary;
+}
+
+.tileTitle {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.tileDescription {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}

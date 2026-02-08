@@ -1,0 +1,71 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid $ms-color-neutralLight;
+  padding-right: 8px;
+}
+
+.sidebarItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  text-decoration: none;
+  color: $ms-color-neutralPrimary;
+  font-size: $ms-font-size-14;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: $ms-color-neutralLighter;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.sidebarIcon {
+  font-size: $ms-font-size-16;
+  color: $ms-color-themePrimary;
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.sidebarToggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  width: 100%;
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  border-radius: 4px;
+
+  &:hover {
+    background: $ms-color-neutralLighter;
+  }
+}
+
+.sidebarChevron {
+  font-size: $ms-font-size-10;
+  color: $ms-color-neutralSecondary;
+  transition: transform 0.2s ease;
+}
+
+.sidebarChevronOpen {
+  transform: rotate(90deg);
+}
+
+.sidebarChildren {
+  padding-left: 20px;
+}

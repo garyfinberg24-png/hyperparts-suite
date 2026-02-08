@@ -57,6 +57,14 @@
           "manifest": "./src/webparts/hyperRollup/HyperRollupWebPart.manifest.json"
         }
       ]
+    },
+    "hyper-nav-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hyperNav/HyperNavWebPart.js",
+          "manifest": "./src/webparts/hyperNav/HyperNavWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -67,6 +75,7 @@
     "HyperProfileWebPartStrings": "lib/webparts/hyperProfile/loc/{locale}.js",
     "HyperTabsWebPartStrings": "lib/webparts/hyperTabs/loc/{locale}.js",
     "HyperDirectoryWebPartStrings": "lib/webparts/hyperDirectory/loc/{locale}.js",
-    "HyperRollupWebPartStrings": "lib/webparts/hyperRollup/loc/{locale}.js"
+    "HyperRollupWebPartStrings": "lib/webparts/hyperRollup/loc/{locale}.js",
+    "HyperNavWebPartStrings": "lib/webparts/hyperNav/loc/{locale}.js"
   }
 }
