@@ -50,7 +50,9 @@ src/
     ├── hyperTabs/                 # Tab/accordion/wizard container (12 features)
     ├── hyperDirectory/            # Employee directory with RollerDex (14 features)
     ├── hyperRollup/               # Cross-site content rollup (15 features)
-    └── hyperNav/                  # Navigation & quick links (13 features, 8 layouts)
+    ├── hyperNav/                  # Navigation & quick links (13 features, 8 layouts)
+    ├── hyperEvents/               # Calendar & events (13 features, 6 views)
+    └── hyperPoll/                 # In-page polling & voting (12 features, 6 question types)
 ```
 
 ## Prerequisites
@@ -110,8 +112,9 @@ gulp package-solution --ship  # Create .sppkg
 ### Phase 2 — Expansion
 
 - [x] HyperNav — Navigation & quick links with 8 layouts, search, pins, grouping, health check (13 features)
-- [ ] HyperEvents
-- [ ] HyperPoll, HyperMetrics, HyperSearch
+- [x] HyperEvents — Calendar & events with 6 views, multi-source aggregation, RSVP, registration (13 features)
+- [x] HyperPoll — In-page polling with 6 question types, 3 chart types, templates, export (12 features)
+- [ ] HyperMetrics, HyperSearch
 
 ### Phase 3 — Completion
 
@@ -138,6 +141,8 @@ gulp package-solution --ship  # Create .sppkg
 | 0.0.6   | February 8, 2026  | Phase 1, Step 7: HyperDirectory web part (all 14 features)           |
 | 0.0.7   | February 8, 2026  | Phase 1, Step 8: HyperRollup web part (all 15 features)              |
 | 0.0.8   | February 8, 2026  | Phase 2, Step 1: HyperNav web part (all 13 features, 8 layouts)      |
+| 0.0.9   | February 8, 2026  | Phase 2, Step 2: HyperEvents web part (all 13 features, 6 views)     |
+| 0.0.10  | February 8, 2026  | Phase 2, Step 3: HyperPoll web part (all 12 features, 3 chart types) |
 
 ## References
 

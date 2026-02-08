@@ -121,6 +121,23 @@ HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 30+ web parts fo
 - Web part ID: `e5a2f7c9-3d8b-4e6a-a1c4-9f2d7b5e8a3c`
 - `gulp build` passes clean (0 errors, 0 warnings)
 
+### Phase 2, Step 3 Completed: HyperPoll (In-Page Voting & Polling)
+
+- All 12 features implemented across 4 sub-steps (P1/P2/P3/P4)
+- 6 question types: SingleChoice (radio), MultipleChoice (checkbox), Rating (1-N), NPS (0-10 color-coded), Ranking (MoveUp/Down), OpenText (textarea)
+- 3 pure CSS/SVG chart types: Bar (CSS width% transitions), Pie (SVG stroke-dasharray circles), Donut (SVG with center total)
+- 2 display modes: Carousel (prev/next arrows + dots + keyboard nav) and Stacked (all polls vertically)
+- 3 poll templates: NPS Survey, Event Feedback, Quick Pulse
+- Results visibility: afterVote, afterClose, adminOnly
+- One-vote enforcement: SP list query by email (non-anonymous) + localStorage (anonymous)
+- CSV export with UTF-8 BOM, JSON export for Power BI
+- Conditional follow-up questions with animated max-height reveal
+- 3-page property pane with 3-level nesting (poll > question > option) using compound index scheme
+- Full ARIA: radiogroup, group, meter, carousel, status badges
+- Web part ID: `f6b3d8e1-4a7c-5f2b-c3e9-0a8d6b4f7c1e`
+- No new npm dependencies (pure CSS/SVG charts)
+- `gulp build` passes clean (0 errors, 0 warnings)
+
 ### Next Up
 
 - Check MASTER_CONTEXT.md for next web part to build
@@ -130,7 +147,7 @@ HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 30+ web parts fo
 | Phase | Web Parts                                                                                                                                                                                              |
 | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 1     | HyperHero, HyperNews, **HyperTabs**, **HyperRollup**, **HyperSpotlight**, **HyperProfile**, **HyperDirectory** — ALL COMPLETE                                                                          |
-| 2     | **HyperNav** — COMPLETE, **HyperEvents** — COMPLETE, HyperPoll, HyperMetrics, HyperSearch                                                                                                              |
+| 2     | **HyperNav** — COMPLETE, **HyperEvents** — COMPLETE, **HyperPoll** — COMPLETE, HyperMetrics, HyperSearch                                                                                               |
 | 3     | HyperAction, HyperTicker, HyperFAQ, HyperBirthdays, HyperRecognition, HyperExplorer, HyperExternal, HyperTimeline, HyperBreadcrumb, HyperFeedback, HyperLocal, HyperLayout, HyperForms, HyperBanner    |
 
 ---
@@ -315,16 +332,28 @@ src/
     │   │   ├── HyperNavSearchBar, PinnedSection, LinkItem, GroupSection, HealthIndicator
     │   │   └── layouts/               # Compact, Tiles, Grid, List, IconOnly, Card, MegaMenu, Sidebar
     │   └── loc/
-    └── hyperEvents/                   # Calendar & events (13 features, 6 views)
-        ├── HyperEventsWebPart.ts      # ID: e5a2f7c9-3d8b-4e6a-a1c4-9f2d7b5e8a3c
-        ├── models/                    # IHyperEvent, IEventSource (discriminated union), IEventCategory, IEventFilter, IEventRsvp, IEventRegistration, IEventRecurrence, WebPartProps
-        ├── hooks/                     # useCalendarEvents, useEventFilters, useEventRsvp, useEventRegistration, useEventNotifications
-        ├── store/                     # Zustand store (~20 actions: view, date nav, detail, RSVP, filters, sources, registration)
-        ├── utils/                     # dateUtils (date-fns), recurrenceUtils, sourceUtils, eventMapper, outlookSync, calendarOverlay, sourceManager
+    ├── hyperEvents/                   # Calendar & events (13 features, 6 views)
+    │   ├── HyperEventsWebPart.ts      # ID: e5a2f7c9-3d8b-4e6a-a1c4-9f2d7b5e8a3c
+    │   ├── models/                    # IHyperEvent, IEventSource (discriminated union), IEventCategory, IEventFilter, IEventRsvp, IEventRegistration, IEventRecurrence, WebPartProps
+    │   ├── hooks/                     # useCalendarEvents, useEventFilters, useEventRsvp, useEventRegistration, useEventNotifications
+    │   ├── store/                     # Zustand store (~20 actions: view, date nav, detail, RSVP, filters, sources, registration)
+    │   ├── utils/                     # dateUtils (date-fns), recurrenceUtils, sourceUtils, eventMapper, outlookSync, calendarOverlay, sourceManager
+    │   ├── components/
+    │   │   ├── HyperEvents.tsx        # Main component with view delegation + overlays
+    │   │   ├── Toolbar, CategoryBar, DetailPanel, RsvpButtons, Countdown, PastArchive, RegistrationForm, OverlayLegend
+    │   │   └── views/                 # MonthView, WeekView, DayView, AgendaView, TimelineView, CardGridView
+    │   └── loc/
+    └── hyperPoll/                     # In-page polling & voting (12 features, 6 question types, 3 charts)
+        ├── HyperPollWebPart.ts        # ID: f6b3d8e1-4a7c-5f2b-c3e9-0a8d6b4f7c1e
+        ├── models/                    # IHyperPoll, IPollQuestion, IPollOption, IPollResponse, IPollResults, IPollTemplate, WebPartProps
+        ├── hooks/                     # usePollData, usePollResponses, usePollResults
+        ├── store/                     # Zustand store (~15 actions: poll nav, chart type, answers, submit, export)
+        ├── utils/                     # pollManager, chartUtils, exportUtils
         ├── components/
-        │   ├── HyperEvents.tsx        # Main component with view delegation + overlays
-        │   ├── Toolbar, CategoryBar, DetailPanel, RsvpButtons, Countdown, PastArchive, RegistrationForm, OverlayLegend
-        │   └── views/                 # MonthView, WeekView, DayView, AgendaView, TimelineView, CardGridView
+        │   ├── HyperPoll.tsx          # Main component with carousel/stacked modes + results visibility
+        │   ├── Voting, Results, Carousel, Stacked, Toolbar, StatusBadge, ExportBar, FollowUp, QuestionRenderer
+        │   ├── questions/             # SingleChoice, MultipleChoice, Rating, NPS, Ranking, OpenText
+        │   └── charts/               # BarChart (CSS), PieChart (SVG), DonutChart (SVG), ChartTypeSelector
         └── loc/
 ```
 
@@ -340,6 +369,7 @@ src/
 - **HyperRollup Web Part ID:** `b4e2c8a1-7f3d-4e9a-b5c6-2d8f1a3e7b9c`
 - **HyperNav Web Part ID:** `d7a1f3e5-9b4c-4a8e-b2d6-1c5f8e3a7b9d`
 - **HyperEvents Web Part ID:** `e5a2f7c9-3d8b-4e6a-a1c4-9f2d7b5e8a3c`
+- **HyperPoll Web Part ID:** `f6b3d8e1-4a7c-5f2b-c3e9-0a8d6b4f7c1e`
 - **Feature ID:** `4c137d6a-7e80-46c6-8936-e7f7639893bc`
 
 ---
@@ -876,6 +906,36 @@ if (source.type === "spCalendar") {
 }
 ```
 
+### Three-Level Property Pane Nesting (HyperPoll Pattern)
+
+When property pane items have 3 levels of nesting (e.g., poll > question > option), use a compound index scheme with field name parsing:
+
+```typescript
+// Field names encode the hierarchy:
+"_pTitle0"           // poll 0, Title field
+"_qText0_1"          // poll 0, question 1, Text field
+"_oText0_1_2"        // poll 0, question 1, option 2, Text field
+
+// In onPropertyPaneFieldChanged, parse with regex:
+if (propertyPath.indexOf("_o") === 0) {
+  const match = propertyPath.match(/^_o([A-Za-z]+)(\d+)_(\d+)_(\d+)$/);
+  if (match) { /* fieldName=match[1], pollIdx=match[2], qIdx=match[3], optIdx=match[4] */ }
+}
+```
+
+### Pure SVG Pie/Donut Charts (HyperPoll Pattern)
+
+No chart library needed for simple vote percentage displays. SVG circles with `stroke-dasharray`/`stroke-dashoffset`:
+
+```typescript
+// Circumference = 2 * PI * radius
+const CIRC = 2 * Math.PI * 80; // ~502.65 for r=80
+// Each segment: stroke-dasharray = [pct/100 * CIRC, CIRC]
+// stroke-dashoffset = -(cumulativePct / 100 * CIRC)
+// Container: transform="rotate(-90 100 100)" to start at 12 o'clock
+// Donut variant: use r=70, strokeWidth=30 with center <text> for total
+```
+
 ### Web Part Scaffold
 
 ```typescript
@@ -924,7 +984,7 @@ These packages are installed and ready but have zero imports in the codebase so 
 - `@fluentui/react-components` (v9) — use for new component UI
 - `@fluentui/react-icons` — use for icon rendering
 - `@microsoft/mgt-spfx` — use for Graph Toolkit components (People, Person card, etc.)
-- ~~`zustand` (v4)~~ — **now used** in all web part stores (HyperHero, HyperNews, HyperSpotlight, HyperProfile, HyperTabs, HyperDirectory, HyperRollup, HyperNav, HyperEvents)
+- ~~`zustand` (v4)~~ — **now used** in all web part stores (HyperHero, HyperNews, HyperSpotlight, HyperProfile, HyperTabs, HyperDirectory, HyperRollup, HyperNav, HyperEvents, HyperPoll)
 - `immer` — use with zustand for immutable state updates
 - ~~`date-fns`~~ — **now used** in HyperEvents for all date math (month grids, week/day ranges, recurrence expansion, formatting)
 
