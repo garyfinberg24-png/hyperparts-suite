@@ -178,9 +178,30 @@ HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 30+ web parts fo
 - No new npm dependencies
 - `gulp build` passes clean (0 errors, 0 warnings)
 
+### Phase 2, Step 6 Completed: HyperCharts (BI/Analytics Dashboard)
+
+- All 15 features implemented across 4 sub-steps (C1/C2/C3/C4)
+- 6 chart types: Bar, Line, Pie, Donut, Area, Gauge — all via Chart.js v4 (dynamic import ~200KB chunk)
+- 3 display types: Chart (6 kinds), KPI Card (value+trend+sparkline+RAG), Goal vs. Actual (gauge/progress/thermometer)
+- Data sources: SP list (PnP, with aggregation engine: count/sum/avg/min/max), Excel (Graph workbook/range API via MSGraphClientV3), Manual (JSON)
+- Gauge: Doughnut with `circumference: Math.PI`, `rotation: -Math.PI/2`, inline plugin draws center value text
+- KPI Cards: SVG polyline sparklines (80x24 viewBox), trend arrows (up/down/flat), RAG border colors
+- Goal vs. Actual: 3 styles — gauge (reuses Chart.js canvas), progress bar (CSS width%), thermometer (CSS height%)
+- Drill-down: click chart segment -> HyperModal with sortable data table of raw items
+- Conditional RAG coloring: per-data-point threshold evaluation (red/amber/green/none)
+- Comparison: current vs. previous period overlay on same chart, delta bar with absolute + percentage change
+- Multi-metric grid: CSS Grid layout with ResizeObserver responsive breakpoints, per-chart colSpan/rowSpan
+- Export: PNG via canvas.toDataURL, CSV with UTF-8 BOM
+- Accessibility: sr-only data tables with proper caption/th scope, auto-generated alt text for charts
+- Auto-refresh: configurable interval (0-300s) with manual refresh button
+- Chart.js singleton Promise loader: `getChartJs()` registers all controllers/elements/scales once
+- 3-page property pane: Layout (title, gridColumns, gridGap), Features (drill-down, export, RAG, comparison, a11y tables), Advanced (refreshInterval, cacheDuration, Power BI stub)
+- Web part ID: `b5c6d7e8-9f0a-4b1c-8d2e-3f4a5b6c7d8e`
+- New dep: `chart.js` (^4.5.1, dynamic import)
+- `gulp build` passes clean (0 errors, 0 warnings)
+
 ### Next Up
 
-- **HyperCharts** — BI/Analytics dashboard with Chart.js (renamed from PRD's "HyperMetrics"). New dep: `chart.js` (dynamic import)
 - **HyperSlider** — Full Revolution Slider equivalent with multi-layer slides, 20+ transitions, Ken Burns. Coexists with HyperHero (simpler hero banners)
 
 ### Full Roadmap (from MASTER_CONTEXT.md Addendum B)
@@ -188,7 +209,7 @@ HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 30+ web parts fo
 | Phase | Web Parts                                                                                                                                                                                                |
 | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1     | HyperHero, HyperNews, **HyperTabs**, **HyperRollup**, **HyperSpotlight**, **HyperProfile**, **HyperDirectory** — ALL COMPLETE                                                                            |
-| 2     | **HyperNav** — COMPLETE, **HyperEvents** — COMPLETE, **HyperPoll** — COMPLETE, **HyperSearch** — COMPLETE, **HyperLinks** — COMPLETE, HyperCharts (renamed HyperMetrics), HyperSlider (new)              |
+| 2     | **HyperNav** — COMPLETE, **HyperEvents** — COMPLETE, **HyperPoll** — COMPLETE, **HyperSearch** — COMPLETE, **HyperLinks** — COMPLETE, **HyperCharts** — COMPLETE, HyperSlider (new)                      |
 | 3     | HyperAction, HyperTicker, HyperFAQ, HyperBirthdays, HyperRecognition, HyperExplorer, HyperExternal, HyperTimeline, HyperBreadcrumb, HyperFeedback, HyperLocal, HyperLayout, HyperForms, HyperBanner      |
 
 ---
@@ -407,17 +428,34 @@ src/
     │   │   ├── SearchBar, Suggestions, History, SortBar, Refiners, Results, Pagination, PreviewPanel, PromotedResults, ZeroResults
     │   │   └── resultTypes/           # DocumentResult, PageResult, PersonResult, MessageResult, SiteResult
     │   └── loc/
-    └── hyperLinks/                    # Enhanced Quick Links (12 features, 8 layouts)
-        ├── HyperLinksWebPart.ts       # ID: c3d4e5f6-7a8b-9c0d-1e2f-2a3b4c5d6e7f
-        ├── models/                    # IHyperLink, IHyperLinkIcon, IHyperLinkGroup, 8 type aliases, WebPartProps
-        ├── hooks/                     # useHyperLinks, useFilmstripScroll, useLinksAudienceFilter
-        ├── store/                     # Zustand store (~6 actions: groups, filmstrip, hover)
-        ├── utils/                     # linkParser, iconResolver, analyticsTracker
+    ├── hyperLinks/                    # Enhanced Quick Links (12 features, 8 layouts)
+    │   ├── HyperLinksWebPart.ts       # ID: c3d4e5f6-7a8b-9c0d-1e2f-2a3b4c5d6e7f
+    │   ├── models/                    # IHyperLink, IHyperLinkIcon, IHyperLinkGroup, 8 type aliases, WebPartProps
+    │   ├── hooks/                     # useHyperLinks, useFilmstripScroll, useLinksAudienceFilter
+    │   ├── store/                     # Zustand store (~6 actions: groups, filmstrip, hover)
+    │   ├── utils/                     # linkParser, iconResolver, analyticsTracker
+    │   ├── components/
+    │   │   ├── HyperLinks.tsx         # Main component with grouping, audience targeting, analytics
+    │   │   ├── HyperLinksLinkItem     # Shared per-link renderer (hover effects, border radius, icons)
+    │   │   ├── HyperLinksGroupSection # Collapsible group header with chevron + count badge
+    │   │   └── layouts/               # Compact, Grid, List, Button, Filmstrip, Tiles, Card, IconGrid
+    │   └── loc/
+    └── hyperCharts/                   # BI/Analytics dashboard (15 features, 6 chart types)
+        ├── HyperChartsWebPart.ts      # ID: b5c6d7e8-9f0a-4b1c-8d2e-3f4a5b6c7d8e
+        ├── models/                    # IHyperChart, IChartDataSource (union), IChartThreshold, enums, WebPartProps
+        ├── hooks/                     # useChartData, useExcelData, useAutoRefresh, useComparisonData
+        ├── store/                     # Zustand store (~8 actions: drillDown, export, refresh)
+        ├── utils/                     # chartJsLoader, chartColors, conditionalColors, exportUtils, accessibilityUtils
         ├── components/
-        │   ├── HyperLinks.tsx         # Main component with grouping, audience targeting, analytics
-        │   ├── HyperLinksLinkItem     # Shared per-link renderer (hover effects, border radius, icons)
-        │   ├── HyperLinksGroupSection # Collapsible group header with chevron + count badge
-        │   └── layouts/               # Compact, Grid, List, Button, Filmstrip, Tiles, Card, IconGrid
+        │   ├── HyperCharts.tsx        # Main component with per-chart MetricRenderer sub-component
+        │   ├── HyperChartsCanvas      # Chart.js canvas wrapper (6 chart types + gauge plugin)
+        │   ├── HyperChartsKpiCard     # KPI value + trend + sparkline + RAG border
+        │   ├── HyperChartsGoalMetric  # Goal vs. Actual (gauge/progress/thermometer)
+        │   ├── HyperChartsDrillDown   # HyperModal + sortable data table
+        │   ├── HyperChartsToolbar     # Title + export dropdown + refresh button
+        │   ├── HyperChartsGrid        # CSS Grid with ResizeObserver responsive breakpoints
+        │   ├── HyperChartsComparison  # Current vs. previous period overlay + delta bar
+        │   └── HyperChartsAccessibilityTable  # sr-only or visible data table
         └── loc/
 ```
 
@@ -436,6 +474,7 @@ src/
 - **HyperPoll Web Part ID:** `f6b3d8e1-4a7c-5f2b-c3e9-0a8d6b4f7c1e`
 - **HyperSearch Web Part ID:** `a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d`
 - **HyperLinks Web Part ID:** `c3d4e5f6-7a8b-9c0d-1e2f-2a3b4c5d6e7f`
+- **HyperCharts Web Part ID:** `b5c6d7e8-9f0a-4b1c-8d2e-3f4a5b6c7d8e`
 - **Feature ID:** `4c137d6a-7e80-46c6-8936-e7f7639893bc`
 
 ---
@@ -681,6 +720,7 @@ Extends `@microsoft/eslint-config-spfx/lib/profiles/react`. Key enforced rules:
 | `lottie-web`                 | 5.12.2  | Lottie animations           | Yes       |
 | `react-masonry-css`          | 1.0.16  | Masonry layout              | Yes       |
 | `handlebars`                 | ^4.7    | Template engine             | Yes       |
+| `chart.js`                   | ^4.5.1  | Chart rendering (dynamic)   | Yes       |
 | `react` / `react-dom`        | 17.0.1  | React (SPFx pinned)         | Yes       |
 
 ### Dev
@@ -1002,6 +1042,65 @@ const CIRC = 2 * Math.PI * 80; // ~502.65 for r=80
 // Donut variant: use r=70, strokeWidth=30 with center <text> for total
 ```
 
+### Chart.js Canvas Lifecycle (HyperCharts Pattern)
+
+Chart.js instances must be created after dynamic import and destroyed on unmount or prop changes:
+
+```typescript
+import { getChartJs } from "../utils/chartJsLoader";
+
+// Canvas ref (DOM element)
+const canvasRef = useRef<HTMLCanvasElement>(null); // eslint-disable-next-line @rushstack/no-new-null
+// Chart instance ref (Chart.js object)
+const chartInstanceRef = useRef<unknown>(undefined);
+
+useEffect(function () {
+  let cancelled = false;
+  getChartJs().then(function (chartJs) {
+    if (cancelled || !canvasRef.current) return;
+    // Destroy previous chart if exists
+    if (chartInstanceRef.current) {
+      (chartInstanceRef.current as { destroy: () => void }).destroy();
+    }
+    chartInstanceRef.current = new chartJs.Chart(canvasRef.current, { type, data, options });
+  }).catch(function () { /* handled */ });
+  return function () {
+    cancelled = true;
+    if (chartInstanceRef.current) {
+      (chartInstanceRef.current as { destroy: () => void }).destroy();
+      chartInstanceRef.current = undefined;
+    }
+  };
+}, [/* deps */]);
+```
+
+### Chart.js Gauge as Custom Doughnut
+
+Gauge is a half-doughnut with center text via inline plugin:
+
+```typescript
+// type: "doughnut"
+// options.circumference = Math.PI (180 degrees)
+// options.rotation = -Math.PI / 2 (start at 9 o'clock = bottom of half circle)
+// data: [actualValue, goalValue - actualValue] (value segment + transparent remainder)
+// plugins: [{ id: "centerText", afterDraw: function(chart) { /* draw text on canvas */ } }]
+```
+
+### React 17 FC Children Prop
+
+`React.FC<P>` in React 17 wraps P in `PropsWithChildren<P>`, which already includes `children?: ReactNode`. Do NOT declare `children` in your own interface — it causes TS2769 when passing children as 3rd arg to `createElement`:
+
+```typescript
+// FORBIDDEN — TS2769 when used with createElement(Comp, props, children)
+interface IMyProps { gridColumns: number; children: React.ReactNode; }
+
+// CORRECT — children comes from React.FC's PropsWithChildren wrapper
+interface IMyProps { gridColumns: number; }
+const MyComp: React.FC<IMyProps> = function (props) {
+  return React.createElement("div", undefined, props.children); // children is available
+};
+```
+
 ### Web Part Scaffold
 
 ```typescript
@@ -1050,7 +1149,7 @@ These packages are installed and ready but have zero imports in the codebase so 
 - `@fluentui/react-components` (v9) — use for new component UI
 - `@fluentui/react-icons` — use for icon rendering
 - `@microsoft/mgt-spfx` — use for Graph Toolkit components (People, Person card, etc.)
-- ~~`zustand` (v4)~~ — **now used** in all web part stores (HyperHero, HyperNews, HyperSpotlight, HyperProfile, HyperTabs, HyperDirectory, HyperRollup, HyperNav, HyperEvents, HyperPoll, HyperSearch, HyperLinks)
+- ~~`zustand` (v4)~~ — **now used** in all web part stores (HyperHero, HyperNews, HyperSpotlight, HyperProfile, HyperTabs, HyperDirectory, HyperRollup, HyperNav, HyperEvents, HyperPoll, HyperSearch, HyperLinks, HyperCharts)
 - `immer` — use with zustand for immutable state updates
 - ~~`date-fns`~~ — **now used** in HyperEvents for all date math (month grids, week/day ranges, recurrence expansion, formatting)
 

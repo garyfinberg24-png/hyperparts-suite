@@ -54,7 +54,8 @@ src/
     ├── hyperEvents/               # Calendar & events (13 features, 6 views)
     ├── hyperPoll/                 # In-page polling & voting (12 features, 6 question types)
     ├── hyperSearch/               # Federated search (8 features, 5 result types)
-    └── hyperLinks/                # Enhanced Quick Links (12 features, 8 layouts)
+    ├── hyperLinks/                # Enhanced Quick Links (12 features, 8 layouts)
+    └── hyperCharts/               # BI/Analytics dashboard (15 features, 6 chart types)
 ```
 
 ## Prerequisites
@@ -96,6 +97,7 @@ gulp package-solution --ship  # Create .sppkg
 | Animation        | lottie-web                       |
 | Layout           | react-masonry-css                |
 | Templating       | Handlebars 4.x                   |
+| Charting         | Chart.js 4.x                     |
 | Testing          | Jest + React Testing Library     |
 
 ## Web Parts Roadmap
@@ -118,7 +120,7 @@ gulp package-solution --ship  # Create .sppkg
 - [x] HyperPoll — In-page polling with 6 question types, 3 chart types, templates, export (12 features)
 - [x] HyperSearch — Federated search with SP Search + Graph Search, type-ahead, refiners, previews (8 features)
 - [x] HyperLinks — Enhanced Quick Links with 8 layouts, hover effects, audience targeting, grouping (12 features)
-- [ ] HyperCharts (renamed HyperMetrics)
+- [x] HyperCharts — BI/Analytics dashboard with Chart.js, KPI cards, drill-down, conditional colors (15 features)
 - [ ] HyperSlider
 
 ### Phase 3 — Completion
@@ -150,6 +152,7 @@ gulp package-solution --ship  # Create .sppkg
 | 0.0.10  | February 8, 2026  | Phase 2, Step 3: HyperPoll web part (all 12 features, 3 charts)      |
 | 0.0.11  | February 8, 2026  | Phase 2, Step 4: HyperSearch web part (8 features, federated search) |
 | 0.0.12  | February 8, 2026  | Phase 2, Step 5: HyperLinks web part (12 features, 8 layouts)        |
+| 0.0.13  | February 8, 2026  | Phase 2, Step 6: HyperCharts web part (15 features, 6 chart types)   |
 
 ## References
 
