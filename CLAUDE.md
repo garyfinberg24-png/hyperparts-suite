@@ -200,17 +200,36 @@ HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 30+ web parts fo
 - New dep: `chart.js` (^4.5.1, dynamic import)
 - `gulp build` passes clean (0 errors, 0 warnings)
 
+### Phase 2, Step 7 Completed: HyperLert (Alerting & Notifications)
+
+- All 12 features implemented across 4 sub-steps (A1/A2/A3/A4)
+- Rule engine: 13 condition operators (equals/notEquals/greaterThan/lessThan/greaterOrEqual/lessOrEqual/between/notBetween/contains/notContains/changed/isEmpty/isNotEmpty) with AND/OR logical combining
+- 4-step rule builder wizard (HyperModal): DataSource (SP List / Graph API) -> Conditions (field+operator+value rows with AND/OR toggles) -> Actions (email/Teams/banner channel cards) -> Schedule (name, severity, interval, cooldown, max notifications, active hours)
+- 3 delivery channels: Email (Graph sendMail with HTML template + 10 token types), Teams chat (Graph chat API with markdown), In-page banners (Zustand store, stacked, auto-dismiss, severity colors)
+- SP list auto-creation for alert history (10 custom text columns), configurable list name
+- Dashboard: rule cards with severity borders, snooze dropdown (15m/30m/1h/4h/24h), acknowledge, enable/disable toggle
+- History panel: HyperModal with sortable table (6 columns), severity dots, channel chips, status badges, pagination
+- Filter bar: search text, severity dropdown, status dropdown
+- Cooldown system: per-rule cooldown minutes, max notifications per day, global cooldown, active hours window (supports overnight ranges)
+- Email preview modal: rendered HTML with sample tokens + raw template toggle
+- `onRulesChange` callback: rule builder and snooze/toggle persist rules to web part properties via callback from web part class
+- 3-page property pane: Rules Overview (title, refresh interval, rule count), Notification Defaults (email/Teams/banner toggles, template, severity), Advanced (history list name, max history, cooldown, auto-create)
+- Full ARIA: role=alert on banners, role=region on dashboard, sortable table headers
+- Web part ID: `a2b3c4d5-6e7f-8a9b-0c1d-2e3f4a5b6c7d`
+- No new npm dependencies
+- `gulp build` passes clean (0 errors, 0 warnings)
+
 ### Next Up
 
 - **HyperSlider** — Full Revolution Slider equivalent with multi-layer slides, 20+ transitions, Ken Burns. Coexists with HyperHero (simpler hero banners)
 
 ### Full Roadmap (from MASTER_CONTEXT.md Addendum B)
 
-| Phase | Web Parts                                                                                                                                                                                                |
-| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | HyperHero, HyperNews, **HyperTabs**, **HyperRollup**, **HyperSpotlight**, **HyperProfile**, **HyperDirectory** — ALL COMPLETE                                                                            |
-| 2     | **HyperNav** — COMPLETE, **HyperEvents** — COMPLETE, **HyperPoll** — COMPLETE, **HyperSearch** — COMPLETE, **HyperLinks** — COMPLETE, **HyperCharts** — COMPLETE, HyperSlider (new)                      |
-| 3     | HyperAction, HyperTicker, HyperFAQ, HyperBirthdays, HyperRecognition, HyperExplorer, HyperExternal, HyperTimeline, HyperBreadcrumb, HyperFeedback, HyperLocal, HyperLayout, HyperForms, HyperBanner      |
+| Phase | Web Parts                                                                                                                                                                                                                            |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1     | HyperHero, HyperNews, **HyperTabs**, **HyperRollup**, **HyperSpotlight**, **HyperProfile**, **HyperDirectory** — ALL COMPLETE                                                                                                        |
+| 2     | **HyperNav** — COMPLETE, **HyperEvents** — COMPLETE, **HyperPoll** — COMPLETE, **HyperSearch** — COMPLETE, **HyperLinks** — COMPLETE, **HyperCharts** — COMPLETE, **HyperLert** — COMPLETE, HyperSlider (new)                        |
+| 3     | HyperAction, HyperTicker, HyperFAQ, HyperBirthdays, HyperRecognition, HyperExplorer, HyperExternal, HyperTimeline, HyperBreadcrumb, HyperFeedback, HyperLocal, HyperLayout, HyperForms, HyperBanner                                  |
 
 ---
 
@@ -440,22 +459,39 @@ src/
     │   │   ├── HyperLinksGroupSection # Collapsible group header with chevron + count badge
     │   │   └── layouts/               # Compact, Grid, List, Button, Filmstrip, Tiles, Card, IconGrid
     │   └── loc/
-    └── hyperCharts/                   # BI/Analytics dashboard (15 features, 6 chart types)
-        ├── HyperChartsWebPart.ts      # ID: b5c6d7e8-9f0a-4b1c-8d2e-3f4a5b6c7d8e
-        ├── models/                    # IHyperChart, IChartDataSource (union), IChartThreshold, enums, WebPartProps
-        ├── hooks/                     # useChartData, useExcelData, useAutoRefresh, useComparisonData
-        ├── store/                     # Zustand store (~8 actions: drillDown, export, refresh)
-        ├── utils/                     # chartJsLoader, chartColors, conditionalColors, exportUtils, accessibilityUtils
+    ├── hyperCharts/                   # BI/Analytics dashboard (15 features, 6 chart types)
+    │   ├── HyperChartsWebPart.ts      # ID: b5c6d7e8-9f0a-4b1c-8d2e-3f4a5b6c7d8e
+    │   ├── models/                    # IHyperChart, IChartDataSource (union), IChartThreshold, enums, WebPartProps
+    │   ├── hooks/                     # useChartData, useExcelData, useAutoRefresh, useComparisonData
+    │   ├── store/                     # Zustand store (~8 actions: drillDown, export, refresh)
+    │   ├── utils/                     # chartJsLoader, chartColors, conditionalColors, exportUtils, accessibilityUtils
+    │   ├── components/
+    │   │   ├── HyperCharts.tsx        # Main component with per-chart MetricRenderer sub-component
+    │   │   ├── HyperChartsCanvas      # Chart.js canvas wrapper (6 chart types + gauge plugin)
+    │   │   ├── HyperChartsKpiCard     # KPI value + trend + sparkline + RAG border
+    │   │   ├── HyperChartsGoalMetric  # Goal vs. Actual (gauge/progress/thermometer)
+    │   │   ├── HyperChartsDrillDown   # HyperModal + sortable data table
+    │   │   ├── HyperChartsToolbar     # Title + export dropdown + refresh button
+    │   │   ├── HyperChartsGrid        # CSS Grid with ResizeObserver responsive breakpoints
+    │   │   ├── HyperChartsComparison  # Current vs. previous period overlay + delta bar
+    │   │   └── HyperChartsAccessibilityTable  # sr-only or visible data table
+    │   └── loc/
+    └── hyperLert/                     # Alerting & notifications (12 features, 4-step rule builder)
+        ├── HyperLertWebPart.ts        # ID: a2b3c4d5-6e7f-8a9b-0c1d-2e3f4a5b6c7d
+        ├── models/                    # IAlertRule, IAlertCondition, IAlertAction, IAlertDataSource (union), IAlertHistoryEntry, 6 enums, WebPartProps
+        ├── hooks/                     # useAlertMonitor, useAlertHistory, useAlertNotifications, useGraphMonitor, useAutoRefresh
+        ├── store/                     # Zustand store (~20 actions: banners, filters, modals, ruleBuilder, refreshTick)
+        ├── utils/                     # ruleEngine (13 operators), notificationUtils (tokens+templates), historyUtils (timestamps+colors)
         ├── components/
-        │   ├── HyperCharts.tsx        # Main component with per-chart MetricRenderer sub-component
-        │   ├── HyperChartsCanvas      # Chart.js canvas wrapper (6 chart types + gauge plugin)
-        │   ├── HyperChartsKpiCard     # KPI value + trend + sparkline + RAG border
-        │   ├── HyperChartsGoalMetric  # Goal vs. Actual (gauge/progress/thermometer)
-        │   ├── HyperChartsDrillDown   # HyperModal + sortable data table
-        │   ├── HyperChartsToolbar     # Title + export dropdown + refresh button
-        │   ├── HyperChartsGrid        # CSS Grid with ResizeObserver responsive breakpoints
-        │   ├── HyperChartsComparison  # Current vs. previous period overlay + delta bar
-        │   └── HyperChartsAccessibilityTable  # sr-only or visible data table
+        │   ├── HyperLert.tsx          # Main component with hooks wiring, rule filtering, onRulesChange
+        │   ├── HyperLertBanner        # Stacked in-page banners (severity colors, auto-dismiss)
+        │   ├── HyperLertToolbar       # Title, count badge, action buttons
+        │   ├── HyperLertFilterBar     # Search + severity/status dropdowns
+        │   ├── HyperLertRuleCard      # Per-rule card (severity border, snooze, ack, toggle)
+        │   ├── HyperLertHistoryPanel  # HyperModal + sortable table + pagination
+        │   ├── HyperLertStatusBadge   # Colored status chips
+        │   ├── HyperLertEmailPreview  # Preview/template toggle modal
+        │   └── ruleBuilder/           # 4-step wizard: DataSourceStep, ConditionStep, ActionStep, ScheduleStep
         └── loc/
 ```
 
@@ -475,6 +511,7 @@ src/
 - **HyperSearch Web Part ID:** `a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d`
 - **HyperLinks Web Part ID:** `c3d4e5f6-7a8b-9c0d-1e2f-2a3b4c5d6e7f`
 - **HyperCharts Web Part ID:** `b5c6d7e8-9f0a-4b1c-8d2e-3f4a5b6c7d8e`
+- **HyperLert Web Part ID:** `a2b3c4d5-6e7f-8a9b-0c1d-2e3f4a5b6c7d`
 - **Feature ID:** `4c137d6a-7e80-46c6-8936-e7f7639893bc`
 
 ---
@@ -1130,6 +1167,54 @@ export default class MyWebPart extends BaseHyperWebPart<IMyWebPartProps> {
 }
 ```
 
+### Web Part Property Updates from React Components (HyperLert Pattern)
+
+When React components need to persist changes back to web part properties (e.g., rule builder saving rules, snooze/toggle actions), pass a callback from the web part class:
+
+```typescript
+// Web part class — arrow function preserves `this` context
+private _onRulesChange = (rulesJson: string): void => {
+  this.properties.rules = rulesJson;
+  this.render();
+};
+
+// Pass via props
+const props: IMyComponentProps = {
+  ...this.properties,
+  onRulesChange: this._onRulesChange,
+};
+
+// Component interface — optional to avoid breaking callers without the callback
+export interface IMyComponentProps extends IMyWebPartProps {
+  onRulesChange?: (rulesJson: string) => void;
+}
+
+// Usage in component — guard with if-check
+if (props.onRulesChange) {
+  props.onRulesChange(stringifyRules(updatedRules));
+}
+```
+
+### Curried Event Handlers Need Return Types
+
+The `@typescript-eslint/explicit-function-return-type` rule requires explicit return types on curried handlers that return functions:
+
+```typescript
+// FORBIDDEN — lint warning: Missing return type on function
+const handleChange = function (field: string) {
+  return function (e: React.ChangeEvent<HTMLInputElement>) {
+    onChange(field, e.target.value);
+  };
+};
+
+// CORRECT — explicit return type on both
+const handleChange = function (field: string): (e: React.ChangeEvent<HTMLInputElement>) => void {
+  return function (e: React.ChangeEvent<HTMLInputElement>): void {
+    onChange(field, e.target.value);
+  };
+};
+```
+
 ---
 
 ## Stubs That Need Implementation
@@ -1149,7 +1234,7 @@ These packages are installed and ready but have zero imports in the codebase so 
 - `@fluentui/react-components` (v9) — use for new component UI
 - `@fluentui/react-icons` — use for icon rendering
 - `@microsoft/mgt-spfx` — use for Graph Toolkit components (People, Person card, etc.)
-- ~~`zustand` (v4)~~ — **now used** in all web part stores (HyperHero, HyperNews, HyperSpotlight, HyperProfile, HyperTabs, HyperDirectory, HyperRollup, HyperNav, HyperEvents, HyperPoll, HyperSearch, HyperLinks, HyperCharts)
+- ~~`zustand` (v4)~~ — **now used** in all web part stores (HyperHero, HyperNews, HyperSpotlight, HyperProfile, HyperTabs, HyperDirectory, HyperRollup, HyperNav, HyperEvents, HyperPoll, HyperSearch, HyperLinks, HyperCharts, HyperLert)
 - `immer` — use with zustand for immutable state updates
 - ~~`date-fns`~~ — **now used** in HyperEvents for all date math (month grids, week/day ranges, recurrence expansion, formatting)
 
