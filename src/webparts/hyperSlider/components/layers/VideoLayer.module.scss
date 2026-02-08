@@ -1,0 +1,20 @@
+@import '~@fluentui/react/dist/sass/References';
+
+.videoLayer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.videoLayer video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.videoLayer iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}

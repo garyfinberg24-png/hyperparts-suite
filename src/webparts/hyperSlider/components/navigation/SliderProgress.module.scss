@@ -1,0 +1,5 @@
+@import '~@fluentui/react/dist/sass/References';
+.progress { position: absolute; left: 0; width: 100%; z-index: 10; overflow: hidden; }
+.positionTop { top: 0; }
+.positionBottom { bottom: 0; }
+.bar { height: 100%; transition: width linear; width: 0%; }

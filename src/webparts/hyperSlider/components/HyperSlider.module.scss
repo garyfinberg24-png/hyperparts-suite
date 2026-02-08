@@ -1,0 +1,36 @@
+@import '~@fluentui/react/dist/sass/References';
+
+.hyperSlider {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.fullBleed {
+  margin-left: -16px;
+  margin-right: -16px;
+}
+
+.slidesViewport {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.carouselViewport {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.carouselSlide {
+  flex: 0 0 33.33%;
+  scroll-snap-align: center;
+  padding: 0 8px;
+}

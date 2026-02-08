@@ -1,0 +1,13 @@
+@import '~@fluentui/react/dist/sass/References';
+.bullets { display: flex; gap: 8px; position: absolute; z-index: 10; }
+.positionBottom { bottom: 16px; left: 50%; transform: translateX(-50%); }
+.positionTop { top: 16px; left: 50%; transform: translateX(-50%); }
+.positionLeft { left: 16px; top: 50%; transform: translateY(-50%); flex-direction: column; }
+.positionRight { right: 16px; top: 50%; transform: translateY(-50%); flex-direction: column; }
+.bullet { cursor: pointer; border: none; padding: 0; transition: transform 200ms ease, opacity 200ms ease; }
+.bullet:hover { transform: scale(1.2); }
+.bulletActive { transform: scale(1.2); }
+.solid { border-radius: 50%; }
+.ring { border-radius: 50%; background-color: transparent !important; border: 2px solid currentColor; }
+.dash { border-radius: 2px; height: 4px !important; }
+.numbered { border-radius: 50%; font-size: $ms-font-size-10; display: flex; align-items: center; justify-content: center; }

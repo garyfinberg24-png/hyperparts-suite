@@ -1,0 +1,13 @@
+@import '~@fluentui/react/dist/sass/References';
+.arrows { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
+.arrow { position: absolute; top: 50%; transform: translateY(-50%); pointer-events: auto; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; color: inherit; background-color: rgba(0, 0, 0, 0.5); }
+.arrow:hover { background-color: rgba(0, 0, 0, 0.7); }
+.arrowPrev { left: 16px; }
+.arrowNext { right: 16px; }
+.minimal { background-color: transparent; }
+.minimal:hover { background-color: rgba(0, 0, 0, 0.2); }
+.rounded { border-radius: 50%; }
+.square { border-radius: 0; }
+.circle { border-radius: 50%; }
+.positionOutside .arrowPrev { left: -60px; }
+.positionOutside .arrowNext { right: -60px; }

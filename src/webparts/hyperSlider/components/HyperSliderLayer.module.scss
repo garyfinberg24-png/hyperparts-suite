@@ -1,0 +1,105 @@
+@import '~@fluentui/react/dist/sass/References';
+
+.layer {
+  position: absolute;
+  pointer-events: auto;
+}
+
+// ─── Entrance Animations ───
+@keyframes hyperSliderEnterFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes hyperSliderEnterFadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes hyperSliderEnterFadeDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes hyperSliderEnterFadeLeft { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes hyperSliderEnterFadeRight { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes hyperSliderEnterZoomIn { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
+@keyframes hyperSliderEnterZoomOut { from { opacity: 0; transform: scale(1.5); } to { opacity: 1; transform: scale(1); } }
+@keyframes hyperSliderEnterRotateIn { from { opacity: 0; transform: rotate(-180deg) scale(0.5); } to { opacity: 1; transform: rotate(0) scale(1); } }
+@keyframes hyperSliderEnterBounceIn { 0% { opacity: 0; transform: scale(0.3); } 50% { opacity: 1; transform: scale(1.05); } 70% { transform: scale(0.9); } 100% { transform: scale(1); } }
+@keyframes hyperSliderEnterElasticIn { 0% { opacity: 0; transform: scale(0.5); } 55% { transform: scale(1.1); } 75% { transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes hyperSliderEnterSlideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes hyperSliderEnterSlideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+@keyframes hyperSliderEnterSlideLeft { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes hyperSliderEnterSlideRight { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+@keyframes hyperSliderEnterTypewriter { from { width: 0; overflow: hidden; } to { width: 100%; } }
+
+// Entrance classes
+.hyperSliderEnterFade { animation-name: hyperSliderEnterFade; animation-fill-mode: both; }
+.hyperSliderEnterFadeUp { animation-name: hyperSliderEnterFadeUp; animation-fill-mode: both; }
+.hyperSliderEnterFadeDown { animation-name: hyperSliderEnterFadeDown; animation-fill-mode: both; }
+.hyperSliderEnterFadeLeft { animation-name: hyperSliderEnterFadeLeft; animation-fill-mode: both; }
+.hyperSliderEnterFadeRight { animation-name: hyperSliderEnterFadeRight; animation-fill-mode: both; }
+.hyperSliderEnterZoomIn { animation-name: hyperSliderEnterZoomIn; animation-fill-mode: both; }
+.hyperSliderEnterZoomOut { animation-name: hyperSliderEnterZoomOut; animation-fill-mode: both; }
+.hyperSliderEnterRotateIn { animation-name: hyperSliderEnterRotateIn; animation-fill-mode: both; }
+.hyperSliderEnterBounceIn { animation-name: hyperSliderEnterBounceIn; animation-fill-mode: both; }
+.hyperSliderEnterElasticIn { animation-name: hyperSliderEnterElasticIn; animation-fill-mode: both; }
+.hyperSliderEnterSlideUp { animation-name: hyperSliderEnterSlideUp; animation-fill-mode: both; }
+.hyperSliderEnterSlideDown { animation-name: hyperSliderEnterSlideDown; animation-fill-mode: both; }
+.hyperSliderEnterSlideLeft { animation-name: hyperSliderEnterSlideLeft; animation-fill-mode: both; }
+.hyperSliderEnterSlideRight { animation-name: hyperSliderEnterSlideRight; animation-fill-mode: both; }
+.hyperSliderEnterTypewriter { animation-name: hyperSliderEnterTypewriter; animation-fill-mode: both; white-space: nowrap; overflow: hidden; }
+
+// ─── Exit Animations ───
+@keyframes hyperSliderExitFadeOut { from { opacity: 1; } to { opacity: 0; } }
+@keyframes hyperSliderExitFadeOutUp { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-30px); } }
+@keyframes hyperSliderExitFadeOutDown { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(30px); } }
+@keyframes hyperSliderExitFadeOutLeft { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(-30px); } }
+@keyframes hyperSliderExitFadeOutRight { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(30px); } }
+@keyframes hyperSliderExitZoomOutExit { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.5); } }
+@keyframes hyperSliderExitZoomInExit { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(1.5); } }
+@keyframes hyperSliderExitRotateOut { from { opacity: 1; transform: rotate(0) scale(1); } to { opacity: 0; transform: rotate(180deg) scale(0.5); } }
+@keyframes hyperSliderExitBounceOut { 0% { transform: scale(1); } 25% { transform: scale(0.95); } 50% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0; transform: scale(0.3); } }
+@keyframes hyperSliderExitElasticOut { 0% { transform: scale(1); } 25% { transform: scale(0.95); } 50% { transform: scale(1.05); } 100% { opacity: 0; transform: scale(0.5); } }
+@keyframes hyperSliderExitSlideOutUp { from { transform: translateY(0); } to { transform: translateY(-100%); } }
+@keyframes hyperSliderExitSlideOutDown { from { transform: translateY(0); } to { transform: translateY(100%); } }
+@keyframes hyperSliderExitSlideOutLeft { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+@keyframes hyperSliderExitSlideOutRight { from { transform: translateX(0); } to { transform: translateX(100%); } }
+@keyframes hyperSliderExitTypewriterOut { from { width: 100%; } to { width: 0; overflow: hidden; } }
+
+// Exit classes
+.hyperSliderExitFadeOut { animation-name: hyperSliderExitFadeOut; animation-fill-mode: both; }
+.hyperSliderExitFadeOutUp { animation-name: hyperSliderExitFadeOutUp; animation-fill-mode: both; }
+.hyperSliderExitFadeOutDown { animation-name: hyperSliderExitFadeOutDown; animation-fill-mode: both; }
+.hyperSliderExitFadeOutLeft { animation-name: hyperSliderExitFadeOutLeft; animation-fill-mode: both; }
+.hyperSliderExitFadeOutRight { animation-name: hyperSliderExitFadeOutRight; animation-fill-mode: both; }
+.hyperSliderExitZoomOutExit { animation-name: hyperSliderExitZoomOutExit; animation-fill-mode: both; }
+.hyperSliderExitZoomInExit { animation-name: hyperSliderExitZoomInExit; animation-fill-mode: both; }
+.hyperSliderExitRotateOut { animation-name: hyperSliderExitRotateOut; animation-fill-mode: both; }
+.hyperSliderExitBounceOut { animation-name: hyperSliderExitBounceOut; animation-fill-mode: both; }
+.hyperSliderExitElasticOut { animation-name: hyperSliderExitElasticOut; animation-fill-mode: both; }
+.hyperSliderExitSlideOutUp { animation-name: hyperSliderExitSlideOutUp; animation-fill-mode: both; }
+.hyperSliderExitSlideOutDown { animation-name: hyperSliderExitSlideOutDown; animation-fill-mode: both; }
+.hyperSliderExitSlideOutLeft { animation-name: hyperSliderExitSlideOutLeft; animation-fill-mode: both; }
+.hyperSliderExitSlideOutRight { animation-name: hyperSliderExitSlideOutRight; animation-fill-mode: both; }
+.hyperSliderExitTypewriterOut { animation-name: hyperSliderExitTypewriterOut; animation-fill-mode: both; }
+
+// ─── Loop Animations ───
+@keyframes hyperSliderLoopPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+@keyframes hyperSliderLoopPendulum { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+@keyframes hyperSliderLoopWave { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes hyperSliderLoopWiggle { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-3deg); } 75% { transform: rotate(3deg); } }
+@keyframes hyperSliderLoopRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes hyperSliderLoopFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes hyperSliderLoopBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+.hyperSliderLoopPulse { animation-name: hyperSliderLoopPulse; animation-iteration-count: infinite; }
+.hyperSliderLoopPendulum { animation-name: hyperSliderLoopPendulum; animation-iteration-count: infinite; }
+.hyperSliderLoopWave { animation-name: hyperSliderLoopWave; animation-iteration-count: infinite; }
+.hyperSliderLoopWiggle { animation-name: hyperSliderLoopWiggle; animation-iteration-count: infinite; }
+.hyperSliderLoopRotate { animation-name: hyperSliderLoopRotate; animation-iteration-count: infinite; animation-timing-function: linear; }
+.hyperSliderLoopFloat { animation-name: hyperSliderLoopFloat; animation-iteration-count: infinite; animation-timing-function: ease-in-out; }
+.hyperSliderLoopBlink { animation-name: hyperSliderLoopBlink; animation-iteration-count: infinite; }
+
+// ─── Hover Effects ───
+.hyperSliderHoverScale { transition: transform 300ms ease; }
+.hyperSliderHoverScale:hover { transform: scale(1.05); }
+.hyperSliderHoverRotate { transition: transform 300ms ease; }
+.hyperSliderHoverRotate:hover { transform: rotate(3deg); }
+.hyperSliderHoverBrightness { transition: filter 300ms ease; }
+.hyperSliderHoverBrightness:hover { filter: brightness(1.2); }
+.hyperSliderHoverBlur { transition: filter 300ms ease; filter: blur(2px); }
+.hyperSliderHoverBlur:hover { filter: blur(0); }
+.hyperSliderHoverShadow { transition: box-shadow 300ms ease; }
+.hyperSliderHoverShadow:hover { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); }
+.hyperSliderHoverLift { transition: transform 300ms ease, box-shadow 300ms ease; }
+.hyperSliderHoverLift:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); }
