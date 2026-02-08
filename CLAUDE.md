@@ -159,17 +159,37 @@ HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 30+ web parts fo
 - No new npm dependencies
 - `gulp build` passes clean (0 errors, 0 warnings)
 
+### Phase 2, Step 5 Completed: HyperLinks (Enhanced Quick Links)
+
+- All 12 features implemented across 3 sub-steps (L1/L2/L3)
+- 8 layouts: Compact (icon+text chips), Grid (CSS Grid tiles), List (rows + chevron), Button (pill buttons), Filmstrip (CSS scroll-snap + prev/next arrows), Tiles (background image/color overlay), Card (thumbnail + title + description + domain metadata), IconGrid (large centered icons, app-launcher style)
+- 5 hover effects: none, lift (translateY + shadow), glow (box-shadow), zoom (scale 1.03), darken (brightness filter)
+- 5 border radius presets: none, small (4px), medium (8px), large (12px), round (24px)
+- 3 icon types: Fluent UI icons, emoji, custom image URL — with 3 size presets (small/medium/large)
+- Filmstrip: CSS scroll-snap-type with ResizeObserver for scroll state, smooth scrollBy navigation
+- Tiles: background-image with dark gradient overlay for text readability, 3 height presets (small=120px, medium=180px, large=240px)
+- Grouping: collapsible sections with HyperLinksGroupSection, chevron rotation animation, link count badges
+- Per-link audience targeting: batch AD group membership check via useLinksAudienceFilter, fail-open on error
+- Click analytics: trackLinkClick via hyperAnalytics.trackEvent
+- HyperSkeleton loading state during audience targeting checks
+- 3-page property pane with dynamic per-link fields (title, url, description, iconType, iconName, thumbnailUrl, backgroundColor, openInNewTab, groupName, Add/Remove/Move buttons)
+- Shared HyperLinksLinkItem renderer with dynamic SCSS class selection for hover effects and border radius
+- Web part ID: `c3d4e5f6-7a8b-9c0d-1e2f-2a3b4c5d6e7f`
+- No new npm dependencies
+- `gulp build` passes clean (0 errors, 0 warnings)
+
 ### Next Up
 
-- Check MASTER_CONTEXT.md for next web part to build
+- **HyperCharts** — BI/Analytics dashboard with Chart.js (renamed from PRD's "HyperMetrics"). New dep: `chart.js` (dynamic import)
+- **HyperSlider** — Full Revolution Slider equivalent with multi-layer slides, 20+ transitions, Ken Burns. Coexists with HyperHero (simpler hero banners)
 
 ### Full Roadmap (from MASTER_CONTEXT.md Addendum B)
 
-| Phase | Web Parts                                                                                                                                                                                           |
-| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | HyperHero, HyperNews, **HyperTabs**, **HyperRollup**, **HyperSpotlight**, **HyperProfile**, **HyperDirectory** — ALL COMPLETE                                                                       |
-| 2     | **HyperNav** — COMPLETE, **HyperEvents** — COMPLETE, **HyperPoll** — COMPLETE, HyperMetrics, **HyperSearch** — COMPLETE                                                                             |
-| 3     | HyperAction, HyperTicker, HyperFAQ, HyperBirthdays, HyperRecognition, HyperExplorer, HyperExternal, HyperTimeline, HyperBreadcrumb, HyperFeedback, HyperLocal, HyperLayout, HyperForms, HyperBanner |
+| Phase | Web Parts                                                                                                                                                                                                |
+| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | HyperHero, HyperNews, **HyperTabs**, **HyperRollup**, **HyperSpotlight**, **HyperProfile**, **HyperDirectory** — ALL COMPLETE                                                                            |
+| 2     | **HyperNav** — COMPLETE, **HyperEvents** — COMPLETE, **HyperPoll** — COMPLETE, **HyperSearch** — COMPLETE, **HyperLinks** — COMPLETE, HyperCharts (renamed HyperMetrics), HyperSlider (new)              |
+| 3     | HyperAction, HyperTicker, HyperFAQ, HyperBirthdays, HyperRecognition, HyperExplorer, HyperExternal, HyperTimeline, HyperBreadcrumb, HyperFeedback, HyperLocal, HyperLayout, HyperForms, HyperBanner      |
 
 ---
 
@@ -376,16 +396,28 @@ src/
     │   │   ├── questions/             # SingleChoice, MultipleChoice, Rating, NPS, Ranking, OpenText
     │   │   └── charts/               # BarChart (CSS), PieChart (SVG), DonutChart (SVG), ChartTypeSelector
     │   └── loc/
-    └── hyperSearch/                   # Federated search (8 features, 5 result types)
-        ├── HyperSearchWebPart.ts      # ID: a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d
-        ├── models/                    # IHyperSearchResult, ISearchQuery, ISearchSuggestion, IPromotedResult, ISearchHistory, ISearchRefiner, WebPartProps
-        ├── hooks/                     # useSearchQuery, useSearchSuggestions, useSearchHistory, useSearchRefiners
-        ├── store/                     # Zustand store (~17 actions: query, results, suggestions, history, refiners, preview, spelling)
-        ├── utils/                     # searchQueryBuilder, resultMapper, graphSearchMapper, historyManager, promotedResultsMatcher, analyticsTracker
+    ├── hyperSearch/                   # Federated search (8 features, 5 result types)
+    │   ├── HyperSearchWebPart.ts      # ID: a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d
+    │   ├── models/                    # IHyperSearchResult, ISearchQuery, ISearchSuggestion, IPromotedResult, ISearchHistory, ISearchRefiner, WebPartProps
+    │   ├── hooks/                     # useSearchQuery, useSearchSuggestions, useSearchHistory, useSearchRefiners
+    │   ├── store/                     # Zustand store (~17 actions: query, results, suggestions, history, refiners, preview, spelling)
+    │   ├── utils/                     # searchQueryBuilder, resultMapper, graphSearchMapper, historyManager, promotedResultsMatcher, analyticsTracker
+    │   ├── components/
+    │   │   ├── HyperSearch.tsx        # Main component with ErrorBoundary, promoted results, preview panel, analytics
+    │   │   ├── SearchBar, Suggestions, History, SortBar, Refiners, Results, Pagination, PreviewPanel, PromotedResults, ZeroResults
+    │   │   └── resultTypes/           # DocumentResult, PageResult, PersonResult, MessageResult, SiteResult
+    │   └── loc/
+    └── hyperLinks/                    # Enhanced Quick Links (12 features, 8 layouts)
+        ├── HyperLinksWebPart.ts       # ID: c3d4e5f6-7a8b-9c0d-1e2f-2a3b4c5d6e7f
+        ├── models/                    # IHyperLink, IHyperLinkIcon, IHyperLinkGroup, 8 type aliases, WebPartProps
+        ├── hooks/                     # useHyperLinks, useFilmstripScroll, useLinksAudienceFilter
+        ├── store/                     # Zustand store (~6 actions: groups, filmstrip, hover)
+        ├── utils/                     # linkParser, iconResolver, analyticsTracker
         ├── components/
-        │   ├── HyperSearch.tsx        # Main component with ErrorBoundary, promoted results, preview panel, analytics
-        │   ├── SearchBar, Suggestions, History, SortBar, Refiners, Results, Pagination, PreviewPanel, PromotedResults, ZeroResults
-        │   └── resultTypes/           # DocumentResult, PageResult, PersonResult, MessageResult, SiteResult
+        │   ├── HyperLinks.tsx         # Main component with grouping, audience targeting, analytics
+        │   ├── HyperLinksLinkItem     # Shared per-link renderer (hover effects, border radius, icons)
+        │   ├── HyperLinksGroupSection # Collapsible group header with chevron + count badge
+        │   └── layouts/               # Compact, Grid, List, Button, Filmstrip, Tiles, Card, IconGrid
         └── loc/
 ```
 
@@ -403,6 +435,7 @@ src/
 - **HyperEvents Web Part ID:** `e5a2f7c9-3d8b-4e6a-a1c4-9f2d7b5e8a3c`
 - **HyperPoll Web Part ID:** `f6b3d8e1-4a7c-5f2b-c3e9-0a8d6b4f7c1e`
 - **HyperSearch Web Part ID:** `a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d`
+- **HyperLinks Web Part ID:** `c3d4e5f6-7a8b-9c0d-1e2f-2a3b4c5d6e7f`
 - **Feature ID:** `4c137d6a-7e80-46c6-8936-e7f7639893bc`
 
 ---
@@ -1017,7 +1050,7 @@ These packages are installed and ready but have zero imports in the codebase so 
 - `@fluentui/react-components` (v9) — use for new component UI
 - `@fluentui/react-icons` — use for icon rendering
 - `@microsoft/mgt-spfx` — use for Graph Toolkit components (People, Person card, etc.)
-- ~~`zustand` (v4)~~ — **now used** in all web part stores (HyperHero, HyperNews, HyperSpotlight, HyperProfile, HyperTabs, HyperDirectory, HyperRollup, HyperNav, HyperEvents, HyperPoll, HyperSearch)
+- ~~`zustand` (v4)~~ — **now used** in all web part stores (HyperHero, HyperNews, HyperSpotlight, HyperProfile, HyperTabs, HyperDirectory, HyperRollup, HyperNav, HyperEvents, HyperPoll, HyperSearch, HyperLinks)
 - `immer` — use with zustand for immutable state updates
 - ~~`date-fns`~~ — **now used** in HyperEvents for all date math (month grids, week/day ranges, recurrence expansion, formatting)
 
