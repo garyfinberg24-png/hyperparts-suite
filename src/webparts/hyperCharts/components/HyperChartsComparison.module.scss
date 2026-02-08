@@ -1,0 +1,28 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.comparisonContainer {
+  position: relative;
+}
+
+.deltaBar {
+  margin-top: 8px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  background: "[theme:neutralLighterAlt, default: #faf9f8]";
+  font-size: $ms-font-size-14;
+  text-align: center;
+}
+
+.deltaPositive {
+  color: #107c10;
+  font-weight: $ms-font-weight-semibold;
+}
+
+.deltaNegative {
+  color: #e74856;
+  font-weight: $ms-font-weight-semibold;
+}
+
+.deltaLabel {
+  color: "[theme:neutralSecondary, default: #605e5c]";
+}

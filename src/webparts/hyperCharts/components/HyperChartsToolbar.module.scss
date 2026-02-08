@@ -1,0 +1,84 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 0 0 8px 0;
+  border-bottom: 1px solid "[theme:neutralLight, default: #edebe9]";
+}
+
+.toolbarTitle {
+  margin: 0;
+  font-size: $ms-font-size-24;
+  font-weight: $ms-font-weight-semibold;
+  color: "[theme:neutralPrimary, default: #323130]";
+  line-height: 1.2;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.toolbarBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border: 1px solid "[theme:neutralTertiaryAlt, default: #c8c6c4]";
+  border-radius: 4px;
+  background: "[theme:white, default: #ffffff]";
+  color: "[theme:neutralPrimary, default: #323130]";
+  font-size: $ms-font-size-14;
+  cursor: pointer;
+  transition: background 150ms ease;
+
+  &:hover {
+    background: "[theme:neutralLighter, default: #f3f2f1]";
+  }
+
+  &:focus-visible {
+    outline: 2px solid "[theme:themePrimary, default: #0078d4]";
+    outline-offset: 1px;
+  }
+}
+
+.exportDropdown {
+  position: relative;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 100;
+  min-width: 160px;
+  margin-top: 4px;
+  padding: 4px 0;
+  background: "[theme:white, default: #ffffff]";
+  border: 1px solid "[theme:neutralLight, default: #edebe9]";
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.dropdownItem {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  color: "[theme:neutralPrimary, default: #323130]";
+  font-size: $ms-font-size-14;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover {
+    background: "[theme:neutralLighter, default: #f3f2f1]";
+  }
+
+  &:focus-visible {
+    outline: 2px solid "[theme:themePrimary, default: #0078d4]";
+    outline-offset: -2px;
+  }
+}

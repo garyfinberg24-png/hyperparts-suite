@@ -1,0 +1,39 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "b5c6d7e8-9f0a-4b1c-8d2e-3f4a5b6c7d8e",
+  "alias": "HyperChartsWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": [
+    "SharePointWebPart",
+    "TeamsPersonalApp",
+    "TeamsTab",
+    "SharePointFullPage"
+  ],
+  "supportsThemeVariants": true,
+  "preconfiguredEntries": [
+    {
+      "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+      "group": { "default": "HyperParts" },
+      "title": { "default": "HyperCharts" },
+      "description": { "default": "BI/Analytics dashboard with interactive Chart.js charts, KPI cards, goal tracking, drill-down, conditional colors, and export." },
+      "officeFabricIconFontName": "BarChartVertical",
+      "properties": {
+        "title": "Charts Dashboard",
+        "charts": "",
+        "gridColumns": 2,
+        "gridGap": 16,
+        "enableDrillDown": true,
+        "enableExport": true,
+        "enableConditionalColors": false,
+        "enableComparison": false,
+        "enableAccessibilityTables": true,
+        "refreshInterval": 0,
+        "cacheDuration": 300,
+        "powerBiEmbedUrl": ""
+      }
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+// Screen-reader only: visually hidden but accessible
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// Visible data table
+.visibleTable {
+  width: 100%;
+  margin-top: 8px;
+  border-collapse: collapse;
+  font-size: $ms-font-size-12;
+
+  th {
+    text-align: left;
+    padding: 4px 8px;
+    font-weight: $ms-font-weight-semibold;
+    color: "[theme:neutralPrimary, default: #323130]";
+    background: "[theme:neutralLighter, default: #f3f2f1]";
+    border-bottom: 1px solid "[theme:neutralLight, default: #edebe9]";
+  }
+
+  td {
+    padding: 4px 8px;
+    color: "[theme:neutralPrimary, default: #323130]";
+    border-bottom: 1px solid "[theme:neutralLighter, default: #f3f2f1]";
+  }
+}
+
+.caption {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  text-align: left;
+  padding: 4px 0;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+}

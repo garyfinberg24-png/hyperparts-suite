@@ -97,6 +97,14 @@
           "manifest": "./src/webparts/hyperLinks/HyperLinksWebPart.manifest.json"
         }
       ]
+    },
+    "hyper-charts-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hyperCharts/HyperChartsWebPart.js",
+          "manifest": "./src/webparts/hyperCharts/HyperChartsWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -112,6 +120,7 @@
     "HyperEventsWebPartStrings": "lib/webparts/hyperEvents/loc/{locale}.js",
     "HyperPollWebPartStrings": "lib/webparts/hyperPoll/loc/{locale}.js",
     "HyperSearchWebPartStrings": "lib/webparts/hyperSearch/loc/{locale}.js",
-    "HyperLinksWebPartStrings": "lib/webparts/hyperLinks/loc/{locale}.js"
+    "HyperLinksWebPartStrings": "lib/webparts/hyperLinks/loc/{locale}.js",
+    "HyperChartsWebPartStrings": "lib/webparts/hyperCharts/loc/{locale}.js"
   }
 }

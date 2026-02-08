@@ -1,0 +1,86 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.kpiCard {
+  background: "[theme:white, default: #ffffff]";
+  border: 1px solid "[theme:neutralLight, default: #edebe9]";
+  border-left: 4px solid transparent;
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  transition: box-shadow 200ms ease, border-left-color 200ms ease;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  }
+
+  &:focus-visible {
+    outline: 2px solid "[theme:themePrimary, default: #0078d4]";
+    outline-offset: -2px;
+  }
+}
+
+.ragRed {
+  border-left-color: #d13438;
+}
+
+.ragAmber {
+  border-left-color: #ffaa44;
+}
+
+.ragGreen {
+  border-left-color: #107c10;
+}
+
+.kpiTitle {
+  margin: 0 0 4px 0;
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-regular;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+}
+
+.kpiValue {
+  font-size: $ms-font-size-28;
+  font-weight: $ms-font-weight-bold;
+  color: "[theme:neutralPrimary, default: #323130]";
+  line-height: 1.2;
+}
+
+.trendRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.trendUp {
+  color: #107c10;
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+}
+
+.trendDown {
+  color: #d13438;
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+}
+
+.trendFlat {
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+}
+
+.sparklineRow {
+  margin-top: 8px;
+}
+
+.sparklineSvg {
+  width: 80px;
+  height: 24px;
+}
+
+.sparklineLine {
+  fill: none;
+  stroke: "[theme:themePrimary, default: #0078d4]";
+  stroke-width: 1.5;
+}
