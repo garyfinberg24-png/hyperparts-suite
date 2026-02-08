@@ -64,17 +64,35 @@ HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 30+ web parts fo
   - Full ARIA: tree/treeitem, tablist, listbox with roledescription, toolbar, role=search
   - `gulp build` passes clean (0 errors, 0 warnings)
 
+- **Phase 1, Step 8** — HyperRollup web part (all 15 PRD features)
+  - Cross-site content rollup from current site, specific sites, hub sites, and search scope
+  - 3 view modes: Card grid (CSS Grid, responsive columns), Table (sortable headers, column formatting), Kanban (horizontal scrolling lanes)
+  - Faceted search: side panel with checkboxes per field, counts, OR-within/AND-across
+  - Grouping with collapsible sections, multi-column sorting
+  - Aggregation bar: sum, avg, count, min, max as summary cards
+  - Pagination: paged, infinite scroll, load-more
+  - Handlebars templates: 10 built-in templates, 5 custom helpers, dynamic import (~70KB chunk)
+  - Document preview: Office Online WopiFrame iframe, image preview, PDF direct
+  - Inline editing: modal with text/number/boolean inputs, saves to source list
+  - Saved views: save/load/delete named filter+sort+view configs
+  - Custom actions: per-item buttons triggering Power Automate flow URLs
+  - Export to CSV with UTF-8 BOM
+  - Toolbar with view switcher, search, filter badges, item count
+  - 3-page property pane (~35 props), Zustand store (~20 actions)
+  - New dep: `handlebars` (^4.7, dynamic import)
+  - `gulp build` passes clean (0 errors, 0 warnings)
+
 ### Next Up
 
-- **Phase 1, Step 7** — HyperRollup (check MASTER_CONTEXT.md Section 6.3+)
+- Check MASTER_CONTEXT.md for next web part to build
 
 ### Full Roadmap (from MASTER_CONTEXT.md Addendum B)
 
-| Phase | Web Parts                                                                                                                                                                                           |
-| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | HyperHero, HyperNews, **HyperTabs**, ~~HyperRollup~~, **HyperSpotlight**, **HyperProfile**                                                                                                          |
-| 2     | HyperNav, **HyperDirectory** (done), HyperEvents, HyperPoll, HyperMetrics, HyperSearch, HyperRollup                                                                                                 |
-| 3     | HyperAction, HyperTicker, HyperFAQ, HyperBirthdays, HyperRecognition, HyperExplorer, HyperExternal, HyperTimeline, HyperBreadcrumb, HyperFeedback, HyperLocal, HyperLayout, HyperForms, HyperBanner |
+| Phase | Web Parts                                                                                                                                                                                              |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1     | HyperHero, HyperNews, **HyperTabs**, **HyperRollup**, **HyperSpotlight**, **HyperProfile**, **HyperDirectory** — ALL COMPLETE                                                                          |
+| 2     | HyperNav, HyperEvents, HyperPoll, HyperMetrics, HyperSearch                                                                                                                                            |
+| 3     | HyperAction, HyperTicker, HyperFAQ, HyperBirthdays, HyperRecognition, HyperExplorer, HyperExternal, HyperTimeline, HyperBreadcrumb, HyperFeedback, HyperLocal, HyperLayout, HyperForms, HyperBanner    |
 
 ---
 
@@ -222,17 +240,30 @@ src/
     │   │   ├── HyperTabsIcon          # Fluent icon or emoji renderer
     │   │   └── modes/                 # TabsMode, AccordionMode, WizardMode
     │   └── loc/
-    └── hyperDirectory/                # Employee directory with RollerDex (14 features)
-        ├── HyperDirectoryWebPart.ts   # ID: ac081972-faae-443f-82f9-da64e3139485
-        ├── models/                    # IHyperDirectoryUser, IHyperDirectoryFilter, WebPartProps
-        ├── hooks/                     # useDirectoryUsers, useDirectoryPhotos, useDirectorySearch, useDirectoryPresence
-        ├── store/                     # Zustand store (search, filters, pagination, rollerDex state)
-        ├── utils/                     # userMapper, searchUtils, filterUtils
+    ├── hyperDirectory/                # Employee directory with RollerDex (14 features)
+    │   ├── HyperDirectoryWebPart.ts   # ID: ac081972-faae-443f-82f9-da64e3139485
+    │   ├── models/                    # IHyperDirectoryUser, IHyperDirectoryFilter, WebPartProps
+    │   ├── hooks/                     # useDirectoryUsers, useDirectoryPhotos, useDirectorySearch, useDirectoryPresence
+    │   ├── store/                     # Zustand store (search, filters, pagination, rollerDex state)
+    │   ├── utils/                     # userMapper, searchUtils, filterUtils
+    │   ├── components/
+    │   │   ├── HyperDirectory.tsx     # Main component with layout delegation
+    │   │   ├── HyperDirectorySearchBar, AlphaIndex, FilterPanel, UserCard
+    │   │   ├── HyperDirectoryProfileCard, PresenceBadge, QuickActions, Pagination
+    │   │   └── layouts/               # Grid, List, Compact, Card, Masonry, RollerDex, OrgChart
+    │   └── loc/
+    └── hyperRollup/                   # Cross-site content rollup (15 features)
+        ├── HyperRollupWebPart.ts      # ID: b4e2c8a1-7f3d-4e9a-b5c6-2d8f1a3e7b9c
+        ├── models/                    # IHyperRollupItem, Source, Query, Column, View, WebPartProps
+        ├── hooks/                     # useRollupItems, useRollupFilters, useRollupGrouping, useRollupAggregation
+        ├── store/                     # Zustand store (~20 actions: view, search, facets, sort, group, page, edit)
+        ├── utils/                     # queryBuilder, exportUtils, columnFormatter, searchResultMapper
+        ├── templates/                 # builtInTemplates.ts (10 Handlebars templates)
         ├── components/
-        │   ├── HyperDirectory.tsx     # Main component with layout delegation
-        │   ├── HyperDirectorySearchBar, AlphaIndex, FilterPanel, UserCard
-        │   ├── HyperDirectoryProfileCard, PresenceBadge, QuickActions, Pagination
-        │   └── layouts/               # Grid, List, Compact, Card, Masonry, RollerDex, OrgChart
+        │   ├── HyperRollup.tsx        # Main component with layout/template delegation
+        │   ├── HyperRollupToolbar, FilterPanel, AggregationBar, ItemCard, GroupHeader, Pagination
+        │   ├── HyperRollupTemplateView, DocPreview, InlineEdit, ViewManager, ActionButtons
+        │   └── layouts/               # CardLayout (CSS Grid), TableLayout (sortable), KanbanLayout (lanes)
         └── loc/
 ```
 
@@ -245,6 +276,7 @@ src/
 - **HyperProfile Web Part ID:** `a8f9e6d3-5c2a-4b7e-9f1d-8c3e5a7b9d2f` (preserved from Power Profile)
 - **HyperTabs Web Part ID:** `8f3c7a9e-2d6b-4e1f-a9c8-5b7d3e9f1a2c`
 - **HyperDirectory Web Part ID:** `ac081972-faae-443f-82f9-da64e3139485`
+- **HyperRollup Web Part ID:** `b4e2c8a1-7f3d-4e9a-b5c6-2d8f1a3e7b9c`
 - **Feature ID:** `4c137d6a-7e80-46c6-8936-e7f7639893bc`
 
 ---
@@ -489,6 +521,7 @@ Extends `@microsoft/eslint-config-spfx/lib/profiles/react`. Key enforced rules:
 | `date-fns`                   | 4.1.0   | Date utilities              | No        |
 | `lottie-web`                 | 5.12.2  | Lottie animations           | Yes       |
 | `react-masonry-css`          | 1.0.16  | Masonry layout              | Yes       |
+| `handlebars`                 | ^4.7    | Template engine             | Yes       |
 | `react` / `react-dom`        | 17.0.1  | React (SPFx pinned)         | Yes       |
 
 ### Dev
@@ -666,6 +699,42 @@ const { ResponseType } = await import("@microsoft/microsoft-graph-client");
 const { ResponseType } = await import(/* webpackChunkName: 'ms-graph-client' */ "@microsoft/microsoft-graph-client");
 ```
 
+### Singleton Promise for Dynamic Imports (require-atomic-updates safe)
+
+```typescript
+// FORBIDDEN — require-atomic-updates: module-level let reassigned in async
+let handlebarsModule: typeof import("handlebars") | undefined;
+async function getHandlebars(): Promise<typeof import("handlebars")> {
+  if (!handlebarsModule) {
+    handlebarsModule = await import(/* webpackChunkName: 'handlebars' */ "handlebars");
+  }
+  return handlebarsModule;
+}
+
+// CORRECT — singleton Promise, no reassignment race
+let handlebarsPromise: Promise<typeof import("handlebars")> | undefined;
+function getHandlebars(): Promise<typeof import("handlebars")> {
+  if (!handlebarsPromise) {
+    handlebarsPromise = import(/* webpackChunkName: 'handlebars' */ "handlebars").then(function (mod) {
+      registerHelpers(mod);
+      return mod;
+    });
+  }
+  return handlebarsPromise;
+}
+```
+
+### Suppressing Unused Values (no-void rule)
+
+```typescript
+// FORBIDDEN — no-void ESLint rule
+void unusedExpression;
+
+// CORRECT — actually use the value, or restructure to consume it directly
+const isUsed = someCondition && someValue.length > 0;
+// ... use isUsed in render logic
+```
+
 ### PnP Graph User Type Cast
 
 ```typescript
@@ -749,7 +818,7 @@ These packages are installed and ready but have zero imports in the codebase so 
 - `@fluentui/react-components` (v9) — use for new component UI
 - `@fluentui/react-icons` — use for icon rendering
 - `@microsoft/mgt-spfx` — use for Graph Toolkit components (People, Person card, etc.)
-- ~~`zustand` (v4)~~ — **now used** in HyperHero, HyperNews, HyperSpotlight, HyperProfile stores
+- ~~`zustand` (v4)~~ — **now used** in all web part stores (HyperHero, HyperNews, HyperSpotlight, HyperProfile, HyperTabs, HyperDirectory, HyperRollup)
 - `immer` — use with zustand for immutable state updates
 - `date-fns` — use for date formatting, relative time, scheduling logic
 

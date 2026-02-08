@@ -47,7 +47,9 @@ src/
     ├── hyperNews/                 # News aggregation (14 features)
     ├── hyperSpotlight/            # Employee spotlight (6 layouts, 7 categories)
     ├── hyperProfile/              # User profile card (7 templates, 9 actions)
-    └── hyperTabs/                 # Tab/accordion/wizard container (12 features)
+    ├── hyperTabs/                 # Tab/accordion/wizard container (12 features)
+    ├── hyperDirectory/            # Employee directory with RollerDex (14 features)
+    └── hyperRollup/               # Cross-site content rollup (15 features)
 ```
 
 ## Prerequisites
@@ -88,6 +90,7 @@ gulp package-solution --ship  # Create .sppkg
 | Graph Components | MGT-SPFx                         |
 | Animation        | lottie-web                       |
 | Layout           | react-masonry-css                |
+| Templating       | Handlebars 4.x                   |
 | Testing          | Jest + React Testing Library     |
 
 ## Web Parts Roadmap
@@ -100,11 +103,12 @@ gulp package-solution --ship  # Create .sppkg
 - [x] HyperSpotlight — Employee spotlight with 6 layouts, 5 card styles, 7 categories (Hyperized)
 - [x] HyperProfile — User profile card with 7 templates, 9 quick actions, presence (Hyperized)
 - [x] HyperTabs — Tab/accordion/wizard container (12 features, 3 display modes, nested tabs)
-- [ ] HyperRollup — Cross-site content rollup with query builder
+- [x] HyperDirectory — Employee directory with RollerDex 3D carousel (14 features, 7 layouts)
+- [x] HyperRollup — Cross-site content rollup with query builder, templates, inline edit (15 features)
 
 ### Phase 2 — Expansion
 
-- [ ] HyperNav, HyperDirectory, HyperEvents
+- [ ] HyperNav, HyperEvents
 - [ ] HyperPoll, HyperMetrics, HyperSearch
 
 ### Phase 3 — Completion
@@ -129,6 +133,8 @@ gulp package-solution --ship  # Create .sppkg
 | 0.0.3   | February 7, 2026  | Phase 1, Step 3: HyperNews web part (all 14 features)                |
 | 0.0.4   | February 8, 2026  | Phase 1, Steps 4-5: HyperSpotlight + HyperProfile (Hyperized ports)  |
 | 0.0.5   | February 8, 2026  | Phase 1, Step 6: HyperTabs web part (all 12 features)                |
+| 0.0.6   | February 8, 2026  | Phase 1, Step 7: HyperDirectory web part (all 14 features)           |
+| 0.0.7   | February 8, 2026  | Phase 1, Step 8: HyperRollup web part (all 15 features)              |
 
 ## References
 
