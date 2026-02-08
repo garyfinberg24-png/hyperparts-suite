@@ -1,0 +1,27 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.hyperSearch {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  font-family: $ms-font-family-fallbacks;
+}
+
+.title {
+  font-size: $ms-font-size-24;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  margin: 0 0 4px 0;
+}
+
+.contentGrid {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.mainContent {
+  flex: 1;
+  min-width: 0;
+}

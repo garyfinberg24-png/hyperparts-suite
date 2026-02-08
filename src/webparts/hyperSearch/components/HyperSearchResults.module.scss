@@ -1,0 +1,191 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.resultsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.resultsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid $ms-color-neutralLight;
+  margin-bottom: 8px;
+}
+
+.resultCount {
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralSecondary;
+}
+
+.resultList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.resultItem {
+  display: flex;
+  gap: 12px;
+  padding: 12px 8px;
+  border-bottom: 1px solid $ms-color-neutralLighter;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: $ms-color-neutralLighterAlt;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.resultLink {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  text-decoration: none;
+  color: inherit;
+  flex: 1;
+  min-width: 0;
+}
+
+.resultItemContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.previewButton {
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: $ms-font-size-16;
+  color: $ms-color-neutralSecondary;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: color 0.15s ease, background-color 0.15s ease;
+
+  &:hover {
+    color: $ms-color-themePrimary;
+    background-color: $ms-color-neutralLighter;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+}
+
+.resultIcon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $ms-color-neutralLighter;
+  border-radius: 4px;
+  font-size: $ms-font-size-16;
+  color: $ms-color-themePrimary;
+}
+
+.resultBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.resultTitle {
+  font-size: $ms-font-size-16;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-themePrimary;
+  text-decoration: none;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+}
+
+.resultSummary {
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralPrimary;
+  margin-top: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.resultMeta {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+}
+
+.resultPath {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralTertiary;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0;
+}
+
+.pageButton {
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-size: $ms-font-size-14;
+  font-family: $ms-font-family-fallbacks;
+  color: $ms-color-themePrimary;
+  background-color: $ms-color-white;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background-color: $ms-color-neutralLighter;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+
+  &:disabled {
+    color: $ms-color-neutralTertiaryAlt;
+    cursor: default;
+  }
+}
+
+.pageInfo {
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralSecondary;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 0;
+}

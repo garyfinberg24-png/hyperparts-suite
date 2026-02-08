@@ -1,0 +1,57 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.promotedSection {
+  margin-bottom: 16px;
+  padding: 12px;
+  background-color: #eff6fc;
+  border-left: 3px solid $ms-color-themePrimary;
+  border-radius: 0 4px 4px 0;
+}
+
+.promotedLabel {
+  font-size: $ms-font-size-10;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-themePrimary;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.promotedItem {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 4px 0;
+}
+
+.promotedIcon {
+  font-size: $ms-font-size-16;
+  color: $ms-color-themePrimary;
+  margin-top: 2px;
+}
+
+.promotedBody {
+  flex: 1;
+}
+
+.promotedTitle {
+  font-size: $ms-font-size-16;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-themePrimary;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+}
+
+.promotedDescription {
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralSecondary;
+  margin-top: 2px;
+}

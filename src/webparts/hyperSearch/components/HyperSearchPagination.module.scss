@@ -1,0 +1,40 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0;
+}
+
+.pageButton {
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-size: $ms-font-size-14;
+  font-family: $ms-font-family-fallbacks;
+  color: $ms-color-themePrimary;
+  background-color: $ms-color-white;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background-color: $ms-color-neutralLighter;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+
+  &:disabled {
+    color: $ms-color-neutralTertiaryAlt;
+    cursor: default;
+  }
+}
+
+.pageInfo {
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralSecondary;
+}

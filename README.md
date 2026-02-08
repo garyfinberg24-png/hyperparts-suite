@@ -52,7 +52,8 @@ src/
     ├── hyperRollup/               # Cross-site content rollup (15 features)
     ├── hyperNav/                  # Navigation & quick links (13 features, 8 layouts)
     ├── hyperEvents/               # Calendar & events (13 features, 6 views)
-    └── hyperPoll/                 # In-page polling & voting (12 features, 6 question types)
+    ├── hyperPoll/                 # In-page polling & voting (12 features, 6 question types)
+    └── hyperSearch/               # Federated search (8 features, 5 result types)
 ```
 
 ## Prerequisites
@@ -114,7 +115,8 @@ gulp package-solution --ship  # Create .sppkg
 - [x] HyperNav — Navigation & quick links with 8 layouts, search, pins, grouping, health check (13 features)
 - [x] HyperEvents — Calendar & events with 6 views, multi-source aggregation, RSVP, registration (13 features)
 - [x] HyperPoll — In-page polling with 6 question types, 3 chart types, templates, export (12 features)
-- [ ] HyperMetrics, HyperSearch
+- [x] HyperSearch — Federated search with SP Search + Graph Search, type-ahead, refiners, previews (8 features)
+- [ ] HyperMetrics
 
 ### Phase 3 — Completion
 
@@ -142,7 +144,8 @@ gulp package-solution --ship  # Create .sppkg
 | 0.0.7   | February 8, 2026  | Phase 1, Step 8: HyperRollup web part (all 15 features)              |
 | 0.0.8   | February 8, 2026  | Phase 2, Step 1: HyperNav web part (all 13 features, 8 layouts)      |
 | 0.0.9   | February 8, 2026  | Phase 2, Step 2: HyperEvents web part (all 13 features, 6 views)     |
-| 0.0.10  | February 8, 2026  | Phase 2, Step 3: HyperPoll web part (all 12 features, 3 chart types) |
+| 0.0.10  | February 8, 2026  | Phase 2, Step 3: HyperPoll web part (all 12 features, 3 charts)      |
+| 0.0.11  | February 8, 2026  | Phase 2, Step 4: HyperSearch web part (8 features, federated search) |
 
 ## References
 

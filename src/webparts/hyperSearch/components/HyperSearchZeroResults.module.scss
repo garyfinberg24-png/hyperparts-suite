@@ -1,0 +1,70 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.zeroResults {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 16px;
+  text-align: center;
+}
+
+.icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  opacity: 0.6;
+}
+
+.heading {
+  font-size: $ms-font-size-20;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  margin: 0 0 8px 0;
+}
+
+.description {
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralSecondary;
+  margin: 0 0 16px 0;
+}
+
+.spellingSection {
+  margin-bottom: 12px;
+}
+
+.spellingLabel {
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralSecondary;
+}
+
+.spellingButton {
+  border: none;
+  background: transparent;
+  color: $ms-color-themePrimary;
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  cursor: pointer;
+  padding: 0 4px;
+  font-style: italic;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+}
+
+.tips {
+  list-style: disc;
+  margin: 0;
+  padding: 0 0 0 20px;
+  text-align: left;
+}
+
+.tipItem {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  margin-bottom: 4px;
+}

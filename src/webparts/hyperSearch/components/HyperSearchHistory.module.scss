@@ -1,0 +1,77 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.historyDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: $ms-color-white;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.historyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid $ms-color-neutralLighter;
+}
+
+.historyTitle {
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralSecondary;
+}
+
+.clearButton {
+  border: none;
+  background: transparent;
+  color: $ms-color-themePrimary;
+  font-size: $ms-font-size-12;
+  cursor: pointer;
+  padding: 2px 4px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+}
+
+.historyList {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+}
+
+.historyItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: $ms-color-neutralLighter;
+  }
+}
+
+.historyQuery {
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralPrimary;
+}
+
+.historyCount {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+}

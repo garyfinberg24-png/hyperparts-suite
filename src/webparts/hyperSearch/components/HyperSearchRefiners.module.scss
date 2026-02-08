@@ -1,0 +1,76 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.refinersPanel {
+  width: 240px;
+  flex-shrink: 0;
+  padding: 12px;
+  background-color: $ms-color-neutralLighterAlt;
+  border-radius: 4px;
+  border: 1px solid $ms-color-neutralLight;
+}
+
+.refinerGroup {
+  margin-bottom: 16px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.refinerGroupTitle {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  margin: 0 0 8px 0;
+  padding: 0;
+}
+
+.refinerValues {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.refinerValue {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.refinerCheckbox {
+  cursor: pointer;
+}
+
+.refinerLabel {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralPrimary;
+  cursor: pointer;
+  flex: 1;
+}
+
+.refinerCount {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  margin-left: auto;
+}
+
+.clearButton {
+  display: block;
+  border: none;
+  background: transparent;
+  color: $ms-color-themePrimary;
+  font-size: $ms-font-size-12;
+  cursor: pointer;
+  padding: 4px 0;
+  margin-top: 8px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+}

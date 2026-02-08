@@ -138,17 +138,38 @@ HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 30+ web parts fo
 - No new npm dependencies (pure CSS/SVG charts)
 - `gulp build` passes clean (0 errors, 0 warnings)
 
+### Phase 2, Step 4 Completed: HyperSearch (Federated Search)
+
+- All 8 features implemented across 3 sub-steps (S1/S2/S3)
+- Federated search: SP Search API (PnP sp.search()) for SharePoint/OneDrive/CurrentSite + Graph Search API (MSGraphClientV3 POST /search/query) for Teams/Exchange
+- Type-ahead suggestions: PnP sp.searchSuggest() with configurable debounce (100-1000ms), 3+ char minimum, keyboard navigation (Arrow/Enter/Escape)
+- 6 search scopes: Everything, SharePoint, OneDrive, Teams, Exchange, Current Site
+- 3 sort options: Relevance, Date Modified, Author
+- Refinement panel: SP Search Refiners property, checkbox groups per field (FileType/Author/ContentType), OR-within/AND-across, clear all
+- 5 result type renderers: Document (file icon + metadata + preview), Page (thumbnail + site breadcrumb), Person (job title + department + email), Message (sender + date + Teams/Email badge), Site (name + URL + description)
+- Search history: localStorage (max 10 entries), shown on empty focus, clear all
+- Promoted results (best bets): JSON config in property pane, keyword scoring (exact=10/contains=5/word=3/partial=1), displayed above regular results with star icon
+- Document preview: HyperModal + WopiFrame iframe (Office docs), PDF direct embed, image display, fallback link
+- Zero-result state: HyperSearchZeroResults component with "Did you mean?" spelling suggestion + 4 search tips
+- Analytics tracking: trackSearch, trackResultClick, trackZeroResults, trackPreviewOpen via hyperAnalytics
+- Pagination: prev/next buttons with page info
+- Full ARIA: role="search" landmark, combobox pattern (aria-expanded/aria-haspopup/aria-activedescendant), listbox for suggestions, aria-live for result count, complementary for refiners, dialog for preview
+- 3-page property pane: Search Configuration / Refiners & Display / Advanced Features (promoted results JSON with validate button)
+- Web part ID: `a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d`
+- No new npm dependencies
+- `gulp build` passes clean (0 errors, 0 warnings)
+
 ### Next Up
 
 - Check MASTER_CONTEXT.md for next web part to build
 
 ### Full Roadmap (from MASTER_CONTEXT.md Addendum B)
 
-| Phase | Web Parts                                                                                                                                                                                              |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1     | HyperHero, HyperNews, **HyperTabs**, **HyperRollup**, **HyperSpotlight**, **HyperProfile**, **HyperDirectory** — ALL COMPLETE                                                                          |
-| 2     | **HyperNav** — COMPLETE, **HyperEvents** — COMPLETE, **HyperPoll** — COMPLETE, HyperMetrics, HyperSearch                                                                                               |
-| 3     | HyperAction, HyperTicker, HyperFAQ, HyperBirthdays, HyperRecognition, HyperExplorer, HyperExternal, HyperTimeline, HyperBreadcrumb, HyperFeedback, HyperLocal, HyperLayout, HyperForms, HyperBanner    |
+| Phase | Web Parts                                                                                                                                                                                           |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | HyperHero, HyperNews, **HyperTabs**, **HyperRollup**, **HyperSpotlight**, **HyperProfile**, **HyperDirectory** — ALL COMPLETE                                                                       |
+| 2     | **HyperNav** — COMPLETE, **HyperEvents** — COMPLETE, **HyperPoll** — COMPLETE, HyperMetrics, **HyperSearch** — COMPLETE                                                                             |
+| 3     | HyperAction, HyperTicker, HyperFAQ, HyperBirthdays, HyperRecognition, HyperExplorer, HyperExternal, HyperTimeline, HyperBreadcrumb, HyperFeedback, HyperLocal, HyperLayout, HyperForms, HyperBanner |
 
 ---
 
@@ -343,17 +364,28 @@ src/
     │   │   ├── Toolbar, CategoryBar, DetailPanel, RsvpButtons, Countdown, PastArchive, RegistrationForm, OverlayLegend
     │   │   └── views/                 # MonthView, WeekView, DayView, AgendaView, TimelineView, CardGridView
     │   └── loc/
-    └── hyperPoll/                     # In-page polling & voting (12 features, 6 question types, 3 charts)
-        ├── HyperPollWebPart.ts        # ID: f6b3d8e1-4a7c-5f2b-c3e9-0a8d6b4f7c1e
-        ├── models/                    # IHyperPoll, IPollQuestion, IPollOption, IPollResponse, IPollResults, IPollTemplate, WebPartProps
-        ├── hooks/                     # usePollData, usePollResponses, usePollResults
-        ├── store/                     # Zustand store (~15 actions: poll nav, chart type, answers, submit, export)
-        ├── utils/                     # pollManager, chartUtils, exportUtils
+    ├── hyperPoll/                     # In-page polling & voting (12 features, 6 question types, 3 charts)
+    │   ├── HyperPollWebPart.ts        # ID: f6b3d8e1-4a7c-5f2b-c3e9-0a8d6b4f7c1e
+    │   ├── models/                    # IHyperPoll, IPollQuestion, IPollOption, IPollResponse, IPollResults, IPollTemplate, WebPartProps
+    │   ├── hooks/                     # usePollData, usePollResponses, usePollResults
+    │   ├── store/                     # Zustand store (~15 actions: poll nav, chart type, answers, submit, export)
+    │   ├── utils/                     # pollManager, chartUtils, exportUtils
+    │   ├── components/
+    │   │   ├── HyperPoll.tsx          # Main component with carousel/stacked modes + results visibility
+    │   │   ├── Voting, Results, Carousel, Stacked, Toolbar, StatusBadge, ExportBar, FollowUp, QuestionRenderer
+    │   │   ├── questions/             # SingleChoice, MultipleChoice, Rating, NPS, Ranking, OpenText
+    │   │   └── charts/               # BarChart (CSS), PieChart (SVG), DonutChart (SVG), ChartTypeSelector
+    │   └── loc/
+    └── hyperSearch/                   # Federated search (8 features, 5 result types)
+        ├── HyperSearchWebPart.ts      # ID: a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d
+        ├── models/                    # IHyperSearchResult, ISearchQuery, ISearchSuggestion, IPromotedResult, ISearchHistory, ISearchRefiner, WebPartProps
+        ├── hooks/                     # useSearchQuery, useSearchSuggestions, useSearchHistory, useSearchRefiners
+        ├── store/                     # Zustand store (~17 actions: query, results, suggestions, history, refiners, preview, spelling)
+        ├── utils/                     # searchQueryBuilder, resultMapper, graphSearchMapper, historyManager, promotedResultsMatcher, analyticsTracker
         ├── components/
-        │   ├── HyperPoll.tsx          # Main component with carousel/stacked modes + results visibility
-        │   ├── Voting, Results, Carousel, Stacked, Toolbar, StatusBadge, ExportBar, FollowUp, QuestionRenderer
-        │   ├── questions/             # SingleChoice, MultipleChoice, Rating, NPS, Ranking, OpenText
-        │   └── charts/               # BarChart (CSS), PieChart (SVG), DonutChart (SVG), ChartTypeSelector
+        │   ├── HyperSearch.tsx        # Main component with ErrorBoundary, promoted results, preview panel, analytics
+        │   ├── SearchBar, Suggestions, History, SortBar, Refiners, Results, Pagination, PreviewPanel, PromotedResults, ZeroResults
+        │   └── resultTypes/           # DocumentResult, PageResult, PersonResult, MessageResult, SiteResult
         └── loc/
 ```
 
@@ -370,6 +402,7 @@ src/
 - **HyperNav Web Part ID:** `d7a1f3e5-9b4c-4a8e-b2d6-1c5f8e3a7b9d`
 - **HyperEvents Web Part ID:** `e5a2f7c9-3d8b-4e6a-a1c4-9f2d7b5e8a3c`
 - **HyperPoll Web Part ID:** `f6b3d8e1-4a7c-5f2b-c3e9-0a8d6b4f7c1e`
+- **HyperSearch Web Part ID:** `a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d`
 - **Feature ID:** `4c137d6a-7e80-46c6-8936-e7f7639893bc`
 
 ---
@@ -984,7 +1017,7 @@ These packages are installed and ready but have zero imports in the codebase so 
 - `@fluentui/react-components` (v9) — use for new component UI
 - `@fluentui/react-icons` — use for icon rendering
 - `@microsoft/mgt-spfx` — use for Graph Toolkit components (People, Person card, etc.)
-- ~~`zustand` (v4)~~ — **now used** in all web part stores (HyperHero, HyperNews, HyperSpotlight, HyperProfile, HyperTabs, HyperDirectory, HyperRollup, HyperNav, HyperEvents, HyperPoll)
+- ~~`zustand` (v4)~~ — **now used** in all web part stores (HyperHero, HyperNews, HyperSpotlight, HyperProfile, HyperTabs, HyperDirectory, HyperRollup, HyperNav, HyperEvents, HyperPoll, HyperSearch)
 - `immer` — use with zustand for immutable state updates
 - ~~`date-fns`~~ — **now used** in HyperEvents for all date math (month grids, week/day ranges, recurrence expansion, formatting)
 
