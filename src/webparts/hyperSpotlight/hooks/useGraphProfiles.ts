@@ -1,11 +1,16 @@
 import { useState, useEffect, useCallback } from "react";
-import { getGraph, getContext } from "../../../common/services/HyperPnP";
+import { getContext } from "../../../common/services/HyperPnP";
 import { hyperCache } from "../../../common/services/HyperCache";
 import type { IHyperSpotlightEmployee } from "../models";
 
 const GRAPH_USER_SELECT =
   "id,userPrincipalName,displayName,givenName,surname,mail,jobTitle," +
   "department,officeLocation,businessPhones,mobilePhone,birthday,hireDate";
+
+/** Fallback without birthday/hireDate (need User.Read.All admin consent) */
+const GRAPH_USER_SELECT_BASIC =
+  "id,userPrincipalName,displayName,givenName,surname,mail,jobTitle," +
+  "department,officeLocation,businessPhones,mobilePhone";
 
 const PAGE_SIZE = 500;
 const MAX_USERS = 10000;
@@ -67,13 +72,25 @@ export function useGraphProfiles(cacheTTL?: number): UseGraphProfilesResult {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           let nextLink: string | undefined = undefined;
 
-          // First request
+          // Try with full select (birthday/hireDate); fall back to basic if permission denied
+          let selectFields = GRAPH_USER_SELECT;
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const firstResponse: any = await client
-            .api("/users")
-            .select(GRAPH_USER_SELECT)
-            .top(PAGE_SIZE)
-            .get();
+          let firstResponse: any;
+          try {
+            firstResponse = await client
+              .api("/users")
+              .select(selectFields)
+              .top(PAGE_SIZE)
+              .get();
+          } catch {
+            // Retry without birthday/hireDate (requires User.Read.All admin consent)
+            selectFields = GRAPH_USER_SELECT_BASIC;
+            firstResponse = await client
+              .api("/users")
+              .select(selectFields)
+              .top(PAGE_SIZE)
+              .get();
+          }
 
           if (firstResponse && firstResponse.value) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -126,8 +143,9 @@ export function useGraphProfiles(cacheTTL?: number): UseGraphProfilesResult {
 }
 
 /**
- * Fetch specific user profiles by ID/UPN list via PnP Graph individual calls.
+ * Fetch specific user profiles by ID/UPN list via MSGraphClientV3.
  * Uses concurrency control to avoid throttling.
+ * Falls back to basic fields if birthday/hireDate are permission-denied.
  */
 export function useGraphProfilesByIds(
   userIds: string[],
@@ -183,19 +201,50 @@ export function useGraphProfilesByIds(
             }
           }
 
-          const graph = getGraph();
+          const client = await getContext().msGraphClientFactory.getClient("3");
           const results: IHyperSpotlightEmployee[] = [];
 
-          // Chunk into concurrency groups
+          // Determine which fields the tenant supports (try full, fall back to basic)
+          let selectFields = GRAPH_USER_SELECT;
+          try {
+            // Test with the first user — if birthday/hireDate fail, switch to basic
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const testUser: any = await client
+              .api("/users/" + encodeURIComponent(userIds[0]))
+              .select(selectFields)
+              .get();
+            results.push(mapGraphUser(testUser));
+          } catch {
+            selectFields = GRAPH_USER_SELECT_BASIC;
+            try {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const testUser: any = await client
+                .api("/users/" + encodeURIComponent(userIds[0]))
+                .select(selectFields)
+                .get();
+              results.push(mapGraphUser(testUser));
+            } catch {
+              // First user failed even with basic fields — skip it
+            }
+          }
+
+          // Fetch remaining users (index 1+) in concurrency groups
+          const remaining = userIds.slice(1);
           const chunks: string[][] = [];
-          for (let i = 0; i < userIds.length; i += MAX_CONCURRENT) {
-            chunks.push(userIds.slice(i, i + MAX_CONCURRENT));
+          for (let i = 0; i < remaining.length; i += MAX_CONCURRENT) {
+            chunks.push(remaining.slice(i, i + MAX_CONCURRENT));
           }
 
           for (let c = 0; c < chunks.length; c++) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const finalSelect = selectFields;
             const promises = chunks[c].map(function (uid) {
-              return graph.users.getById(uid).select(GRAPH_USER_SELECT)()
-                .then(function (u: Record<string, unknown>) {
+              return client
+                .api("/users/" + encodeURIComponent(uid))
+                .select(finalSelect)
+                .get()
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                .then(function (u: any) {
                   return mapGraphUser(u);
                 })
                 .catch(function () {

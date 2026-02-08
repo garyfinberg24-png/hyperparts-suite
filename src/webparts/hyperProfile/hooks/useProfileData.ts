@@ -1,7 +1,4 @@
 import * as React from "react";
-import { graphfi, SPFx as graphSPFx } from "@pnp/graph";
-import "@pnp/graph/users";
-import "@pnp/graph/photos";
 import { getContext } from "../../../common/services/HyperPnP";
 import { hyperCache } from "../../../common/services/HyperCache";
 import type { IHyperProfileUser, IHyperProfileManager } from "../models";
@@ -42,7 +39,6 @@ export function useProfileData(userId?: string, cacheTTL?: number): IProfileData
 
       try {
         const ctx = getContext();
-        const graph = graphfi().using(graphSPFx(ctx));
 
         // Check cache first (async)
         const cachedProfile = await hyperCache.get<IHyperProfileUser>(cacheKeyBase + "_profile");
@@ -59,17 +55,11 @@ export function useProfileData(userId?: string, cacheTTL?: number): IProfileData
           return;
         }
 
-        // Fetch profile
-        let profileData: IHyperProfileUser;
-        if (userId) {
-          const raw = await graph.users.getById(userId).select(PROFILE_FIELDS)();
-          profileData = mapGraphUser(raw as unknown as Record<string, unknown>);
-        } else {
-          // Current user — use MSGraphClient for /me
-          const client = await ctx.msGraphClientFactory.getClient("3");
-          const raw = await client.api("/me").select(PROFILE_FIELDS).get();
-          profileData = mapGraphUser(raw as Record<string, unknown>);
-        }
+        // Fetch profile via MSGraphClientV3
+        const client = await ctx.msGraphClientFactory.getClient("3");
+        const endpoint = userId ? "/users/" + encodeURIComponent(userId) : "/me";
+        const raw = await client.api(endpoint).select(PROFILE_FIELDS).get();
+        const profileData: IHyperProfileUser = mapGraphUser(raw as Record<string, unknown>);
 
         if (cancelled) return;
         setProfile(profileData);
@@ -77,10 +67,9 @@ export function useProfileData(userId?: string, cacheTTL?: number): IProfileData
 
         // Fetch photo
         try {
-          const client = await ctx.msGraphClientFactory.getClient("3");
-          const endpoint = userId ? "/users/" + userId + "/photo/$value" : "/me/photo/$value";
+          const photoEndpoint = userId ? "/users/" + userId + "/photo/$value" : "/me/photo/$value";
           const { ResponseType } = await import(/* webpackChunkName: 'ms-graph-client' */ "@microsoft/microsoft-graph-client");
-          const photoBlob: Blob = await client.api(endpoint).responseType(ResponseType.BLOB).get();
+          const photoBlob: Blob = await client.api(photoEndpoint).responseType(ResponseType.BLOB).get();
 
           if (!cancelled) {
             const dataUrl = await blobToDataUrl(photoBlob);
@@ -98,9 +87,8 @@ export function useProfileData(userId?: string, cacheTTL?: number): IProfileData
 
         // Fetch manager
         try {
-          const client = await ctx.msGraphClientFactory.getClient("3");
-          const endpoint = userId ? "/users/" + userId + "/manager" : "/me/manager";
-          const managerRaw = await client.api(endpoint).select(MANAGER_FIELDS).get();
+          const mgrEndpoint = userId ? "/users/" + userId + "/manager" : "/me/manager";
+          const managerRaw = await client.api(mgrEndpoint).select(MANAGER_FIELDS).get();
           const mgr: IHyperProfileManager = {
             id: managerRaw.id,
             displayName: managerRaw.displayName,
