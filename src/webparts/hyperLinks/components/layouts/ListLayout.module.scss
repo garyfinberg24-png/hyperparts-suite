@@ -1,0 +1,33 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.listRow {
+  border-bottom: 1px solid $ms-color-neutralLighter;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 8px;
+  width: 100%;
+
+  &:hover {
+    background-color: $ms-color-neutralLighterAlt;
+  }
+}
+
+.chevron {
+  margin-left: auto;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralTertiaryAlt;
+  flex-shrink: 0;
+}

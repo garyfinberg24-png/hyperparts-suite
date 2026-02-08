@@ -1,0 +1,31 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.compact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.alignLeft {
+  justify-content: flex-start;
+}
+
+.alignCenter {
+  justify-content: center;
+}
+
+.alignRight {
+  justify-content: flex-end;
+}
+
+.chipWrapper {
+  display: inline-flex;
+}
+
+.chip {
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: $ms-color-neutralLighter;
+  font-size: $ms-font-size-14;
+}

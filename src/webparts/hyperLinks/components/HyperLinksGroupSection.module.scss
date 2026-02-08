@@ -1,0 +1,56 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.groupSection {
+  margin-bottom: 12px;
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  border-radius: 4px;
+
+  &:hover {
+    background: $ms-color-neutralLighter;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.groupChevron {
+  font-size: $ms-font-size-10;
+  color: $ms-color-neutralSecondary;
+  transition: transform 0.2s ease;
+}
+
+.groupChevronOpen {
+  transform: rotate(90deg);
+}
+
+.groupName {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  flex: 1;
+}
+
+.groupCount {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  background: $ms-color-neutralLighter;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.groupContent {
+  padding-left: 4px;
+}

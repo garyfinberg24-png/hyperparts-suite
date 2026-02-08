@@ -1,0 +1,49 @@
+declare interface IHyperLinksWebPartStrings {
+  PropertyPaneDescription: string;
+  LayoutGroupName: string;
+  LinksGroupName: string;
+  GroupsGroupName: string;
+  FeaturesGroupName: string;
+  TitleFieldLabel: string;
+  LayoutModeFieldLabel: string;
+  GridColumnsFieldLabel: string;
+  TileSizeFieldLabel: string;
+  IconSizeFieldLabel: string;
+  ShowIconsLabel: string;
+  ShowDescriptionsLabel: string;
+  ShowThumbnailsLabel: string;
+  HoverEffectFieldLabel: string;
+  BorderRadiusFieldLabel: string;
+  CompactAlignmentFieldLabel: string;
+  EnableGroupingLabel: string;
+  EnableAudienceTargetingLabel: string;
+  EnableAnalyticsLabel: string;
+  EnableColorCustomizationLabel: string;
+  LinksPageDescription: string;
+  AdvancedPageDescription: string;
+  LinkHeaderPrefix: string;
+  LinkTitleLabel: string;
+  LinkUrlLabel: string;
+  LinkDescriptionLabel: string;
+  LinkIconNameLabel: string;
+  LinkIconTypeLabel: string;
+  LinkThumbnailUrlLabel: string;
+  LinkBackgroundColorLabel: string;
+  LinkOpenInNewTabLabel: string;
+  LinkGroupNameLabel: string;
+  MoveUpLabel: string;
+  MoveDownLabel: string;
+  RemoveLinkLabel: string;
+  AddLinkLabel: string;
+  NewLinkDefaultTitle: string;
+  GroupsSectionLabel: string;
+  GroupNameLabel: string;
+  RemoveGroupLabel: string;
+  AddGroupLabel: string;
+  NewGroupDefaultName: string;
+}
+
+declare module "HyperLinksWebPartStrings" {
+  const strings: IHyperLinksWebPartStrings;
+  export = strings;
+}

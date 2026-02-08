@@ -1,0 +1,75 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.tilesGrid {
+  display: grid;
+  gap: 12px;
+}
+
+.tile {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid $ms-color-neutralLight;
+  background: $ms-color-white;
+  text-decoration: none;
+  color: $ms-color-neutralPrimary;
+  overflow: hidden;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.tileWithImage {
+  color: $ms-color-white;
+}
+
+.tileOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(transparent 30%, rgba(0, 0, 0, 0.6));
+  pointer-events: none;
+}
+
+.tileContent {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.tileIcon {
+  font-size: $ms-font-size-24;
+  margin-bottom: 4px;
+}
+
+.tileTitle {
+  font-size: $ms-font-size-16;
+  font-weight: $ms-font-weight-semibold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tileDescription {
+  font-size: $ms-font-size-12;
+  opacity: 0.85;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
