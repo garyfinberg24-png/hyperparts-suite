@@ -35,16 +35,45 @@ HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 30+ web parts fo
   - Both converted from MSGraphClientV3/class components to PnP hooks/functional components
   - `gulp build` passes clean (0 errors, 0 warnings)
 
+- **Phase 1, Step 6** — HyperTabs web part (all 12 PRD features)
+  - 3 display modes: Tabs (horizontal/vertical/pill/underline), Accordion, Wizard
+  - Nested tabs (max 2 levels deep via recursive HyperTabs rendering)
+  - Deep linking via URL hash `#tab=panelId` with hashchange listener
+  - Lazy loading: panel content only renders on first activation
+  - Per-panel audience targeting via useAudienceTarget
+  - Responsive collapse: tabs auto-switch to accordion on mobile
+  - Wizard mode with progress indicator, linear mode gating, step tracking
+  - Dynamic property pane panel management: Add/Remove/MoveUp/MoveDown buttons
+  - Per-tab custom styling (colors, borders, active states)
+  - Full keyboard navigation (Arrow/Home/End) and ARIA (tablist/tab/tabpanel)
+  - `gulp build` passes clean (0 errors, 0 warnings)
+
+- **Phase 1, Step 7 (out-of-order)** — HyperDirectory web part (all 14 PRD features)
+  - 7 layouts: Grid, List, Compact, Card, Masonry, RollerDex (3D CSS carousel), OrgChart (tree)
+  - RollerDex: CSS perspective + rotateX + translateZ 3D cylinder, mouse wheel/arrow key rotation, auto-rotation, hover pause, dot navigation
+  - Real-time search with 300ms debounce, weighted field scoring (displayName:3, jobTitle:2, department:2)
+  - A-Z alphabetical index bar with disabled letters and toggle behavior
+  - Multi-select filter chips (departments, locations, titles, companies) — OR within category, AND across
+  - Profile card modal (HyperModal) with full contact details, presence, quick actions
+  - 6 quick actions: email, Teams chat, Teams call, schedule meeting, copy email, vCard export
+  - Real-time presence badges (batch /communications/getPresencesByUserId, up to 650 IDs)
+  - Pagination (paged or infinite scroll via IntersectionObserver)
+  - Photo batch fetching with per-user caching and configurable concurrency
+  - Org chart tree view from manager relationships with expand/collapse
+  - 3-page property pane (Layout, Features, Data & Advanced)
+  - Full ARIA: tree/treeitem, tablist, listbox with roledescription, toolbar, role=search
+  - `gulp build` passes clean (0 errors, 0 warnings)
+
 ### Next Up
 
-- **Phase 1, Step 6** — Next web part from PRD (check MASTER_CONTEXT.md Section 6.3+)
+- **Phase 1, Step 7** — HyperRollup (check MASTER_CONTEXT.md Section 6.3+)
 
 ### Full Roadmap (from MASTER_CONTEXT.md Addendum B)
 
 | Phase | Web Parts                                                                                                                                                                                           |
 | ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | HyperHero, HyperNews, ~~HyperTabs~~, ~~HyperRollup~~, **HyperSpotlight**, **HyperProfile**                                                                                                          |
-| 2     | HyperNav, HyperDirectory, HyperEvents, HyperPoll, HyperMetrics, HyperSearch, HyperTabs, HyperRollup                                                                                                 |
+| 1     | HyperHero, HyperNews, **HyperTabs**, ~~HyperRollup~~, **HyperSpotlight**, **HyperProfile**                                                                                                          |
+| 2     | HyperNav, **HyperDirectory** (done), HyperEvents, HyperPoll, HyperMetrics, HyperSearch, HyperRollup                                                                                                 |
 | 3     | HyperAction, HyperTicker, HyperFAQ, HyperBirthdays, HyperRecognition, HyperExplorer, HyperExternal, HyperTimeline, HyperBreadcrumb, HyperFeedback, HyperLocal, HyperLayout, HyperForms, HyperBanner |
 
 ---
@@ -168,18 +197,30 @@ src/
     │   │   ├── HyperSpotlightCategoryBadge, ActionButtons, AttributeDisplay, CustomMessage
     │   │   └── layouts/               # Grid, List, Carousel, Tiled, Masonry, FeaturedHero
     │   └── loc/
-    └── hyperProfile/                  # User profile card (7 templates, 9 actions)
-        ├── HyperProfileWebPart.ts     # ID: a8f9e6d3-5c2a-4b7e-9f1d-8c3e5a7b9d2f
-        ├── models/                    # Profile, presence, quick actions, templates, completeness
-        ├── hooks/                     # useProfileData, usePresence, useProfileSearch
-        ├── store/                     # Zustand store for profile state
-        ├── constants/                 # templates.ts, quickActions.ts
-        ├── utils/                     # deepLinkUtils, vCardUtils, presenceUtils, scoreCalculator
+    ├── hyperProfile/                  # User profile card (7 templates, 9 actions)
+    │   ├── HyperProfileWebPart.ts     # ID: a8f9e6d3-5c2a-4b7e-9f1d-8c3e5a7b9d2f
+    │   ├── models/                    # Profile, presence, quick actions, templates, completeness
+    │   ├── hooks/                     # useProfileData, usePresence, useProfileSearch
+    │   ├── store/                     # Zustand store for profile state
+    │   ├── constants/                 # templates.ts, quickActions.ts
+    │   ├── utils/                     # deepLinkUtils, vCardUtils, presenceUtils, scoreCalculator
+    │   ├── components/
+    │   │   ├── HyperProfile.tsx       # Main component
+    │   │   ├── HyperProfilePhoto, PresenceBadge, Field
+    │   │   ├── HyperProfileQuickActions, Completeness, Overlay
+    │   │   └── (SCSS modules for each)
+    │   └── loc/
+    └── hyperTabs/                     # Tab/accordion/wizard container (12 features)
+        ├── HyperTabsWebPart.ts        # ID: 8f3c7a9e-2d6b-4e1f-a9c8-5b7d3e9f1a2c
+        ├── models/                    # IHyperTabPanel, IHyperTabIcon, IHyperTabNestedConfig
+        ├── hooks/                     # useDeepLinking, useResponsiveMode
+        ├── store/                     # Zustand store for tabs/accordion/wizard state
+        ├── utils/                     # panelUtils (parse/stringify/add/remove/reorder)
         ├── components/
-        │   ├── HyperProfile.tsx       # Main component
-        │   ├── HyperProfilePhoto, PresenceBadge, Field
-        │   ├── HyperProfileQuickActions, Completeness, Overlay
-        │   └── (SCSS modules for each)
+        │   ├── HyperTabs.tsx          # Main component with mode delegation
+        │   ├── HyperTabsPanelContent  # Per-panel content with lazy load + audience targeting
+        │   ├── HyperTabsIcon          # Fluent icon or emoji renderer
+        │   └── modes/                 # TabsMode, AccordionMode, WizardMode
         └── loc/
 ```
 
@@ -190,6 +231,7 @@ src/
 - **HyperNews Web Part ID:** `a7f3e8c4-9b2d-4e5f-a6c8-3d7b9e1f2a4c`
 - **HyperSpotlight Web Part ID:** `7220d21d-e08c-4ef7-9b62-eff134300498` (preserved from Employee Spotlight)
 - **HyperProfile Web Part ID:** `a8f9e6d3-5c2a-4b7e-9f1d-8c3e5a7b9d2f` (preserved from Power Profile)
+- **HyperTabs Web Part ID:** `8f3c7a9e-2d6b-4e1f-a9c8-5b7d3e9f1a2c`
 - **Feature ID:** `4c137d6a-7e80-46c6-8936-e7f7639893bc`
 
 ---

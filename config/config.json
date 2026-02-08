@@ -33,6 +33,22 @@
           "manifest": "./src/webparts/hyperProfile/HyperProfileWebPart.manifest.json"
         }
       ]
+    },
+    "hyper-tabs-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hyperTabs/HyperTabsWebPart.js",
+          "manifest": "./src/webparts/hyperTabs/HyperTabsWebPart.manifest.json"
+        }
+      ]
+    },
+    "hyper-directory-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hyperDirectory/HyperDirectoryWebPart.js",
+          "manifest": "./src/webparts/hyperDirectory/HyperDirectoryWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -40,6 +56,8 @@
     "HyperHeroWebPartStrings": "lib/webparts/hyperHero/loc/{locale}.js",
     "HyperNewsWebPartStrings": "lib/webparts/hyperNews/loc/{locale}.js",
     "HyperSpotlightWebPartStrings": "lib/webparts/hyperSpotlight/loc/{locale}.js",
-    "HyperProfileWebPartStrings": "lib/webparts/hyperProfile/loc/{locale}.js"
+    "HyperProfileWebPartStrings": "lib/webparts/hyperProfile/loc/{locale}.js",
+    "HyperTabsWebPartStrings": "lib/webparts/hyperTabs/loc/{locale}.js",
+    "HyperDirectoryWebPartStrings": "lib/webparts/hyperDirectory/loc/{locale}.js"
   }
 }
