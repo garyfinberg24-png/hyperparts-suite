@@ -56,7 +56,10 @@ src/
     ├── hyperSearch/               # Federated search (8 features, 5 result types)
     ├── hyperLinks/                # Enhanced Quick Links (12 features, 8 layouts)
     ├── hyperCharts/               # BI/Analytics dashboard (15 features, 6 chart types)
-    └── hyperLert/                 # Alerting & notifications (12 features, 4-step rule builder)
+    ├── hyperLert/                 # Alerting & notifications (12 features, 4-step rule builder)
+    ├── hyperTicker/               # News ticker & emergency banner (4 display modes, 3 severities)
+    ├── hyperFaq/                  # Searchable FAQ accordion (4 styles, voting, deep linking)
+    └── hyperBirthdays/            # Celebrations hub (8 types, 3 views, animations)
 ```
 
 ## Prerequisites
@@ -125,10 +128,12 @@ gulp package-solution --ship  # Create .sppkg
 - [x] HyperLert — Alerting & notifications with rule builder, multi-channel delivery, alert history (12 features)
 - [ ] HyperSlider
 
-### Phase 3 — Completion
+### Phase 3 — Completion (In Progress)
 
-- [ ] HyperAction, HyperTicker, HyperFAQ, HyperBirthdays
-- [ ] HyperRecognition, HyperExplorer, HyperExternal
+- [x] HyperTicker — News ticker with 4 display modes (scroll/fade/static/stacked), 3 severity levels, RSS/SP list/manual
+- [x] HyperFAQ — Searchable FAQ with 4 accordion styles, weighted search, voting, "Ask Guru", deep linking
+- [x] HyperBirthdays — 8 celebration types, 3 views (list/calendar/carousel), milestone badges, Teams wishes, CSS animations
+- [ ] HyperAction, HyperRecognition, HyperExplorer, HyperExternal
 - [ ] HyperTimeline, HyperBreadcrumb, HyperFeedback
 - [ ] HyperLocal, HyperLayout, HyperForms, HyperBanner
 
@@ -156,6 +161,7 @@ gulp package-solution --ship  # Create .sppkg
 | 0.0.12  | February 8, 2026  | Phase 2, Step 5: HyperLinks web part (12 features, 8 layouts)        |
 | 0.0.13  | February 8, 2026  | Phase 2, Step 6: HyperCharts web part (15 features, 6 chart types)   |
 | 0.0.14  | February 8, 2026  | Phase 2, Step 7: HyperLert web part (12 features, rule builder)      |
+| 0.0.15  | February 8, 2026  | Phase 3: HyperTicker + HyperFAQ + HyperBirthdays (3 web parts)       |
 
 ## References
 

@@ -219,17 +219,55 @@ HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 30+ web parts fo
 - No new npm dependencies
 - `gulp build` passes clean (0 errors, 0 warnings)
 
+### Phase 3, Steps 1-3 Completed: HyperTicker, HyperFAQ, HyperBirthdays
+
+- **HyperTicker** — News ticker & emergency banner (bundle #15)
+  - 4 display modes: Scroll (CSS translateX keyframe + duplicate track), Fade (opacity cycling), Static (single item + nav buttons), Stacked (horizontal cards)
+  - 3 severity levels (normal/warning/critical) with distinct colors, critical override hides non-critical items
+  - 3 data sources: Manual (JSON), SP list, RSS (DOMParser)
+  - Pause on hover, configurable speed/direction, auto-refresh
+  - Per-item audience targeting via useTickerAudience
+  - Web part ID: `d8e9f0a1-2b3c-4d5e-6f7a-8b9c0d1e2f3a`
+  - No new npm dependencies
+  - `gulp build` passes clean (0 errors, 0 warnings)
+
+- **HyperFAQ** — Searchable FAQ accordion (bundle #16)
+  - 4 accordion styles: clean, boxed, bordered, minimal (via dynamic SCSS classes)
+  - Client-side weighted search (question:3, category:2, tags:2, answer:1), debounced 300ms
+  - Thumbs up/down voting with double-vote prevention via Zustand store
+  - Category grouping with collapsible sections + chevron animation
+  - "Ask Guru" submission to review queue SP list
+  - Deep linking via URL hash `#faq=itemId` with auto-expand + scrollIntoView
+  - Related FAQs by category + tag overlap (up to 3 suggestions)
+  - Rich HTML answers via dangerouslySetInnerHTML with sanitization
+  - Web part ID: `e9f0a1b2-3c4d-5e6f-7a8b-9c0d1e2f3a4b`
+  - No new npm dependencies
+  - `gulp build` passes clean (0 errors, 0 warnings)
+
+- **HyperBirthdays** — Celebrations hub (bundle #17)
+  - 8 celebration types: Birthday, WorkAnniversary, Wedding, ChildBirth, Graduation, Retirement, Promotion, Custom — each with emoji, Fluent icon, primary/secondary colors, gradient, animation type, message template
+  - 3 views: Upcoming list (Today/ThisWeek/ThisMonth sections), Monthly calendar (CSS Grid 7x6 with emoji dots), Card carousel (CSS scroll-snap + prev/next arrows)
+  - Data sources: Entra ID (MSGraphClientV3 birthday + employeeHireDate) + SP list, merged + deduplicated
+  - 7 milestone badges: 1yr seedling, 5yr star, 10yr trophy, 15yr gem, 20yr medal, 25yr crown, 30yr glowing star
+  - Teams deep link "Send Wishes" button with token-replaced message templates ({name}, {years}, {type})
+  - Pure CSS animations: confetti (10 pieces falling), balloons (5 rising), sparkle (6 flashing) — auto-dismiss 3.5s
+  - Privacy opt-out via SP list filtering
+  - Batch photo fetch with initials fallback avatar
+  - Web part ID: `f0a1b2c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c`
+  - No new npm dependencies (uses existing date-fns)
+  - `gulp build` passes clean (0 errors, 0 warnings)
+
 ### Next Up
 
-- **HyperSlider** — Full Revolution Slider equivalent with multi-layer slides, 20+ transitions, Ken Burns. Coexists with HyperHero (simpler hero banners)
+- Check MASTER_CONTEXT.md for next web part to build (remaining Phase 3 web parts)
 
 ### Full Roadmap (from MASTER_CONTEXT.md Addendum B)
 
-| Phase | Web Parts                                                                                                                                                                                                                            |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1     | HyperHero, HyperNews, **HyperTabs**, **HyperRollup**, **HyperSpotlight**, **HyperProfile**, **HyperDirectory** — ALL COMPLETE                                                                                                        |
-| 2     | **HyperNav** — COMPLETE, **HyperEvents** — COMPLETE, **HyperPoll** — COMPLETE, **HyperSearch** — COMPLETE, **HyperLinks** — COMPLETE, **HyperCharts** — COMPLETE, **HyperLert** — COMPLETE, HyperSlider (new)                        |
-| 3     | HyperAction, HyperTicker, HyperFAQ, HyperBirthdays, HyperRecognition, HyperExplorer, HyperExternal, HyperTimeline, HyperBreadcrumb, HyperFeedback, HyperLocal, HyperLayout, HyperForms, HyperBanner                                  |
+| Phase | Web Parts                                                                                                                                                                                                                                                                       |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | **HyperHero**, **HyperNews**, **HyperTabs**, **HyperRollup**, **HyperSpotlight**, **HyperProfile**, **HyperDirectory** — ALL COMPLETE                                                                                                                                           |
+| 2     | **HyperNav**, **HyperEvents**, **HyperPoll**, **HyperSearch**, **HyperLinks**, **HyperCharts**, **HyperLert** — ALL COMPLETE, HyperSlider (new)                                                                                                                                 |
+| 3     | **HyperTicker** — COMPLETE, **HyperFAQ** — COMPLETE, **HyperBirthdays** — COMPLETE, HyperAction, HyperRecognition, HyperExplorer, HyperExternal, HyperTimeline, HyperBreadcrumb, HyperFeedback, HyperLocal, HyperLayout, HyperForms, HyperBanner                                |
 
 ---
 
@@ -476,22 +514,67 @@ src/
     │   │   ├── HyperChartsComparison  # Current vs. previous period overlay + delta bar
     │   │   └── HyperChartsAccessibilityTable  # sr-only or visible data table
     │   └── loc/
-    └── hyperLert/                     # Alerting & notifications (12 features, 4-step rule builder)
-        ├── HyperLertWebPart.ts        # ID: a2b3c4d5-6e7f-8a9b-0c1d-2e3f4a5b6c7d
-        ├── models/                    # IAlertRule, IAlertCondition, IAlertAction, IAlertDataSource (union), IAlertHistoryEntry, 6 enums, WebPartProps
-        ├── hooks/                     # useAlertMonitor, useAlertHistory, useAlertNotifications, useGraphMonitor, useAutoRefresh
-        ├── store/                     # Zustand store (~20 actions: banners, filters, modals, ruleBuilder, refreshTick)
-        ├── utils/                     # ruleEngine (13 operators), notificationUtils (tokens+templates), historyUtils (timestamps+colors)
+    ├── hyperLert/                     # Alerting & notifications (12 features, 4-step rule builder)
+    │   ├── HyperLertWebPart.ts        # ID: a2b3c4d5-6e7f-8a9b-0c1d-2e3f4a5b6c7d
+    │   ├── models/                    # IAlertRule, IAlertCondition, IAlertAction, IAlertDataSource (union), IAlertHistoryEntry, 6 enums, WebPartProps
+    │   ├── hooks/                     # useAlertMonitor, useAlertHistory, useAlertNotifications, useGraphMonitor, useAutoRefresh
+    │   ├── store/                     # Zustand store (~20 actions: banners, filters, modals, ruleBuilder, refreshTick)
+    │   ├── utils/                     # ruleEngine (13 operators), notificationUtils (tokens+templates), historyUtils (timestamps+colors)
+    │   ├── components/
+    │   │   ├── HyperLert.tsx          # Main component with hooks wiring, rule filtering, onRulesChange
+    │   │   ├── HyperLertBanner        # Stacked in-page banners (severity colors, auto-dismiss)
+    │   │   ├── HyperLertToolbar       # Title, count badge, action buttons
+    │   │   ├── HyperLertFilterBar     # Search + severity/status dropdowns
+    │   │   ├── HyperLertRuleCard      # Per-rule card (severity border, snooze, ack, toggle)
+    │   │   ├── HyperLertHistoryPanel  # HyperModal + sortable table + pagination
+    │   │   ├── HyperLertStatusBadge   # Colored status chips
+    │   │   ├── HyperLertEmailPreview  # Preview/template toggle modal
+    │   │   └── ruleBuilder/           # 4-step wizard: DataSourceStep, ConditionStep, ActionStep, ScheduleStep
+    │   └── loc/
+    ├── hyperTicker/                   # News ticker & emergency banner (4 display modes, 3 severities)
+    │   ├── HyperTickerWebPart.ts      # ID: d8e9f0a1-2b3c-4d5e-6f7a-8b9c0d1e2f3a
+    │   ├── models/                    # ITickerItem, ITickerRssConfig, 4 display modes, 3 severities, WebPartProps
+    │   ├── hooks/                     # useTickerItems (manual+SP+RSS merge), useTickerAudience
+    │   ├── store/                     # Zustand store (~10 actions: pause, severity, items, currentIndex)
+    │   ├── utils/                     # tickerUtils (mergeSources, filterExpired, sortBySeverity, parseRssFeed)
+    │   ├── components/
+    │   │   ├── HyperTicker.tsx        # Main component with display mode delegation + severity
+    │   │   ├── HyperTickerItem        # Shared per-item renderer (icon + title + link)
+    │   │   ├── HyperTickerScroll      # CSS translateX keyframe loop, duplicate track, pauseOnHover
+    │   │   ├── HyperTickerFade        # Opacity cycling via setInterval
+    │   │   ├── HyperTickerStatic      # Single item + prev/next nav + auto-advance
+    │   │   └── HyperTickerStacked     # Horizontal card layout with severity borders
+    │   └── loc/
+    ├── hyperFaq/                      # Searchable FAQ accordion (4 styles, voting, deep linking)
+    │   ├── HyperFaqWebPart.ts         # ID: e9f0a1b2-3c4d-5e6f-7a8b-9c0d1e2f3a4b
+    │   ├── models/                    # IFaqItem, IFaqCategoryGroup, IFaqSubmission, 4 styles, 4 sort modes, WebPartProps
+    │   ├── hooks/                     # useFaqItems, useFaqSearch, useFaqVoting, useFaqDeepLink
+    │   ├── store/                     # Zustand store (~14 actions: search, expand, categories, voting, submit)
+    │   ├── utils/                     # faqUtils (search, related, sanitize, incrementViewCount)
+    │   ├── components/
+    │   │   ├── HyperFaq.tsx           # Main component with search, categories, accordion, submit modal
+    │   │   ├── HyperFaqSearchBar      # Debounced search input with result count
+    │   │   ├── HyperFaqCategorySection # Collapsible category header with chevron
+    │   │   ├── HyperFaqAccordionItem  # 4 style variants, max-height animation, rich HTML answer, deep link anchor
+    │   │   ├── HyperFaqVoting         # Thumbs up/down with double-vote prevention
+    │   │   ├── HyperFaqRelated        # Up to 3 related items by category + tag match
+    │   │   └── HyperFaqSubmitModal    # "Ask Guru" → review queue SP list
+    │   └── loc/
+    └── hyperBirthdays/                # Celebrations hub (8 types, 3 views, animations)
+        ├── HyperBirthdaysWebPart.ts   # ID: f0a1b2c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c
+        ├── models/                    # ICelebration, ICelebrationType (8 configs), IMilestoneBadge (7 badges), WebPartProps
+        ├── hooks/                     # useCelebrationData (Entra+SP), useCelebrationPhotos, useCelebrationCalendar, usePrivacyOptOut
+        ├── store/                     # Zustand store (~12 actions: month/year nav, view mode, enabled types)
+        ├── utils/                     # dateHelpers (MM-DD parsing, isToday/Week/Month), celebrationUtils (upcoming, milestones, Teams link, wish messages)
         ├── components/
-        │   ├── HyperLert.tsx          # Main component with hooks wiring, rule filtering, onRulesChange
-        │   ├── HyperLertBanner        # Stacked in-page banners (severity colors, auto-dismiss)
-        │   ├── HyperLertToolbar       # Title, count badge, action buttons
-        │   ├── HyperLertFilterBar     # Search + severity/status dropdowns
-        │   ├── HyperLertRuleCard      # Per-rule card (severity border, snooze, ack, toggle)
-        │   ├── HyperLertHistoryPanel  # HyperModal + sortable table + pagination
-        │   ├── HyperLertStatusBadge   # Colored status chips
-        │   ├── HyperLertEmailPreview  # Preview/template toggle modal
-        │   └── ruleBuilder/           # 4-step wizard: DataSourceStep, ConditionStep, ActionStep, ScheduleStep
+        │   ├── HyperBirthdays.tsx     # Main component with view delegation + animation overlay
+        │   ├── HyperBirthdaysToolbar  # View toggle (list/calendar/carousel), month nav arrows
+        │   ├── HyperBirthdaysCard     # Photo + initials fallback, emoji, milestone badge, Teams wish button
+        │   ├── HyperBirthdaysUpcomingList  # Today / This Week / This Month grouped sections
+        │   ├── HyperBirthdaysMonthCalendar # CSS Grid 7x6, celebration emoji dots, click-expand day
+        │   ├── HyperBirthdaysCardCarousel  # CSS scroll-snap horizontal, prev/next arrows
+        │   ├── HyperBirthdaysMilestoneBadge # Colored badge with years + icon
+        │   └── HyperBirthdaysAnimation # Pure CSS confetti/balloons/sparkle, auto-dismiss 3.5s
         └── loc/
 ```
 
@@ -512,6 +595,9 @@ src/
 - **HyperLinks Web Part ID:** `c3d4e5f6-7a8b-9c0d-1e2f-2a3b4c5d6e7f`
 - **HyperCharts Web Part ID:** `b5c6d7e8-9f0a-4b1c-8d2e-3f4a5b6c7d8e`
 - **HyperLert Web Part ID:** `a2b3c4d5-6e7f-8a9b-0c1d-2e3f4a5b6c7d`
+- **HyperTicker Web Part ID:** `d8e9f0a1-2b3c-4d5e-6f7a-8b9c0d1e2f3a`
+- **HyperFAQ Web Part ID:** `e9f0a1b2-3c4d-5e6f-7a8b-9c0d1e2f3a4b`
+- **HyperBirthdays Web Part ID:** `f0a1b2c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c`
 - **Feature ID:** `4c137d6a-7e80-46c6-8936-e7f7639893bc`
 
 ---
@@ -1018,6 +1104,25 @@ const graphClient = await ctx.msGraphClientFactory.getClient("3");
 await graphClient.api("/me/sendMail").post({ message: { ... } });
 ```
 
+### MSGraphClientV3 `.then()` Callback Type
+
+When using `MSGraphClientV3` in a `.then()` chain, use `any` type for the client parameter. Complex inline type annotations like `{ api: (url: string) => { select: ... } }` cause TS1005 parse errors because the `}` of the type literal merges with the function body `{`:
+
+```typescript
+// FORBIDDEN — TS1005 parse error
+ctx.msGraphClientFactory.getClient("3").then(function (client: { api: (url: string) => { get: () => Promise<unknown> } }) {
+  // TS parser can't disambiguate type closing } from function body opening {
+});
+
+// CORRECT — any cast with eslint-disable
+ctx.msGraphClientFactory.getClient("3").then(function (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  client: any
+) {
+  client.api("/users").select("displayName,birthday").get().then(...);
+});
+```
+
 ### Current User Info (No hyperPermissions.getCurrentUser)
 
 `hyperPermissions` only exposes `getCurrentUserId()` and `getCurrentUserLoginName()`. For email, use SPFx page context directly:
@@ -1234,9 +1339,9 @@ These packages are installed and ready but have zero imports in the codebase so 
 - `@fluentui/react-components` (v9) — use for new component UI
 - `@fluentui/react-icons` — use for icon rendering
 - `@microsoft/mgt-spfx` — use for Graph Toolkit components (People, Person card, etc.)
-- ~~`zustand` (v4)~~ — **now used** in all web part stores (HyperHero, HyperNews, HyperSpotlight, HyperProfile, HyperTabs, HyperDirectory, HyperRollup, HyperNav, HyperEvents, HyperPoll, HyperSearch, HyperLinks, HyperCharts, HyperLert)
+- ~~`zustand` (v4)~~ — **now used** in all 17 web part stores
 - `immer` — use with zustand for immutable state updates
-- ~~`date-fns`~~ — **now used** in HyperEvents for all date math (month grids, week/day ranges, recurrence expansion, formatting)
+- ~~`date-fns`~~ — **now used** in HyperEvents (month grids, recurrence) and HyperBirthdays (MM-DD parsing, calendar grid, upcoming calculations)
 
 ---
 
