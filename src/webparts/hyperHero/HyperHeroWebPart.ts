@@ -13,7 +13,7 @@ import * as strings from "HyperHeroWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
 import HyperHero from "./components/HyperHero";
 import type { IHyperHeroComponentProps } from "./components/HyperHero";
-import type { IHyperHeroWebPartProps } from "./models";
+import type { IHyperHeroWebPartProps, IHyperHeroTile } from "./models";
 import {
   DEFAULT_TILE,
   DEFAULT_RESPONSIVE_LAYOUTS,
@@ -25,9 +25,22 @@ import {
 export default class HyperHeroWebPart extends BaseHyperWebPart<IHyperHeroWebPartProps> {
 
   public render(): void {
+    const self = this; // eslint-disable-line @typescript-eslint/no-this-alias
     const props: IHyperHeroComponentProps = {
       ...this.properties,
       instanceId: this.instanceId,
+      isEditMode: this.displayMode === 2,
+      onTilesChange: function (tiles: IHyperHeroTile[]): void {
+        self.properties.tiles = tiles;
+        self.render();
+      },
+      onSettingsChange: function (partial: Partial<IHyperHeroWebPartProps>): void {
+        Object.keys(partial).forEach(function (key: string) {
+          (self.properties as unknown as Record<string, unknown>)[key] =
+            (partial as unknown as Record<string, unknown>)[key];
+        });
+        self.render();
+      },
     };
     const element: React.ReactElement<IHyperHeroComponentProps> =
       React.createElement(HyperHero, props);
@@ -64,6 +77,9 @@ export default class HyperHeroWebPart extends BaseHyperWebPart<IHyperHeroWebPart
     }
     if (this.properties.title === undefined) {
       this.properties.title = "";
+    }
+    if (this.properties.wizardCompleted === undefined) {
+      this.properties.wizardCompleted = false;
     }
   }
 

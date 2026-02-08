@@ -1,0 +1,142 @@
+@import "~@fluentui/react/dist/sass/References.scss";
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: auto;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.overlayButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.editBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #ffffff;
+  border: 1px solid #0078d4;
+  color: #0078d4;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background: #f3f9ff;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
+}
+
+.deleteBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #ffffff;
+  border: 1px solid #a4262c;
+  color: #a4262c;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background: #fde7e9;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
+}
+
+.tileLabel {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  max-width: 80%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sortBadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #0078d4;
+  color: #ffffff;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+// Edit toolbar above the hero
+.editToolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  margin-bottom: 8px;
+}
+
+.toolbarBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #f3f2f1;
+  border: 1px solid #8a8886;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #323130;
+  cursor: pointer;
+
+  &:hover {
+    background: #edebe9;
+    border-color: #605e5c;
+  }
+}
+
+.toolbarBtnPrimary {
+  @extend .toolbarBtn;
+  background: #0078d4;
+  border-color: #0078d4;
+  color: #ffffff;
+
+  &:hover {
+    background: #106ebe;
+  }
+}

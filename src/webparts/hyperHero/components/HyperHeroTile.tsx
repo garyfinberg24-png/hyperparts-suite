@@ -6,14 +6,11 @@ import { HyperHeroCountdown } from "./HyperHeroCountdown";
 import { HyperHeroParallaxImage } from "./HyperHeroParallaxImage";
 import { HyperHeroVideoBackground } from "./HyperHeroVideoBackground";
 import { HyperHeroLottieBackground } from "./HyperHeroLottieBackground";
-import { HyperHeroEditOverlay } from "./HyperHeroEditOverlay";
 import styles from "./HyperHero.module.scss";
 
 export interface IHyperHeroTileProps {
   tile: IHyperHeroTile;
   onCtaClick?: (cta: IHyperHeroCta) => void;
-  isEditMode?: boolean;
-  onEditTile?: (tileId: string) => void;
 }
 
 const verticalAlignMap: Record<string, string> = {
@@ -29,7 +26,7 @@ const textAlignMap: Record<string, string> = {
 };
 
 const HyperHeroTileInner: React.FC<IHyperHeroTileProps> = (props) => {
-  const { tile, onCtaClick, isEditMode, onEditTile } = props;
+  const { tile, onCtaClick } = props;
 
   const tileClasses = [
     styles.tile,
@@ -85,13 +82,8 @@ const HyperHeroTileInner: React.FC<IHyperHeroTileProps> = (props) => {
     ctaEl
   );
 
-  // Edit mode overlay — shown only in edit mode
-  const editOverlay = isEditMode
-    ? React.createElement(HyperHeroEditOverlay, { tileId: tile.id, onEdit: onEditTile })
-    : undefined;
-
-  // Tile link wrapper — makes entire tile clickable (disabled in edit mode)
-  if (tile.tileLink && !isEditMode) {
+  // Tile link wrapper — makes entire tile clickable
+  if (tile.tileLink) {
     return React.createElement(
       "a",
       {
@@ -113,8 +105,7 @@ const HyperHeroTileInner: React.FC<IHyperHeroTileProps> = (props) => {
     { className: tileClasses, style: tileStyle },
     backgroundElement,
     gradientElement,
-    contentLayer,
-    editOverlay
+    contentLayer
   );
 };
 

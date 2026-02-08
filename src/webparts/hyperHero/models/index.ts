@@ -42,6 +42,7 @@ export type {
   IHyperHeroWebPartProps,
 } from "./IHyperHeroWebPartProps";
 export {
+  DEFAULT_HERO_FIELD_MAPPING,
   DEFAULT_CONTENT_BINDING,
   DEFAULT_AB_TESTING,
 } from "./IHyperHeroWebPartProps";

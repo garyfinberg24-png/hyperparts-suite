@@ -9,4 +9,5 @@ export { HyperHeroParallaxImage } from "./HyperHeroParallaxImage";
 export { HyperHeroVideoBackground } from "./HyperHeroVideoBackground";
 export { HyperHeroLottieBackground } from "./HyperHeroLottieBackground";
 export { HyperHeroTransitionWrapper } from "./HyperHeroTransitionWrapper";
-export { HyperHeroEditOverlay } from "./HyperHeroEditOverlay";
+export { HyperHeroEditOverlay, HyperHeroEditToolbar } from "./editor";
+export { HyperHeroTileEditor } from "./editor";

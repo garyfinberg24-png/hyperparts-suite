@@ -42,6 +42,18 @@ export interface IHyperHeroABTestConfig {
   trackingListName?: string;
 }
 
+/** Default field mapping for auto-created HyperHero lists */
+export const DEFAULT_HERO_FIELD_MAPPING: IHyperHeroFieldMapping = {
+  headingField: "HeroHeading",
+  subheadingField: "HeroSubheading",
+  descriptionField: "HeroDescription",
+  imageUrlField: "HeroImageUrl",
+  linkUrlField: "HeroLinkUrl",
+  publishDateField: "HeroPublishDate",
+  unpublishDateField: "HeroUnpublishDate",
+  sortOrderField: "HeroSortOrder",
+};
+
 /** Default content binding configuration */
 export const DEFAULT_CONTENT_BINDING: IHyperHeroContentBinding = {
   enabled: false,
@@ -68,4 +80,6 @@ export interface IHyperHeroWebPartProps extends IBaseHyperWebPartProps {
   abTesting: IHyperHeroABTestConfig;
   borderRadius: number;
   fullBleed: boolean;
+  /** Tracks whether the first-run setup wizard has been completed */
+  wizardCompleted: boolean;
 }
