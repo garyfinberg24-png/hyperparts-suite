@@ -101,6 +101,26 @@ HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 30+ web parts fo
 - No new dependencies
 - `gulp build` passes clean (0 errors, 0 warnings)
 
+### Phase 2, Step 2 Completed: HyperEvents (Calendar & Events)
+
+- All 13 features implemented across 4 sub-steps (E1/E2/E3/E4)
+- 6 views: Month (CSS Grid 7x6), Week (7-column time grid), Day (single-column time grid), Agenda (grouped-by-date list), Timeline (vertical alternating cards), CardGrid (responsive CSS Grid)
+- Multi-source event aggregation: SP Calendar lists (PnP), Exchange Calendar (Graph), Outlook Group Calendar (Graph)
+- Calendar overlay: per-source color coding with visibility toggle legend
+- RSVP: Going/Maybe/Declined buttons, SP list storage, current user detection, counts display
+- Registration forms: dynamic field builder (text/dropdown/checkbox/date), validation, SP list submission
+- Countdown timer: cross-imports `useCountdown` from HyperHero
+- Event detail panel: full info, RSVP buttons, countdown, Teams join URL, "Add to Outlook" via Graph POST /me/events, Google Maps location link, attendees list
+- Past events archive: gallery grid with pagination
+- Notifications: email via Graph `sendMail` API + Teams chat via Graph chat API (MSGraphClientV3)
+- Client-side filtering: date range, category, location, source, search text
+- Recurrence expansion: Graph recurrence pattern parsing, client-side occurrence expansion with date-fns
+- Enhanced 3-page property pane: dynamic source management (Add/Remove/MoveUp/MoveDown with conditional fields by source type), category management, registration field builder
+- Full ARIA: grid roles on calendar views, tablist for view modes, checkbox for category chips, dialog for detail panel, aria-required/aria-invalid on registration form
+- First web part to use `date-fns` v4.1.0
+- Web part ID: `e5a2f7c9-3d8b-4e6a-a1c4-9f2d7b5e8a3c`
+- `gulp build` passes clean (0 errors, 0 warnings)
+
 ### Next Up
 
 - Check MASTER_CONTEXT.md for next web part to build
@@ -110,7 +130,7 @@ HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 30+ web parts fo
 | Phase | Web Parts                                                                                                                                                                                              |
 | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 1     | HyperHero, HyperNews, **HyperTabs**, **HyperRollup**, **HyperSpotlight**, **HyperProfile**, **HyperDirectory** — ALL COMPLETE                                                                          |
-| 2     | **HyperNav** — COMPLETE, HyperEvents, HyperPoll, HyperMetrics, HyperSearch                                                                                                                             |
+| 2     | **HyperNav** — COMPLETE, **HyperEvents** — COMPLETE, HyperPoll, HyperMetrics, HyperSearch                                                                                                              |
 | 3     | HyperAction, HyperTicker, HyperFAQ, HyperBirthdays, HyperRecognition, HyperExplorer, HyperExternal, HyperTimeline, HyperBreadcrumb, HyperFeedback, HyperLocal, HyperLayout, HyperForms, HyperBanner    |
 
 ---
@@ -284,16 +304,27 @@ src/
     │   │   ├── HyperRollupTemplateView, DocPreview, InlineEdit, ViewManager, ActionButtons
     │   │   └── layouts/               # CardLayout (CSS Grid), TableLayout (sortable), KanbanLayout (lanes)
     │   └── loc/
-    └── hyperNav/                      # Navigation & quick links (13 features, 8 layouts)
-        ├── HyperNavWebPart.ts         # ID: d7a1f3e5-9b4c-4a8e-b2d6-1c5f8e3a7b9d
-        ├── models/                    # IHyperNavLink (recursive), IHyperNavGroup, IHyperNavIcon
-        ├── hooks/                     # useNavSearch, useNavAudienceFilter, useNavPersonalization, useNavLinkHealth, useNavAnalytics
-        ├── store/                     # Zustand store (~10 actions: search, groups, megaMenu, pins, health)
-        ├── utils/                     # linkUtils, searchUtils, audienceUtils, deepLinkUtils, externalLinkUtils
+    ├── hyperNav/                      # Navigation & quick links (13 features, 8 layouts)
+    │   ├── HyperNavWebPart.ts         # ID: d7a1f3e5-9b4c-4a8e-b2d6-1c5f8e3a7b9d
+    │   ├── models/                    # IHyperNavLink (recursive), IHyperNavGroup, IHyperNavIcon
+    │   ├── hooks/                     # useNavSearch, useNavAudienceFilter, useNavPersonalization, useNavLinkHealth, useNavAnalytics
+    │   ├── store/                     # Zustand store (~10 actions: search, groups, megaMenu, pins, health)
+    │   ├── utils/                     # linkUtils, searchUtils, audienceUtils, deepLinkUtils, externalLinkUtils
+    │   ├── components/
+    │   │   ├── HyperNav.tsx           # Main component with layout delegation + grouping
+    │   │   ├── HyperNavSearchBar, PinnedSection, LinkItem, GroupSection, HealthIndicator
+    │   │   └── layouts/               # Compact, Tiles, Grid, List, IconOnly, Card, MegaMenu, Sidebar
+    │   └── loc/
+    └── hyperEvents/                   # Calendar & events (13 features, 6 views)
+        ├── HyperEventsWebPart.ts      # ID: e5a2f7c9-3d8b-4e6a-a1c4-9f2d7b5e8a3c
+        ├── models/                    # IHyperEvent, IEventSource (discriminated union), IEventCategory, IEventFilter, IEventRsvp, IEventRegistration, IEventRecurrence, WebPartProps
+        ├── hooks/                     # useCalendarEvents, useEventFilters, useEventRsvp, useEventRegistration, useEventNotifications
+        ├── store/                     # Zustand store (~20 actions: view, date nav, detail, RSVP, filters, sources, registration)
+        ├── utils/                     # dateUtils (date-fns), recurrenceUtils, sourceUtils, eventMapper, outlookSync, calendarOverlay, sourceManager
         ├── components/
-        │   ├── HyperNav.tsx           # Main component with layout delegation + grouping
-        │   ├── HyperNavSearchBar, PinnedSection, LinkItem, GroupSection, HealthIndicator
-        │   └── layouts/               # Compact, Tiles, Grid, List, IconOnly, Card, MegaMenu, Sidebar
+        │   ├── HyperEvents.tsx        # Main component with view delegation + overlays
+        │   ├── Toolbar, CategoryBar, DetailPanel, RsvpButtons, Countdown, PastArchive, RegistrationForm, OverlayLegend
+        │   └── views/                 # MonthView, WeekView, DayView, AgendaView, TimelineView, CardGridView
         └── loc/
 ```
 
@@ -308,6 +339,7 @@ src/
 - **HyperDirectory Web Part ID:** `ac081972-faae-443f-82f9-da64e3139485`
 - **HyperRollup Web Part ID:** `b4e2c8a1-7f3d-4e9a-b5c6-2d8f1a3e7b9c`
 - **HyperNav Web Part ID:** `d7a1f3e5-9b4c-4a8e-b2d6-1c5f8e3a7b9d`
+- **HyperEvents Web Part ID:** `e5a2f7c9-3d8b-4e6a-a1c4-9f2d7b5e8a3c`
 - **Feature ID:** `4c137d6a-7e80-46c6-8936-e7f7639893bc`
 
 ---
@@ -325,7 +357,7 @@ getGraph(): GraphFI                           // Microsoft Graph — throws if n
 getContext(): WebPartContext                   // SPFx context — throws if not init'd
 ```
 
-**Imported PnP augmentations:** webs, lists, items, fields, site-users, search, users, groups, photos, teams.
+**Imported PnP augmentations:** webs, lists, items, fields, site-users, search, users, groups, photos, teams, calendars.
 
 ### HyperCache (`src/common/services/HyperCache.ts`)
 
@@ -549,7 +581,7 @@ Extends `@microsoft/eslint-config-spfx/lib/profiles/react`. Key enforced rules:
 | `@microsoft/mgt-spfx`        | 3.1.3   | Graph Toolkit for SPFx      | No        |
 | `zustand`                    | 4.5.7   | State management            | Yes       |
 | `immer`                      | 11.1.3  | Immutable state updates     | No        |
-| `date-fns`                   | 4.1.0   | Date utilities              | No        |
+| `date-fns`                   | 4.1.0   | Date utilities              | Yes       |
 | `lottie-web`                 | 5.12.2  | Lottie animations           | Yes       |
 | `react-masonry-css`          | 1.0.16  | Masonry layout              | Yes       |
 | `handlebars`                 | ^4.7    | Template engine             | Yes       |
@@ -801,6 +833,49 @@ this.memoryCache.forEach((_value, key) => {
 toDelete.forEach(key => this.memoryCache.delete(key));
 ```
 
+### MSGraphClientV3 for Direct Graph API Calls
+
+Use `MSGraphClientV3` (via `ctx.msGraphClientFactory.getClient("3")`) for Graph APIs not wrapped by PnP — specifically `sendMail`, Teams chat messages, and `POST /me/events`. PnP Graph does NOT have an `.api()` method.
+
+```typescript
+import { getContext } from "../../../common/services/HyperPnP";
+
+const ctx = getContext();
+const graphClient = await ctx.msGraphClientFactory.getClient("3");
+await graphClient.api("/me/sendMail").post({ message: { ... } });
+```
+
+### Current User Info (No hyperPermissions.getCurrentUser)
+
+`hyperPermissions` only exposes `getCurrentUserId()` and `getCurrentUserLoginName()`. For email, use SPFx page context directly:
+
+```typescript
+const ctx = getContext();
+const email = ctx.pageContext.user.email;
+const loginName = ctx.pageContext.user.loginName;
+```
+
+### Cross-Web-Part Imports
+
+Web parts can import hooks/utils from sibling web parts when needed. Example: HyperEvents imports `useCountdown` from HyperHero:
+
+```typescript
+import { useCountdown } from "../../hyperHero/hooks/useCountdown";
+```
+
+### Conditional Property Pane Fields by Type
+
+When a property pane has items with different types (e.g., event sources), show/hide fields based on the selected type using if-else in the field builder:
+
+```typescript
+if (source.type === "spCalendar") {
+  fields.push(PropertyPaneTextField("_srcListName" + i, { ... }));
+  fields.push(PropertyPaneTextField("_srcSiteUrl" + i, { ... }));
+} else if (source.type === "exchangeCalendar") {
+  fields.push(PropertyPaneTextField("_srcCalendarId" + i, { ... }));
+}
+```
+
 ### Web Part Scaffold
 
 ```typescript
@@ -849,9 +924,9 @@ These packages are installed and ready but have zero imports in the codebase so 
 - `@fluentui/react-components` (v9) — use for new component UI
 - `@fluentui/react-icons` — use for icon rendering
 - `@microsoft/mgt-spfx` — use for Graph Toolkit components (People, Person card, etc.)
-- ~~`zustand` (v4)~~ — **now used** in all web part stores (HyperHero, HyperNews, HyperSpotlight, HyperProfile, HyperTabs, HyperDirectory, HyperRollup, HyperNav)
+- ~~`zustand` (v4)~~ — **now used** in all web part stores (HyperHero, HyperNews, HyperSpotlight, HyperProfile, HyperTabs, HyperDirectory, HyperRollup, HyperNav, HyperEvents)
 - `immer` — use with zustand for immutable state updates
-- `date-fns` — use for date formatting, relative time, scheduling logic
+- ~~`date-fns`~~ — **now used** in HyperEvents for all date math (month grids, week/day ranges, recurrence expansion, formatting)
 
 ---
 
