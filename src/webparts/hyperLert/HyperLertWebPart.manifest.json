@@ -1,0 +1,41 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "a2b3c4d5-6e7f-8a9b-0c1d-2e3f4a5b6c7d",
+  "alias": "HyperLertWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": [
+    "SharePointWebPart",
+    "TeamsPersonalApp",
+    "TeamsTab",
+    "SharePointFullPage"
+  ],
+  "supportsThemeVariants": true,
+  "preconfiguredEntries": [
+    {
+      "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+      "group": { "default": "HyperParts" },
+      "title": { "default": "HyperLert" },
+      "description": { "default": "Alerting and notifications dashboard with rule builder, multi-channel delivery (email, Teams, banner), SP list and Graph API monitoring, and full alert history." },
+      "officeFabricIconFontName": "AlertSolid",
+      "properties": {
+        "title": "Alert Dashboard",
+        "rules": "",
+        "historyListName": "HyperLertHistory",
+        "enableEmail": true,
+        "enableTeams": false,
+        "enableBanner": true,
+        "defaultSeverity": "warning",
+        "maxBanners": 5,
+        "globalCooldownMinutes": 5,
+        "refreshInterval": 60,
+        "emailFromName": "HyperLert",
+        "defaultEmailTemplate": "",
+        "maxHistoryItems": 100,
+        "autoCreateList": true
+      }
+    }
+  ]
+}

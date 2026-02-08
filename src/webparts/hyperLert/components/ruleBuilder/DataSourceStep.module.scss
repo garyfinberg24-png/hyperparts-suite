@@ -1,0 +1,81 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+}
+
+.hint {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+}
+
+.input {
+  padding: 6px 10px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralPrimary;
+  background: $ms-color-white;
+
+  &:focus {
+    outline: none;
+    border-color: $ms-color-themePrimary;
+    box-shadow: 0 0 0 1px $ms-color-themePrimary;
+  }
+}
+
+.select {
+  composes: input;
+}
+
+.typeSelector {
+  display: flex;
+  gap: 12px;
+}
+
+.typeCard {
+  flex: 1;
+  padding: 16px;
+  border: 2px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 8px;
+  background: $ms-color-white;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.15s ease;
+
+  &:hover {
+    border-color: $ms-color-themePrimary;
+  }
+}
+
+.typeCardActive {
+  composes: typeCard;
+  border-color: $ms-color-themePrimary;
+  background: $ms-color-themeLighterAlt;
+}
+
+.typeName {
+  font-size: $ms-font-size-16;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  margin-bottom: 4px;
+}
+
+.typeDesc {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+}

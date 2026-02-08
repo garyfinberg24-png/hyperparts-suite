@@ -1,0 +1,69 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.filterBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: $ms-color-neutralLighter;
+  border-radius: 4px;
+  flex-wrap: wrap;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 180px;
+  padding: 6px 10px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  font-size: $ms-font-size-14;
+  background: $ms-color-white;
+  color: $ms-color-neutralPrimary;
+
+  &:focus {
+    outline: none;
+    border-color: $ms-color-themePrimary;
+    box-shadow: 0 0 0 1px $ms-color-themePrimary;
+  }
+
+  &::placeholder {
+    color: $ms-color-neutralTertiary;
+  }
+}
+
+.select {
+  padding: 6px 10px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  font-size: $ms-font-size-14;
+  background: $ms-color-white;
+  color: $ms-color-neutralPrimary;
+  min-width: 120px;
+
+  &:focus {
+    outline: none;
+    border-color: $ms-color-themePrimary;
+    box-shadow: 0 0 0 1px $ms-color-themePrimary;
+  }
+}
+
+.clearBtn {
+  padding: 6px 10px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  background: $ms-color-white;
+  color: $ms-color-neutralSecondary;
+  font-size: $ms-font-size-14;
+  cursor: pointer;
+
+  &:hover {
+    background: $ms-color-neutralLighterAlt;
+    color: $ms-color-neutralPrimary;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}

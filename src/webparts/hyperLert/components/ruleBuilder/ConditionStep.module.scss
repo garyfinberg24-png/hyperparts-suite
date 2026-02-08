@@ -1,0 +1,103 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.conditionRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 8px;
+  background: $ms-color-neutralLighterAlt;
+  flex-wrap: wrap;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 120px;
+}
+
+.label {
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralSecondary;
+}
+
+.input {
+  padding: 6px 8px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralPrimary;
+  background: $ms-color-white;
+
+  &:focus {
+    outline: none;
+    border-color: $ms-color-themePrimary;
+    box-shadow: 0 0 0 1px $ms-color-themePrimary;
+  }
+}
+
+.select {
+  composes: input;
+}
+
+.logicalBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  background: $ms-color-themePrimary;
+  color: $ms-color-white;
+  cursor: pointer;
+  margin-bottom: 8px;
+  align-self: center;
+}
+
+.removeBtn {
+  padding: 4px 8px;
+  border: 1px solid #d13438;
+  border-radius: 4px;
+  background: transparent;
+  color: #d13438;
+  font-size: $ms-font-size-12;
+  cursor: pointer;
+
+  &:hover {
+    background: #fde7e9;
+  }
+}
+
+.addBtn {
+  padding: 8px 16px;
+  border: 1px dashed $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  background: transparent;
+  color: $ms-color-themePrimary;
+  font-size: $ms-font-size-14;
+  cursor: pointer;
+  text-align: center;
+
+  &:hover {
+    background: $ms-color-themeLighterAlt;
+    border-color: $ms-color-themePrimary;
+  }
+}
+
+.emptyMessage {
+  text-align: center;
+  padding: 24px;
+  color: $ms-color-neutralSecondary;
+  font-size: $ms-font-size-14;
+}

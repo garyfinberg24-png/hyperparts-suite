@@ -1,0 +1,95 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.wizard {
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.stepIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid $ms-color-neutralTertiaryAlt;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralTertiary;
+  border-radius: 4px;
+}
+
+.stepActive {
+  composes: step;
+  color: $ms-color-themePrimary;
+  font-weight: $ms-font-weight-semibold;
+  background: $ms-color-themeLighterAlt;
+}
+
+.stepComplete {
+  composes: step;
+  color: $ms-color-neutralSecondary;
+}
+
+.stepSeparator {
+  width: 24px;
+  height: 2px;
+  background: $ms-color-neutralTertiaryAlt;
+  border-radius: 1px;
+}
+
+.stepContent {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.navButtons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid $ms-color-neutralTertiaryAlt;
+}
+
+.navBtn {
+  padding: 8px 16px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  background: $ms-color-white;
+  color: $ms-color-neutralPrimary;
+  font-size: $ms-font-size-14;
+  cursor: pointer;
+
+  &:hover {
+    background: $ms-color-neutralLighter;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.navBtnPrimary {
+  composes: navBtn;
+  background: $ms-color-themePrimary;
+  color: $ms-color-white;
+  border-color: $ms-color-themePrimary;
+
+  &:hover {
+    background: $ms-color-themeDarkAlt;
+  }
+}

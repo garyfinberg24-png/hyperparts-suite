@@ -1,0 +1,43 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  white-space: nowrap;
+}
+
+.active {
+  composes: badge;
+  background: #dff6dd;
+  color: #107c10;
+}
+
+.snoozed {
+  composes: badge;
+  background: #fff4ce;
+  color: #835c00;
+}
+
+.acknowledged {
+  composes: badge;
+  background: #edebe9;
+  color: #605e5c;
+}
+
+.expired {
+  composes: badge;
+  background: #f3f2f1;
+  color: #a19f9d;
+}
+
+.disabled {
+  composes: badge;
+  background: #f3f2f1;
+  color: #a19f9d;
+  font-style: italic;
+}

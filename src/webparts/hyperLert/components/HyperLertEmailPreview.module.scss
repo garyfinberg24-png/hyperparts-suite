@@ -1,0 +1,59 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.toggleBar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.toggleBtn {
+  padding: 6px 16px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  background: $ms-color-white;
+  color: $ms-color-neutralPrimary;
+  font-size: $ms-font-size-14;
+  cursor: pointer;
+
+  &:hover {
+    background: $ms-color-neutralLighter;
+  }
+}
+
+.toggleBtnActive {
+  composes: toggleBtn;
+  background: $ms-color-themePrimary;
+  color: $ms-color-white;
+  border-color: $ms-color-themePrimary;
+}
+
+.previewFrame {
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  padding: 16px;
+  background: $ms-color-white;
+  min-height: 300px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.templateCode {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: $ms-font-size-12;
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: 16px;
+  background: $ms-color-neutralLighter;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  min-height: 300px;
+  max-height: 500px;
+  overflow-y: auto;
+  color: $ms-color-neutralPrimary;
+}

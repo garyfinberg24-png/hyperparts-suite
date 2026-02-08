@@ -1,0 +1,71 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.title {
+  font-size: $ms-font-size-20;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  background: $ms-color-white;
+  color: $ms-color-neutralPrimary;
+  font-size: $ms-font-size-14;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: $ms-color-neutralLighter;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.btnPrimary {
+  composes: btn;
+  background: $ms-color-themePrimary;
+  color: $ms-color-white;
+  border-color: $ms-color-themePrimary;
+
+  &:hover {
+    background: $ms-color-themeDarkAlt;
+  }
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 12px;
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  background: $ms-color-themePrimary;
+  color: $ms-color-white;
+}

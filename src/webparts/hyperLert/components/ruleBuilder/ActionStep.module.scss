@@ -1,0 +1,119 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.channelCard {
+  padding: 16px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 8px;
+  background: $ms-color-white;
+}
+
+.channelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.channelName {
+  font-size: $ms-font-size-16;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+}
+
+.toggle {
+  appearance: none;
+  width: 40px;
+  height: 20px;
+  border-radius: 10px;
+  background: $ms-color-neutralTertiaryAlt;
+  position: relative;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: background 0.2s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: $ms-color-white;
+    transition: transform 0.2s ease;
+  }
+
+  &:checked {
+    background: $ms-color-themePrimary;
+
+    &::after {
+      transform: translateX(20px);
+    }
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 2px $ms-color-themePrimary;
+  }
+}
+
+.channelFields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+}
+
+.input {
+  padding: 6px 10px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralPrimary;
+  background: $ms-color-white;
+
+  &:focus {
+    outline: none;
+    border-color: $ms-color-themePrimary;
+    box-shadow: 0 0 0 1px $ms-color-themePrimary;
+  }
+}
+
+.textarea {
+  composes: input;
+  min-height: 80px;
+  resize: vertical;
+  font-family: $ms-font-family-fallbacks;
+}
+
+.previewBtn {
+  padding: 6px 12px;
+  border: 1px solid $ms-color-themePrimary;
+  border-radius: 4px;
+  background: transparent;
+  color: $ms-color-themePrimary;
+  font-size: $ms-font-size-12;
+  cursor: pointer;
+  align-self: flex-start;
+
+  &:hover {
+    background: $ms-color-themeLighterAlt;
+  }
+}

@@ -1,0 +1,119 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.card {
+  padding: 16px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 8px;
+  background: $ms-color-white;
+  border-left-width: 4px;
+  transition: box-shadow 0.15s ease;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.cardInfo {
+  composes: card;
+  border-left-color: #0078d4;
+}
+
+.cardWarning {
+  composes: card;
+  border-left-color: #ffaa44;
+}
+
+.cardCritical {
+  composes: card;
+  border-left-color: #d13438;
+}
+
+.cardSuccess {
+  composes: card;
+  border-left-color: #107c10;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.name {
+  font-size: $ms-font-size-16;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  margin: 0;
+}
+
+.meta {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  margin-bottom: 12px;
+}
+
+.metaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 12px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.actionBtn {
+  padding: 4px 10px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  background: $ms-color-white;
+  color: $ms-color-neutralPrimary;
+  font-size: $ms-font-size-12;
+  cursor: pointer;
+
+  &:hover {
+    background: $ms-color-neutralLighter;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.snoozeMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  background: $ms-color-white;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  position: absolute;
+  z-index: 10;
+}
+
+.snoozeOption {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 2px;
+  background: transparent;
+  color: $ms-color-neutralPrimary;
+  font-size: $ms-font-size-12;
+  cursor: pointer;
+  text-align: left;
+
+  &:hover {
+    background: $ms-color-neutralLighter;
+  }
+}
+
+.toggleContainer {
+  margin-left: auto;
+}

@@ -1,0 +1,102 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.historyTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: $ms-font-size-14;
+}
+
+.historyTable th {
+  text-align: left;
+  padding: 10px 12px;
+  background: $ms-color-neutralLighter;
+  color: $ms-color-neutralPrimary;
+  font-weight: $ms-font-weight-semibold;
+  border-bottom: 2px solid $ms-color-neutralTertiaryAlt;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+
+  &:hover {
+    background: $ms-color-neutralLight;
+  }
+}
+
+.historyTable td {
+  padding: 8px 12px;
+  border-bottom: 1px solid $ms-color-neutralLighterAlt;
+  color: $ms-color-neutralPrimary;
+  vertical-align: top;
+}
+
+.historyTable tr:hover td {
+  background: $ms-color-neutralLighterAlt;
+}
+
+.severityDot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.channelChip {
+  display: inline-block;
+  padding: 2px 6px;
+  margin-right: 4px;
+  border-radius: 4px;
+  font-size: $ms-font-size-10;
+  background: $ms-color-neutralLighter;
+  color: $ms-color-neutralSecondary;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.pageBtn {
+  padding: 6px 12px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  background: $ms-color-white;
+  color: $ms-color-neutralPrimary;
+  font-size: $ms-font-size-14;
+  cursor: pointer;
+
+  &:hover {
+    background: $ms-color-neutralLighter;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.pageInfo {
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralSecondary;
+}
+
+.emptyMessage {
+  text-align: center;
+  padding: 32px;
+  color: $ms-color-neutralSecondary;
+  font-size: $ms-font-size-14;
+}
+
+.sortIcon {
+  margin-left: 4px;
+  font-size: $ms-font-size-10;
+}
