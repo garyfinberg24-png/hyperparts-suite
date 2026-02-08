@@ -1,0 +1,53 @@
+@import '~@fluentui/react/dist/sass/References';
+
+.tickerContainer {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.tickerTop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.tickerBottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.tickerInline {
+  position: relative;
+}
+
+.severityNormal {
+  background-color: #deecf9;
+  color: #004578;
+}
+
+.severityWarning {
+  background-color: #fff4ce;
+  color: #8a6914;
+}
+
+.severityCritical {
+  background-color: #fde7e9;
+  color: #a80000;
+}
+
+.criticalOverride {
+  font-weight: 600;
+}
+
+.tickerContent {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 8px;
+}

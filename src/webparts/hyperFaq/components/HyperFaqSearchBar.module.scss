@@ -1,0 +1,69 @@
+@import "~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss";
+
+.searchContainer {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px 40px 10px 36px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  font-size: $ms-font-size-14;
+  font-family: $ms-font-family-fallbacks;
+  outline: none;
+  background-color: $ms-color-white;
+  color: $ms-color-neutralPrimary;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+
+  &:focus {
+    border-color: $ms-color-themePrimary;
+  }
+
+  &::placeholder {
+    color: $ms-color-neutralTertiary;
+  }
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: $ms-color-neutralTertiary;
+  font-size: $ms-font-size-14;
+  pointer-events: none;
+}
+
+.clearButton {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $ms-color-neutralSecondary;
+  font-size: $ms-font-size-14;
+  padding: 4px;
+  border-radius: 50%;
+
+  &:hover {
+    color: $ms-color-neutralPrimary;
+    background-color: $ms-color-neutralLighter;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+}
+
+.resultCount {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  margin-top: 4px;
+  padding-left: 4px;
+}

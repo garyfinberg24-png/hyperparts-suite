@@ -1,0 +1,37 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "d8e9f0a1-2b3c-4d5e-6f7a-8b9c0d1e2f3a",
+  "alias": "HyperTickerWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart", "TeamsPersonalApp", "TeamsTab", "SharePointFullPage"],
+  "supportsThemeVariants": true,
+
+  "preconfiguredEntries": [{
+    "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+    "group": { "default": "HyperParts" },
+    "title": { "default": "HyperTicker" },
+    "description": { "default": "News ticker and emergency banner with scrolling marquee, fading rotation, stacked cards, severity levels, SP list and RSS sources, and audience targeting." },
+    "officeFabricIconFontName": "Marquee",
+    "properties": {
+      "title": "News Ticker",
+      "displayMode": "scroll",
+      "direction": "left",
+      "position": "inline",
+      "speed": 5,
+      "pauseOnHover": true,
+      "scrollDurationMs": 30000,
+      "items": "[]",
+      "listName": "",
+      "listFilter": "",
+      "rssConfigs": "[]",
+      "autoRefreshInterval": 60,
+      "enableItemAudience": false,
+      "defaultSeverity": "normal",
+      "criticalOverrideBg": "#d13438",
+      "criticalOverrideText": "#ffffff"
+    }
+  }]
+}

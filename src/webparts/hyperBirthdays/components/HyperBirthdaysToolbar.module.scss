@@ -1,0 +1,86 @@
+@import "~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss";
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.title {
+  font-size: $ms-font-size-24;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  margin: 0;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.viewButton {
+  padding: 6px 12px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  background: $ms-color-white;
+  cursor: pointer;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  font-family: $ms-font-family-fallbacks;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: $ms-color-themePrimary;
+    color: $ms-color-themePrimary;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+}
+
+.viewButtonActive {
+  background-color: $ms-color-themePrimary;
+  color: $ms-color-white;
+  border-color: $ms-color-themePrimary;
+
+  &:hover {
+    background-color: $ms-color-themeDarkAlt;
+    color: $ms-color-white;
+    border-color: $ms-color-themeDarkAlt;
+  }
+}
+
+.navButton {
+  padding: 6px 10px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  background: $ms-color-white;
+  cursor: pointer;
+  color: $ms-color-neutralSecondary;
+  font-size: $ms-font-size-14;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: $ms-color-themePrimary;
+    color: $ms-color-themePrimary;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+}
+
+.monthLabel {
+  font-size: $ms-font-size-16;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  min-width: 140px;
+  text-align: center;
+}

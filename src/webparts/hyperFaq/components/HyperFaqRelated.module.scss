@@ -1,0 +1,47 @@
+@import "~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss";
+
+.relatedContainer {
+  padding: 8px 16px 4px 42px;
+  border-top: 1px solid $ms-color-neutralLighter;
+  margin-top: 8px;
+}
+
+.relatedLabel {
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralSecondary;
+  margin-bottom: 6px;
+}
+
+.relatedList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.relatedItem {
+  margin-bottom: 4px;
+}
+
+.relatedLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: $ms-font-size-14;
+  color: $ms-color-themePrimary;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 2px 0;
+  font-family: $ms-font-family-fallbacks;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+}

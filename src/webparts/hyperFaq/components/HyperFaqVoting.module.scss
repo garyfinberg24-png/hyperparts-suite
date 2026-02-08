@@ -1,0 +1,57 @@
+@import "~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss";
+
+.votingContainer {
+  display: flex;
+  align-items: center;
+  padding: 8px 0 4px 42px;
+  gap: 8px;
+}
+
+.votingLabel {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  margin-right: 4px;
+}
+
+.voteButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 16px;
+  background: $ms-color-white;
+  cursor: pointer;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  font-family: $ms-font-family-fallbacks;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    border-color: $ms-color-themePrimary;
+    color: $ms-color-themePrimary;
+    background-color: $ms-color-themeLighter;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.7;
+  }
+}
+
+.voteButtonActive {
+  border-color: $ms-color-themePrimary;
+  background-color: $ms-color-themeLighter;
+  color: $ms-color-themePrimary;
+  font-weight: $ms-font-weight-semibold;
+}
+
+.voteCount {
+  font-size: $ms-font-size-10;
+  color: $ms-color-neutralTertiary;
+}

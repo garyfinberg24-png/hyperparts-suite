@@ -1,0 +1,96 @@
+@import "~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss";
+
+.submitForm {
+  padding: 16px 0;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 10px 12px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  font-size: $ms-font-size-14;
+  font-family: $ms-font-family-fallbacks;
+  color: $ms-color-neutralPrimary;
+  resize: vertical;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: $ms-color-themePrimary;
+  }
+
+  &::placeholder {
+    color: $ms-color-neutralTertiary;
+  }
+}
+
+.footerButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.submitButton {
+  padding: 8px 20px;
+  background-color: $ms-color-themePrimary;
+  color: $ms-color-white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: $ms-font-size-14;
+  font-family: $ms-font-family-fallbacks;
+  font-weight: $ms-font-weight-semibold;
+
+  &:hover:not(:disabled) {
+    background-color: $ms-color-themeDarkAlt;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themeDark;
+    outline-offset: 2px;
+  }
+}
+
+.cancelButton {
+  padding: 8px 20px;
+  background-color: $ms-color-white;
+  color: $ms-color-neutralPrimary;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: $ms-font-size-14;
+  font-family: $ms-font-family-fallbacks;
+
+  &:hover {
+    background-color: $ms-color-neutralLighter;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+}
+
+.statusMessage {
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: $ms-font-size-14;
+}
+
+.statusSuccess {
+  background-color: #dff6dd;
+  color: #107c10;
+}
+
+.statusError {
+  background-color: #fde7e9;
+  color: #a4262c;
+}

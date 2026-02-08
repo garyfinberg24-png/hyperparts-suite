@@ -1,0 +1,85 @@
+@import "~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss";
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background-color: $ms-color-neutralLight;
+  border: 1px solid $ms-color-neutralLight;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.dayHeader {
+  background-color: $ms-color-neutralLighter;
+  padding: 8px 4px;
+  text-align: center;
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralSecondary;
+}
+
+.dayCell {
+  background-color: $ms-color-white;
+  min-height: 60px;
+  padding: 4px;
+  position: relative;
+  cursor: default;
+}
+
+.dayCellOtherMonth {
+  background-color: $ms-color-neutralLighterAlt;
+}
+
+.dayCellToday {
+  background-color: #e8f0fe;
+}
+
+.dayCellHasCelebrations {
+  cursor: pointer;
+
+  &:hover {
+    background-color: $ms-color-neutralLighter;
+  }
+}
+
+.dayNumber {
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-regular;
+  color: $ms-color-neutralPrimary;
+  margin-bottom: 2px;
+}
+
+.dayNumberToday {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: $ms-color-themePrimary;
+  color: $ms-color-white;
+  font-weight: $ms-font-weight-semibold;
+}
+
+.dayNumberOther {
+  color: $ms-color-neutralTertiary;
+}
+
+.celebrationDots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.celebrationDot {
+  font-size: $ms-font-size-10;
+  line-height: 1;
+}
+
+.expandedDay {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}

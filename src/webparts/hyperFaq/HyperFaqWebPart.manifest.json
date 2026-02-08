@@ -1,0 +1,35 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "e9f0a1b2-3c4d-5e6f-7a8b-9c0d1e2f3a4b",
+  "alias": "HyperFaqWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart", "TeamsPersonalApp", "TeamsTab", "SharePointFullPage"],
+  "supportsThemeVariants": true,
+
+  "preconfiguredEntries": [{
+    "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+    "group": { "default": "HyperParts" },
+    "title": { "default": "HyperFAQ" },
+    "description": { "default": "Searchable FAQ web part with accordion styles, helpful voting, Ask Guru submission, category grouping, deep linking, and related FAQs." },
+    "officeFabricIconFontName": "ChatBot",
+    "properties": {
+      "title": "FAQ",
+      "listName": "",
+      "reviewQueueListName": "",
+      "accordionStyle": "clean",
+      "sortMode": "alphabetical",
+      "enableSearch": true,
+      "enableVoting": true,
+      "enableSubmission": false,
+      "enableRelated": true,
+      "enableCategories": true,
+      "maxItems": 100,
+      "cacheDuration": 300,
+      "showViewCount": false,
+      "enableDeepLink": true
+    }
+  }]
+}

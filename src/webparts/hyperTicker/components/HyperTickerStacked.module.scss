@@ -1,0 +1,29 @@
+@import '~@fluentui/react/dist/sass/References';
+
+.stackedContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px;
+}
+
+.stackedCard {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: $ms-color-neutralLighter;
+}
+
+.stackedCardNormal {
+  border-left: 3px solid #0078d4;
+}
+
+.stackedCardWarning {
+  border-left: 3px solid #ffaa44;
+}
+
+.stackedCardCritical {
+  border-left: 3px solid #d13438;
+}

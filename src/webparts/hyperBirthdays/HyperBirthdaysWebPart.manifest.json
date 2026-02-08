@@ -1,0 +1,46 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "f0a1b2c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
+  "alias": "HyperBirthdaysWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart", "TeamsPersonalApp", "TeamsTab", "SharePointFullPage"],
+  "supportsThemeVariants": true,
+
+  "preconfiguredEntries": [{
+    "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+    "group": { "default": "HyperParts" },
+    "title": { "default": "HyperBirthdays" },
+    "description": { "default": "Celebrate birthdays, work anniversaries, weddings, new babies, graduations, retirements, promotions, and custom milestones with calendar views, animations, and Teams integration." },
+    "officeFabricIconFontName": "BirthdayCake",
+    "properties": {
+      "title": "Celebrations",
+      "viewMode": "upcomingList",
+      "timeRange": "thisMonth",
+      "enableEntraId": true,
+      "enableSpList": false,
+      "spListName": "",
+      "enableBirthdays": true,
+      "enableAnniversaries": true,
+      "enableWeddings": false,
+      "enableChildBirth": false,
+      "enableGraduation": false,
+      "enableRetirement": false,
+      "enablePromotion": false,
+      "enableCustom": false,
+      "messageTemplates": "{}",
+      "enableTeamsDeepLink": true,
+      "enableAnimations": true,
+      "animationType": "confetti",
+      "enableMilestoneBadges": true,
+      "enablePrivacyOptOut": false,
+      "optOutListName": "",
+      "enableManagerNotify": false,
+      "maxItems": 50,
+      "cacheDuration": 300,
+      "photoSize": 48
+    }
+  }]
+}

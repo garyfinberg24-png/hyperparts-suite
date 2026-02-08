@@ -113,6 +113,30 @@
           "manifest": "./src/webparts/hyperLert/HyperLertWebPart.manifest.json"
         }
       ]
+    },
+    "hyper-ticker-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hyperTicker/HyperTickerWebPart.js",
+          "manifest": "./src/webparts/hyperTicker/HyperTickerWebPart.manifest.json"
+        }
+      ]
+    },
+    "hyper-faq-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hyperFaq/HyperFaqWebPart.js",
+          "manifest": "./src/webparts/hyperFaq/HyperFaqWebPart.manifest.json"
+        }
+      ]
+    },
+    "hyper-birthdays-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hyperBirthdays/HyperBirthdaysWebPart.js",
+          "manifest": "./src/webparts/hyperBirthdays/HyperBirthdaysWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -130,6 +154,9 @@
     "HyperSearchWebPartStrings": "lib/webparts/hyperSearch/loc/{locale}.js",
     "HyperLinksWebPartStrings": "lib/webparts/hyperLinks/loc/{locale}.js",
     "HyperChartsWebPartStrings": "lib/webparts/hyperCharts/loc/{locale}.js",
-    "HyperLertWebPartStrings": "lib/webparts/hyperLert/loc/{locale}.js"
+    "HyperLertWebPartStrings": "lib/webparts/hyperLert/loc/{locale}.js",
+    "HyperTickerWebPartStrings": "lib/webparts/hyperTicker/loc/{locale}.js",
+    "HyperFaqWebPartStrings": "lib/webparts/hyperFaq/loc/{locale}.js",
+    "HyperBirthdaysWebPartStrings": "lib/webparts/hyperBirthdays/loc/{locale}.js"
   }
 }

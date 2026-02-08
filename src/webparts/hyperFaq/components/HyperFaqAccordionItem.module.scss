@@ -1,0 +1,117 @@
+@import "~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss";
+
+// ── Base item ──
+.accordionItem {
+  margin-bottom: 4px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+// ── Header ──
+.accordionHeader {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  font-family: $ms-font-family-fallbacks;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: $ms-color-neutralLighter;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.chevron {
+  margin-right: 10px;
+  font-size: $ms-font-size-12;
+  transition: transform 0.2s ease;
+  color: $ms-color-neutralSecondary;
+}
+
+.chevronExpanded {
+  transform: rotate(90deg);
+}
+
+.questionText {
+  flex: 1;
+}
+
+.viewCount {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralTertiary;
+  font-weight: $ms-font-weight-regular;
+  margin-left: 12px;
+  white-space: nowrap;
+}
+
+// ── Body ──
+.accordionBody {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.accordionBodyExpanded {
+  max-height: 5000px;
+}
+
+.answerContent {
+  padding: 4px 16px 16px 42px;
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralPrimary;
+  line-height: 1.6;
+
+  p { margin: 0 0 8px; }
+  a { color: $ms-color-themePrimary; }
+  ul, ol { padding-left: 20px; margin: 0 0 8px; }
+  img { max-width: 100%; height: auto; }
+}
+
+// ── Style variants ──
+.styleClean {
+  .accordionHeader {
+    border-bottom: 1px solid $ms-color-neutralLighter;
+  }
+}
+
+.styleBoxed {
+  background-color: $ms-color-neutralLighterAlt;
+  border: 1px solid $ms-color-neutralLight;
+  margin-bottom: 8px;
+}
+
+.styleBordered {
+  border: 1px solid $ms-color-neutralQuaternaryAlt;
+  border-left: 3px solid $ms-color-themePrimary;
+  margin-bottom: 8px;
+}
+
+.styleMinimal {
+  .accordionHeader {
+    padding: 8px 0;
+    font-weight: $ms-font-weight-regular;
+    color: $ms-color-themePrimary;
+    text-decoration: underline;
+
+    &:hover {
+      background: none;
+      text-decoration: none;
+    }
+  }
+
+  .answerContent {
+    padding-left: 0;
+  }
+}
