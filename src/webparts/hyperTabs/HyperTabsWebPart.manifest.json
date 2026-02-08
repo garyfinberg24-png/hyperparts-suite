@@ -1,0 +1,35 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "8f3c7a9e-2d6b-4e1f-a9c8-5b7d3e9f1a2c",
+  "alias": "HyperTabsWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart", "TeamsPersonalApp", "TeamsTab", "SharePointFullPage"],
+  "supportsThemeVariants": true,
+
+  "preconfiguredEntries": [{
+    "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+    "group": { "default": "HyperParts" },
+    "title": { "default": "HyperTabs" },
+    "description": { "default": "Container web part with Tab, Accordion, or Wizard views. Rich content panels with icons, deep linking, lazy loading, audience targeting, and responsive collapse." },
+    "officeFabricIconFontName": "BulletedList2",
+    "properties": {
+      "title": "",
+      "displayMode": "tabs",
+      "tabStyle": "horizontal",
+      "panels": "[{\"id\":\"panel-1\",\"title\":\"Tab 1\",\"contentType\":\"simple\",\"content\":\"<p>Enter your content here.</p>\",\"audienceTarget\":{\"enabled\":false,\"groups\":[],\"matchAll\":false},\"sortOrder\":0,\"enabled\":true},{\"id\":\"panel-2\",\"title\":\"Tab 2\",\"contentType\":\"simple\",\"content\":\"<p>Second tab content.</p>\",\"audienceTarget\":{\"enabled\":false,\"groups\":[],\"matchAll\":false},\"sortOrder\":1,\"enabled\":true}]",
+      "enableDeepLinking": true,
+      "enableLazyLoading": true,
+      "enableResponsiveCollapse": true,
+      "mobileBreakpoint": 768,
+      "defaultActivePanel": "",
+      "accordionMultiExpand": false,
+      "accordionExpandAll": false,
+      "wizardShowProgress": true,
+      "wizardLinearMode": false,
+      "animationEnabled": true
+    }
+  }]
+}

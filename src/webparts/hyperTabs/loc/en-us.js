@@ -1,0 +1,33 @@
+define([], function() {
+  return {
+    "PropertyPaneDescription": "Configure the HyperTabs web part",
+    "LayoutGroupName": "Layout & Appearance",
+    "PanelsGroupName": "Panels Management",
+    "AdvancedGroupName": "Advanced Settings",
+    "TitleFieldLabel": "Title",
+    "DisplayModeFieldLabel": "Display Mode",
+    "TabStyleFieldLabel": "Tab Style",
+    "AnimationEnabledLabel": "Enable Animations",
+    "PanelsJsonLabel": "Panels Configuration (JSON)",
+    "PanelsJsonDescription": "JSON array of panel objects. Each panel has id, title, contentType, content, etc.",
+    "PanelsPageDescription": "Add, edit, reorder, and remove content panels",
+    "AdvancedPageDescription": "Advanced configuration options",
+    "PanelHeaderPrefix": "Panel",
+    "PanelTitleLabel": "Title",
+    "PanelContentTypeLabel": "Content Type",
+    "MoveUpLabel": "Move Up",
+    "MoveDownLabel": "Move Down",
+    "RemovePanelLabel": "Remove Panel",
+    "AddPanelLabel": "Add New Panel",
+    "NewPanelDefaultTitle": "Tab",
+    "EnableDeepLinkingLabel": "Enable Deep Linking",
+    "EnableLazyLoadingLabel": "Enable Lazy Loading",
+    "EnableResponsiveCollapseLabel": "Auto-collapse to Accordion on Mobile",
+    "MobileBreakpointLabel": "Mobile Breakpoint (px)",
+    "DefaultActivePanelLabel": "Default Active Panel ID",
+    "AccordionMultiExpandLabel": "Allow Multiple Expanded Panels",
+    "AccordionExpandAllLabel": "Expand All by Default",
+    "WizardShowProgressLabel": "Show Progress Indicator",
+    "WizardLinearModeLabel": "Require Sequential Completion"
+  };
+});

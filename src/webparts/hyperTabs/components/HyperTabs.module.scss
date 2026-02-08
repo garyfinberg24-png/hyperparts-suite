@@ -1,0 +1,37 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+// ============================================================
+// HyperTabs Container
+// ============================================================
+
+.hyperTabsContainer {
+  position: relative;
+  width: 100%;
+  font-family: var(--fontFamilyBase, $ms-font-family-fallbacks);
+}
+
+.title {
+  margin: 0 0 16px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: "[theme:bodyText, default: #323130]";
+  color: var(--bodyText);
+  line-height: 1.4;
+}
+
+.emptyState {
+  padding: 40px 20px;
+  text-align: center;
+  color: "[theme:bodySubtext, default: #605e5c]";
+  color: var(--bodySubtext);
+}
+
+// ============================================================
+// High Contrast
+// ============================================================
+
+@media (prefers-contrast: high) {
+  .hyperTabsContainer {
+    border: 1px solid currentColor;
+  }
+}
