@@ -1,0 +1,118 @@
+@import '~@fluentui/react/dist/sass/References';
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 0;
+  border-bottom: 1px solid "[theme:neutralLight, default:#edebe9]";
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 200px;
+  max-width: 400px;
+  padding: 6px 12px;
+  border: 1px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+
+  &:focus {
+    border-color: "[theme:themePrimary, default:#0078d4]";
+  }
+}
+
+.viewModeGroup {
+  display: flex;
+  gap: 2px;
+  border: 1px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.viewModeButton {
+  padding: 6px 10px;
+  border: none;
+  background: "[theme:neutralLighter, default:#f3f2f1]";
+  cursor: pointer;
+  font-size: 13px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+
+  &:hover {
+    background: "[theme:neutralLight, default:#edebe9]";
+  }
+}
+
+.viewModeButtonActive {
+  background: "[theme:themePrimary, default:#0078d4]";
+  color: "[theme:white, default:#ffffff]";
+
+  &:hover {
+    background: "[theme:themeDarkAlt, default:#106ebe]";
+  }
+}
+
+.sortGroup {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sortSelect {
+  padding: 6px 8px;
+  border: 1px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
+  border-radius: 4px;
+  font-size: 13px;
+  background: "[theme:white, default:#ffffff]";
+}
+
+.sortDirectionButton {
+  padding: 6px 8px;
+  border: 1px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
+  border-radius: 4px;
+  background: "[theme:neutralLighter, default:#f3f2f1]";
+  cursor: pointer;
+  font-size: 13px;
+
+  &:hover {
+    background: "[theme:neutralLight, default:#edebe9]";
+  }
+}
+
+.actionGroup {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.actionButton {
+  padding: 6px 12px;
+  border: 1px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
+  border-radius: 4px;
+  background: "[theme:white, default:#ffffff]";
+  cursor: pointer;
+  font-size: 13px;
+  color: "[theme:neutralPrimary, default:#323130]";
+
+  &:hover {
+    background: "[theme:neutralLighter, default:#f3f2f1]";
+  }
+}
+
+.uploadButton {
+  background: "[theme:themePrimary, default:#0078d4]";
+  color: "[theme:white, default:#ffffff]";
+  border-color: "[theme:themePrimary, default:#0078d4]";
+
+  &:hover {
+    background: "[theme:themeDarkAlt, default:#106ebe]";
+  }
+}
+
+.selectionInfo {
+  font-size: 13px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  padding: 0 8px;
+}

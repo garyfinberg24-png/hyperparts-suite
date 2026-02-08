@@ -1,0 +1,45 @@
+@import '~@fluentui/react/dist/sass/References';
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+  font-size: 14px;
+  flex-wrap: wrap;
+}
+
+.breadcrumbItem {
+  padding: 2px 6px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: "[theme:themePrimary, default:#0078d4]";
+  border-radius: 2px;
+  font-size: 14px;
+
+  &:hover {
+    background: "[theme:themeLighter, default:#deecf9]";
+    text-decoration: underline;
+  }
+}
+
+.breadcrumbItemCurrent {
+  color: "[theme:neutralPrimary, default:#323130]";
+  font-weight: 600;
+  cursor: default;
+
+  &:hover {
+    background: none;
+    text-decoration: none;
+  }
+}
+
+.separator {
+  color: "[theme:neutralTertiary, default:#a19f9d]";
+  user-select: none;
+}
+
+.rootIcon {
+  font-size: 16px;
+}

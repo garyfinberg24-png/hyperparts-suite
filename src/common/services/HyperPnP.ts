@@ -7,6 +7,8 @@ import "@pnp/sp/lists";
 import "@pnp/sp/items";
 import "@pnp/sp/fields";
 import "@pnp/sp/site-users";
+import "@pnp/sp/folders";
+import "@pnp/sp/files";
 import "@pnp/sp/search";
 import "@pnp/graph/users";
 import "@pnp/graph/groups";
