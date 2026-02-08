@@ -1,0 +1,77 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.pastArchive {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid $ms-color-neutralLighter;
+}
+
+.pastArchiveHeader {
+  font-size: $ms-font-size-16;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralSecondary;
+}
+
+.pastArchiveGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.pastArchiveCard {
+  background: $ms-color-white;
+  border: 1px solid $ms-color-neutralLight;
+  border-radius: 6px;
+  padding: 12px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.15s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.pastArchiveCardTitle {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  margin-bottom: 4px;
+}
+
+.pastArchiveCardDate {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+}
+
+.pastArchivePagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding-top: 8px;
+}
+
+.pastArchivePaginationButton {
+  padding: 4px 12px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  background: $ms-color-white;
+  cursor: pointer;
+  font-size: $ms-font-size-12;
+
+  &:hover {
+    background: $ms-color-neutralLighterAlt;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}

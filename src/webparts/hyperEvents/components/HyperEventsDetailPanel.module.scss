@@ -1,0 +1,110 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.detailPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  max-width: 480px;
+}
+
+.detailHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detailColorBar {
+  height: 4px;
+  border-radius: 2px;
+  margin: -16px -16px 0;
+}
+
+.detailTitle {
+  font-size: $ms-font-size-20;
+  font-weight: $ms-font-weight-bold;
+  color: $ms-color-neutralPrimary;
+}
+
+.detailSection {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detailLabel {
+  font-size: $ms-font-size-10;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralSecondary;
+  text-transform: uppercase;
+}
+
+.detailValue {
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralPrimary;
+}
+
+.detailRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detailActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 8px;
+  border-top: 1px solid $ms-color-neutralLighter;
+}
+
+.detailActionButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  background: $ms-color-white;
+  cursor: pointer;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralPrimary;
+  transition: background 0.1s ease;
+  text-decoration: none;
+
+  &:hover {
+    background: $ms-color-neutralLighterAlt;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.detailDescription {
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralSecondary;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.detailAttendees {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.detailAttendeeBadge {
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: $ms-color-neutralLighter;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralPrimary;
+}
+
+.detailRecurrence {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  font-style: italic;
+}

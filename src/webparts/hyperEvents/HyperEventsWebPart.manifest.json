@@ -1,0 +1,41 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "e5a2f7c9-3d8b-4e6a-a1c4-9f2d7b5e8a3c",
+  "alias": "HyperEventsWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart", "TeamsPersonalApp", "TeamsTab", "SharePointFullPage"],
+  "supportsThemeVariants": true,
+
+  "preconfiguredEntries": [{
+    "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+    "group": { "default": "HyperParts" },
+    "title": { "default": "HyperEvents" },
+    "description": { "default": "Calendar and events web part with 6 views, multi-source aggregation, RSVP, registration forms, countdown, notifications, and calendar overlay." },
+    "officeFabricIconFontName": "Calendar",
+    "properties": {
+      "title": "Events",
+      "sources": "[]",
+      "viewMode": "month",
+      "defaultView": "month",
+      "categories": "[]",
+      "enableRsvp": false,
+      "enableRegistration": false,
+      "enableCountdown": false,
+      "countdownEventId": "",
+      "enableNotifications": false,
+      "enableCategoryFilter": true,
+      "enableLocationLinks": true,
+      "enableVirtualLinks": true,
+      "enablePastArchive": false,
+      "showCalendarOverlay": false,
+      "registrationListName": "",
+      "rsvpListName": "",
+      "registrationFields": "[]",
+      "refreshInterval": 0,
+      "cacheDuration": 300
+    }
+  }]
+}

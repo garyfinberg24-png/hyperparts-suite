@@ -1,0 +1,84 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.hyperEventsToolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  flex-wrap: wrap;
+}
+
+.hyperEventsToolbarNav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hyperEventsToolbarNavButton {
+  background: transparent;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralPrimary;
+  min-width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: $ms-color-neutralLighter;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.hyperEventsToolbarDateLabel {
+  font-size: $ms-font-size-18;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  min-width: 180px;
+  text-align: center;
+}
+
+.hyperEventsToolbarViewButtons {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+}
+
+.hyperEventsToolbarViewButton {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+
+  &:hover {
+    background: $ms-color-neutralLighter;
+    color: $ms-color-neutralPrimary;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.hyperEventsToolbarViewButtonActive {
+  background: $ms-color-themePrimary;
+  color: $ms-color-white;
+  border-color: $ms-color-themePrimary;
+
+  &:hover {
+    background: $ms-color-themeDarkAlt;
+    color: $ms-color-white;
+  }
+}

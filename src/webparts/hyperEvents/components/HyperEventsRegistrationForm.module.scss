@@ -1,0 +1,96 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.registrationForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 8px;
+}
+
+.registrationField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.registrationFieldLabel {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+}
+
+.registrationFieldRequired {
+  color: $ms-color-red;
+  margin-left: 2px;
+}
+
+.registrationFieldInput {
+  padding: 6px 10px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralPrimary;
+  outline: none;
+
+  &:focus {
+    border-color: $ms-color-themePrimary;
+  }
+}
+
+.registrationFieldInputInvalid {
+  border-color: $ms-color-red;
+}
+
+.registrationFieldSelect {
+  padding: 6px 10px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  font-size: $ms-font-size-14;
+  background: $ms-color-white;
+  outline: none;
+
+  &:focus {
+    border-color: $ms-color-themePrimary;
+  }
+}
+
+.registrationFieldCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.registrationFieldError {
+  font-size: $ms-font-size-12;
+  color: $ms-color-red;
+}
+
+.registrationSubmit {
+  padding: 8px 20px;
+  border-radius: 4px;
+  border: none;
+  background: $ms-color-themePrimary;
+  color: $ms-color-white;
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  cursor: pointer;
+  align-self: flex-start;
+
+  &:hover {
+    background: $ms-color-themeDarkAlt;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.registrationSuccess {
+  font-size: $ms-font-size-14;
+  color: $ms-color-green;
+  font-weight: $ms-font-weight-semibold;
+  padding: 12px;
+  text-align: center;
+}

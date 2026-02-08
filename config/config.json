@@ -65,6 +65,14 @@
           "manifest": "./src/webparts/hyperNav/HyperNavWebPart.manifest.json"
         }
       ]
+    },
+    "hyper-events-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hyperEvents/HyperEventsWebPart.js",
+          "manifest": "./src/webparts/hyperEvents/HyperEventsWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -76,6 +84,7 @@
     "HyperTabsWebPartStrings": "lib/webparts/hyperTabs/loc/{locale}.js",
     "HyperDirectoryWebPartStrings": "lib/webparts/hyperDirectory/loc/{locale}.js",
     "HyperRollupWebPartStrings": "lib/webparts/hyperRollup/loc/{locale}.js",
-    "HyperNavWebPartStrings": "lib/webparts/hyperNav/loc/{locale}.js"
+    "HyperNavWebPartStrings": "lib/webparts/hyperNav/loc/{locale}.js",
+    "HyperEventsWebPartStrings": "lib/webparts/hyperEvents/loc/{locale}.js"
   }
 }

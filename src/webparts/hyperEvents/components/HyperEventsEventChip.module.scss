@@ -1,0 +1,47 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.hyperEventsEventChip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: $ms-font-size-10;
+  line-height: 1.4;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transition: opacity 0.15s ease;
+
+  &:hover {
+    opacity: 0.85;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -1px;
+  }
+}
+
+.hyperEventsEventChipDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.hyperEventsEventChipTitle {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.hyperEventsEventChipTime {
+  color: $ms-color-neutralSecondary;
+  flex-shrink: 0;
+}
+
+.hyperEventsEventChipAllDay {
+  font-weight: $ms-font-weight-semibold;
+}

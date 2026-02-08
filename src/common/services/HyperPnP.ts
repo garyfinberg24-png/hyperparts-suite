@@ -12,6 +12,7 @@ import "@pnp/graph/users";
 import "@pnp/graph/groups";
 import "@pnp/graph/photos";
 import "@pnp/graph/teams";
+import "@pnp/graph/calendars";
 
 let _sp: SPFI | undefined;
 let _graph: GraphFI | undefined;

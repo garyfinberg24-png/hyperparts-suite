@@ -1,0 +1,42 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.overlayLegend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  flex-wrap: wrap;
+}
+
+.overlayLegendItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 2px 8px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 12px;
+  background: $ms-color-white;
+  font-size: $ms-font-size-12;
+  transition: opacity 0.15s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.overlayLegendItemHidden {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+
+.overlayLegendDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.overlayLegendLabel {
+  color: $ms-color-neutralPrimary;
+}

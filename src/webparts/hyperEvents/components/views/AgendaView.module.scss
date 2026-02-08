@@ -1,0 +1,77 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.agendaView {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.agendaDateGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.agendaDateHeader {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  padding: 8px 0 4px;
+  border-bottom: 1px solid $ms-color-neutralLighter;
+}
+
+.agendaDateHeaderToday {
+  color: $ms-color-themePrimary;
+}
+
+.agendaItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.1s ease;
+
+  &:hover {
+    background: $ms-color-neutralLighterAlt;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.agendaItemColorBar {
+  width: 4px;
+  min-height: 40px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+.agendaItemTime {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  min-width: 80px;
+  flex-shrink: 0;
+}
+
+.agendaItemContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.agendaItemTitle {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+}
+
+.agendaItemLocation {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+}

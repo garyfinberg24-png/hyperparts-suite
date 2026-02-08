@@ -1,0 +1,92 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.dayViewContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.dayViewAllDay {
+  padding: 8px;
+  background: $ms-color-neutralLighterAlt;
+  border: 1px solid $ms-color-neutralLight;
+  border-radius: 4px 4px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-height: 32px;
+}
+
+.dayViewAllDayLabel {
+  font-size: $ms-font-size-10;
+  color: $ms-color-neutralSecondary;
+  font-weight: $ms-font-weight-semibold;
+  margin-right: 8px;
+  align-self: center;
+}
+
+.dayViewGrid {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 1px;
+  background: $ms-color-neutralLight;
+  border: 1px solid $ms-color-neutralLight;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  overflow: auto;
+  max-height: 600px;
+}
+
+.dayViewTimeLabel {
+  background: $ms-color-neutralLighterAlt;
+  padding: 2px 8px;
+  font-size: $ms-font-size-10;
+  color: $ms-color-neutralTertiary;
+  text-align: right;
+  height: 48px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.dayViewTimeCell {
+  background: $ms-color-white;
+  height: 48px;
+  position: relative;
+  border-top: 1px solid $ms-color-neutralLighter;
+}
+
+.dayViewEventBlock {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: $ms-font-size-12;
+  overflow: hidden;
+  cursor: pointer;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  &:hover {
+    opacity: 0.85;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -1px;
+  }
+}
+
+.dayViewEventBlockTitle {
+  font-weight: $ms-font-weight-semibold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dayViewEventBlockTime {
+  font-size: $ms-font-size-10;
+  opacity: 0.8;
+}

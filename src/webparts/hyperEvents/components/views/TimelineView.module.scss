@@ -1,0 +1,83 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.timelineView {
+  position: relative;
+  padding: 16px 0;
+}
+
+.timelineLine {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: $ms-color-neutralLight;
+  transform: translateX(-50%);
+}
+
+.timelineItem {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.timelineItemLeft {
+  flex-direction: row;
+}
+
+.timelineItemRight {
+  flex-direction: row-reverse;
+}
+
+.timelineItemContent {
+  width: 45%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: $ms-color-white;
+  border: 1px solid $ms-color-neutralLight;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.timelineItemDot {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid $ms-color-white;
+  z-index: 1;
+}
+
+.timelineItemSpacer {
+  width: 45%;
+}
+
+.timelineItemTitle {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  margin-bottom: 4px;
+}
+
+.timelineItemTime {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  margin-bottom: 4px;
+}
+
+.timelineItemLocation {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralTertiary;
+}

@@ -1,0 +1,50 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.hyperEventsCategoryBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  flex-wrap: wrap;
+}
+
+.hyperEventsCategoryChip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 16px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  background: $ms-color-white;
+  cursor: pointer;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralPrimary;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: $ms-color-neutralLighter;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.hyperEventsCategoryChipActive {
+  border-color: transparent;
+  color: $ms-color-white;
+}
+
+.hyperEventsCategoryChipDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.hyperEventsCategoryBarLabel {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  font-weight: $ms-font-weight-semibold;
+}

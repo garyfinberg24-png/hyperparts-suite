@@ -1,0 +1,30 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.hyperEvents {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  font-family: $ms-font-family-fallbacks;
+}
+
+.hyperEventsBody {
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+}
+
+.hyperEventsContent {
+  flex: 1 1 auto;
+}
+
+.hyperEventsPlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+  text-align: center;
+  color: $ms-color-neutralSecondary;
+  font-size: $ms-font-size-14;
+}
