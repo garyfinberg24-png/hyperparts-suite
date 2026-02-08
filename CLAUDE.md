@@ -257,6 +257,31 @@ HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 30+ web parts fo
   - No new npm dependencies (uses existing date-fns)
   - `gulp build` passes clean (0 errors, 0 warnings)
 
+### Phase 3, Step 4 Completed: HyperSlider (Slider Revolution-class)
+
+- All features implemented across 2 sub-steps (SL1/SL2)
+- **Layer-based composition system:** Each slide contains independently positioned + animated layers
+- 8 layer types: Text (HTML), Image (objectFit/mask), Video (MP4/YouTube/Vimeo), Button (4 variants), Shape (SVG), Icon (Fluent), Lottie (dynamic import), Group (recursive children)
+- 4 slider modes: Slider (standard auto-advance), Carousel (CSS scroll-snap 3-up), Hero (single static), BeforeAfter (draggable image comparison)
+- 14 slide transition types: fade, slideH, slideV, zoom, zoomOut, rotate, cube3D, flip3D, coverflow3D, kenBurns, wipe, curtain, blinds, crossFade
+- 48 CSS keyframe animations: 16 entrance (fade/fadeUp/fadeDown/fadeLeft/fadeRight/zoomIn/zoomOut/rotateIn/bounceIn/elasticIn/slideUp/slideDown/slideLeft/slideRight/typewriter/none) + 16 exit (mirrors) + 8 loop (pulse/pendulum/wave/wiggle/rotate/float/blink) + 7 hover effects (scale/rotate/brightness/blur/shadow/lift)
+- 6 navigation components: Arrows (4 styles), Bullets (4 styles), Thumbnails (filmstrip), Tabs (text labels), Progress (animated bar), SlideCount (numeric)
+- 5 effects: ParticleOverlay (5 shapes), BeforeAfterSlider (H/V drag), TypewriterEffect (char-by-char), RevealEffect (clip-path), SnowOverlay (CSS falling)
+- Particle system: 5 shapes (circle/square/triangle/star/snow), configurable count/size/speed/direction/opacity/color
+- Ken Burns pan+zoom on background images
+- Multi-layer parallax scrolling with per-layer speed
+- Responsive layer positioning: per-breakpoint visibility + position/size overrides
+- Dynamic content: SP list binding via useListItems + field mapping
+- Keyboard navigation: Left/Right/Home/End/Space, swipe/drag with threshold detection
+- Full ARIA: role=region, aria-roledescription=carousel, role=tablist/tab for navigation
+- 4-page property pane: General, Transitions & Autoplay, Navigation, Content & Effects
+- Zustand store (~25 actions), 9 hooks, 6 utils, 11 model files (~80 exports)
+- `mergeStyles()` helper for combining CSSProperties in ES5 (replaces Object.assign)
+- Web part ID: `c1d2e3f4-5a6b-7c8d-9e0f-1a2b3c4d5e6f`
+- Bundle #18: `hyper-slider-web-part`
+- No new npm dependencies (reuses existing lottie-web)
+- 78 files changed, `gulp build` passes clean (0 errors, 0 warnings)
+
 ### Next Up
 
 - Check MASTER_CONTEXT.md for next web part to build (remaining Phase 3 web parts)
@@ -266,8 +291,8 @@ HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 30+ web parts fo
 | Phase | Web Parts                                                                                                                                                                                                                                                                       |
 | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1     | **HyperHero**, **HyperNews**, **HyperTabs**, **HyperRollup**, **HyperSpotlight**, **HyperProfile**, **HyperDirectory** — ALL COMPLETE                                                                                                                                           |
-| 2     | **HyperNav**, **HyperEvents**, **HyperPoll**, **HyperSearch**, **HyperLinks**, **HyperCharts**, **HyperLert** — ALL COMPLETE, HyperSlider (new)                                                                                                                                 |
-| 3     | **HyperTicker** — COMPLETE, **HyperFAQ** — COMPLETE, **HyperBirthdays** — COMPLETE, HyperAction, HyperRecognition, HyperExplorer, HyperExternal, HyperTimeline, HyperBreadcrumb, HyperFeedback, HyperLocal, HyperLayout, HyperForms, HyperBanner                                |
+| 2     | **HyperNav**, **HyperEvents**, **HyperPoll**, **HyperSearch**, **HyperLinks**, **HyperCharts**, **HyperLert** — ALL COMPLETE                                                                                                                                                    |
+| 3     | **HyperTicker** — COMPLETE, **HyperFAQ** — COMPLETE, **HyperBirthdays** — COMPLETE, **HyperSlider** — COMPLETE, HyperAction, HyperRecognition, HyperExplorer, HyperExternal, HyperTimeline, HyperBreadcrumb, HyperFeedback, HyperLocal, HyperLayout, HyperForms, HyperBanner    |
 
 ---
 
@@ -560,21 +585,36 @@ src/
     │   │   ├── HyperFaqRelated        # Up to 3 related items by category + tag match
     │   │   └── HyperFaqSubmitModal    # "Ask Guru" → review queue SP list
     │   └── loc/
-    └── hyperBirthdays/                # Celebrations hub (8 types, 3 views, animations)
-        ├── HyperBirthdaysWebPart.ts   # ID: f0a1b2c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c
-        ├── models/                    # ICelebration, ICelebrationType (8 configs), IMilestoneBadge (7 badges), WebPartProps
-        ├── hooks/                     # useCelebrationData (Entra+SP), useCelebrationPhotos, useCelebrationCalendar, usePrivacyOptOut
-        ├── store/                     # Zustand store (~12 actions: month/year nav, view mode, enabled types)
-        ├── utils/                     # dateHelpers (MM-DD parsing, isToday/Week/Month), celebrationUtils (upcoming, milestones, Teams link, wish messages)
+    ├── hyperBirthdays/                # Celebrations hub (8 types, 3 views, animations)
+    │   ├── HyperBirthdaysWebPart.ts   # ID: f0a1b2c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c
+    │   ├── models/                    # ICelebration, ICelebrationType (8 configs), IMilestoneBadge (7 badges), WebPartProps
+    │   ├── hooks/                     # useCelebrationData (Entra+SP), useCelebrationPhotos, useCelebrationCalendar, usePrivacyOptOut
+    │   ├── store/                     # Zustand store (~12 actions: month/year nav, view mode, enabled types)
+    │   ├── utils/                     # dateHelpers (MM-DD parsing, isToday/Week/Month), celebrationUtils (upcoming, milestones, Teams link, wish messages)
+    │   ├── components/
+    │   │   ├── HyperBirthdays.tsx     # Main component with view delegation + animation overlay
+    │   │   ├── HyperBirthdaysToolbar  # View toggle (list/calendar/carousel), month nav arrows
+    │   │   ├── HyperBirthdaysCard     # Photo + initials fallback, emoji, milestone badge, Teams wish button
+    │   │   ├── HyperBirthdaysUpcomingList  # Today / This Week / This Month grouped sections
+    │   │   ├── HyperBirthdaysMonthCalendar # CSS Grid 7x6, celebration emoji dots, click-expand day
+    │   │   ├── HyperBirthdaysCardCarousel  # CSS scroll-snap horizontal, prev/next arrows
+    │   │   ├── HyperBirthdaysMilestoneBadge # Colored badge with years + icon
+    │   │   └── HyperBirthdaysAnimation # Pure CSS confetti/balloons/sparkle, auto-dismiss 3.5s
+    │   └── loc/
+    └── hyperSlider/                   # Slider Revolution-class slider (8 layer types, 48 animations)
+        ├── HyperSliderWebPart.ts      # ID: c1d2e3f4-5a6b-7c8d-9e0f-1a2b3c4d5e6f
+        ├── models/                    # 11 model files (~80 exports): ISliderSlide, ISliderLayer, 8 layer configs, transitions, animations, navigation, particles, beforeAfter, responsive, WebPartProps
+        ├── hooks/                     # useSliderEngine, useSliderNavigation, useLayerAnimations, useSliderParallax, useSliderPreload, useSliderDynamicContent, useBeforeAfter, useSliderParticles
+        ├── store/                     # Zustand store (~25 actions: slide nav, transitions, autoplay, edit, responsive, particles, beforeAfter, history)
+        ├── utils/                     # sliderUtils, animationUtils, transitionUtils, particleUtils, responsiveUtils, layerUtils
         ├── components/
-        │   ├── HyperBirthdays.tsx     # Main component with view delegation + animation overlay
-        │   ├── HyperBirthdaysToolbar  # View toggle (list/calendar/carousel), month nav arrows
-        │   ├── HyperBirthdaysCard     # Photo + initials fallback, emoji, milestone badge, Teams wish button
-        │   ├── HyperBirthdaysUpcomingList  # Today / This Week / This Month grouped sections
-        │   ├── HyperBirthdaysMonthCalendar # CSS Grid 7x6, celebration emoji dots, click-expand day
-        │   ├── HyperBirthdaysCardCarousel  # CSS scroll-snap horizontal, prev/next arrows
-        │   ├── HyperBirthdaysMilestoneBadge # Colored badge with years + icon
-        │   └── HyperBirthdaysAnimation # Pure CSS confetti/balloons/sparkle, auto-dismiss 3.5s
+        │   ├── HyperSlider.tsx        # Main orchestrator (4 slider modes)
+        │   ├── HyperSliderSlide       # Background (image/video/Lottie/gradient) + layers
+        │   ├── HyperSliderLayer       # Layer renderer with 48 CSS keyframe animations
+        │   ├── HyperSliderEditOverlay # Edit mode overlay
+        │   ├── layers/                # TextLayer, ImageLayer, VideoLayer, ButtonLayer, ShapeLayer, IconLayer, LottieLayer, GroupLayer
+        │   ├── navigation/            # SliderArrows, SliderBullets, SliderThumbnails, SliderTabs, SliderProgress, SliderCount
+        │   └── effects/               # ParticleOverlay, BeforeAfterSlider, TypewriterEffect, RevealEffect, SnowOverlay
         └── loc/
 ```
 
@@ -598,6 +638,7 @@ src/
 - **HyperTicker Web Part ID:** `d8e9f0a1-2b3c-4d5e-6f7a-8b9c0d1e2f3a`
 - **HyperFAQ Web Part ID:** `e9f0a1b2-3c4d-5e6f-7a8b-9c0d1e2f3a4b`
 - **HyperBirthdays Web Part ID:** `f0a1b2c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c`
+- **HyperSlider Web Part ID:** `c1d2e3f4-5a6b-7c8d-9e0f-1a2b3c4d5e6f`
 - **Feature ID:** `4c137d6a-7e80-46c6-8936-e7f7639893bc`
 
 ---
@@ -1318,6 +1359,87 @@ const handleChange = function (field: string): (e: React.ChangeEvent<HTMLInputEl
     onChange(field, e.target.value);
   };
 };
+```
+
+### Merging CSSProperties in ES5 (No Object.assign)
+
+`Object.assign` is not available in ES5 target. Use a manual merge helper:
+
+```typescript
+// FORBIDDEN — TS2550: 'Object.assign' does not exist on ES5 target
+const combined = Object.assign({}, styleA, styleB);
+
+// CORRECT — manual key copy via Object.keys().forEach()
+function mergeStyles(a: React.CSSProperties, b: React.CSSProperties): React.CSSProperties {
+  const result: React.CSSProperties = {};
+  const keysA = Object.keys(a);
+  keysA.forEach(function (k) { (result as Record<string, unknown>)[k] = (a as Record<string, unknown>)[k]; });
+  const keysB = Object.keys(b);
+  keysB.forEach(function (k) { (result as Record<string, unknown>)[k] = (b as Record<string, unknown>)[k]; });
+  return result;
+}
+```
+
+### CSS Animation Class Names Must Be camelCase
+
+SPFx CSS modules generate warnings for hyphenated class names ("not camelCase and will not be type-safe"). All `@keyframes` and class names in `.module.scss` must be camelCase:
+
+```scss
+// FORBIDDEN — 48 SCSS warnings
+@keyframes hyperSlider-enter-fade { ... }
+.hyperSlider-enter-fade { ... }
+
+// CORRECT — camelCase
+@keyframes hyperSliderEnterFade { ... }
+.hyperSliderEnterFade { ... }
+```
+
+When building class names dynamically in JS, use `charAt(0).toUpperCase() + substring(1)`:
+
+```typescript
+// Builds "hyperSliderEnterFadeUp" from type="fadeUp"
+return "hyperSliderEnter" + type.charAt(0).toUpperCase() + type.substring(1);
+```
+
+### :global {} Wrapper for Inline-Referenced @keyframes
+
+When `@keyframes` are referenced by string name in inline JS styles (not as CSS module class lookups), wrap them in `:global {}` to avoid module name mangling:
+
+```scss
+// In .module.scss — these keyframes are used via inline style animationName in JS
+:global {
+  @keyframes particleFloatUp { from { ... } to { ... } }
+  @keyframes particleFloatDown { from { ... } to { ... } }
+}
+```
+
+### Mutable Refs: useRef(0) Not useRef(null)
+
+`useRef<number>(null)` creates a readonly `.current` property in React 17 types (matches the immutable ref overload). For mutable number refs (timers, counters), use a non-null initial value:
+
+```typescript
+// FORBIDDEN — TS2540: Cannot assign to 'current' because it is a read-only property
+const timerRef = React.useRef<number>(null);
+timerRef.current = window.setTimeout(...); // Error!
+
+// CORRECT — mutable ref
+const timerRef = React.useRef<number>(0);
+timerRef.current = window.setTimeout(...); // OK
+
+// For refs that need undefined assignment
+const startTimeRef = React.useRef<number | undefined>(undefined);
+```
+
+### Fluent UI SCSS: No $ms-Grid-gutter-width
+
+`$ms-Grid-gutter-width` is not available in `@fluentui/react/dist/sass/References`. Use literal values:
+
+```scss
+// FORBIDDEN — build error: undefined variable
+padding: $ms-Grid-gutter-width;
+
+// CORRECT — use literal
+padding: 16px;
 ```
 
 ---
