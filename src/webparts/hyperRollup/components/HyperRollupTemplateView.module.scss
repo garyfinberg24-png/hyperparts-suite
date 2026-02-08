@@ -1,0 +1,18 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.templateContainer {
+  display: grid;
+  gap: 12px;
+}
+
+.templateError {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: "[theme:errorBackground, default: #fde7e9]";
+  border: 1px solid "[theme:errorText, default: #a80000]";
+  border-radius: 4px;
+  color: "[theme:errorText, default: #a80000]";
+  font-size: $ms-font-size-14;
+}

@@ -1,0 +1,93 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: $ms-font-size-14;
+
+  &.compact {
+    font-size: $ms-font-size-12;
+
+    .headerCell,
+    .cell {
+      padding: 4px 8px;
+    }
+  }
+}
+
+.headerCell {
+  text-align: left;
+  padding: 8px 12px;
+  font-weight: $ms-font-weight-semibold;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  background: "[theme:neutralLighter, default: #f3f2f1]";
+  border-bottom: 2px solid "[theme:neutralLight, default: #edebe9]";
+  white-space: nowrap;
+  user-select: none;
+
+  &.sortable {
+    cursor: pointer;
+
+    &:hover {
+      background: "[theme:neutralLight, default: #edebe9]";
+      color: "[theme:neutralPrimary, default: #323130]";
+    }
+  }
+}
+
+.row {
+  cursor: pointer;
+  transition: background 0.1s;
+
+  &:nth-child(even) {
+    background: "[theme:neutralLighterAlt, default: #faf9f8]";
+  }
+
+  &:hover {
+    background: "[theme:neutralLight, default: #edebe9]";
+  }
+
+  &.selected {
+    background: "[theme:themeLighterAlt, default: #eff6fc]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default: #0078d4]";
+    outline-offset: -2px;
+  }
+}
+
+.cell {
+  padding: 8px 12px;
+  border-bottom: 1px solid "[theme:neutralLight, default: #edebe9]";
+  color: "[theme:neutralPrimary, default: #323130]";
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.progressBar {
+  width: 100%;
+  height: 4px;
+  background: "[theme:neutralLight, default: #edebe9]";
+  border-radius: 2px;
+  margin-top: 4px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: "[theme:themePrimary, default: #0078d4]";
+  border-radius: 2px;
+  transition: width 0.3s;
+}
+
+.groupSection {
+  margin-bottom: 16px;
+}

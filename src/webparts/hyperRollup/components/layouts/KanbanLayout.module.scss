@@ -1,0 +1,57 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.kanbanBoard {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  min-height: 300px;
+}
+
+.kanbanLane {
+  flex: 0 0 280px;
+  display: flex;
+  flex-direction: column;
+  background: "[theme:neutralLighterAlt, default: #faf9f8]";
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.laneHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  background: "[theme:neutralLighter, default: #f3f2f1]";
+  border-bottom: 2px solid "[theme:neutralLight, default: #edebe9]";
+}
+
+.laneTitle {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: "[theme:neutralPrimary, default: #323130]";
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.laneCount {
+  flex-shrink: 0;
+  background: "[theme:neutralLight, default: #edebe9]";
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  padding: 1px 8px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.laneBody {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  overflow-y: auto;
+  max-height: 500px;
+}

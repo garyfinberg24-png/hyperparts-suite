@@ -1,0 +1,14 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.cardLayoutContainer {
+  width: 100%;
+}
+
+.cardGrid {
+  display: grid;
+  gap: 12px;
+}
+
+.groupSection {
+  margin-bottom: 16px;
+}

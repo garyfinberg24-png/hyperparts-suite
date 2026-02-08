@@ -1,0 +1,117 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.itemCard {
+  position: relative;
+  padding: 14px;
+  border: 1px solid "[theme:neutralLight, default: #edebe9]";
+  border-radius: 6px;
+  background: "[theme:white, default: #ffffff]";
+  cursor: pointer;
+  transition: box-shadow 0.15s, border-color 0.15s;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-color: "[theme:neutralTertiaryAlt, default: #c8c6c4]";
+  }
+
+  &.selected {
+    border-color: "[theme:themePrimary, default: #0078d4]";
+    box-shadow: 0 0 0 1px "[theme:themePrimary, default: #0078d4]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default: #0078d4]";
+    outline-offset: 2px;
+  }
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.fileIcon {
+  color: "[theme:themePrimary, default: #0078d4]";
+  font-size: $ms-font-size-16;
+  flex-shrink: 0;
+}
+
+.cardTitle {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: "[theme:neutralPrimary, default: #323130]";
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardDescription {
+  margin: 0 0 8px 0;
+  font-size: $ms-font-size-12;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: $ms-font-size-12;
+  color: "[theme:neutralTertiary, default: #a19f9d]";
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.metaItem {
+  white-space: nowrap;
+}
+
+.metaBadge {
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: "[theme:neutralLighter, default: #f3f2f1]";
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  font-size: $ms-font-size-10;
+  font-weight: $ms-font-weight-semibold;
+}
+
+.cardSource {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: $ms-font-size-10;
+  color: "[theme:neutralTertiary, default: #a19f9d]";
+}
+
+.sourceIcon {
+  font-size: $ms-font-size-10;
+}
+
+.previewButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: "[theme:neutralLighter, default: #f3f2f1]";
+  border-radius: 4px;
+  padding: 4px 6px;
+  cursor: pointer;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  opacity: 0;
+  transition: opacity 0.15s;
+
+  .itemCard:hover & {
+    opacity: 1;
+  }
+
+  &:hover {
+    background: "[theme:neutralLight, default: #edebe9]";
+    color: "[theme:themePrimary, default: #0078d4]";
+  }
+}

@@ -49,6 +49,14 @@
           "manifest": "./src/webparts/hyperDirectory/HyperDirectoryWebPart.manifest.json"
         }
       ]
+    },
+    "hyper-rollup-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hyperRollup/HyperRollupWebPart.js",
+          "manifest": "./src/webparts/hyperRollup/HyperRollupWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -58,6 +66,7 @@
     "HyperSpotlightWebPartStrings": "lib/webparts/hyperSpotlight/loc/{locale}.js",
     "HyperProfileWebPartStrings": "lib/webparts/hyperProfile/loc/{locale}.js",
     "HyperTabsWebPartStrings": "lib/webparts/hyperTabs/loc/{locale}.js",
-    "HyperDirectoryWebPartStrings": "lib/webparts/hyperDirectory/loc/{locale}.js"
+    "HyperDirectoryWebPartStrings": "lib/webparts/hyperDirectory/loc/{locale}.js",
+    "HyperRollupWebPartStrings": "lib/webparts/hyperRollup/loc/{locale}.js"
   }
 }

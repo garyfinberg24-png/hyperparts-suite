@@ -1,0 +1,89 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.filterPanel {
+  width: 240px;
+  flex-shrink: 0;
+  border-right: 1px solid "[theme:neutralLight, default: #edebe9]";
+  padding-right: 16px;
+  overflow-y: auto;
+  max-height: 600px;
+}
+
+.filterHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.filterTitle {
+  margin: 0;
+  font-size: $ms-font-size-16;
+  font-weight: $ms-font-weight-semibold;
+  color: "[theme:neutralPrimary, default: #323130]";
+}
+
+.clearAllButton {
+  border: none;
+  background: none;
+  color: "[theme:themePrimary, default: #0078d4]";
+  font-size: $ms-font-size-12;
+  cursor: pointer;
+  padding: 0;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.facetGroup {
+  margin-bottom: 16px;
+}
+
+.facetGroupTitle {
+  margin: 0 0 6px 0;
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: "[theme:neutralPrimary, default: #323130]";
+}
+
+.facetOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.facetOption {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 0;
+  cursor: pointer;
+  font-size: $ms-font-size-12;
+  color: "[theme:neutralPrimary, default: #323130]";
+
+  &:hover {
+    color: "[theme:themePrimary, default: #0078d4]";
+  }
+
+  &.active {
+    font-weight: $ms-font-weight-semibold;
+    color: "[theme:themePrimary, default: #0078d4]";
+  }
+}
+
+.facetCheckbox {
+  flex-shrink: 0;
+}
+
+.facetLabel {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.facetCount {
+  color: "[theme:neutralTertiary, default: #a19f9d]";
+  flex-shrink: 0;
+}

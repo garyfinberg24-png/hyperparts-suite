@@ -1,0 +1,65 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.rollupContainer {
+  padding: 16px;
+  font-family: $ms-font-family-fallbacks;
+}
+
+.rollupTitle {
+  margin: 0 0 12px 0;
+  font-size: $ms-font-size-24;
+  font-weight: $ms-font-weight-semibold;
+  color: "[theme:neutralPrimary, default: #323130]";
+  line-height: 1.2;
+}
+
+.rollupBody {
+  display: flex;
+  gap: 16px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+.rollupContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.toolbarRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.editBar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 4px 0 8px;
+}
+
+.editButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border: 1px solid "[theme:themePrimary, default: #0078d4]";
+  border-radius: 4px;
+  background: "[theme:themeLighterAlt, default: #eff6fc]";
+  color: "[theme:themePrimary, default: #0078d4]";
+  font-size: $ms-font-size-12;
+  cursor: pointer;
+
+  &:hover {
+    background: "[theme:themeLight, default: #c7e0f4]";
+  }
+}
+
+.loadingMore {
+  text-align: center;
+  padding: 12px;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  font-size: $ms-font-size-12;
+}

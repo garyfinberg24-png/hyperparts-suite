@@ -1,0 +1,31 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.actionBar {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.actionButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border: 1px solid "[theme:neutralTertiary, default: #a19f9d]";
+  border-radius: 4px;
+  background: "[theme:white, default: #fff]";
+  color: "[theme:themePrimary, default: #0078d4]";
+  font-size: $ms-font-size-12;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: "[theme:themeLighterAlt, default: #eff6fc]";
+    border-color: "[theme:themePrimary, default: #0078d4]";
+  }
+}
+
+.actionLabel {
+  white-space: nowrap;
+}

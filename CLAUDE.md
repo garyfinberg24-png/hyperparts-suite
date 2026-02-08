@@ -210,17 +210,29 @@ src/
     │   │   ├── HyperProfileQuickActions, Completeness, Overlay
     │   │   └── (SCSS modules for each)
     │   └── loc/
-    └── hyperTabs/                     # Tab/accordion/wizard container (12 features)
-        ├── HyperTabsWebPart.ts        # ID: 8f3c7a9e-2d6b-4e1f-a9c8-5b7d3e9f1a2c
-        ├── models/                    # IHyperTabPanel, IHyperTabIcon, IHyperTabNestedConfig
-        ├── hooks/                     # useDeepLinking, useResponsiveMode
-        ├── store/                     # Zustand store for tabs/accordion/wizard state
-        ├── utils/                     # panelUtils (parse/stringify/add/remove/reorder)
+    ├── hyperTabs/                     # Tab/accordion/wizard container (12 features)
+    │   ├── HyperTabsWebPart.ts        # ID: 8f3c7a9e-2d6b-4e1f-a9c8-5b7d3e9f1a2c
+    │   ├── models/                    # IHyperTabPanel, IHyperTabIcon, IHyperTabNestedConfig
+    │   ├── hooks/                     # useDeepLinking, useResponsiveMode
+    │   ├── store/                     # Zustand store for tabs/accordion/wizard state
+    │   ├── utils/                     # panelUtils (parse/stringify/add/remove/reorder)
+    │   ├── components/
+    │   │   ├── HyperTabs.tsx          # Main component with mode delegation
+    │   │   ├── HyperTabsPanelContent  # Per-panel content with lazy load + audience targeting
+    │   │   ├── HyperTabsIcon          # Fluent icon or emoji renderer
+    │   │   └── modes/                 # TabsMode, AccordionMode, WizardMode
+    │   └── loc/
+    └── hyperDirectory/                # Employee directory with RollerDex (14 features)
+        ├── HyperDirectoryWebPart.ts   # ID: ac081972-faae-443f-82f9-da64e3139485
+        ├── models/                    # IHyperDirectoryUser, IHyperDirectoryFilter, WebPartProps
+        ├── hooks/                     # useDirectoryUsers, useDirectoryPhotos, useDirectorySearch, useDirectoryPresence
+        ├── store/                     # Zustand store (search, filters, pagination, rollerDex state)
+        ├── utils/                     # userMapper, searchUtils, filterUtils
         ├── components/
-        │   ├── HyperTabs.tsx          # Main component with mode delegation
-        │   ├── HyperTabsPanelContent  # Per-panel content with lazy load + audience targeting
-        │   ├── HyperTabsIcon          # Fluent icon or emoji renderer
-        │   └── modes/                 # TabsMode, AccordionMode, WizardMode
+        │   ├── HyperDirectory.tsx     # Main component with layout delegation
+        │   ├── HyperDirectorySearchBar, AlphaIndex, FilterPanel, UserCard
+        │   ├── HyperDirectoryProfileCard, PresenceBadge, QuickActions, Pagination
+        │   └── layouts/               # Grid, List, Compact, Card, Masonry, RollerDex, OrgChart
         └── loc/
 ```
 
@@ -232,6 +244,7 @@ src/
 - **HyperSpotlight Web Part ID:** `7220d21d-e08c-4ef7-9b62-eff134300498` (preserved from Employee Spotlight)
 - **HyperProfile Web Part ID:** `a8f9e6d3-5c2a-4b7e-9f1d-8c3e5a7b9d2f` (preserved from Power Profile)
 - **HyperTabs Web Part ID:** `8f3c7a9e-2d6b-4e1f-a9c8-5b7d3e9f1a2c`
+- **HyperDirectory Web Part ID:** `ac081972-faae-443f-82f9-da64e3139485`
 - **Feature ID:** `4c137d6a-7e80-46c6-8936-e7f7639893bc`
 
 ---
@@ -752,3 +765,23 @@ The full PRD is at `../MASTER_CONTEXT.md`. Key sections for development:
 - **Addendum B** — Development roadmap and phasing
 - **Addendum C** — Shared component library spec
 - **Addendum D** — Testing and quality strategy (80% service coverage, 70% component coverage)
+
+---
+
+## Packaging Strategy
+
+**Current:** Single monorepo SPFx solution producing one `.sppkg`. Fine for development.
+
+**Target:** Each web part sold separately. After all web parts are built, restructure to **Option B**:
+
+- Extract `src/common/` into an **SPFx Library Component** (its own `.sppkg`) — shared prerequisite
+- Each web part becomes a **separate SPFx solution** referencing the library
+- Customers install the shared base + whichever web parts they purchase
+
+This restructuring is deferred until all web parts are complete.
+
+---
+
+## Deferred Tasks
+
+- **Rename HyperDirectory to HyperDex** — mechanical rename of files, folders, classes, CSS, config entries. Deferred to a future session.
