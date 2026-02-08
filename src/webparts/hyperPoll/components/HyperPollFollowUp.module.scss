@@ -1,0 +1,19 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.followUp {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.3s ease;
+  padding: 0 12px;
+}
+
+.followUpVisible {
+  max-height: 400px;
+  opacity: 1;
+  padding: 12px;
+  border-left: 3px solid $ms-color-themePrimary;
+  margin-left: 12px;
+  background-color: $ms-color-neutralLighter;
+  border-radius: 0 4px 4px 0;
+}

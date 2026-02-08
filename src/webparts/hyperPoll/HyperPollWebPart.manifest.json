@@ -1,0 +1,30 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "f6b3d8e1-4a7c-5f2b-c3e9-0a8d6b4f7c1e",
+  "alias": "HyperPollWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart", "TeamsPersonalApp", "TeamsTab", "SharePointFullPage"],
+  "supportsThemeVariants": true,
+
+  "preconfiguredEntries": [{
+    "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+    "group": { "default": "HyperParts" },
+    "title": { "default": "HyperPoll" },
+    "description": { "default": "In-page polling and voting web part with 6 question types, real-time results, bar/pie/donut charts, carousel/stacked views, templates, and CSV/JSON export." },
+    "officeFabricIconFontName": "Poll",
+    "properties": {
+      "title": "Poll",
+      "polls": "[]",
+      "responseListName": "",
+      "displayMode": "stacked",
+      "defaultChartType": "bar",
+      "showInlineResults": true,
+      "enableExport": false,
+      "refreshInterval": 0,
+      "cacheDuration": 300
+    }
+  }]
+}

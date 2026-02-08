@@ -1,0 +1,66 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.singleChoice {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+
+  &:hover {
+    border-color: $ms-color-themePrimary;
+    background-color: $ms-color-neutralLighter;
+  }
+}
+
+.optionSelected {
+  border-color: $ms-color-themePrimary;
+  background-color: $ms-color-themeLight;
+}
+
+.optionDisabled {
+  opacity: 0.6;
+  cursor: default;
+
+  &:hover {
+    border-color: $ms-color-neutralTertiaryAlt;
+    background-color: transparent;
+  }
+}
+
+.radio {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid $ms-color-neutralSecondary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.radioSelected {
+  border-color: $ms-color-themePrimary;
+
+  &::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: $ms-color-themePrimary;
+  }
+}
+
+.optionLabel {
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralPrimary;
+}

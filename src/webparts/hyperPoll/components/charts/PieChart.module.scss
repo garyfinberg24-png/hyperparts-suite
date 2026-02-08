@@ -1,0 +1,39 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.pieChart {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.pieSvg {
+  width: 200px;
+  height: 200px;
+  flex-shrink: 0;
+}
+
+.pieSegment {
+  transition: stroke-dasharray 0.6s ease, stroke-dashoffset 0.6s ease;
+}
+
+.pieLegend {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pieLegendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralPrimary;
+}
+
+.pieLegendDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}

@@ -1,0 +1,68 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.votingContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pollDescription {
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralSecondary;
+  margin: 0;
+}
+
+.questionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.submitBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid $ms-color-neutralLight;
+}
+
+.submitButton {
+  padding: 8px 24px;
+  border: none;
+  border-radius: 4px;
+  background-color: $ms-color-themePrimary;
+  color: $ms-color-white;
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: $ms-color-themeDark;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.submitMessage {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+}
+
+.errorMessage {
+  font-size: $ms-font-size-12;
+  color: $ms-color-red;
+}
+
+.successMessage {
+  font-size: $ms-font-size-14;
+  color: $ms-color-green;
+  font-weight: $ms-font-weight-semibold;
+  padding: 12px;
+  background-color: $ms-color-neutralLighter;
+  border-radius: 4px;
+  text-align: center;
+}

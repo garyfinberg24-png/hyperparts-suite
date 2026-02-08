@@ -1,0 +1,21 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.stacked {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.stackedItem {
+  padding: 16px;
+  border: 1px solid $ms-color-neutralLight;
+  border-radius: 8px;
+  background-color: $ms-color-white;
+}
+
+.stackedItemTitle {
+  font-size: $ms-font-size-18;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  margin: 0 0 12px 0;
+}

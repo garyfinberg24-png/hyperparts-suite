@@ -1,0 +1,46 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.barChart {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.barRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.barLabel {
+  min-width: 80px;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralPrimary;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.barTrack {
+  flex: 1;
+  height: 24px;
+  background-color: $ms-color-neutralLighter;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s ease;
+  min-width: 2px;
+}
+
+.barValue {
+  min-width: 48px;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  text-align: left;
+  flex-shrink: 0;
+}

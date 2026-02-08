@@ -1,0 +1,68 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.carousel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.carouselContent {
+  min-height: 100px;
+}
+
+.carouselNav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.carouselButton {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 50%;
+  background: $ms-color-white;
+  cursor: pointer;
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralSecondary;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: $ms-color-themePrimary;
+    color: $ms-color-themePrimary;
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
+
+    &:hover {
+      border-color: $ms-color-neutralTertiaryAlt;
+      color: $ms-color-neutralSecondary;
+    }
+  }
+}
+
+.carouselDots {
+  display: flex;
+  gap: 6px;
+}
+
+.carouselDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background-color: $ms-color-neutralTertiaryAlt;
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.15s ease;
+}
+
+.carouselDotActive {
+  background-color: $ms-color-themePrimary;
+}

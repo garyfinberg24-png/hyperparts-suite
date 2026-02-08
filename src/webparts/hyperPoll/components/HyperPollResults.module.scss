@@ -1,0 +1,58 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.resultsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.questionResult {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background-color: $ms-color-neutralLighter;
+  border-radius: 8px;
+}
+
+.questionResultHeader {
+  font-size: $ms-font-size-16;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  margin: 0;
+}
+
+.totalVotes {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+}
+
+.scoreDisplay {
+  font-size: $ms-font-size-18;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-themePrimary;
+}
+
+.textResponsesList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.textResponseItem {
+  padding: 6px 10px;
+  background-color: $ms-color-white;
+  border: 1px solid $ms-color-neutralLight;
+  border-radius: 4px;
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralPrimary;
+}
+
+.noResults {
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralSecondary;
+  text-align: center;
+  padding: 20px;
+}

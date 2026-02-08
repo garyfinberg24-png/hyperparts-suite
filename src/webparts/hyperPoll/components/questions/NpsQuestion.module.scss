@@ -1,0 +1,69 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.npsQuestion {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.npsRow {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.npsItem {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-white;
+  transition: all 0.15s ease;
+  opacity: 0.7;
+
+  &:hover {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+.npsItemSelected {
+  opacity: 1;
+  transform: scale(1.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.npsItemDisabled {
+  opacity: 0.4;
+  cursor: default;
+
+  &:hover {
+    opacity: 0.4;
+    transform: none;
+  }
+}
+
+.npsDetractor {
+  background-color: #e74856;
+}
+
+.npsPassive {
+  background-color: #ffb900;
+}
+
+.npsPromoter {
+  background-color: #107c10;
+}
+
+.npsLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+}

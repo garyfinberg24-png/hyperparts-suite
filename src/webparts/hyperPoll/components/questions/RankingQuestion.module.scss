@@ -1,0 +1,71 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.rankingQuestion {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rankItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  background: $ms-color-white;
+}
+
+.rankNumber {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: $ms-color-neutralLight;
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  flex-shrink: 0;
+}
+
+.rankLabel {
+  flex: 1;
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralPrimary;
+}
+
+.rankButtons {
+  display: flex;
+  gap: 4px;
+}
+
+.rankButton {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  background: $ms-color-white;
+  cursor: pointer;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+
+  &:hover {
+    border-color: $ms-color-themePrimary;
+    color: $ms-color-themePrimary;
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
+
+    &:hover {
+      border-color: $ms-color-neutralTertiaryAlt;
+      color: $ms-color-neutralSecondary;
+    }
+  }
+}

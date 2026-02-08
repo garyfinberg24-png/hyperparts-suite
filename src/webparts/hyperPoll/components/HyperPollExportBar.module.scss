@@ -1,0 +1,28 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.exportBar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.exportButton {
+  padding: 4px 12px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  background: $ms-color-white;
+  cursor: pointer;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: $ms-color-themePrimary;
+    color: $ms-color-themePrimary;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}

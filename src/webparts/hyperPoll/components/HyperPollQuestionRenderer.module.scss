@@ -1,0 +1,24 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.questionWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 0;
+}
+
+.questionText {
+  font-size: $ms-font-size-16;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  margin: 0;
+}
+
+.questionRequired {
+  color: $ms-color-red;
+  margin-left: 4px;
+}
+
+.questionBody {
+  padding: 4px 0;
+}
