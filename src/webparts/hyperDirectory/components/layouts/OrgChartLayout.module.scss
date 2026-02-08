@@ -1,0 +1,113 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.orgChart {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.orgNode {
+  display: flex;
+  flex-direction: column;
+}
+
+.orgNodeHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: "[theme:neutralLighterAlt, default: #faf9f8]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default: #0078d4]";
+    outline-offset: -2px;
+  }
+}
+
+.expandIcon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.expandIconExpanded {
+  transform: rotate(90deg);
+}
+
+.expandIconPlaceholder {
+  width: 16px;
+  flex-shrink: 0;
+}
+
+.orgChildren {
+  margin-left: 24px;
+  padding-left: 12px;
+  border-left: 1px solid "[theme:neutralQuaternaryAlt, default: #d2d0ce]";
+}
+
+.orgName {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: "[theme:neutralPrimary, default: #323130]";
+}
+
+.orgTitle {
+  font-size: $ms-font-size-12;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+}
+
+.orgDept {
+  font-size: $ms-font-size-12;
+  color: "[theme:neutralTertiary, default: #a19f9d]";
+}
+
+.orgInfo {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex: 1;
+}
+
+.orgPhoto {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.orgPhotoPlaceholder {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: "[theme:themePrimary, default: #0078d4]";
+  color: "[theme:white, default: #ffffff]";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: $ms-font-weight-semibold;
+}
+
+.directCount {
+  font-size: $ms-font-size-12;
+  color: "[theme:neutralTertiary, default: #a19f9d]";
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .expandIcon {
+    transition: none;
+  }
+}

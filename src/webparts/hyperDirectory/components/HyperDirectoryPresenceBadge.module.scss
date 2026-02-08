@@ -1,0 +1,44 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.presenceBadge {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid "[theme:white, default: #ffffff]";
+  flex-shrink: 0;
+}
+
+.available {
+  background-color: #6bb700;
+}
+
+.busy {
+  background-color: #d13438;
+}
+
+.doNotDisturb {
+  background-color: #d13438;
+}
+
+.away {
+  background-color: #ffaa44;
+}
+
+.beRightBack {
+  background-color: #ffaa44;
+}
+
+.offline {
+  background-color: #8a8886;
+}
+
+.unknown {
+  background-color: #8a8886;
+}
+
+.presenceOnPhoto {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}

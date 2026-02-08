@@ -1,0 +1,11 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.cardLayout {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,55 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.compactLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.compactItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+
+  &:hover {
+    background: "[theme:neutralLighterAlt, default: #faf9f8]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default: #0078d4]";
+    outline-offset: -2px;
+  }
+}
+
+.compactName {
+  font-size: $ms-font-size-14;
+  color: "[theme:neutralPrimary, default: #323130]";
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.compactTitle {
+  font-size: $ms-font-size-12;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  flex-shrink: 0;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.compactDept {
+  font-size: $ms-font-size-12;
+  color: "[theme:neutralTertiary, default: #a19f9d]";
+  flex-shrink: 0;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

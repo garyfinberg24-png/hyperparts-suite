@@ -1,0 +1,65 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid "[theme:neutralQuaternaryAlt, default: #d2d0ce]";
+  border-radius: 4px;
+  background: "[theme:white, default: #ffffff]";
+  transition: border-color 0.15s ease;
+
+  &:focus-within {
+    border-color: "[theme:themePrimary, default: #0078d4]";
+    outline: none;
+  }
+}
+
+.searchIcon {
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: $ms-font-size-14;
+  font-family: $ms-font-family-fallbacks;
+  color: "[theme:neutralPrimary, default: #323130]";
+  background: transparent;
+
+  &::placeholder {
+    color: "[theme:neutralSecondary, default: #605e5c]";
+  }
+}
+
+.clearButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  padding: 4px;
+  border-radius: 2px;
+  font-size: 12px;
+  line-height: 1;
+
+  &:hover {
+    color: "[theme:neutralPrimary, default: #323130]";
+    background: "[theme:neutralLighter, default: #f3f2f1]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default: #0078d4]";
+    outline-offset: 1px;
+  }
+}
+
+.resultCount {
+  font-size: $ms-font-size-12;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  flex-shrink: 0;
+  white-space: nowrap;
+}

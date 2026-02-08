@@ -1,0 +1,132 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.profileBody {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profileHeader {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+.photoWrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.profilePhoto {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profilePhotoPlaceholder {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: "[theme:themePrimary, default: #0078d4]";
+  color: "[theme:white, default: #ffffff]";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $ms-font-size-28;
+  font-weight: $ms-font-weight-semibold;
+}
+
+.headerInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.profileName {
+  margin: 0;
+  font-size: $ms-font-size-24;
+  font-weight: $ms-font-weight-semibold;
+  color: "[theme:neutralPrimary, default: #323130]";
+  line-height: 1.2;
+}
+
+.profileTitle {
+  font-size: $ms-font-size-16;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+}
+
+.profileDepartment {
+  font-size: $ms-font-size-14;
+  color: "[theme:neutralTertiary, default: #a19f9d]";
+}
+
+.presenceRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.presenceText {
+  font-size: $ms-font-size-12;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+}
+
+.profileActions {
+  padding: 12px 0;
+  border-top: 1px solid "[theme:neutralLight, default: #edebe9]";
+  border-bottom: 1px solid "[theme:neutralLight, default: #edebe9]";
+}
+
+.fieldsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fieldRow {
+  display: flex;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.fieldLabel {
+  flex-shrink: 0;
+  width: 100px;
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+}
+
+.fieldValue {
+  font-size: $ms-font-size-14;
+  color: "[theme:neutralPrimary, default: #323130]";
+  word-break: break-word;
+}
+
+.aboutSection {
+  padding-top: 8px;
+  border-top: 1px solid "[theme:neutralLight, default: #edebe9]";
+}
+
+.aboutLabel {
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  margin-bottom: 4px;
+}
+
+.aboutText {
+  font-size: $ms-font-size-14;
+  color: "[theme:neutralPrimary, default: #323130]";
+  line-height: 1.5;
+  white-space: pre-wrap;
+}

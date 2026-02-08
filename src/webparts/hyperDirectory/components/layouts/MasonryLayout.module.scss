@@ -1,0 +1,18 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.masonryLayout {
+  :global(.my-masonry-grid) {
+    display: flex;
+    margin-left: -16px;
+    width: auto;
+  }
+
+  :global(.my-masonry-grid_column) {
+    padding-left: 16px;
+    background-clip: padding-box;
+  }
+}
+
+.masonryItem {
+  margin-bottom: 16px;
+}

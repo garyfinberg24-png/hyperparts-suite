@@ -1,0 +1,62 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.pageButton {
+  min-width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid "[theme:neutralQuaternaryAlt, default: #d2d0ce]";
+  border-radius: 4px;
+  background: "[theme:white, default: #ffffff]";
+  color: "[theme:neutralPrimary, default: #323130]";
+  font-size: $ms-font-size-14;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: "[theme:neutralLighter, default: #f3f2f1]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default: #0078d4]";
+    outline-offset: 1px;
+  }
+
+  &:disabled {
+    color: "[theme:neutralTertiaryAlt, default: #c8c6c4]";
+    cursor: default;
+  }
+}
+
+.activePage {
+  background: "[theme:themePrimary, default: #0078d4]";
+  color: "[theme:white, default: #ffffff]";
+  border-color: "[theme:themePrimary, default: #0078d4]";
+
+  &:hover:not(:disabled) {
+    background: "[theme:themeDarkAlt, default: #106ebe]";
+  }
+}
+
+.pageInfo {
+  font-size: $ms-font-size-12;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  padding: 0 8px;
+}
+
+.infiniteTrigger {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  font-size: $ms-font-size-14;
+}

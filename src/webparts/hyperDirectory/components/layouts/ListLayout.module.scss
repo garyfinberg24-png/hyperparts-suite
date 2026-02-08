@@ -1,0 +1,45 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.listLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-bottom: 1px solid "[theme:neutralLighter, default: #f3f2f1]";
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: "[theme:neutralLighterAlt, default: #faf9f8]";
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.listInfo {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+}
+
+.listName {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: "[theme:neutralPrimary, default: #323130]";
+  min-width: 180px;
+}
+
+.listField {
+  font-size: $ms-font-size-12;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  min-width: 120px;
+}

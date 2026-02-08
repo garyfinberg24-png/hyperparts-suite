@@ -1,0 +1,56 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.alphaIndex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 4px 0;
+}
+
+.letterButton {
+  min-width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  color: "[theme:neutralPrimary, default: #323130]";
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: "[theme:neutralLighter, default: #f3f2f1]";
+    border-color: "[theme:neutralQuaternaryAlt, default: #d2d0ce]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default: #0078d4]";
+    outline-offset: 1px;
+  }
+}
+
+.active {
+  background: "[theme:themePrimary, default: #0078d4]";
+  color: "[theme:white, default: #ffffff]";
+  border-color: "[theme:themePrimary, default: #0078d4]";
+
+  &:hover {
+    background: "[theme:themeDarkAlt, default: #106ebe]";
+    border-color: "[theme:themeDarkAlt, default: #106ebe]";
+    color: "[theme:white, default: #ffffff]";
+  }
+}
+
+.disabled {
+  color: "[theme:neutralTertiaryAlt, default: #c8c6c4]";
+  cursor: default;
+
+  &:hover {
+    background: transparent;
+    border-color: transparent;
+  }
+}

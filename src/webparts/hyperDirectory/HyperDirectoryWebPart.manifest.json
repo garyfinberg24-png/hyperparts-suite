@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "ac081972-faae-443f-82f9-da64e3139485",
+  "alias": "HyperDirectoryWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": [
+    "SharePointWebPart",
+    "TeamsPersonalApp",
+    "TeamsTab",
+    "SharePointFullPage"
+  ],
+  "supportsThemeVariants": true,
+  "preconfiguredEntries": [
+    {
+      "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+      "group": { "default": "HyperParts" },
+      "title": { "default": "HyperDirectory" },
+      "description": {
+        "default": "Full employee directory with 7 layouts including 3D RollerDex, search, A-Z index, filters, presence, and profile cards"
+      },
+      "officeFabricIconFontName": "People",
+      "properties": {
+        "title": "Employee Directory",
+        "layoutMode": "grid",
+        "cardStyle": "standard",
+        "gridColumns": 3,
+        "masonryColumns": 3,
+        "sortField": "displayName",
+        "sortDirection": "asc",
+        "rollerDexSpeed": 5,
+        "rollerDexVisibleCards": 5,
+        "showSearch": true,
+        "showAlphaIndex": true,
+        "showFilters": true,
+        "showPresence": true,
+        "presenceRefreshInterval": 30,
+        "showProfileCard": true,
+        "showQuickActions": true,
+        "enabledActions": "[\"email\",\"teamsChat\",\"teamsCall\",\"schedule\"]",
+        "enableVCardExport": true,
+        "userFilter": "",
+        "visibleFields": "[\"displayName\",\"jobTitle\",\"department\",\"officeLocation\",\"mail\",\"mobilePhone\"]",
+        "customFieldMappings": "{}",
+        "pageSize": 20,
+        "paginationMode": "paged",
+        "showPhotoPlaceholder": true,
+        "photoSize": "medium",
+        "cacheEnabled": true,
+        "cacheDuration": 10
+      }
+    }
+  ]
+}

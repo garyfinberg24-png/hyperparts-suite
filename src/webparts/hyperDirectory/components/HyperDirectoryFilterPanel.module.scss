@@ -1,0 +1,96 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.filterPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filterHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filterTitle {
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.clearAllButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: $ms-font-size-12;
+  color: "[theme:themePrimary, default: #0078d4]";
+  padding: 2px 4px;
+  border-radius: 2px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default: #0078d4]";
+    outline-offset: 1px;
+  }
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filterGroupLabel {
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  color: "[theme:neutralPrimary, default: #323130]";
+}
+
+.chipContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border: 1px solid "[theme:neutralQuaternaryAlt, default: #d2d0ce]";
+  border-radius: 16px;
+  background: "[theme:white, default: #ffffff]";
+  font-size: $ms-font-size-12;
+  color: "[theme:neutralPrimary, default: #323130]";
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: "[theme:neutralLighter, default: #f3f2f1]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default: #0078d4]";
+    outline-offset: 1px;
+  }
+}
+
+.chipActive {
+  background: "[theme:themePrimary, default: #0078d4]";
+  color: "[theme:white, default: #ffffff]";
+  border-color: "[theme:themePrimary, default: #0078d4]";
+
+  &:hover {
+    background: "[theme:themeDarkAlt, default: #106ebe]";
+  }
+}
+
+.chipCount {
+  font-size: 10px;
+  opacity: 0.7;
+}
