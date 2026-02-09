@@ -8,8 +8,11 @@ import type {
   IHyperHeroParallax,
   IHyperHeroCountdown,
   VideoSource,
+  IElementAnimation,
+  ITileElementAnimations,
+  EntranceEffect,
 } from "../../models";
-import { DEFAULT_GRADIENT } from "../../models";
+import { DEFAULT_GRADIENT, DEFAULT_ELEMENT_ANIMATION } from "../../models";
 import styles from "./HyperHeroTileEditor.module.scss";
 
 export interface IHyperHeroTileEditorProps {
@@ -19,7 +22,7 @@ export interface IHyperHeroTileEditorProps {
   onClose: () => void;
 }
 
-type TabId = "background" | "content" | "ctas" | "advanced";
+type TabId = "background" | "content" | "ctas" | "advanced" | "animations";
 
 /** Preset color palette for quick selection */
 const COLOR_PRESETS = [
@@ -178,6 +181,7 @@ const HyperHeroTileEditorInner: React.FC<IHyperHeroTileEditorProps> = function (
     { id: "content", label: "Content", icon: "\u270F\uFE0F" },
     { id: "ctas", label: "Buttons", icon: "\uD83D\uDD17" },
     { id: "advanced", label: "Advanced", icon: "\u2699\uFE0F" },
+    { id: "animations", label: "Animations", icon: "\uD83C\uDFAC" },
   ];
 
   return React.createElement(HyperModal, {
@@ -242,7 +246,8 @@ const HyperHeroTileEditorInner: React.FC<IHyperHeroTileEditorProps> = function (
         updateParallax,
         updateCountdown,
         setDraft
-      )
+      ),
+      activeTab === "animations" && renderAnimationsTab(draft, setDraft)
     )
   ));
 };
@@ -793,6 +798,128 @@ function renderAdvancedTab(
       }),
       React.createElement("p", { className: styles.fieldHint }, "Leave blank to never expire")
     )
+  );
+}
+
+// ── Animation Effect Options ──
+const ANIMATION_EFFECTS: Array<{ value: EntranceEffect; label: string }> = [
+  { value: "none", label: "None" },
+  { value: "fadeUp", label: "Fade Up" },
+  { value: "fadeDown", label: "Fade Down" },
+  { value: "fadeIn", label: "Fade In" },
+  { value: "slideLeft", label: "Slide from Left" },
+  { value: "slideRight", label: "Slide from Right" },
+  { value: "slideUp", label: "Slide Up" },
+  { value: "slideDown", label: "Slide Down" },
+  { value: "scaleUp", label: "Scale Up" },
+  { value: "scaleDown", label: "Scale Down" },
+  { value: "rotateIn", label: "Rotate In" },
+  { value: "bounceIn", label: "Bounce In" },
+];
+
+function updateElementAnimation(
+  setDraft: React.Dispatch<React.SetStateAction<IHyperHeroTile | undefined>>,
+  element: keyof ITileElementAnimations,
+  field: keyof IElementAnimation,
+  value: unknown
+): void {
+  setDraft(function (prev) {
+    if (!prev) return prev;
+    const currentAnims: ITileElementAnimations = prev.elementAnimations
+      ? { ...prev.elementAnimations }
+      : {};
+    const existing = currentAnims[element];
+    const currentElem: IElementAnimation = existing
+      ? { effect: existing.effect, delayMs: existing.delayMs, durationMs: existing.durationMs }
+      : { effect: DEFAULT_ELEMENT_ANIMATION.effect, delayMs: DEFAULT_ELEMENT_ANIMATION.delayMs, durationMs: DEFAULT_ELEMENT_ANIMATION.durationMs };
+    (currentElem as unknown as Record<string, unknown>)[field] = value;
+    currentAnims[element] = currentElem;
+    return { ...prev, elementAnimations: currentAnims };
+  });
+}
+
+function renderElementAnimConfig(
+  draft: IHyperHeroTile,
+  setDraft: React.Dispatch<React.SetStateAction<IHyperHeroTile | undefined>>,
+  element: keyof ITileElementAnimations,
+  label: string
+): React.ReactElement {
+  const anims = draft.elementAnimations;
+  const currentAnim = anims ? anims[element] : undefined;
+  const effect = currentAnim ? currentAnim.effect : "none";
+  const delayMs = currentAnim ? currentAnim.delayMs : 0;
+  const durationMs = currentAnim ? currentAnim.durationMs : 600;
+
+  return React.createElement("div", { className: styles.fieldGroup },
+    React.createElement("label", { className: styles.fieldLabel }, label + " Animation"),
+    // Effect dropdown
+    React.createElement("select", {
+      className: styles.selectInput,
+      value: effect,
+      onChange: function (e: React.ChangeEvent<HTMLSelectElement>): void {
+        updateElementAnimation(setDraft, element, "effect", e.target.value);
+      },
+    },
+      ANIMATION_EFFECTS.map(function (opt) {
+        return React.createElement("option", { key: opt.value, value: opt.value }, opt.label);
+      })
+    ),
+    // Only show delay/duration if effect is not "none"
+    effect !== "none"
+      ? React.createElement(React.Fragment, undefined,
+          // Delay
+          React.createElement("label", { className: styles.fieldLabel, style: { marginTop: "8px" } }, "Delay"),
+          React.createElement("div", { className: styles.sliderRow },
+            React.createElement("input", {
+              type: "range",
+              className: styles.sliderInput,
+              min: "0",
+              max: "2000",
+              step: "100",
+              value: delayMs,
+              onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
+                updateElementAnimation(setDraft, element, "delayMs", parseInt(e.target.value, 10));
+              },
+            }),
+            React.createElement("span", { className: styles.sliderValue }, delayMs + "ms")
+          ),
+          // Duration
+          React.createElement("label", { className: styles.fieldLabel, style: { marginTop: "4px" } }, "Duration"),
+          React.createElement("div", { className: styles.sliderRow },
+            React.createElement("input", {
+              type: "range",
+              className: styles.sliderInput,
+              min: "200",
+              max: "2000",
+              step: "100",
+              value: durationMs,
+              onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
+                updateElementAnimation(setDraft, element, "durationMs", parseInt(e.target.value, 10));
+              },
+            }),
+            React.createElement("span", { className: styles.sliderValue }, durationMs + "ms")
+          )
+        )
+      : undefined
+  );
+}
+
+// ── Animations Tab ──
+function renderAnimationsTab(
+  draft: IHyperHeroTile,
+  setDraft: React.Dispatch<React.SetStateAction<IHyperHeroTile | undefined>>
+): React.ReactElement {
+  return React.createElement("div", { className: styles.fieldGroup },
+    React.createElement("p", { className: styles.fieldHint },
+      "Configure entrance animations for each content element. Elements animate when the tile first appears on screen."
+    ),
+    renderElementAnimConfig(draft, setDraft, "heading", "Heading"),
+    React.createElement("div", { className: styles.sectionDivider }),
+    renderElementAnimConfig(draft, setDraft, "subheading", "Subheading"),
+    React.createElement("div", { className: styles.sectionDivider }),
+    renderElementAnimConfig(draft, setDraft, "description", "Description"),
+    React.createElement("div", { className: styles.sectionDivider }),
+    renderElementAnimConfig(draft, setDraft, "ctas", "Buttons (CTAs)")
   );
 }
 

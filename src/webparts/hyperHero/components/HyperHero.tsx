@@ -222,11 +222,11 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
         },
       });
     } else if (result.mode === "manual") {
-      // Manual mode: generate tiles + layouts
+      // Manual mode: generate tiles + layouts (use template tiles if provided)
       const preset = result.layoutPreset || "single";
       const count = result.tileCount || 1;
       const height = result.generalSettings ? result.generalSettings.heroHeight : 400;
-      const newTiles = generateTilesForPreset(count, preset);
+      const newTiles = result.templateTiles || generateTilesForPreset(count, preset);
       const newLayouts = generateLayoutsForPreset(preset, count, height);
 
       onTilesChange(newTiles);

@@ -30,9 +30,11 @@ export type {
   IHyperHeroCountdown,
   IHyperHeroTileLink,
   EntranceEffect,
+  IElementAnimation,
+  ITileElementAnimations,
   IHyperHeroTile,
 } from "./IHyperHeroTile";
-export { DEFAULT_GRADIENT, DEFAULT_TILE } from "./IHyperHeroTile";
+export { DEFAULT_GRADIENT, DEFAULT_TILE, DEFAULT_ELEMENT_ANIMATION } from "./IHyperHeroTile";
 
 export type {
   IHyperHeroFieldMapping,

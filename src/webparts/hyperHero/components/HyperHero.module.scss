@@ -447,6 +447,86 @@
 }
 
 // ============================================================
+// ELEMENT ENTRANCE ANIMATIONS
+// ============================================================
+
+// Keyframes — all names must start with "hyper" prefix
+@keyframes hyperFadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hyperFadeDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hyperFadeInAnim {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes hyperSlideLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes hyperSlideRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes hyperSlideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hyperSlideDown {
+  from { opacity: 0; transform: translateY(-40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hyperScaleUp {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes hyperScaleDown {
+  from { opacity: 0; transform: scale(1.2); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes hyperRotateIn {
+  from { opacity: 0; transform: rotate(-10deg) scale(0.9); }
+  to { opacity: 1; transform: rotate(0) scale(1); }
+}
+
+@keyframes hyperBounceIn {
+  0% { opacity: 0; transform: scale(0.3); }
+  50% { opacity: 1; transform: scale(1.05); }
+  70% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+// Utility classes for each animation type
+// These are applied dynamically via inline styles in the component,
+// but we define the keyframes here in :global {} so they can be
+// referenced by name in JS.
+:global {
+  .hyperAnimFadeUp { animation-name: hyperFadeUp; }
+  .hyperAnimFadeDown { animation-name: hyperFadeDown; }
+  .hyperAnimFadeIn { animation-name: hyperFadeInAnim; }
+  .hyperAnimSlideLeft { animation-name: hyperSlideLeft; }
+  .hyperAnimSlideRight { animation-name: hyperSlideRight; }
+  .hyperAnimSlideUp { animation-name: hyperSlideUp; }
+  .hyperAnimSlideDown { animation-name: hyperSlideDown; }
+  .hyperAnimScaleUp { animation-name: hyperScaleUp; }
+  .hyperAnimScaleDown { animation-name: hyperScaleDown; }
+  .hyperAnimRotateIn { animation-name: hyperRotateIn; }
+  .hyperAnimBounceIn { animation-name: hyperBounceIn; }
+}
+
+// ============================================================
 // ACCESSIBILITY
 // ============================================================
 
@@ -459,6 +539,15 @@
   .parallaxContainer,
   .editOverlay,
   .dot {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .heading,
+  .subheading,
+  .description,
+  .ctaGroup,
+  .contentLayer {
     animation: none !important;
     transition: none !important;
   }

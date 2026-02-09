@@ -79,7 +79,31 @@ export interface IHyperHeroTileLink {
 }
 
 /** Entrance animation types */
-export type EntranceEffect = "fadeUp" | "slideLeft" | "slideRight" | "scaleUp" | "none";
+export type EntranceEffect = "fadeUp" | "fadeDown" | "fadeIn" | "slideLeft" | "slideRight" | "slideUp" | "slideDown" | "scaleUp" | "scaleDown" | "rotateIn" | "bounceIn" | "none";
+
+/** Per-element animation configuration */
+export interface IElementAnimation {
+  effect: EntranceEffect;
+  /** Delay in milliseconds (0-2000) */
+  delayMs: number;
+  /** Duration in milliseconds (200-2000) */
+  durationMs: number;
+}
+
+/** Per-element animations for heading, subheading, description, CTAs */
+export interface ITileElementAnimations {
+  heading?: IElementAnimation;
+  subheading?: IElementAnimation;
+  description?: IElementAnimation;
+  ctas?: IElementAnimation;
+}
+
+/** Default element animation */
+export const DEFAULT_ELEMENT_ANIMATION: IElementAnimation = {
+  effect: "none",
+  delayMs: 0,
+  durationMs: 600,
+};
 
 /** A single HyperHero tile */
 export interface IHyperHeroTile {
@@ -96,6 +120,8 @@ export interface IHyperHeroTile {
   parallax?: IHyperHeroParallax;
   tileLink?: IHyperHeroTileLink;
   entranceEffect?: EntranceEffect;
+  /** Per-element entrance animations */
+  elementAnimations?: ITileElementAnimations;
   textAlign: "left" | "center" | "right";
   verticalAlign: "top" | "center" | "bottom";
   textColor?: string;

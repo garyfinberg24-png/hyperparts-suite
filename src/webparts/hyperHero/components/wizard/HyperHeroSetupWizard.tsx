@@ -1,8 +1,10 @@
 import * as React from "react";
 import { HyperModal } from "../../../../common/components";
-import type { IHyperHeroFieldMapping } from "../../models";
+import type { IHyperHeroFieldMapping, IHyperHeroTile } from "../../models";
 import { useListBrowser } from "../shared/useListBrowser";
 import WelcomeStep from "./WelcomeStep";
+import TemplateGalleryStep from "./TemplateGalleryStep";
+import type { IHeroTemplate } from "./TemplateGalleryStep";
 import ModeStep from "./ModeStep";
 import type { WizardMode } from "./ModeStep";
 import ListPickerStep from "./ListPickerStep";
@@ -28,11 +30,13 @@ export interface IWizardResult {
   layoutPreset?: LayoutPreset;
   // General settings
   generalSettings?: IGeneralSettings;
+  // Template mode — direct tile application (bypasses normal tile generation)
+  templateTiles?: IHyperHeroTile[];
 }
 
 /**
  * Step definitions for the wizard progress stepper.
- * Step 0 = Welcome, Step 1 = Mode, Step 2 = Configure, Step 3 = Settings, Step 4 = Summary
+ * Step 0 = Welcome, Step 1 = Templates, Step 2 = Mode, Step 3 = Configure, Step 4 = Settings, Step 5 = Summary
  */
 interface IStepDef {
   label: string;
@@ -45,6 +49,11 @@ const STEPS: IStepDef[] = [
     label: "Welcome",
     shortLabel: "Welcome",
     helpText: "",
+  },
+  {
+    label: "Templates",
+    shortLabel: "Templates",
+    helpText: "Browse pre-built templates for instant setup, or skip to build your own from scratch.",
   },
   {
     label: "Choose Mode",
@@ -161,6 +170,41 @@ const HyperHeroSetupWizard: React.FC<IHyperHeroSetupWizardProps> = function (pro
     setGeneralSettings(settings);
   }, []);
 
+  // ── Template gallery handlers ──
+  const handleUseTemplate = React.useCallback(function (template: IHeroTemplate) {
+    // "Use Template" — apply immediately, bypass remaining wizard steps
+    const gs = template.generalSettings;
+    const result: IWizardResult = {
+      mode: "manual",
+      layoutPreset: template.layoutPreset,
+      tileCount: template.tiles.length,
+      templateTiles: template.tiles,
+      generalSettings: {
+        ...DEFAULT_GENERAL_SETTINGS,
+        heroHeight: gs.heroHeight || 400,
+        borderRadius: gs.borderRadius || 0,
+        fullBleed: gs.fullBleed || false,
+      },
+    };
+    props.onApply(result);
+    props.onClose();
+  }, [props.onApply, props.onClose]);
+
+  const handleCustomizeTemplate = React.useCallback(function (template: IHeroTemplate) {
+    // "Customize" — pre-fill wizard settings and jump to Mode step
+    setMode("manual");
+    setLayoutPreset(template.layoutPreset);
+    const gs = template.generalSettings;
+    setGeneralSettings({
+      ...DEFAULT_GENERAL_SETTINGS,
+      heroHeight: gs.heroHeight || 400,
+      borderRadius: gs.borderRadius || 0,
+      fullBleed: gs.fullBleed || false,
+    });
+    // Jump to Mode step (step 2) so user can tweak from there
+    setStep(2);
+  }, []);
+
   // ── Apply ──
   const handleApply = React.useCallback(function () {
     if (!mode) return;
@@ -218,15 +262,16 @@ const HyperHeroSetupWizard: React.FC<IHyperHeroSetupWizardProps> = function (pro
     );
   });
 
-  // ── Dynamic help text for step 2 (configure) ──
+  // ── Dynamic help text for step 3 (configure) ──
   let configureHelpText = "Configure your layout and content source.";
-  if (step === 2 && mode === "list") {
+  if (step === 3 && mode === "list") {
     configureHelpText = "Select an existing SharePoint list or create a new one. The wizard will auto-provision the required columns for HyperHero content.";
-  } else if (step === 2 && mode === "manual") {
+  } else if (step === 3 && mode === "manual") {
     configureHelpText = "Pick a layout preset. Each layout creates a set of placeholder tiles that you can customize individually after setup.";
   }
 
   // ── Render current step ──
+  // Steps: 0=Welcome, 1=Templates, 2=Mode, 3=Configure, 4=Settings, 5=Summary
   let stepContent: React.ReactElement;
   switch (step) {
     case 0:
@@ -235,12 +280,18 @@ const HyperHeroSetupWizard: React.FC<IHyperHeroSetupWizardProps> = function (pro
       });
       break;
     case 1:
+      stepContent = React.createElement(TemplateGalleryStep, {
+        onUseTemplate: handleUseTemplate,
+        onCustomizeTemplate: handleCustomizeTemplate,
+      });
+      break;
+    case 2:
       stepContent = React.createElement(ModeStep, {
         selectedMode: mode,
         onModeSelect: handleModeSelect,
       });
       break;
-    case 2:
+    case 3:
       if (!mode) {
         stepContent = React.createElement("div", undefined, "Please select a mode first.");
       } else {
@@ -260,14 +311,14 @@ const HyperHeroSetupWizard: React.FC<IHyperHeroSetupWizardProps> = function (pro
         });
       }
       break;
-    case 3:
+    case 4:
       stepContent = React.createElement(GeneralSettingsStep, {
         settings: generalSettings,
         onSettingsChange: handleGeneralSettingsChange,
         mode: mode,
       });
       break;
-    case 4:
+    case 5:
       stepContent = renderSummary(mode, selectedListName, layoutPreset, generalSettings);
       break;
     default:
@@ -276,12 +327,12 @@ const HyperHeroSetupWizard: React.FC<IHyperHeroSetupWizardProps> = function (pro
 
   // ── Next button disabled logic ──
   const isNextDisabled =
-    step === 1 ? !mode :
-    step === 2 && mode === "list" ? selectedListName.length === 0 :
+    step === 2 ? !mode :
+    step === 3 && mode === "list" ? selectedListName.length === 0 :
     false;
 
   const isLastStep = step === STEPS.length - 1;
-  const currentHelpText = step === 2 ? configureHelpText : STEPS[step].helpText;
+  const currentHelpText = step === 3 ? configureHelpText : STEPS[step].helpText;
 
   return React.createElement(
     HyperModal,

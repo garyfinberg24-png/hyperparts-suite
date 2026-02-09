@@ -1,5 +1,5 @@
 import * as React from "react";
-import type { IHyperHeroTile, IHyperHeroCta } from "../models";
+import type { IHyperHeroTile, IHyperHeroCta, IElementAnimation } from "../models";
 import { HyperHeroGradientOverlay } from "./HyperHeroGradientOverlay";
 import { HyperHeroCtaGroup } from "./HyperHeroCtaGroup";
 import { HyperHeroCountdown } from "./HyperHeroCountdown";
@@ -25,6 +25,36 @@ const textAlignMap: Record<string, string> = {
   right: styles.tileTextRight,
 };
 
+/** Map EntranceEffect values to their CSS @keyframes animation names */
+const ENTRANCE_KEYFRAME_MAP: Record<string, string> = {
+  fadeUp: "hyperFadeUp",
+  fadeDown: "hyperFadeDown",
+  fadeIn: "hyperFadeInAnim",
+  slideLeft: "hyperSlideLeft",
+  slideRight: "hyperSlideRight",
+  slideUp: "hyperSlideUp",
+  slideDown: "hyperSlideDown",
+  scaleUp: "hyperScaleUp",
+  scaleDown: "hyperScaleDown",
+  rotateIn: "hyperRotateIn",
+  bounceIn: "hyperBounceIn",
+};
+
+/** Build inline animation style from an IElementAnimation config */
+function buildAnimationStyle(anim: IElementAnimation | undefined): React.CSSProperties {
+  if (!anim || anim.effect === "none") return {};
+  const keyframeName = ENTRANCE_KEYFRAME_MAP[anim.effect];
+  if (!keyframeName) return {};
+  return {
+    opacity: 0,
+    animationName: keyframeName,
+    animationDuration: anim.durationMs + "ms",
+    animationDelay: anim.delayMs + "ms",
+    animationFillMode: "forwards",
+    animationTimingFunction: anim.effect === "bounceIn" ? "ease" : "ease-out",
+  };
+}
+
 const HyperHeroTileInner: React.FC<IHyperHeroTileProps> = (props) => {
   const { tile, onCtaClick } = props;
 
@@ -46,7 +76,10 @@ const HyperHeroTileInner: React.FC<IHyperHeroTileProps> = (props) => {
     ? React.createElement(HyperHeroGradientOverlay, { gradient: tile.gradientOverlay })
     : undefined;
 
-  // Content layer
+  // Per-element animation configs
+  const anims = tile.elementAnimations;
+
+  // Content layer — base text color style
   const textStyle: React.CSSProperties = tile.textColor
     ? { color: tile.textColor }
     : {};
@@ -56,20 +89,39 @@ const HyperHeroTileInner: React.FC<IHyperHeroTileProps> = (props) => {
     ? React.createElement(HyperHeroCountdown, { config: tile.countdown })
     : undefined;
 
+  // Heading with animation
+  const headingAnimStyle = anims ? buildAnimationStyle(anims.heading) : {};
   const headingEl = tile.heading
-    ? React.createElement("h2", { className: styles.heading, style: textStyle }, tile.heading)
+    ? React.createElement("h2", {
+        className: styles.heading,
+        style: { ...textStyle, ...headingAnimStyle },
+      }, tile.heading)
     : undefined;
 
+  // Subheading with animation
+  const subAnimStyle = anims ? buildAnimationStyle(anims.subheading) : {};
   const subheadingEl = tile.subheading
-    ? React.createElement("p", { className: styles.subheading, style: textStyle }, tile.subheading)
+    ? React.createElement("p", {
+        className: styles.subheading,
+        style: { ...textStyle, ...subAnimStyle },
+      }, tile.subheading)
     : undefined;
 
+  // Description with animation
+  const descAnimStyle = anims ? buildAnimationStyle(anims.description) : {};
   const descriptionEl = tile.description
-    ? React.createElement("p", { className: styles.description, style: textStyle }, tile.description)
+    ? React.createElement("p", {
+        className: styles.description,
+        style: { ...textStyle, ...descAnimStyle },
+      }, tile.description)
     : undefined;
 
+  // CTAs with animation
+  const ctaAnimStyle = anims ? buildAnimationStyle(anims.ctas) : {};
   const ctaEl = tile.ctas && tile.ctas.length > 0
-    ? React.createElement(HyperHeroCtaGroup, { ctas: tile.ctas, onCtaClick: onCtaClick })
+    ? React.createElement("div", { style: ctaAnimStyle },
+        React.createElement(HyperHeroCtaGroup, { ctas: tile.ctas, onCtaClick: onCtaClick })
+      )
     : undefined;
 
   const contentLayer = React.createElement(
