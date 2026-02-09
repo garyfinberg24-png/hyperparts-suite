@@ -28,3 +28,20 @@ export {
 } from "./IHyperDirectoryFilter";
 
 export type { IHyperDirectoryWebPartProps } from "./IHyperDirectoryWebPartProps";
+
+export type {
+  IWizardLayoutDisplay,
+  IWizardSearchFiltering,
+  IWizardProfilePresence,
+  IWizardAdvancedFeatures,
+  IDirectoryWizardState,
+} from "./IHyperDirectoryWizardState";
+export {
+  DEFAULT_DIRECTORY_WIZARD_STATE,
+  getLayoutDisplayName,
+  getCardStyleDisplayName,
+  getSortFieldDisplayName,
+  getPhotoSizeDisplayName,
+  getPaginationDisplayName,
+  countNewFeatures,
+} from "./IHyperDirectoryWizardState";

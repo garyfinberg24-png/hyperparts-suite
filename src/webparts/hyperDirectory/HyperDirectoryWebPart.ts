@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactDom from "react-dom";
-import { Version } from "@microsoft/sp-core-library";
+import { Version, DisplayMode } from "@microsoft/sp-core-library";
 import {
   type IPropertyPaneConfiguration,
   PropertyPaneTextField,
@@ -17,10 +17,23 @@ import type { IHyperDirectoryWebPartProps } from "./models";
 
 export default class HyperDirectoryWebPart extends BaseHyperWebPart<IHyperDirectoryWebPartProps> {
 
+  private _onWizardApply = (result: Partial<IHyperDirectoryWebPartProps>): void => {
+    const self = this;
+    const keys = Object.keys(result);
+    keys.forEach(function (key: string) {
+      (self.properties as unknown as Record<string, unknown>)[key] = (result as unknown as Record<string, unknown>)[key];
+    });
+    self.properties.showWizardOnInit = false;
+    self.render();
+    self.context.propertyPane.refresh();
+  };
+
   public render(): void {
     const props: IHyperDirectoryComponentProps = {
       ...this.properties,
       instanceId: this.instanceId,
+      isEditMode: this.displayMode === DisplayMode.Edit,
+      onWizardApply: this._onWizardApply,
     };
     const element: React.ReactElement<IHyperDirectoryComponentProps> =
       React.createElement(HyperDirectory, props);
@@ -113,6 +126,31 @@ export default class HyperDirectoryWebPart extends BaseHyperWebPart<IHyperDirect
     }
     if (this.properties.cacheDuration === undefined) {
       this.properties.cacheDuration = 10;
+    }
+    // New property defaults
+    if (this.properties.showWizardOnInit === undefined) {
+      this.properties.showWizardOnInit = true;
+    }
+    if (this.properties.enableExport === undefined) {
+      this.properties.enableExport = false;
+    }
+    if (this.properties.showCompletenessScore === undefined) {
+      this.properties.showCompletenessScore = false;
+    }
+    if (this.properties.showPronouns === undefined) {
+      this.properties.showPronouns = false;
+    }
+    if (this.properties.showSmartOoo === undefined) {
+      this.properties.showSmartOoo = false;
+    }
+    if (this.properties.showQrCode === undefined) {
+      this.properties.showQrCode = false;
+    }
+    if (this.properties.enableSkillsSearch === undefined) {
+      this.properties.enableSkillsSearch = false;
+    }
+    if (this.properties.useSampleData === undefined) {
+      this.properties.useSampleData = true;
     }
   }
 
@@ -257,6 +295,29 @@ export default class HyperDirectoryWebPart extends BaseHyperWebPart<IHyperDirect
                 }),
               ],
             },
+            {
+              groupName: strings.HyperFeaturesGroupName,
+              groupFields: [
+                PropertyPaneToggle("enableExport", {
+                  label: strings.EnableExportFieldLabel,
+                }),
+                PropertyPaneToggle("enableSkillsSearch", {
+                  label: strings.EnableSkillsSearchFieldLabel,
+                }),
+                PropertyPaneToggle("showCompletenessScore", {
+                  label: strings.ShowCompletenessScoreFieldLabel,
+                }),
+                PropertyPaneToggle("showPronouns", {
+                  label: strings.ShowPronounsFieldLabel,
+                }),
+                PropertyPaneToggle("showSmartOoo", {
+                  label: strings.ShowSmartOooFieldLabel,
+                }),
+                PropertyPaneToggle("showQrCode", {
+                  label: strings.ShowQrCodeFieldLabel,
+                }),
+              ],
+            },
           ],
         },
         // ── Page 3: Data & Advanced ──
@@ -266,6 +327,9 @@ export default class HyperDirectoryWebPart extends BaseHyperWebPart<IHyperDirect
             {
               groupName: strings.DataGroupName,
               groupFields: [
+                PropertyPaneToggle("useSampleData", {
+                  label: strings.UseSampleDataFieldLabel,
+                }),
                 PropertyPaneTextField("userFilter", {
                   label: strings.UserFilterFieldLabel,
                   description: strings.UserFilterDescription,

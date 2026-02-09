@@ -3,6 +3,7 @@ import * as strings from "HyperDirectoryWebPartStrings";
 import { HyperErrorBoundary } from "../../../common/components";
 import { HyperSkeleton } from "../../../common/components";
 import { HyperEmptyState } from "../../../common/components";
+import { HyperWizard } from "../../../common/components/wizard/HyperWizard";
 import type { IHyperDirectoryWebPartProps, IHyperDirectoryUser, DirectoryActionType } from "../models";
 import { useDirectoryUsers } from "../hooks/useDirectoryUsers";
 import { useDirectoryPhotos } from "../hooks/useDirectoryPhotos";
@@ -10,6 +11,8 @@ import { useDirectorySearch } from "../hooks/useDirectorySearch";
 import { useDirectoryPresence } from "../hooks/useDirectoryPresence";
 import { useHyperDirectoryStore } from "../store/useHyperDirectoryStore";
 import { applyFilters, extractFilterOptions } from "../utils/filterUtils";
+import { getSampleUsers, getSamplePresenceMap } from "../utils/sampleData";
+import { DIRECTORY_WIZARD_CONFIG, buildStateFromProps } from "./wizard/directoryWizardConfig";
 import HyperDirectorySearchBar from "./HyperDirectorySearchBar";
 import HyperDirectoryAlphaIndex from "./HyperDirectoryAlphaIndex";
 import HyperDirectoryFilterPanel from "./HyperDirectoryFilterPanel";
@@ -21,6 +24,8 @@ import styles from "./HyperDirectory.module.scss";
 
 export interface IHyperDirectoryComponentProps extends IHyperDirectoryWebPartProps {
   instanceId: string;
+  isEditMode?: boolean;
+  onWizardApply?: (result: Partial<IHyperDirectoryWebPartProps>) => void;
 }
 
 /** Parse JSON string safely with fallback */
@@ -74,8 +79,76 @@ const HyperDirectoryInner: React.FC<IHyperDirectoryComponentProps> = function (p
   // Store
   const store = useHyperDirectoryStore();
 
-  // Fetch all users
-  const { users: allUsers, loading, error } = useDirectoryUsers(userFilter, cacheEnabled, cacheDuration);
+  // Wizard store selectors
+  var isWizardOpen = useHyperDirectoryStore(function (s) { return s.isWizardOpen; });
+  var openWizard = useHyperDirectoryStore(function (s) { return s.openWizard; });
+  var closeWizard = useHyperDirectoryStore(function (s) { return s.closeWizard; });
+
+  // Auto-open wizard on first load when not yet configured
+  React.useEffect(function () {
+    if (props.showWizardOnInit) {
+      openWizard();
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Build wizard state override from current props (for re-editing)
+  var wizardStateOverride = React.useMemo(function () {
+    return buildStateFromProps(props);
+  }, [
+    props.layoutMode, props.cardStyle, props.gridColumns, props.masonryColumns,
+    props.sortField, props.sortDirection, props.rollerDexSpeed, props.rollerDexVisibleCards,
+    props.showSearch, props.showAlphaIndex, props.showFilters,
+    props.pageSize, props.paginationMode, props.enableExport,
+    props.showPresence, props.presenceRefreshInterval, props.showProfileCard,
+    props.showQuickActions, props.enableVCardExport, props.showPhotoPlaceholder,
+    props.photoSize, props.showCompletenessScore, props.showPronouns,
+    props.showSmartOoo, props.showQrCode,
+    props.enableSkillsSearch, props.useSampleData, props.cacheEnabled, props.cacheDuration,
+    props.showWizardOnInit,
+  ]);
+
+  // Handle wizard apply
+  var handleWizardApply = React.useCallback(function (result: Partial<IHyperDirectoryWebPartProps>): void {
+    if (props.onWizardApply) {
+      props.onWizardApply(result);
+    }
+    closeWizard();
+  }, [props.onWizardApply, closeWizard]);
+
+  // Handle configure button click
+  var handleConfigureClick = React.useCallback(function (): void {
+    openWizard();
+  }, [openWizard]);
+
+  // Wizard element — rendered in ALL code paths
+  var wizardElement = React.createElement(HyperWizard, {
+    config: DIRECTORY_WIZARD_CONFIG,
+    isOpen: isWizardOpen,
+    onClose: closeWizard,
+    onApply: handleWizardApply,
+    initialStateOverride: wizardStateOverride,
+  });
+
+  // Fetch all users from Graph
+  const { users: realUsers, loading: realLoading, error: realError } = useDirectoryUsers(userFilter, cacheEnabled, cacheDuration);
+
+  // Determine if we should use sample data:
+  // - useSampleData is enabled AND no real users returned AND not currently loading
+  var usingSampleData = !!props.useSampleData && !realLoading && realUsers.length === 0;
+
+  // Effective users (real or sample)
+  var allUsers = React.useMemo(function () {
+    return usingSampleData ? getSampleUsers() : realUsers;
+  }, [usingSampleData, realUsers]);
+
+  // Effective loading/error — suppress error when using sample data as fallback
+  var loading = usingSampleData ? false : realLoading;
+  var error = usingSampleData ? undefined : realError;
+
+  // Sample presence map (only computed when using sample data)
+  var samplePresence = React.useMemo(function () {
+    return usingSampleData ? getSamplePresenceMap() : {};
+  }, [usingSampleData]);
 
   // Extract filter options from all users
   React.useEffect(function () {
@@ -110,16 +183,19 @@ const HyperDirectoryInner: React.FC<IHyperDirectoryComponentProps> = function (p
     return sortedUsers.slice(start, start + pageSize);
   }, [sortedUsers, currentPage, pageSize, paginationMode]);
 
-  // Collect visible user IDs for photo + presence fetching
+  // Collect visible user IDs for photo + presence fetching (skip for sample data)
   const visibleIds = React.useMemo(function () {
+    if (usingSampleData) return [];
     return pagedUsers.map(function (u) { return u.id; });
-  }, [pagedUsers]);
+  }, [pagedUsers, usingSampleData]);
 
-  // Fetch photos for visible users
-  const { photoMap } = useDirectoryPhotos(visibleIds, photoSize, true, cacheDuration);
+  // Fetch photos for visible users (no-op when sample data)
+  const { photoMap: realPhotoMap } = useDirectoryPhotos(visibleIds, photoSize, true, cacheDuration);
+  var photoMap = usingSampleData ? {} : realPhotoMap;
 
-  // Fetch presence for visible users
-  const { presenceMap } = useDirectoryPresence(visibleIds, showPresence, presenceRefreshInterval);
+  // Fetch presence for visible users (no-op when sample data)
+  const { presenceMap: realPresenceMap } = useDirectoryPresence(visibleIds, showPresence, presenceRefreshInterval);
+  var presenceMap = usingSampleData ? samplePresence : realPresenceMap;
 
   // User click handler
   const handleUserClick = React.useCallback(function (user: IHyperDirectoryUser): void {
@@ -173,7 +249,8 @@ const HyperDirectoryInner: React.FC<IHyperDirectoryComponentProps> = function (p
   if (loading) {
     return React.createElement("div", { className: styles.hyperDirectory },
       title ? React.createElement("h2", { className: styles.title }, title) : undefined,
-      React.createElement(HyperSkeleton, { variant: "rectangular", count: 6, height: 60 })
+      React.createElement(HyperSkeleton, { variant: "rectangular", count: 6, height: 60 }),
+      wizardElement
     );
   }
 
@@ -185,7 +262,8 @@ const HyperDirectoryInner: React.FC<IHyperDirectoryComponentProps> = function (p
         title: strings.ErrorTitle,
         description: error.message,
         iconName: "Warning",
-      })
+      }),
+      wizardElement
     );
   }
 
@@ -206,7 +284,7 @@ const HyperDirectoryInner: React.FC<IHyperDirectoryComponentProps> = function (p
   };
 
   // Select layout
-  let layoutElement: React.ReactElement;
+  var layoutElement: React.ReactElement;
   if (layoutMode === "list") {
     layoutElement = React.createElement(ListLayout, layoutProps);
   } else if (layoutMode === "compact") {
@@ -233,13 +311,26 @@ const HyperDirectoryInner: React.FC<IHyperDirectoryComponentProps> = function (p
 
   // Empty results after filtering
   if (pagedUsers.length === 0) {
-    layoutElement = React.createElement(HyperEmptyState, {
-      title: strings.NoResultsTitle,
-      description: strings.NoResultsDescription,
-      iconName: "People",
-      actionLabel: strings.ClearFiltersLabel,
-      onAction: store.clearFilters,
-    });
+    return React.createElement("div", { className: styles.hyperDirectory },
+      title ? React.createElement("h2", { className: styles.title }, title) : undefined,
+      React.createElement(HyperEmptyState, {
+        title: strings.NoResultsTitle,
+        description: strings.NoResultsDescription,
+        iconName: "People",
+        actionLabel: strings.ClearFiltersLabel,
+        onAction: store.clearFilters,
+      }),
+      props.isEditMode
+        ? React.createElement("div", { style: { textAlign: "center", marginTop: "12px" } },
+            React.createElement("button", {
+              onClick: handleConfigureClick,
+              className: styles.configureButton,
+              type: "button",
+            }, "\u2699\uFE0F Configure")
+          )
+        : undefined,
+      wizardElement
+    );
   }
 
   // Build toolbar elements
@@ -296,6 +387,12 @@ const HyperDirectoryInner: React.FC<IHyperDirectoryComponentProps> = function (p
 
   return React.createElement("div", { className: styles.hyperDirectory },
     title ? React.createElement("h2", { className: styles.title }, title) : undefined,
+    usingSampleData
+      ? React.createElement("div", {
+          className: styles.sampleDataBanner,
+          role: "status",
+        }, "Showing sample data. Connect to your Microsoft 365 tenant and turn off \"Seed with Sample Data\" to display real employees.")
+      : undefined,
     toolbarChildren.length > 0
       ? React.createElement("div", { className: styles.toolbar }, toolbarChildren)
       : undefined,
@@ -320,7 +417,8 @@ const HyperDirectoryInner: React.FC<IHyperDirectoryComponentProps> = function (p
       showPresence: showPresence,
       onClose: store.clearSelectedUser,
       onVCardExport: handleVCardExport,
-    }) : undefined
+    }) : undefined,
+    wizardElement
   );
 };
 

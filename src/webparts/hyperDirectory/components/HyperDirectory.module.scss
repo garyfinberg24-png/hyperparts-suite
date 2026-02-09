@@ -32,3 +32,38 @@
   justify-content: center;
   padding: 8px 0;
 }
+
+.sampleDataBanner {
+  padding: 8px 16px;
+  border-radius: 4px;
+  background: #fff4ce;
+  border: 1px solid #ffd335;
+  color: #5a4a00;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.configureButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  border: 1px solid #0078d4;
+  border-radius: 4px;
+  background: #0078d4;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: #106ebe;
+  }
+
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: 2px;
+  }
+}

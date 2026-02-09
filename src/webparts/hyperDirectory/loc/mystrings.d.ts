@@ -39,6 +39,16 @@ declare interface IHyperDirectoryWebPartStrings {
   EnabledActionsFieldLabel: string;
   EnableVCardFieldLabel: string;
 
+  // Hyper features
+  HyperFeaturesGroupName: string;
+  EnableExportFieldLabel: string;
+  EnableSkillsSearchFieldLabel: string;
+  ShowCompletenessScoreFieldLabel: string;
+  ShowPronounsFieldLabel: string;
+  ShowSmartOooFieldLabel: string;
+  ShowQrCodeFieldLabel: string;
+  UseSampleDataFieldLabel: string;
+
   // Data fields
   UserFilterFieldLabel: string;
   UserFilterDescription: string;

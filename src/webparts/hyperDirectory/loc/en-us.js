@@ -40,6 +40,16 @@ define([], function () {
     EnabledActionsFieldLabel: "Enabled Actions (JSON)",
     EnableVCardFieldLabel: "Enable vCard Export",
 
+    // Hyper features
+    HyperFeaturesGroupName: "Hyper Features",
+    EnableExportFieldLabel: "Enable CSV Export",
+    EnableSkillsSearchFieldLabel: "Enable Skills & Expertise Search",
+    ShowCompletenessScoreFieldLabel: "Show Profile Completeness Score",
+    ShowPronounsFieldLabel: "Show Pronouns & Personal Details",
+    ShowSmartOooFieldLabel: "Show Smart Out-of-Office Status",
+    ShowQrCodeFieldLabel: "Show Profile QR Code",
+    UseSampleDataFieldLabel: "Seed with Sample Data",
+
     // Data fields
     UserFilterFieldLabel: "User Filter (OData)",
     UserFilterDescription: "Optional OData filter for Graph /users endpoint. Example: department eq 'Engineering'",

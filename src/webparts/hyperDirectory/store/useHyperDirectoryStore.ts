@@ -13,6 +13,7 @@ interface IHyperDirectoryStoreState {
   sortDirection: "asc" | "desc";
   rollerDexAngle: number;
   rollerDexActiveIndex: number;
+  isWizardOpen: boolean;
 }
 
 interface IHyperDirectoryStoreActions {
@@ -31,6 +32,8 @@ interface IHyperDirectoryStoreActions {
   toggleSortDirection: () => void;
   setRollerDexAngle: (angle: number) => void;
   setRollerDexActiveIndex: (index: number) => void;
+  openWizard: () => void;
+  closeWizard: () => void;
   reset: () => void;
 }
 
@@ -47,6 +50,7 @@ const initialState: IHyperDirectoryStoreState = {
   sortDirection: "asc",
   rollerDexAngle: 0,
   rollerDexActiveIndex: 0,
+  isWizardOpen: false,
 };
 
 export const useHyperDirectoryStore = create<IHyperDirectoryStore>(function (set) {
@@ -140,6 +144,14 @@ export const useHyperDirectoryStore = create<IHyperDirectoryStore>(function (set
 
     setRollerDexActiveIndex: function (index: number): void {
       set({ rollerDexActiveIndex: index });
+    },
+
+    openWizard: function (): void {
+      set({ isWizardOpen: true });
+    },
+
+    closeWizard: function (): void {
+      set({ isWizardOpen: false });
     },
 
     reset: function (): void {

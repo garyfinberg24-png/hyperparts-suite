@@ -49,4 +49,24 @@ export interface IHyperDirectoryWebPartProps extends IBaseHyperWebPartProps {
   // Performance
   cacheEnabled: boolean;
   cacheDuration: number;
+
+  // Wizard
+  /** Show wizard on first load */
+  showWizardOnInit: boolean;
+
+  // New Hyper features
+  /** Enable CSV export of filtered results */
+  enableExport: boolean;
+  /** Show profile completeness score on cards */
+  showCompletenessScore: boolean;
+  /** Display pronouns, languages, timezone from extension attributes */
+  showPronouns: boolean;
+  /** Smart out-of-office status with return dates */
+  showSmartOoo: boolean;
+  /** Scannable QR code on profile cards */
+  showQrCode: boolean;
+  /** Enable skills & expertise search */
+  enableSkillsSearch: boolean;
+  /** Seed directory with sample data until real data is connected */
+  useSampleData: boolean;
 }
