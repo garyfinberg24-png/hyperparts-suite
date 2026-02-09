@@ -58,7 +58,7 @@ export interface IUseListBrowserResult {
  */
 export function useListBrowser(): IUseListBrowserResult {
   const [lists, setLists] = React.useState<IListInfo[]>([]);
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<string | undefined>(undefined);
   const [creating, setCreating] = React.useState<boolean>(false);
   const [refreshKey, setRefreshKey] = React.useState<number>(0);

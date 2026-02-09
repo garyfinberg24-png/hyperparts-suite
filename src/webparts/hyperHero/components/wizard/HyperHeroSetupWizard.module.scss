@@ -1,59 +1,110 @@
-.wizardOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 50;
+// ── Progress Stepper ──
+.stepperContainer {
+  margin-bottom: 20px;
+}
+
+.stepper {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
+  gap: 0;
 }
 
-.stepIndicator {
+.stepItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 56px;
+}
+
+.stepCircle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  gap: 4px;
-  margin-bottom: 24px;
-}
-
-.step {
-  padding: 6px 12px;
+  justify-content: center;
   font-size: 13px;
+  font-weight: 600;
+  border: 2px solid #c8c6c4;
   color: #a19f9d;
-  border-radius: 4px;
-  font-weight: 500;
+  background: #ffffff;
+  transition: all 0.2s;
 }
 
-.stepActive {
-  padding: 6px 12px;
-  font-size: 13px;
+.stepCircleActive {
+  border-color: #0078d4;
+  background: #0078d4;
+  color: #ffffff;
+}
+
+.stepCircleComplete {
+  border-color: #107c10;
+  background: #107c10;
+  color: #ffffff;
+}
+
+.stepLabel {
+  font-size: 11px;
+  color: #a19f9d;
+  font-weight: 500;
+  text-align: center;
+}
+
+.stepLabelActive {
   color: #0078d4;
-  background: #f3f9ff;
-  border-radius: 4px;
   font-weight: 600;
 }
 
-.stepComplete {
-  padding: 6px 12px;
-  font-size: 13px;
+.stepLabelComplete {
   color: #107c10;
-  border-radius: 4px;
   font-weight: 500;
 }
 
-.stepSeparator {
-  width: 24px;
+.stepConnector {
+  width: 28px;
   height: 2px;
   background: #edebe9;
+  margin: 0 2px;
+  margin-bottom: 22px;
+  transition: background 0.2s;
 }
 
+.stepConnectorActive {
+  background: #0078d4;
+}
+
+// ── Help Banner ──
+.helpBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #f3f9ff;
+  border: 1px solid #c7e0f4;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.helpIcon {
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.helpText {
+  font-size: 13px;
+  color: #605e5c;
+  line-height: 1.5;
+}
+
+// ── Step Content ──
 .stepContent {
   min-height: 300px;
 }
 
+// ── Navigation Buttons ──
 .navButtons {
   display: flex;
   justify-content: space-between;
@@ -78,7 +129,7 @@
 }
 
 .navBtnPrimary {
-  padding: 8px 20px;
+  padding: 8px 24px;
   border: none;
   border-radius: 4px;
   background: #0078d4;
@@ -86,6 +137,7 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  transition: background 0.15s;
 
   &:hover {
     background: #106ebe;
@@ -97,17 +149,56 @@
   }
 }
 
+// ── Step Header (summary uses this) ──
+.stepHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #faf9f8 0%, #f3f2f1 100%);
+  border: 1px solid #edebe9;
+  border-radius: 10px;
+  margin-bottom: 4px;
+}
+
+.stepHeaderIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #0078d4, #50e6ff);
+  border-radius: 10px;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.stepHeaderContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stepHeaderTitle {
+  font-size: 17px;
+  font-weight: 700;
+  color: #323130;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.stepHeaderDescription {
+  font-size: 13px;
+  color: #605e5c;
+  margin: 0;
+  line-height: 1.5;
+}
+
+// ── Summary Step ──
 .summaryContainer {
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
-
-.summaryTitle {
-  font-size: 16px;
-  font-weight: 600;
-  color: #323130;
-  margin: 0;
 }
 
 .summaryCard {
@@ -120,7 +211,8 @@
 .summaryRow {
   display: flex;
   justify-content: space-between;
-  padding: 6px 0;
+  align-items: center;
+  padding: 8px 0;
   font-size: 14px;
   border-bottom: 1px solid #edebe9;
 
@@ -138,9 +230,52 @@
   color: #605e5c;
 }
 
+.summaryValueMono {
+  color: #0078d4;
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 13px;
+  background: #f3f9ff;
+  padding: 2px 8px;
+  border-radius: 3px;
+}
+
+.summaryBadge {
+  display: inline-block;
+  padding: 3px 10px;
+  background: #0078d4;
+  color: #ffffff;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.summaryBadgeGreen {
+  display: inline-block;
+  padding: 3px 10px;
+  background: #107c10;
+  color: #ffffff;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.summaryDivider {
+  height: 1px;
+  background: #d2d0ce;
+  margin: 4px 0;
+}
+
 .summaryMessage {
   font-size: 13px;
   color: #605e5c;
   font-style: italic;
   margin: 0;
+}
+
+.summaryFootnote {
+  font-size: 12px;
+  color: #a19f9d;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }

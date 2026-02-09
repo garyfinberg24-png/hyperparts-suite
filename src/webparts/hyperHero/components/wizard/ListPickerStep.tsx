@@ -18,25 +18,71 @@ export interface IListPickerStepProps {
   createStatus: string | undefined;
   createError: string | undefined;
   // Manual mode props
-  tileCount: number;
-  onTileCountChange: (count: number) => void;
   layoutPreset: LayoutPreset;
   onLayoutPresetChange: (preset: LayoutPreset) => void;
 }
 
 interface ILayoutPresetConfig {
   id: LayoutPreset;
-  icon: string;
   label: string;
+  description: string;
+  tileCount: number;
+  /** CSS grid areas for the mini preview */
+  previewAreas: string;
+  previewColumns: string;
+  previewRows: string;
 }
 
 const LAYOUT_PRESETS: ILayoutPresetConfig[] = [
-  { id: "single", icon: "◼", label: "Single" },
-  { id: "split", icon: "◧", label: "Split (2 tiles)" },
-  { id: "thirds", icon: "▦", label: "Thirds (3 tiles)" },
-  { id: "heroSidebar", icon: "▨", label: "Hero + Sidebar" },
-  { id: "grid2x2", icon: "▦", label: "Grid 2x2" },
+  {
+    id: "single",
+    label: "Full Width",
+    description: "One large hero tile spanning the full width",
+    tileCount: 1,
+    previewAreas: "'a'",
+    previewColumns: "1fr",
+    previewRows: "1fr",
+  },
+  {
+    id: "split",
+    label: "Split",
+    description: "Two equal tiles side by side",
+    tileCount: 2,
+    previewAreas: "'a b'",
+    previewColumns: "1fr 1fr",
+    previewRows: "1fr",
+  },
+  {
+    id: "thirds",
+    label: "Thirds",
+    description: "Three equal tiles in a row",
+    tileCount: 3,
+    previewAreas: "'a b c'",
+    previewColumns: "1fr 1fr 1fr",
+    previewRows: "1fr",
+  },
+  {
+    id: "heroSidebar",
+    label: "Hero + Sidebar",
+    description: "Large hero tile with a smaller sidebar",
+    tileCount: 2,
+    previewAreas: "'a a b'",
+    previewColumns: "1fr 1fr 1fr",
+    previewRows: "1fr",
+  },
+  {
+    id: "grid2x2",
+    label: "Grid 2x2",
+    description: "Four tiles in a 2-by-2 grid",
+    tileCount: 4,
+    previewAreas: "'a b' 'c d'",
+    previewColumns: "1fr 1fr",
+    previewRows: "1fr 1fr",
+  },
 ];
+
+/** Color swatches for mini preview tiles */
+const PREVIEW_COLORS = ["#0078d4", "#50e6ff", "#6264a7", "#00b7c3"];
 
 const ListPickerStep: React.FC<IListPickerStepProps> = function (props) {
   const [createInputValue, setCreateInputValue] = React.useState<string>("");
@@ -55,13 +101,6 @@ const ListPickerStep: React.FC<IListPickerStepProps> = function (props) {
       setCreateInputValue("");
     }
   }, [createInputValue, props.onCreateList]);
-
-  const handleTileCountChange = React.useCallback(function (e: React.ChangeEvent<HTMLInputElement>) {
-    const count = parseInt(e.target.value, 10);
-    if (!isNaN(count)) {
-      props.onTileCountChange(count);
-    }
-  }, [props.onTileCountChange]);
 
   const handleLayoutPresetClick = React.useCallback(function (preset: LayoutPreset) {
     return function () {
@@ -99,44 +138,58 @@ const ListPickerStep: React.FC<IListPickerStepProps> = function (props) {
     const fieldMappingRows: React.ReactElement[] = [];
     if (props.selectedListName.length > 0) {
       const mappings = [
-        { label: "Heading", value: "Title" },
-        { label: "Subheading", value: "HeroSubheading" },
-        { label: "Description", value: "HeroDescription" },
-        { label: "Image URL", value: "HeroImageUrl" },
-        { label: "Link URL", value: "HeroLinkUrl" },
-        { label: "Publish Date", value: "HeroPublishDate" },
-        { label: "Unpublish Date", value: "HeroUnpublishDate" },
-        { label: "Sort Order", value: "HeroSortOrder" },
+        { label: "Heading", spColumn: "Title", description: "Main heading text" },
+        { label: "Subheading", spColumn: "HeroSubheading", description: "Secondary text" },
+        { label: "Description", spColumn: "HeroDescription", description: "Body text" },
+        { label: "Image URL", spColumn: "HeroImageUrl", description: "Background image" },
+        { label: "Link URL", spColumn: "HeroLinkUrl", description: "Tile click destination" },
+        { label: "Publish Date", spColumn: "HeroPublishDate", description: "When to show" },
+        { label: "Unpublish Date", spColumn: "HeroUnpublishDate", description: "When to hide" },
+        { label: "Sort Order", spColumn: "HeroSortOrder", description: "Display sequence" },
       ];
 
       mappings.forEach(function (m, idx) {
         fieldMappingRows.push(
           React.createElement("div", { key: idx, className: styles.fieldMappingRow },
             React.createElement("span", { className: styles.fieldMappingLabel }, m.label),
-            React.createElement("span", { className: styles.fieldMappingValue }, m.value)
+            React.createElement("span", { className: styles.fieldMappingArrow, "aria-hidden": "true" }, "\u2192"),
+            React.createElement("span", { className: styles.fieldMappingValue }, m.spColumn)
           )
         );
       });
     }
 
     return React.createElement("div", { className: styles.listPickerContainer },
-      React.createElement("h3", { className: styles.listPickerTitle }, "Connect to a SharePoint List"),
-      React.createElement("p", { className: styles.listPickerDescription },
-        "Choose an existing list or create a new one with HyperHero content columns."
+      // Step header
+      React.createElement("div", { className: styles.stepHeader },
+        React.createElement("div", { className: styles.stepHeaderIcon, "aria-hidden": "true" }, "\uD83D\uDCCB"),
+        React.createElement("div", { className: styles.stepHeaderContent },
+          React.createElement("h3", { className: styles.stepHeaderTitle }, "Connect to a SharePoint List"),
+          React.createElement("p", { className: styles.stepHeaderDescription },
+            "Choose an existing list or create a new one. The wizard will auto-provision the required columns."
+          )
+        )
       ),
 
       // Browse section
-      React.createElement("div", undefined,
+      React.createElement("div", { className: styles.sectionBox },
         React.createElement("label", { className: styles.sectionLabel }, "Browse Existing Lists"),
         React.createElement("div", { className: styles.selectWrapper },
           props.listsLoading
-            ? React.createElement("div", { className: styles.statusLoading }, "Loading lists...")
+            ? React.createElement("div", { className: styles.statusLoading },
+                React.createElement("span", { className: styles.spinner, "aria-hidden": "true" }),
+                "Loading lists..."
+              )
             : props.listsError
-              ? React.createElement("div", { className: styles.statusError }, props.listsError)
+              ? React.createElement("div", { className: styles.statusError },
+                  React.createElement("span", { "aria-hidden": "true" }, "\u26A0\uFE0F"),
+                  " " + props.listsError
+                )
               : React.createElement("select", {
                   className: styles.listSelect,
                   value: props.selectedListName,
                   onChange: handleListSelectChange,
+                  "aria-label": "Select a SharePoint list",
                 }, optionElements)
         )
       ),
@@ -149,8 +202,11 @@ const ListPickerStep: React.FC<IListPickerStepProps> = function (props) {
       ),
 
       // Create section
-      React.createElement("div", undefined,
+      React.createElement("div", { className: styles.sectionBox },
         React.createElement("label", { className: styles.sectionLabel }, "Create New List"),
+        React.createElement("p", { className: styles.sectionHint },
+          "Creates a Generic list with 8 pre-configured HyperHero columns."
+        ),
         React.createElement("div", { className: styles.createSection },
           React.createElement("input", {
             type: "text",
@@ -158,6 +214,7 @@ const ListPickerStep: React.FC<IListPickerStepProps> = function (props) {
             placeholder: "Enter list name...",
             value: createInputValue,
             onChange: handleCreateInputChange,
+            "aria-label": "New list name",
           }),
           React.createElement("button", {
             type: "button",
@@ -167,28 +224,59 @@ const ListPickerStep: React.FC<IListPickerStepProps> = function (props) {
           }, props.creating ? "Creating..." : "Create List")
         ),
         props.createStatus
-          ? React.createElement("div", { className: styles.statusSuccess }, props.createStatus)
+          ? React.createElement("div", { className: styles.statusSuccess },
+              React.createElement("span", { "aria-hidden": "true" }, "\u2705"),
+              " " + props.createStatus
+            )
           : undefined,
         props.createError
-          ? React.createElement("div", { className: styles.statusError }, props.createError)
+          ? React.createElement("div", { className: styles.statusError },
+              React.createElement("span", { "aria-hidden": "true" }, "\u274C"),
+              " " + props.createError
+            )
           : undefined
       ),
 
       // Field mapping preview
       props.selectedListName.length > 0
         ? React.createElement("div", { className: styles.fieldMappingPreview },
-            React.createElement("h4", { className: styles.fieldMappingTitle }, "Field Mapping Preview"),
-            fieldMappingRows
+            React.createElement("h4", { className: styles.fieldMappingTitle }, "Column Mapping"),
+            React.createElement("p", { className: styles.fieldMappingHint },
+              "These SP list columns will map to HyperHero tile properties:"
+            ),
+            React.createElement("div", undefined, fieldMappingRows)
           )
         : undefined
     );
   }
 
-  // Manual mode
+  // ── Manual mode ──
+  // Find the selected preset config to show details
+  let selectedConfig: ILayoutPresetConfig | undefined = undefined;
+  LAYOUT_PRESETS.forEach(function (p) {
+    if (p.id === props.layoutPreset) selectedConfig = p;
+  });
+
   const layoutPresetElements: React.ReactElement[] = [];
   LAYOUT_PRESETS.forEach(function (preset) {
     const isSelected = props.layoutPreset === preset.id;
     const className = styles.layoutPreset + (isSelected ? " " + styles.layoutPresetSelected : "");
+
+    // Build mini preview tiles
+    const previewAreas = ["a", "b", "c", "d"];
+    const previewTiles: React.ReactElement[] = [];
+    for (let i = 0; i < preset.tileCount; i++) {
+      previewTiles.push(
+        React.createElement("div", {
+          key: previewAreas[i],
+          className: styles.previewTile,
+          style: {
+            gridArea: previewAreas[i],
+            background: PREVIEW_COLORS[i % PREVIEW_COLORS.length],
+          },
+        })
+      );
+    }
 
     layoutPresetElements.push(
       React.createElement("div", {
@@ -198,44 +286,57 @@ const ListPickerStep: React.FC<IListPickerStepProps> = function (props) {
         onKeyDown: handleLayoutPresetKeyDown(preset.id),
         role: "radio",
         "aria-checked": isSelected ? "true" : "false",
+        "aria-label": preset.label + " - " + preset.description,
         tabIndex: 0,
       },
-        React.createElement("span", { className: styles.layoutPresetIcon, "aria-hidden": "true" }, preset.icon),
-        React.createElement("div", { className: styles.layoutPresetLabel }, preset.label)
+        // Mini grid preview
+        React.createElement("div", {
+          className: styles.previewGrid,
+          style: {
+            gridTemplateAreas: preset.previewAreas,
+            gridTemplateColumns: preset.previewColumns,
+            gridTemplateRows: preset.previewRows,
+          },
+          "aria-hidden": "true",
+        }, previewTiles),
+        // Label + tile count
+        React.createElement("div", { className: styles.layoutPresetLabel }, preset.label),
+        React.createElement("div", { className: styles.layoutPresetCount },
+          preset.tileCount === 1 ? "1 tile" : preset.tileCount + " tiles"
+        )
       )
     );
   });
 
   return React.createElement("div", { className: styles.listPickerContainer },
-    React.createElement("h3", { className: styles.listPickerTitle }, "Configure Manual Tiles"),
-    React.createElement("p", { className: styles.listPickerDescription },
-      "Set the number of tiles and choose a layout preset to get started."
+    // Step header
+    React.createElement("div", { className: styles.stepHeader },
+      React.createElement("div", { className: styles.stepHeaderIcon, "aria-hidden": "true" }, "\uD83C\uDFA8"),
+      React.createElement("div", { className: styles.stepHeaderContent },
+        React.createElement("h3", { className: styles.stepHeaderTitle }, "Choose Your Layout"),
+        React.createElement("p", { className: styles.stepHeaderDescription },
+          "Select a layout preset. Each tile can be individually customized after setup."
+        )
+      )
     ),
 
-    React.createElement("div", { className: styles.manualSection },
-      // Tile count slider
-      React.createElement("div", undefined,
-        React.createElement("label", { className: styles.sectionLabel }, "Number of Tiles"),
-        React.createElement("div", { className: styles.sliderRow },
-          React.createElement("span", { className: styles.sliderLabel }, "Tiles:"),
-          React.createElement("input", {
-            type: "range",
-            className: styles.sliderInput,
-            min: "1",
-            max: "6",
-            value: String(props.tileCount),
-            onChange: handleTileCountChange,
-          }),
-          React.createElement("span", { className: styles.sliderValue }, String(props.tileCount))
-        )
-      ),
+    // Layout preset grid
+    React.createElement("div", { className: styles.layoutPresets, role: "radiogroup", "aria-label": "Layout presets" },
+      layoutPresetElements
+    ),
 
-      // Layout preset selection
-      React.createElement("div", undefined,
-        React.createElement("label", { className: styles.sectionLabel }, "Layout Preset"),
-        React.createElement("div", { className: styles.layoutPresets }, layoutPresetElements)
-      )
-    )
+    // Selected preset detail
+    selectedConfig
+      ? React.createElement("div", { className: styles.selectedPresetInfo },
+          React.createElement("span", { className: styles.selectedPresetName }, (selectedConfig as ILayoutPresetConfig).label),
+          React.createElement("span", { className: styles.selectedPresetDesc },
+            " \u2014 " + (selectedConfig as ILayoutPresetConfig).description +
+            ". Creates " + (selectedConfig as ILayoutPresetConfig).tileCount +
+            ((selectedConfig as ILayoutPresetConfig).tileCount === 1 ? " tile" : " tiles") +
+            " with placeholder content ready for editing."
+          )
+        )
+      : undefined
   );
 };
 

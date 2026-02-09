@@ -21,11 +21,23 @@ export interface IHyperHeroTileEditorProps {
 
 type TabId = "background" | "content" | "ctas" | "advanced";
 
+/** Preset color palette for quick selection */
+const COLOR_PRESETS = [
+  "#0078d4", "#106ebe", "#50e6ff", "#00b7c3",
+  "#107c10", "#5c2d91", "#ca5010", "#d83b01",
+  "#a4262c", "#e74856", "#323130", "#ffffff",
+];
+
 const HyperHeroTileEditorInner: React.FC<IHyperHeroTileEditorProps> = function (props) {
   const { isOpen, tile, onSave, onClose } = props;
 
-  const [activeTab, setActiveTab] = React.useState<TabId>("background");
-  const [draft, setDraft] = React.useState<IHyperHeroTile | undefined>(tile);
+  const tabState = React.useState<TabId>("background");
+  const activeTab = tabState[0];
+  const setActiveTab = tabState[1];
+
+  const draftState = React.useState<IHyperHeroTile | undefined>(tile);
+  const draft = draftState[0];
+  const setDraft = draftState[1];
 
   // Reset draft when tile or isOpen changes
   React.useEffect(function () {
@@ -144,42 +156,79 @@ const HyperHeroTileEditorInner: React.FC<IHyperHeroTileEditorProps> = function (
     }
   }, [draft, onSave]);
 
+  // eslint-disable-next-line @rushstack/no-new-null
   if (!draft) return null;
 
-  const footer = React.createElement("button", {
-    onClick: handleSave,
-    style: {
-      padding: "8px 16px",
-      background: "#0078d4",
-      color: "#ffffff",
-      border: "none",
-      borderRadius: "4px",
-      fontWeight: 600,
-      cursor: "pointer",
-    },
-  }, "Save");
+  const footer = React.createElement("div", { className: styles.footerRow },
+    React.createElement("button", {
+      onClick: onClose,
+      className: styles.footerBtnCancel,
+      type: "button",
+    }, "Cancel"),
+    React.createElement("button", {
+      onClick: handleSave,
+      className: styles.footerBtnSave,
+      type: "button",
+    }, "Save Changes")
+  );
+
+  // Tab definitions with labels
+  const TAB_DEFS: Array<{ id: TabId; label: string; icon: string }> = [
+    { id: "background", label: "Background", icon: "\uD83D\uDDBC\uFE0F" },
+    { id: "content", label: "Content", icon: "\u270F\uFE0F" },
+    { id: "ctas", label: "Buttons", icon: "\uD83D\uDD17" },
+    { id: "advanced", label: "Advanced", icon: "\u2699\uFE0F" },
+  ];
 
   return React.createElement(HyperModal, {
     isOpen: isOpen,
     onClose: onClose,
-    title: "Edit Tile",
+    title: "Edit Tile: " + (draft.heading || "Untitled"),
     size: "large",
     footer: footer,
   }, React.createElement("div", { className: styles.editorContainer },
+    // Live preview swatch
+    React.createElement("div", { className: styles.livePreview },
+      React.createElement("div", {
+        className: styles.livePreviewTile,
+        style: {
+          background: draft.background.type === "solidColor"
+            ? draft.background.backgroundColor || "#0078d4"
+            : draft.background.type === "image" && draft.background.imageUrl
+              ? "url(" + draft.background.imageUrl + ") center/cover"
+              : "#0078d4",
+        },
+      },
+        React.createElement("div", {
+          className: styles.livePreviewContent,
+          style: { color: draft.textColor || "#ffffff" },
+        },
+          draft.heading && React.createElement("div", { className: styles.livePreviewHeading }, draft.heading),
+          draft.subheading && React.createElement("div", { className: styles.livePreviewSub }, draft.subheading)
+        )
+      )
+    ),
+
     // Tab bar
-    React.createElement("div", { className: styles.tabBar },
-      ["background", "content", "ctas", "advanced"].map(function (tabId) {
-        const isActive = activeTab === tabId;
-        const label = tabId.charAt(0).toUpperCase() + tabId.substring(1);
+    React.createElement("div", { className: styles.tabBar, role: "tablist" },
+      TAB_DEFS.map(function (tabDef) {
+        const isActive = activeTab === tabDef.id;
         return React.createElement("button", {
-          key: tabId,
+          key: tabDef.id,
           className: isActive
             ? styles.tab + " " + styles.tabActive
             : styles.tab,
           onClick: function (): void {
-            setActiveTab(tabId as TabId);
+            setActiveTab(tabDef.id);
           },
-        }, label);
+          role: "tab",
+          "aria-selected": isActive ? "true" : "false",
+          type: "button",
+        },
+          React.createElement("span", { "aria-hidden": "true" }, tabDef.icon),
+          " ",
+          tabDef.label
+        );
       })
     ),
     // Tab content
@@ -198,7 +247,67 @@ const HyperHeroTileEditorInner: React.FC<IHyperHeroTileEditorProps> = function (
   ));
 };
 
-// Background tab
+// ── Color Picker Component ──
+function renderColorPicker(
+  label: string,
+  value: string,
+  defaultValue: string,
+  onChange: (color: string) => void
+): React.ReactElement {
+  const currentColor = value || defaultValue;
+
+  // Preset buttons
+  const presetButtons: React.ReactElement[] = [];
+  COLOR_PRESETS.forEach(function (color, idx) {
+    const isSelected = currentColor.toLowerCase() === color.toLowerCase();
+    presetButtons.push(
+      React.createElement("button", {
+        key: idx,
+        className: styles.colorSwatch + (isSelected ? " " + styles.colorSwatchSelected : ""),
+        style: {
+          background: color,
+          border: color === "#ffffff" ? "1px solid #c8c6c4" : "1px solid transparent",
+        },
+        onClick: function (): void { onChange(color); },
+        "aria-label": color,
+        type: "button",
+      })
+    );
+  });
+
+  return React.createElement("div", { className: styles.colorPickerGroup },
+    React.createElement("label", { className: styles.fieldLabel }, label),
+    // Large preview + native picker + hex input
+    React.createElement("div", { className: styles.colorPickerRow },
+      React.createElement("div", {
+        className: styles.colorPreview,
+        style: { background: currentColor },
+      }),
+      React.createElement("input", {
+        type: "color",
+        className: styles.colorInput,
+        value: currentColor,
+        onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
+          onChange(e.target.value);
+        },
+        "aria-label": "Pick " + label,
+      }),
+      React.createElement("input", {
+        type: "text",
+        className: styles.colorHexInput,
+        value: currentColor,
+        onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
+          onChange(e.target.value);
+        },
+        placeholder: "#000000",
+      })
+    ),
+    // Preset palette
+    React.createElement("div", { className: styles.colorPalette }, presetButtons)
+  );
+}
+
+// ── Background Tab ──
 function renderBackgroundTab(
   draft: IHyperHeroTile,
   updateBackground: (field: string, value: unknown) => void
@@ -206,26 +315,31 @@ function renderBackgroundTab(
   const bg = draft.background;
   const currentType = bg.type;
 
+  // Type selector as styled cards instead of radio buttons
+  const typeOptions = [
+    { type: "image", label: "Image", icon: "\uD83D\uDDBC\uFE0F" },
+    { type: "solidColor", label: "Color", icon: "\uD83C\uDFA8" },
+    { type: "video", label: "Video", icon: "\uD83D\uDCF9" },
+    { type: "lottie", label: "Lottie", icon: "\u2728" },
+  ];
+
   return React.createElement("div", { className: styles.fieldGroup },
     // Background type selector
     React.createElement("div", undefined,
       React.createElement("label", { className: styles.fieldLabel }, "Background Type"),
-      React.createElement("div", { className: styles.radioGroup },
-        ["image", "solidColor", "video", "lottie"].map(function (type) {
-          return React.createElement("label", {
-            key: type,
-            className: styles.radioLabel,
+      React.createElement("div", { className: styles.typeSelector },
+        typeOptions.map(function (opt) {
+          const isSelected = currentType === opt.type;
+          return React.createElement("button", {
+            key: opt.type,
+            className: styles.typeCard + (isSelected ? " " + styles.typeCardSelected : ""),
+            onClick: function (): void {
+              updateBackground("type", opt.type);
+            },
+            type: "button",
           },
-            React.createElement("input", {
-              type: "radio",
-              name: "bgType",
-              className: styles.radioInput,
-              checked: currentType === type,
-              onChange: function (): void {
-                updateBackground("type", type);
-              },
-            }),
-            type.charAt(0).toUpperCase() + type.substring(1)
+            React.createElement("span", { "aria-hidden": "true" }, opt.icon),
+            React.createElement("span", undefined, opt.label)
           );
         })
       )
@@ -238,52 +352,40 @@ function renderBackgroundTab(
           type: "text",
           className: styles.textInput,
           value: bg.imageUrl || "",
+          placeholder: "https://your-site.com/image.jpg",
           onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
             updateBackground("imageUrl", e.target.value);
           },
-        })
+        }),
+        React.createElement("p", { className: styles.fieldHint }, "Paste a direct URL to an image file (JPG, PNG, WebP)")
       ),
       bg.imageUrl && React.createElement("img", {
         src: bg.imageUrl,
-        alt: "Preview",
+        alt: "Background preview",
         className: styles.previewThumbnail,
       })
     ),
-    currentType === "solidColor" && React.createElement("div", undefined,
-      React.createElement("label", { className: styles.fieldLabel }, "Background Color"),
-      React.createElement("div", { className: styles.colorRow },
-        React.createElement("input", {
-          type: "color",
-          className: styles.colorInput,
-          value: bg.backgroundColor || "#0078d4",
-          onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
-            updateBackground("backgroundColor", e.target.value);
-          },
-        }),
-        React.createElement("input", {
-          type: "text",
-          className: styles.textInput,
-          value: bg.backgroundColor || "#0078d4",
-          onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
-            updateBackground("backgroundColor", e.target.value);
-          },
-          style: { flex: 1 },
-        })
-      )
+    currentType === "solidColor" && renderColorPicker(
+      "Background Color",
+      bg.backgroundColor || "",
+      "#0078d4",
+      function (color: string): void {
+        updateBackground("backgroundColor", color);
+      }
     ),
     currentType === "video" && React.createElement(React.Fragment, undefined,
       React.createElement("div", undefined,
         React.createElement("label", { className: styles.fieldLabel }, "Video Source"),
         React.createElement("select", {
           className: styles.selectInput,
-          value: bg.video?.source || "mp4",
+          value: bg.video ? bg.video.source : "mp4",
           onChange: function (e: React.ChangeEvent<HTMLSelectElement>): void {
             const newVideo = {
               source: e.target.value as VideoSource,
-              url: bg.video?.url || "",
-              autoplay: bg.video?.autoplay ?? true,
-              loop: bg.video?.loop ?? true,
-              muted: bg.video?.muted ?? true,
+              url: bg.video ? bg.video.url : "",
+              autoplay: bg.video ? bg.video.autoplay : true,
+              loop: bg.video ? bg.video.loop : true,
+              muted: bg.video ? bg.video.muted : true,
             };
             updateBackground("video", newVideo);
           },
@@ -298,14 +400,15 @@ function renderBackgroundTab(
         React.createElement("input", {
           type: "text",
           className: styles.textInput,
-          value: bg.video?.url || "",
+          value: bg.video ? bg.video.url : "",
+          placeholder: "https://...",
           onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
             const newVideo = {
-              source: bg.video?.source || "mp4",
+              source: bg.video ? bg.video.source : "mp4" as VideoSource,
               url: e.target.value,
-              autoplay: bg.video?.autoplay ?? true,
-              loop: bg.video?.loop ?? true,
-              muted: bg.video?.muted ?? true,
+              autoplay: bg.video ? bg.video.autoplay : true,
+              loop: bg.video ? bg.video.loop : true,
+              muted: bg.video ? bg.video.muted : true,
             };
             updateBackground("video", newVideo);
           },
@@ -317,23 +420,25 @@ function renderBackgroundTab(
       React.createElement("input", {
         type: "text",
         className: styles.textInput,
-        value: bg.lottie?.url || "",
+        value: bg.lottie ? bg.lottie.url : "",
+        placeholder: "https://assets.lottiefiles.com/...",
         onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
           const newLottie = {
             url: e.target.value,
-            loop: bg.lottie?.loop ?? true,
-            autoplay: bg.lottie?.autoplay ?? true,
-            speed: bg.lottie?.speed ?? 1,
-            renderer: bg.lottie?.renderer || "svg",
+            loop: bg.lottie ? bg.lottie.loop : true,
+            autoplay: bg.lottie ? bg.lottie.autoplay : true,
+            speed: bg.lottie ? bg.lottie.speed : 1,
+            renderer: bg.lottie ? bg.lottie.renderer : "svg",
           };
           updateBackground("lottie", newLottie);
         },
-      })
+      }),
+      React.createElement("p", { className: styles.fieldHint }, "Paste a Lottie JSON URL from lottiefiles.com or similar")
     )
   );
 }
 
-// Content tab
+// ── Content Tab ──
 function renderContentTab(
   draft: IHyperHeroTile,
   setDraft: React.Dispatch<React.SetStateAction<IHyperHeroTile | undefined>>
@@ -346,6 +451,7 @@ function renderContentTab(
         type: "text",
         className: styles.textInput,
         value: draft.heading,
+        placeholder: "Enter heading text...",
         onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
           setDraft(function (prev) {
             return prev ? { ...prev, heading: e.target.value } : prev;
@@ -360,6 +466,7 @@ function renderContentTab(
         type: "text",
         className: styles.textInput,
         value: draft.subheading || "",
+        placeholder: "Enter subheading text...",
         onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
           setDraft(function (prev) {
             return prev ? { ...prev, subheading: e.target.value } : prev;
@@ -374,6 +481,7 @@ function renderContentTab(
         className: styles.textArea,
         rows: 4,
         value: draft.description || "",
+        placeholder: "Optional longer description...",
         onChange: function (e: React.ChangeEvent<HTMLTextAreaElement>): void {
           setDraft(function (prev) {
             return prev ? { ...prev, description: e.target.value } : prev;
@@ -383,85 +491,67 @@ function renderContentTab(
     ),
     // Text align
     React.createElement("div", undefined,
-      React.createElement("label", { className: styles.fieldLabel }, "Text Align"),
-      React.createElement("div", { className: styles.radioGroup },
-        ["left", "center", "right"].map(function (align) {
-          return React.createElement("label", {
-            key: align,
-            className: styles.radioLabel,
+      React.createElement("label", { className: styles.fieldLabel }, "Text Alignment"),
+      React.createElement("div", { className: styles.typeSelector },
+        [
+          { value: "left", label: "Left", icon: "\u2590" },
+          { value: "center", label: "Center", icon: "\u2501" },
+          { value: "right", label: "Right", icon: "\u258C" },
+        ].map(function (opt) {
+          return React.createElement("button", {
+            key: opt.value,
+            className: styles.typeCard + (draft.textAlign === opt.value ? " " + styles.typeCardSelected : ""),
+            onClick: function (): void {
+              setDraft(function (prev) {
+                return prev ? { ...prev, textAlign: opt.value as "left" | "center" | "right" } : prev;
+              });
+            },
+            type: "button",
           },
-            React.createElement("input", {
-              type: "radio",
-              name: "textAlign",
-              className: styles.radioInput,
-              checked: draft.textAlign === align,
-              onChange: function (): void {
-                setDraft(function (prev) {
-                  return prev ? { ...prev, textAlign: align as "left" | "center" | "right" } : prev;
-                });
-              },
-            }),
-            align.charAt(0).toUpperCase() + align.substring(1)
+            React.createElement("span", undefined, opt.label)
           );
         })
       )
     ),
     // Vertical align
     React.createElement("div", undefined,
-      React.createElement("label", { className: styles.fieldLabel }, "Vertical Align"),
-      React.createElement("div", { className: styles.radioGroup },
-        ["top", "center", "bottom"].map(function (align) {
-          return React.createElement("label", {
-            key: align,
-            className: styles.radioLabel,
+      React.createElement("label", { className: styles.fieldLabel }, "Vertical Position"),
+      React.createElement("div", { className: styles.typeSelector },
+        [
+          { value: "top", label: "Top" },
+          { value: "center", label: "Middle" },
+          { value: "bottom", label: "Bottom" },
+        ].map(function (opt) {
+          return React.createElement("button", {
+            key: opt.value,
+            className: styles.typeCard + (draft.verticalAlign === opt.value ? " " + styles.typeCardSelected : ""),
+            onClick: function (): void {
+              setDraft(function (prev) {
+                return prev ? { ...prev, verticalAlign: opt.value as "top" | "center" | "bottom" } : prev;
+              });
+            },
+            type: "button",
           },
-            React.createElement("input", {
-              type: "radio",
-              name: "verticalAlign",
-              className: styles.radioInput,
-              checked: draft.verticalAlign === align,
-              onChange: function (): void {
-                setDraft(function (prev) {
-                  return prev ? { ...prev, verticalAlign: align as "top" | "center" | "bottom" } : prev;
-                });
-              },
-            }),
-            align.charAt(0).toUpperCase() + align.substring(1)
+            React.createElement("span", undefined, opt.label)
           );
         })
       )
     ),
     // Text color
-    React.createElement("div", undefined,
-      React.createElement("label", { className: styles.fieldLabel }, "Text Color"),
-      React.createElement("div", { className: styles.colorRow },
-        React.createElement("input", {
-          type: "color",
-          className: styles.colorInput,
-          value: draft.textColor || "#ffffff",
-          onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
-            setDraft(function (prev) {
-              return prev ? { ...prev, textColor: e.target.value } : prev;
-            });
-          },
-        }),
-        React.createElement("input", {
-          type: "text",
-          className: styles.textInput,
-          value: draft.textColor || "#ffffff",
-          onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
-            setDraft(function (prev) {
-              return prev ? { ...prev, textColor: e.target.value } : prev;
-            });
-          },
-          style: { flex: 1 },
-        })
-      )
+    renderColorPicker(
+      "Text Color",
+      draft.textColor || "",
+      "#ffffff",
+      function (color: string): void {
+        setDraft(function (prev) {
+          return prev ? { ...prev, textColor: color } : prev;
+        });
+      }
     )
   );
 }
 
-// CTAs tab
+// ── CTAs Tab ──
 function renderCtasTab(
   ctas: IHyperHeroCta[],
   onAdd: () => void,
@@ -469,6 +559,12 @@ function renderCtasTab(
   onUpdate: (id: string, field: string, value: unknown) => void
 ): React.ReactElement {
   return React.createElement("div", { className: styles.fieldGroup },
+    ctas.length === 0
+      ? React.createElement("div", { className: styles.emptyState },
+          React.createElement("span", { className: styles.emptyStateIcon, "aria-hidden": "true" }, "\uD83D\uDD17"),
+          React.createElement("p", { className: styles.emptyStateText }, "No buttons added yet. Add a call-to-action button to drive engagement.")
+        )
+      : undefined,
     React.createElement("div", { className: styles.ctaList },
       ctas.map(function (cta) {
         return React.createElement("div", { key: cta.id, className: styles.ctaItem },
@@ -479,6 +575,7 @@ function renderCtasTab(
               onClick: function (): void {
                 onRemove(cta.id);
               },
+              type: "button",
             }, "Remove")
           ),
           React.createElement("div", { className: styles.ctaFields },
@@ -488,6 +585,7 @@ function renderCtasTab(
                 type: "text",
                 className: styles.textInput,
                 value: cta.label,
+                placeholder: "Button text...",
                 onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
                   onUpdate(cta.id, "label", e.target.value);
                 },
@@ -499,13 +597,14 @@ function renderCtasTab(
                 type: "text",
                 className: styles.textInput,
                 value: cta.url,
+                placeholder: "https://...",
                 onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
                   onUpdate(cta.id, "url", e.target.value);
                 },
               })
             ),
             React.createElement("div", undefined,
-              React.createElement("label", { className: styles.fieldLabel }, "Variant"),
+              React.createElement("label", { className: styles.fieldLabel }, "Style"),
               React.createElement("select", {
                 className: styles.selectInput,
                 value: cta.variant,
@@ -513,9 +612,9 @@ function renderCtasTab(
                   onUpdate(cta.id, "variant", e.target.value);
                 },
               },
-                ["primary", "secondary", "ghost"].map(function (v) {
-                  return React.createElement("option", { key: v, value: v }, v.charAt(0).toUpperCase() + v.substring(1));
-                })
+                React.createElement("option", { value: "primary" }, "Primary (solid)"),
+                React.createElement("option", { value: "secondary" }, "Secondary (outline)"),
+                React.createElement("option", { value: "ghost" }, "Ghost (text only)")
               )
             ),
             React.createElement("div", undefined,
@@ -527,7 +626,7 @@ function renderCtasTab(
                     onUpdate(cta.id, "openInNewTab", e.target.checked);
                   },
                 }),
-                "Open in new tab"
+                " Open in new tab"
               )
             )
           )
@@ -537,11 +636,12 @@ function renderCtasTab(
     React.createElement("button", {
       className: styles.addCtaBtn,
       onClick: onAdd,
+      type: "button",
     }, "+ Add Button")
   );
 }
 
-// Advanced tab
+// ── Advanced Tab ──
 function renderAdvancedTab(
   draft: IHyperHeroTile,
   updateGradient: (field: string, value: unknown) => void,
@@ -549,14 +649,17 @@ function renderAdvancedTab(
   updateCountdown: (field: string, value: unknown) => void,
   setDraft: React.Dispatch<React.SetStateAction<IHyperHeroTile | undefined>>
 ): React.ReactElement {
-  const gradientEnabled = draft.gradientOverlay?.enabled ?? false;
-  const parallaxEnabled = draft.parallax?.enabled ?? false;
-  const countdownEnabled = draft.countdown?.enabled ?? false;
+  const gradientEnabled = draft.gradientOverlay ? draft.gradientOverlay.enabled : false;
+  const parallaxEnabled = draft.parallax ? draft.parallax.enabled : false;
+  const countdownEnabled = draft.countdown ? draft.countdown.enabled : false;
 
   return React.createElement("div", { className: styles.fieldGroup },
     // Gradient toggle
     React.createElement("div", { className: styles.toggleRow },
-      React.createElement("span", { className: styles.toggleLabel }, "Gradient Overlay"),
+      React.createElement("div", undefined,
+        React.createElement("span", { className: styles.toggleLabel }, "Gradient Overlay"),
+        React.createElement("span", { className: styles.toggleHint }, "Add a color gradient over the background")
+      ),
       React.createElement("button", {
         className: gradientEnabled
           ? styles.toggleSwitch + " " + styles.toggleSwitchOn
@@ -565,22 +668,33 @@ function renderAdvancedTab(
           updateGradient("enabled", !gradientEnabled);
         },
         "aria-label": gradientEnabled ? "Disable gradient" : "Enable gradient",
+        type: "button",
       })
     ),
-    gradientEnabled && React.createElement("div", { style: { marginLeft: "20px" } },
-      React.createElement("label", { className: styles.fieldLabel }, "Gradient Angle (deg)"),
-      React.createElement("input", {
-        type: "number",
-        className: styles.textInput,
-        value: parseInt((draft.gradientOverlay?.angle || "180deg").replace("deg", ""), 10),
-        onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
-          updateGradient("angle", e.target.value + "deg");
-        },
-      })
+    gradientEnabled && React.createElement("div", { className: styles.subFields },
+      React.createElement("label", { className: styles.fieldLabel }, "Gradient Angle"),
+      React.createElement("div", { className: styles.sliderRow },
+        React.createElement("input", {
+          type: "range",
+          className: styles.sliderInput,
+          min: "0",
+          max: "360",
+          value: parseInt((draft.gradientOverlay ? draft.gradientOverlay.angle || "180deg" : "180deg").replace("deg", ""), 10),
+          onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
+            updateGradient("angle", e.target.value + "deg");
+          },
+        }),
+        React.createElement("span", { className: styles.sliderValue },
+          parseInt((draft.gradientOverlay ? draft.gradientOverlay.angle || "180deg" : "180deg").replace("deg", ""), 10) + "\u00B0"
+        )
+      )
     ),
     // Parallax toggle
     React.createElement("div", { className: styles.toggleRow },
-      React.createElement("span", { className: styles.toggleLabel }, "Parallax Scrolling"),
+      React.createElement("div", undefined,
+        React.createElement("span", { className: styles.toggleLabel }, "Parallax Scrolling"),
+        React.createElement("span", { className: styles.toggleHint }, "Background image moves slower on scroll")
+      ),
       React.createElement("button", {
         className: parallaxEnabled
           ? styles.toggleSwitch + " " + styles.toggleSwitchOn
@@ -589,28 +703,34 @@ function renderAdvancedTab(
           updateParallax("enabled", !parallaxEnabled);
         },
         "aria-label": parallaxEnabled ? "Disable parallax" : "Enable parallax",
+        type: "button",
       })
     ),
-    parallaxEnabled && React.createElement("div", { style: { marginLeft: "20px" } },
+    parallaxEnabled && React.createElement("div", { className: styles.subFields },
       React.createElement("label", { className: styles.fieldLabel }, "Parallax Speed"),
       React.createElement("div", { className: styles.sliderRow },
         React.createElement("input", {
           type: "range",
           className: styles.sliderInput,
-          min: 0.1,
-          max: 1.0,
-          step: 0.1,
-          value: draft.parallax?.speed ?? 0.5,
+          min: "0.1",
+          max: "1.0",
+          step: "0.1",
+          value: draft.parallax ? draft.parallax.speed : 0.5,
           onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
             updateParallax("speed", parseFloat(e.target.value));
           },
         }),
-        React.createElement("span", { className: styles.sliderValue }, (draft.parallax?.speed ?? 0.5).toFixed(1))
+        React.createElement("span", { className: styles.sliderValue },
+          (draft.parallax ? draft.parallax.speed : 0.5).toFixed(1)
+        )
       )
     ),
     // Countdown toggle
     React.createElement("div", { className: styles.toggleRow },
-      React.createElement("span", { className: styles.toggleLabel }, "Countdown Timer"),
+      React.createElement("div", undefined,
+        React.createElement("span", { className: styles.toggleLabel }, "Countdown Timer"),
+        React.createElement("span", { className: styles.toggleHint }, "Show a countdown to a target date")
+      ),
       React.createElement("button", {
         className: countdownEnabled
           ? styles.toggleSwitch + " " + styles.toggleSwitchOn
@@ -619,14 +739,15 @@ function renderAdvancedTab(
           updateCountdown("enabled", !countdownEnabled);
         },
         "aria-label": countdownEnabled ? "Disable countdown" : "Enable countdown",
+        type: "button",
       })
     ),
-    countdownEnabled && React.createElement("div", { style: { marginLeft: "20px" } },
+    countdownEnabled && React.createElement("div", { className: styles.subFields },
       React.createElement("label", { className: styles.fieldLabel }, "Target Date"),
       React.createElement("input", {
         type: "date",
         className: styles.textInput,
-        value: draft.countdown?.targetDate || "",
+        value: draft.countdown ? draft.countdown.targetDate : "",
         onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
           updateCountdown("targetDate", e.target.value);
         },
@@ -635,13 +756,15 @@ function renderAdvancedTab(
       React.createElement("input", {
         type: "text",
         className: styles.textInput,
-        value: draft.countdown?.label || "",
+        value: draft.countdown ? draft.countdown.label || "" : "",
+        placeholder: "e.g. Event starts in...",
         onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
           updateCountdown("label", e.target.value);
         },
       })
     ),
-    // Publish dates
+    // Scheduling section
+    React.createElement("div", { className: styles.sectionDivider }),
     React.createElement("div", undefined,
       React.createElement("label", { className: styles.fieldLabel }, "Publish Date"),
       React.createElement("input", {

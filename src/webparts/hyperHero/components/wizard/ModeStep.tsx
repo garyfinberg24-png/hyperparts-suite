@@ -33,9 +33,15 @@ const ModeStep: React.FC<IModeStepProps> = function (props) {
     (props.selectedMode === "list" ? " " + styles.modeCardSelected : "");
 
   return React.createElement("div", { className: styles.modeStepContainer },
-    React.createElement("h3", { className: styles.modeStepTitle }, "How do you want to manage your hero content?"),
-    React.createElement("p", { className: styles.modeStepDescription },
-      "Choose how tiles are populated. You can change this later in the property pane."
+    // Step header
+    React.createElement("div", { className: styles.stepHeader },
+      React.createElement("div", { className: styles.stepHeaderIcon, "aria-hidden": "true" }, "\uD83D\uDD00"),
+      React.createElement("div", { className: styles.stepHeaderContent },
+        React.createElement("h3", { className: styles.stepHeaderTitle }, "Choose Content Mode"),
+        React.createElement("p", { className: styles.stepHeaderDescription },
+          "How do you want to manage your hero content? You can change this later in the property pane."
+        )
+      )
     ),
     React.createElement("div", { className: styles.modeCards },
       // Manual card

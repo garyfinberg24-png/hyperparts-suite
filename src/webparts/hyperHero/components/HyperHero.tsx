@@ -110,19 +110,23 @@ function generateTilesForPreset(count: number, preset: string): IHyperHeroTile[]
   return tiles;
 }
 
-function generateLayoutsForPreset(preset: string, tileCount: number): IHyperHeroResponsiveLayouts {
+function generateLayoutsForPreset(preset: string, tileCount: number, heroHeight?: number): IHyperHeroResponsiveLayouts {
   const config = getLayoutPresetConfig(preset, tileCount);
+  const baseHeight = heroHeight || 400;
+  const rowTemplate = config.rowTemplate.replace(/400/g, String(baseHeight));
+
   const base: IHyperHeroGridLayout = {
     columns: 1,
     rows: 1,
     gap: 8,
     templateAreas: config.templateAreas,
     columnTemplate: config.columnTemplate,
-    rowTemplate: config.rowTemplate,
-    height: 400,
+    rowTemplate: rowTemplate,
+    height: baseHeight,
   };
 
   // Mobile always stacks to single column
+  const mobileHeight = Math.round(baseHeight / 2);
   const mobileAreas: string[] = [];
   for (let i = 0; i < config.tileCount; i++) {
     const area = preset === "single" ? "main" : "tile" + (i + 1);
@@ -134,15 +138,18 @@ function generateLayoutsForPreset(preset: string, tileCount: number): IHyperHero
     gap: 8,
     templateAreas: mobileAreas.join(" "),
     columnTemplate: "1fr",
-    rowTemplate: Array(config.tileCount).fill("200px").join(" "),
-    height: 200 * config.tileCount,
+    rowTemplate: Array(config.tileCount).fill(mobileHeight + "px").join(" "),
+    height: mobileHeight * config.tileCount,
   };
+
+  const tabletHeight = Math.round(baseHeight * 0.875);
+  const widescreenHeight = Math.round(baseHeight * 1.125);
 
   return {
     mobile: mobile,
-    tablet: { ...base, height: 350, rowTemplate: config.rowTemplate.replace(/400/g, "350") },
+    tablet: { ...base, height: tabletHeight, rowTemplate: rowTemplate.split(String(baseHeight)).join(String(tabletHeight)) },
     desktop: base,
-    widescreen: { ...base, height: 450, rowTemplate: config.rowTemplate.replace(/400/g, "450") },
+    widescreen: { ...base, height: widescreenHeight, rowTemplate: rowTemplate.split(String(baseHeight)).join(String(widescreenHeight)) },
   };
 }
 
@@ -179,10 +186,32 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
   const handleWizardApply = React.useCallback(function (result: IWizardResult) {
     if (!onSettingsChange || !onTilesChange) return;
 
+    // Build general settings partial from wizard
+    const generalPartial: Partial<IHyperHeroWebPartProps> = {
+      wizardCompleted: true,
+    };
+
+    if (result.generalSettings) {
+      const gs = result.generalSettings;
+      generalPartial.title = gs.title;
+      generalPartial.heroHeight = gs.heroHeight;
+      generalPartial.borderRadius = gs.borderRadius;
+      generalPartial.fullBleed = gs.fullBleed;
+      generalPartial.rotation = {
+        enabled: gs.rotationEnabled,
+        intervalMs: gs.rotationInterval,
+        effect: gs.rotationEffect,
+        transitionDurationMs: 500,
+        pauseOnHover: gs.pauseOnHover,
+        showDots: gs.showDots,
+        showArrows: gs.showArrows,
+      };
+    }
+
     if (result.mode === "list" && result.listName) {
       // SP List mode: enable content binding
       onSettingsChange({
-        wizardCompleted: true,
+        ...generalPartial,
         contentBinding: {
           enabled: true,
           listName: result.listName,
@@ -196,12 +225,13 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
       // Manual mode: generate tiles + layouts
       const preset = result.layoutPreset || "single";
       const count = result.tileCount || 1;
+      const height = result.generalSettings ? result.generalSettings.heroHeight : 400;
       const newTiles = generateTilesForPreset(count, preset);
-      const newLayouts = generateLayoutsForPreset(preset, count);
+      const newLayouts = generateLayoutsForPreset(preset, count, height);
 
       onTilesChange(newTiles);
       onSettingsChange({
-        wizardCompleted: true,
+        ...generalPartial,
         layouts: newLayouts,
       });
     }

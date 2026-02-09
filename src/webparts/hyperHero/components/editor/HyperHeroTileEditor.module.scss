@@ -6,6 +6,42 @@
   gap: 0;
 }
 
+// ── Live Preview ──
+.livePreview {
+  margin-bottom: 16px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #edebe9;
+}
+
+.livePreviewTile {
+  position: relative;
+  height: 100px;
+  display: flex;
+  align-items: flex-end;
+  padding: 12px 16px;
+  background-size: cover;
+  background-position: center;
+}
+
+.livePreviewContent {
+  position: relative;
+  z-index: 1;
+}
+
+.livePreviewHeading {
+  font-size: 16px;
+  font-weight: 700;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.livePreviewSub {
+  font-size: 12px;
+  opacity: 0.9;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+// ── Tab Bar ──
 .tabBar {
   display: flex;
   border-bottom: 2px solid #edebe9;
@@ -13,8 +49,11 @@
 }
 
 .tab {
-  padding: 10px 20px;
-  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 16px;
+  font-size: 13px;
   font-weight: 500;
   color: #605e5c;
   cursor: pointer;
@@ -41,9 +80,10 @@
 }
 
 .tabContent {
-  min-height: 320px;
+  min-height: 280px;
 }
 
+// ── Fields ──
 .fieldGroup {
   display: flex;
   flex-direction: column;
@@ -51,7 +91,7 @@
 }
 
 .fieldLabel {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #323130;
   margin: 0 0 4px 0;
@@ -59,17 +99,17 @@
 }
 
 .fieldHint {
-  font-size: 12px;
+  font-size: 11px;
   color: #a19f9d;
   margin: 2px 0 0 0;
 }
 
 .textInput {
   width: 100%;
-  padding: 8px 12px;
+  padding: 7px 10px;
   border: 1px solid #8a8886;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 13px;
   color: #323130;
   box-sizing: border-box;
 
@@ -92,50 +132,131 @@
   cursor: pointer;
 }
 
-.colorInput {
-  width: 40px;
-  height: 32px;
-  border: 1px solid #8a8886;
-  border-radius: 4px;
-  cursor: pointer;
-  padding: 2px;
+// ── Type Selector Cards ──
+.typeSelector {
+  display: flex;
+  gap: 8px;
 }
 
-.colorRow {
+.typeCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 14px;
+  border: 2px solid #edebe9;
+  border-radius: 6px;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: #605e5c;
+  transition: border-color 0.15s, background 0.15s;
+
+  &:hover {
+    border-color: #0078d4;
+  }
+}
+
+.typeCardSelected {
+  border-color: #0078d4;
+  background: #f3f9ff;
+  color: #0078d4;
+  font-weight: 600;
+}
+
+// ── Color Picker ──
+.colorPickerGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.colorPickerRow {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.radioGroup {
-  display: flex;
-  gap: 12px;
+.colorPreview {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  border: 1px solid #c8c6c4;
+  flex-shrink: 0;
 }
 
-.radioLabel {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  color: #323130;
+.colorInput {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #c8c6c4;
+  border-radius: 4px;
   cursor: pointer;
+  padding: 2px;
+  flex-shrink: 0;
 }
 
-.radioInput {
-  accent-color: #0078d4;
+.colorHexInput {
+  flex: 1;
+  padding: 7px 10px;
+  border: 1px solid #8a8886;
+  border-radius: 4px;
+  font-size: 13px;
+  font-family: "Consolas", "Courier New", monospace;
+  color: #323130;
+
+  &:focus {
+    border-color: #0078d4;
+    outline: none;
+    box-shadow: 0 0 0 1px #0078d4;
+  }
 }
 
+.colorPalette {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.colorSwatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.1s;
+  padding: 0;
+
+  &:hover {
+    transform: scale(1.15);
+  }
+}
+
+.colorSwatchSelected {
+  outline: 2px solid #0078d4;
+  outline-offset: 1px;
+}
+
+// ── Toggles ──
 .toggleRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 0;
+  padding: 10px 0;
   border-bottom: 1px solid #edebe9;
 }
 
 .toggleLabel {
   font-size: 14px;
   color: #323130;
+  font-weight: 500;
+  display: block;
+}
+
+.toggleHint {
+  font-size: 11px;
+  color: #a19f9d;
+  display: block;
+  margin-top: 2px;
 }
 
 .toggleSwitch {
@@ -148,6 +269,7 @@
   border: none;
   transition: background 0.2s;
   padding: 0;
+  flex-shrink: 0;
 
   &::after {
     content: '';
@@ -170,15 +292,22 @@
   }
 }
 
-.previewThumbnail {
-  width: 100%;
-  max-height: 200px;
-  object-fit: cover;
-  border-radius: 4px;
-  border: 1px solid #edebe9;
-  margin-top: 8px;
+.subFields {
+  margin-left: 16px;
+  padding-left: 16px;
+  border-left: 2px solid #0078d4;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
+.sectionDivider {
+  height: 1px;
+  background: #edebe9;
+  margin: 4px 0;
+}
+
+// ── Sliders ──
 .sliderRow {
   display: flex;
   align-items: center;
@@ -191,14 +320,43 @@
 }
 
 .sliderValue {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #0078d4;
   min-width: 40px;
   text-align: right;
 }
 
-// CTA section
+// ── Image Preview ──
+.previewThumbnail {
+  width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #edebe9;
+  margin-top: 4px;
+}
+
+// ── Radio / Checkbox ──
+.radioGroup {
+  display: flex;
+  gap: 12px;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #323130;
+  cursor: pointer;
+}
+
+.radioInput {
+  accent-color: #0078d4;
+}
+
+// ── CTA Section ──
 .ctaList {
   display: flex;
   flex-direction: column;
@@ -221,7 +379,7 @@
 }
 
 .ctaItemTitle {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #323130;
 }
@@ -231,7 +389,7 @@
   border: none;
   color: #a4262c;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px;
   padding: 4px 8px;
   border-radius: 4px;
 
@@ -252,12 +410,72 @@
   border: 1px dashed #8a8886;
   border-radius: 4px;
   color: #323130;
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
   text-align: center;
 
   &:hover {
     background: #edebe9;
     border-color: #0078d4;
+  }
+}
+
+// ── Empty State ──
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 16px;
+  background: #faf9f8;
+  border-radius: 8px;
+  border: 1px dashed #edebe9;
+  text-align: center;
+}
+
+.emptyStateIcon {
+  font-size: 28px;
+}
+
+.emptyStateText {
+  font-size: 13px;
+  color: #a19f9d;
+  margin: 0;
+}
+
+// ── Footer ──
+.footerRow {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.footerBtnCancel {
+  padding: 8px 16px;
+  border: 1px solid #8a8886;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #323130;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background: #f3f2f1;
+  }
+}
+
+.footerBtnSave {
+  padding: 8px 20px;
+  background: #0078d4;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background: #106ebe;
   }
 }

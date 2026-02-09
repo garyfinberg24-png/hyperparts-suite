@@ -1,0 +1,130 @@
+.welcomeContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  padding: 8px 0;
+  text-align: center;
+}
+
+// Brand section
+.brandSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.brandLogo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brandDwx {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0078d4;
+  letter-spacing: -0.5px;
+}
+
+.brandSeparator {
+  width: 2px;
+  height: 28px;
+  background: linear-gradient(180deg, #0078d4, #50e6ff);
+  border-radius: 1px;
+}
+
+.brandProduct {
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #0078d4, #50e6ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.3px;
+}
+
+.brandTagline {
+  font-size: 14px;
+  color: #605e5c;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+// Feature grid
+.featureGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+}
+
+.featureCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 12px;
+  background: #faf9f8;
+  border: 1px solid #edebe9;
+  border-radius: 8px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    border-color: #c8c6c4;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  }
+}
+
+.featureIcon {
+  font-size: 24px;
+}
+
+.featureTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323130;
+}
+
+.featureDesc {
+  font-size: 12px;
+  color: #a19f9d;
+  line-height: 1.4;
+}
+
+// CTA section
+.ctaSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.getStartedBtn {
+  padding: 10px 32px;
+  background: linear-gradient(135deg, #0078d4, #106ebe);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 2px 8px rgba(0, 120, 212, 0.3);
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 120, 212, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.ctaHint {
+  font-size: 12px;
+  color: #a19f9d;
+  margin: 0;
+}
