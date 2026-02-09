@@ -79,3 +79,6 @@ export type {
   IWizardFilterPresets,
 } from "./IHyperNewsWizardState";
 export { DEFAULT_WIZARD_STATE } from "./IHyperNewsWizardState";
+
+export type { INewsTemplate } from "./INewsTemplate";
+export { NEWS_TEMPLATES } from "./INewsTemplate";

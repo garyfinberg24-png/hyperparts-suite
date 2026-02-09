@@ -1,0 +1,4126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HyperHero UX Mockup — Interactive Prototype</title>
+<style>
+/* ══════════════════════════════════════════
+   DESIGN TOKENS (Fluent UI inspired)
+   ══════════════════════════════════════════ */
+:root {
+  --blue-primary: #0078d4;
+  --blue-hover: #106ebe;
+  --blue-light: #deecf9;
+  --blue-bg: #f3f9ff;
+  --red-primary: #a4262c;
+  --red-hover: #8c1d22;
+  --red-bg: #fde7e9;
+  --green-primary: #107c10;
+  --green-bg: #dff6dd;
+  --purple: #5c2d91;
+  --teal: #008272;
+  --orange: #ca5010;
+  --gray-10: #faf9f8;
+  --gray-20: #f3f2f1;
+  --gray-30: #edebe9;
+  --gray-40: #d2d0ce;
+  --gray-60: #a19f9d;
+  --gray-80: #605e5c;
+  --gray-100: #323130;
+  --gray-130: #201f1e;
+  --white: #ffffff;
+  --font: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+  --shadow-md: 0 3px 12px rgba(0,0,0,.12);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,.18);
+  --shadow-xl: 0 12px 48px rgba(0,0,0,.24);
+  /* DWx Brand */
+  --dwx-navy: #0a1e36;
+  --dwx-navy-light: #0e2a47;
+  --dwx-accent: #4fc3f7;
+  --dwx-gold: #ffc107;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: var(--font);
+  background: var(--gray-20);
+  color: var(--gray-100);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* ══════════════════════════════════════════
+   MODAL OVERLAY
+   ══════════════════════════════════════════ */
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,.45);
+  z-index: 10000;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 24px;
+  overflow-y: auto;
+}
+.modal-backdrop.active { display: flex; }
+.modal {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  width: 100%;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  position: relative;
+  animation: modalIn .2s ease-out;
+}
+.modal-sm { max-width: 480px; }
+.modal-md { max-width: 700px; }
+.modal-lg { max-width: 960px; }
+.modal-xl { max-width: 1200px; }
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--gray-30);
+  position: sticky;
+  top: 0;
+  background: var(--white);
+  z-index: 2;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+.modal-title { font-size: 18px; font-weight: 600; }
+.modal-close {
+  background: none; border: none; font-size: 20px; cursor: pointer;
+  color: var(--gray-80); width: 32px; height: 32px; border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-close:hover { background: var(--gray-20); }
+.modal-body { padding: 24px; }
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--gray-30);
+  position: sticky;
+  bottom: 0;
+  background: var(--white);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+/* ══════════════════════════════════════════
+   BUTTONS
+   ══════════════════════════════════════════ */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: var(--radius-sm);
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  border: 1px solid transparent; transition: all .15s;
+  font-family: var(--font);
+}
+.btn-primary { background: var(--blue-primary); color: var(--white); }
+.btn-primary:hover { background: var(--blue-hover); }
+.btn-secondary { background: var(--white); color: var(--gray-100); border-color: var(--gray-40); }
+.btn-secondary:hover { background: var(--gray-10); }
+.btn-ghost { background: transparent; color: var(--blue-primary); }
+.btn-ghost:hover { background: var(--blue-bg); }
+.btn-danger { background: var(--red-primary); color: var(--white); }
+.btn-danger:hover { background: var(--red-hover); }
+.btn-sm { padding: 4px 10px; font-size: 12px; }
+.btn-lg { padding: 12px 24px; font-size: 16px; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+/* ══════════════════════════════════════════
+   DWX BRAND STRIP
+   ══════════════════════════════════════════ */
+.dwx-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 20px;
+  background: linear-gradient(135deg, var(--dwx-navy) 0%, var(--dwx-navy-light) 100%);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+.dwx-logo {
+  font-size: 18px; font-weight: 800; color: var(--white);
+  letter-spacing: -0.5px;
+}
+.dwx-logo .accent { color: var(--dwx-accent); }
+.dwx-sub { font-size: 10px; color: rgba(255,255,255,.5); margin-left: 8px; }
+.dwx-badge {
+  font-size: 11px; color: var(--dwx-accent);
+  border: 1px solid rgba(79,195,247,.3);
+  border-radius: 12px; padding: 2px 10px;
+}
+
+/* ══════════════════════════════════════════
+   DWX SPLASH SCREEN (First Run)
+   ══════════════════════════════════════════ */
+.splash-hero {
+  background: linear-gradient(160deg, var(--dwx-navy) 0%, #0e2a47 40%, #0f3460 100%);
+  padding: 56px 40px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+.splash-hero::before {
+  content: '';
+  position: absolute;
+  top: -60%; right: -20%;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(79,195,247,.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.splash-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -40%; left: -10%;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(255,193,7,.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.splash-logo {
+  font-size: 14px; font-weight: 700; color: rgba(255,255,255,.5);
+  letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.splash-logo-mark {
+  font-size: 20px; font-weight: 800; color: var(--white);
+  letter-spacing: -0.5px;
+}
+.splash-logo-mark .accent { color: var(--dwx-accent); }
+.splash-title {
+  font-size: 40px; font-weight: 800; color: var(--white);
+  margin: 8px 0 4px; line-height: 1.1;
+  background: linear-gradient(135deg, #fff 20%, var(--dwx-accent) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.splash-tagline {
+  font-size: 16px; color: rgba(255,255,255,.7); margin-bottom: 32px;
+  max-width: 460px; margin-left: auto; margin-right: auto;
+}
+.splash-version {
+  display: inline-block;
+  font-size: 11px; color: var(--dwx-accent);
+  border: 1px solid rgba(79,195,247,.3);
+  border-radius: 12px; padding: 2px 12px;
+  margin-bottom: 24px;
+}
+.splash-features {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px; padding: 28px 32px; max-width: 560px; margin: 0 auto;
+}
+.splash-feature-card {
+  background: var(--gray-10);
+  border: 1px solid var(--gray-30);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: left;
+  transition: border-color .15s, box-shadow .15s;
+}
+.splash-feature-card:hover {
+  border-color: var(--blue-primary);
+  box-shadow: 0 2px 8px rgba(0,120,212,.1);
+}
+.splash-feature-icon { font-size: 24px; margin-bottom: 8px; }
+.splash-feature-title { font-size: 14px; font-weight: 700; color: var(--gray-100); margin-bottom: 2px; }
+.splash-feature-desc { font-size: 12px; color: var(--gray-80); line-height: 1.4; }
+.splash-cta {
+  padding: 28px 32px;
+  text-align: center;
+  border-top: 1px solid var(--gray-30);
+}
+.splash-cta-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 36px;
+  font-size: 16px; font-weight: 700;
+  color: var(--dwx-navy);
+  background: linear-gradient(135deg, var(--dwx-accent), #81d4fa);
+  border: none; border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(79,195,247,.3);
+  transition: transform .15s, box-shadow .15s;
+}
+.splash-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(79,195,247,.4);
+}
+.splash-skip {
+  display: block; margin-top: 12px;
+  font-size: 13px; color: var(--gray-60);
+  background: none; border: none; cursor: pointer;
+  text-decoration: underline;
+}
+.splash-skip:hover { color: var(--gray-80); }
+
+/* ══════════════════════════════════════════
+   SLIDER MANAGER (Cross-Page Library)
+   ══════════════════════════════════════════ */
+.slider-lib-card {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px; border: 1px solid var(--gray-30);
+  border-radius: var(--radius-md); margin-bottom: 8px;
+  transition: border-color .15s, box-shadow .15s;
+}
+.slider-lib-card:hover {
+  border-color: var(--blue-primary);
+  box-shadow: 0 2px 8px rgba(0,120,212,.08);
+}
+.slider-lib-thumb {
+  width: 80px; height: 50px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+.slider-lib-info { flex: 1; min-width: 0; }
+.slider-lib-name {
+  font-size: 14px; font-weight: 700; color: var(--gray-100);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.slider-lib-meta {
+  font-size: 12px; color: var(--gray-80); margin-top: 2px;
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+}
+.slider-lib-pages {
+  font-size: 11px; color: var(--gray-60); margin-top: 2px;
+}
+.slider-lib-badge {
+  font-size: 10px; font-weight: 700; padding: 1px 8px;
+  border-radius: 10px; text-transform: uppercase;
+}
+.slider-lib-badge-hyper {
+  background: linear-gradient(135deg, #5c2d91, #8661c5);
+  color: var(--white);
+}
+.slider-lib-badge-simple {
+  background: var(--blue-light); color: var(--blue-primary);
+}
+.slider-lib-actions {
+  display: flex; gap: 4px; flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════
+   PROGRESS STEPPER
+   ══════════════════════════════════════════ */
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 24px;
+  gap: 0;
+  background: var(--gray-10);
+  border-bottom: 1px solid var(--gray-30);
+}
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  min-width: 60px;
+}
+.step-circle {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+  background: var(--gray-30); color: var(--gray-80);
+  transition: all .2s;
+}
+.step-circle.active { background: var(--blue-primary); color: var(--white); }
+.step-circle.complete { background: var(--green-primary); color: var(--white); }
+.step-label { font-size: 10px; color: var(--gray-60); font-weight: 600; text-transform: uppercase; }
+.step-label.active { color: var(--blue-primary); }
+.step-label.complete { color: var(--green-primary); }
+.step-connector {
+  width: 32px; height: 2px; background: var(--gray-30);
+  margin: 0 4px; flex-shrink: 0;
+  margin-bottom: 18px;
+}
+.step-connector.active { background: var(--green-primary); }
+
+/* ══════════════════════════════════════════
+   HELP BANNER
+   ══════════════════════════════════════════ */
+.help-banner {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 20px;
+  background: #fffcf0;
+  border-bottom: 1px solid #f5e6b8;
+  font-size: 13px; color: var(--gray-80);
+}
+.help-icon { font-size: 16px; flex-shrink: 0; }
+
+/* ══════════════════════════════════════════
+   WIZARD CHOICE CARDS
+   ══════════════════════════════════════════ */
+.choice-grid {
+  display: grid;
+  gap: 16px;
+}
+.choice-grid-2 { grid-template-columns: 1fr 1fr; }
+.choice-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+.choice-card {
+  border: 2px solid var(--gray-30);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  cursor: pointer;
+  transition: all .2s;
+  text-align: center;
+  position: relative;
+}
+.choice-card:hover { border-color: var(--blue-primary); box-shadow: var(--shadow-sm); }
+.choice-card.selected { border-color: var(--blue-primary); background: var(--blue-bg); box-shadow: 0 0 0 1px var(--blue-primary); }
+.choice-card-icon { font-size: 40px; margin-bottom: 12px; display: block; }
+.choice-card-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.choice-card-desc { font-size: 13px; color: var(--gray-80); line-height: 1.4; }
+.choice-card-badge {
+  position: absolute; top: 8px; right: 8px;
+  background: var(--dwx-accent); color: var(--dwx-navy);
+  font-size: 10px; font-weight: 700; padding: 2px 8px;
+  border-radius: 10px; text-transform: uppercase;
+}
+
+/* ══════════════════════════════════════════
+   SIMPLE VS HYPER MODE CARDS (Step 1)
+   ══════════════════════════════════════════ */
+.mode-hero-card {
+  border: 2px solid var(--gray-30);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all .25s;
+}
+.mode-hero-card:hover { border-color: var(--blue-primary); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.mode-hero-card.selected { border-color: var(--blue-primary); box-shadow: 0 0 0 2px var(--blue-primary); }
+.mode-hero-banner {
+  padding: 28px 24px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.mode-hero-banner::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(0,0,0,.15), rgba(0,0,0,.35));
+}
+.mode-hero-banner > * { position: relative; z-index: 1; }
+.mode-hero-banner .icon { font-size: 36px; margin-bottom: 8px; }
+.mode-hero-banner .title { font-size: 22px; font-weight: 700; }
+.mode-hero-banner .sub { font-size: 13px; opacity: .9; margin-top: 4px; }
+.mode-hero-body { padding: 16px 20px; }
+.mode-hero-features { list-style: none; }
+.mode-hero-features li {
+  font-size: 13px; color: var(--gray-80);
+  padding: 4px 0; display: flex; align-items: center; gap: 6px;
+}
+.mode-hero-features li::before { content: ''; display: none; }
+.feature-check { color: var(--green-primary); font-weight: 700; flex-shrink: 0; }
+.feature-x { color: var(--gray-40); flex-shrink: 0; }
+
+/* ══════════════════════════════════════════
+   TEMPLATE GALLERY
+   ══════════════════════════════════════════ */
+.template-filters {
+  display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.filter-btn {
+  padding: 6px 14px; border-radius: 16px;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  border: 1px solid var(--gray-40); background: var(--white);
+  color: var(--gray-80); transition: all .15s;
+  font-family: var(--font);
+}
+.filter-btn.active { background: var(--blue-primary); color: var(--white); border-color: var(--blue-primary); }
+.filter-btn:hover:not(.active) { background: var(--gray-10); }
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+.template-card {
+  border: 1px solid var(--gray-30);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: all .2s;
+  background: var(--white);
+}
+.template-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.template-preview {
+  height: 140px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  padding: 16px;
+  overflow: hidden;
+}
+.template-preview-text {
+  position: relative; z-index: 1;
+  color: white; text-shadow: 0 1px 4px rgba(0,0,0,.3);
+}
+.template-preview-text h4 { font-size: 16px; font-weight: 700; }
+.template-preview-text p { font-size: 11px; opacity: .9; }
+.template-preview .cta-preview {
+  display: inline-block;
+  padding: 4px 10px; border-radius: 3px;
+  font-size: 10px; font-weight: 600;
+  margin-top: 6px;
+}
+.template-card-body { padding: 12px 16px; }
+.template-card-name { font-size: 14px; font-weight: 700; }
+.template-card-desc { font-size: 12px; color: var(--gray-80); margin: 4px 0 8px; }
+.template-card-meta { display: flex; gap: 6px; align-items: center; }
+.template-tag {
+  font-size: 10px; font-weight: 600; padding: 2px 8px;
+  border-radius: 10px; text-transform: uppercase;
+}
+.tag-corporate { background: #deecf9; color: #0078d4; }
+.tag-event { background: #eadefa; color: #5c2d91; }
+.tag-creative { background: #ffebd6; color: #ca5010; }
+.tag-minimal { background: #edebe9; color: #605e5c; }
+.template-card-actions {
+  display: flex; gap: 8px; padding: 0 16px 12px;
+}
+
+/* ══════════════════════════════════════════
+   SLIDE COUNT SELECTOR
+   ══════════════════════════════════════════ */
+.count-buttons {
+  display: flex; gap: 8px; margin: 12px 0;
+}
+.count-btn {
+  width: 56px; height: 56px;
+  border: 2px solid var(--gray-30);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  font-size: 20px; font-weight: 700;
+  cursor: pointer; transition: all .15s;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font);
+}
+.count-btn:hover { border-color: var(--blue-primary); }
+.count-btn.selected { border-color: var(--blue-primary); background: var(--blue-bg); color: var(--blue-primary); }
+.layout-preview {
+  border: 1px solid var(--gray-30);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-top: 16px;
+  background: var(--gray-10);
+}
+.layout-grid-preview {
+  display: grid;
+  gap: 6px;
+  height: 120px;
+}
+.layout-cell {
+  background: var(--blue-primary);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  opacity: .8;
+  transition: opacity .2s;
+}
+.layout-cell:hover { opacity: 1; }
+
+/* ══════════════════════════════════════════
+   SETTINGS CONTROLS
+   ══════════════════════════════════════════ */
+.settings-group { margin-bottom: 20px; }
+.settings-group-title { font-size: 13px; font-weight: 700; color: var(--gray-80); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 12px; }
+/* ── Property Panel Accordion ── */
+.prop-panel {
+  border: 1px solid var(--gray-30);
+  border-radius: var(--radius-md);
+  margin-bottom: 8px;
+  overflow: hidden;
+  background: var(--white);
+  transition: box-shadow .15s;
+}
+.prop-panel:hover { box-shadow: 0 1px 4px rgba(0,0,0,.05); }
+.prop-panel.expanded { box-shadow: 0 1px 6px rgba(0,0,0,.08); }
+.prop-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px;
+  cursor: pointer;
+  user-select: none;
+  background: var(--gray-10);
+  border-bottom: 1px solid transparent;
+  transition: background .15s, border-color .15s;
+}
+.prop-panel.expanded .prop-panel-header {
+  background: var(--white);
+  border-bottom-color: var(--gray-20);
+}
+.prop-panel-header:hover { background: var(--gray-20); }
+.prop-panel.expanded .prop-panel-header:hover { background: var(--gray-10); }
+.prop-panel-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 700; color: var(--gray-100);
+  text-transform: uppercase; letter-spacing: .4px;
+}
+.prop-panel-icon {
+  width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--blue-bg); border-radius: var(--radius-sm);
+  font-size: 12px;
+}
+.prop-panel-chevron {
+  font-size: 10px; color: var(--gray-60);
+  transition: transform .2s ease;
+  line-height: 1;
+}
+.prop-panel.expanded .prop-panel-chevron { transform: rotate(180deg); }
+.prop-panel-body {
+  max-height: 0; overflow: hidden;
+  transition: max-height .25s ease, padding .25s ease;
+  padding: 0 14px;
+}
+.prop-panel.expanded .prop-panel-body {
+  max-height: 800px;
+  padding: 12px 14px 14px;
+}
+.prop-panel-hint {
+  font-size: 11px; color: var(--gray-60); margin-bottom: 10px;
+  line-height: 1.4;
+}
+/* Badge count for collapsed panels */
+.prop-panel-badge {
+  font-size: 10px; font-weight: 600;
+  padding: 1px 7px; border-radius: 10px;
+  background: var(--gray-30); color: var(--gray-80);
+}
+.prop-panel.expanded .prop-panel-badge { display: none; }
+
+/* ── Form Fields ── */
+.field-row { margin-bottom: 12px; }
+.field-row:last-child { margin-bottom: 0; }
+.field-label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 4px; color: var(--gray-80); text-transform: uppercase; letter-spacing: .3px; }
+.field-hint { font-size: 11px; color: var(--gray-60); margin-top: 3px; line-height: 1.3; }
+.text-input {
+  width: 100%; padding: 7px 10px;
+  border: 1px solid var(--gray-30); border-radius: var(--radius-sm);
+  font-size: 13px; font-family: var(--font);
+  background: var(--white);
+  transition: border-color .15s, box-shadow .15s;
+}
+.text-input:focus { outline: none; border-color: var(--blue-primary); box-shadow: 0 0 0 2px rgba(0,120,212,.15); }
+.text-input::placeholder { color: var(--gray-60); }
+/* Multi-column field grids */
+.field-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
+.field-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px 14px; }
+.field-grid-2 .field-row, .field-grid-3 .field-row { margin-bottom: 0; }
+.field-span-2 { grid-column: span 2; }
+.field-span-3 { grid-column: span 3; }
+/* Legacy section divider (still used in some areas) */
+.field-section {
+  font-size: 11px; font-weight: 700; color: var(--gray-60);
+  text-transform: uppercase; letter-spacing: .5px;
+  padding: 8px 0 4px; margin-top: 4px;
+  border-top: 1px solid var(--gray-20);
+}
+.field-section:first-child { border-top: none; margin-top: 0; padding-top: 0; }
+.slider-row { display: flex; align-items: center; gap: 10px; }
+.slider-input { flex: 1; height: 4px; accent-color: var(--blue-primary); cursor: pointer; }
+.slider-value {
+  min-width: 44px; text-align: right;
+  font-size: 12px; font-weight: 700; color: var(--blue-primary);
+  font-variant-numeric: tabular-nums;
+}
+.toggle-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6px 0; border-bottom: 1px solid var(--gray-20);
+}
+.toggle-row:last-child { border-bottom: none; }
+.toggle-label-group { display: flex; flex-direction: column; }
+.toggle-label { font-size: 13px; font-weight: 600; }
+.toggle-hint { font-size: 11px; color: var(--gray-60); margin-top: 1px; }
+.toggle-switch {
+  width: 40px; height: 20px; border-radius: 10px;
+  background: var(--gray-40); border: none; cursor: pointer;
+  position: relative; transition: background .2s;
+  flex-shrink: 0;
+}
+.toggle-switch::after {
+  content: ''; position: absolute;
+  top: 2px; left: 2px; width: 16px; height: 16px;
+  border-radius: 50%; background: var(--white);
+  transition: transform .2s; box-shadow: var(--shadow-sm);
+}
+.toggle-switch.on { background: var(--blue-primary); }
+.toggle-switch.on::after { transform: translateX(20px); }
+
+/* ══════════════════════════════════════════
+   SUMMARY CARD
+   ══════════════════════════════════════════ */
+.summary-card {
+  border: 1px solid var(--gray-30);
+  border-radius: var(--radius-md);
+  overflow: hidden; background: var(--white);
+}
+.summary-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--gray-20);
+  font-size: 13px;
+}
+.summary-row:last-child { border-bottom: none; }
+.summary-label { font-weight: 600; color: var(--gray-80); }
+.summary-value { font-weight: 600; }
+.summary-badge {
+  display: inline-block; padding: 2px 10px; border-radius: 10px;
+  font-size: 11px; font-weight: 700;
+}
+.badge-blue { background: var(--blue-light); color: var(--blue-primary); }
+.badge-green { background: var(--green-bg); color: var(--green-primary); }
+.badge-purple { background: #eadefa; color: var(--purple); }
+.summary-footnote {
+  font-size: 12px; color: var(--gray-60);
+  padding: 12px 0; text-align: center;
+}
+
+/* ══════════════════════════════════════════
+   EDIT TOOLBAR (Main Editor)
+   ══════════════════════════════════════════ */
+.edit-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--white);
+  border: 1px solid var(--gray-30);
+  border-radius: var(--radius-md);
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+.toolbar-divider { width: 1px; height: 24px; background: var(--gray-30); }
+.slide-count-badge {
+  font-size: 12px; color: var(--gray-80);
+  margin-left: auto;
+  font-weight: 600;
+}
+
+/* ══════════════════════════════════════════
+   HERO CONTAINER (Main Editor)
+   ══════════════════════════════════════════ */
+.hero-container {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+}
+.hero-grid {
+  display: grid;
+  gap: 8px;
+}
+.hero-slide {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 24px;
+  color: white;
+  min-height: 100px;
+}
+.hero-slide-content { position: relative; z-index: 1; }
+.hero-slide h2 { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+.hero-slide p { font-size: 14px; opacity: .9; }
+.hero-slide .cta-btn {
+  display: inline-block; padding: 8px 20px; margin-top: 12px;
+  border-radius: var(--radius-sm); font-weight: 600; font-size: 13px;
+}
+.slide-overlay {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,.4); opacity: 0; transition: opacity .2s;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 8px;
+  z-index: 10;
+}
+.hero-slide:hover .slide-overlay { opacity: 1; }
+.slide-overlay .slide-badge {
+  position: absolute; top: 8px; left: 8px;
+  background: var(--blue-primary); color: white;
+  width: 24px; height: 24px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+}
+.slide-overlay-actions {
+  display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
+}
+.slide-overlay-btn {
+  padding: 6px 12px; border-radius: var(--radius-sm);
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  border: 1px solid rgba(255,255,255,.5);
+  background: rgba(255,255,255,.95); color: var(--gray-100);
+  transition: all .15s; font-family: var(--font);
+}
+.slide-overlay-btn:hover { background: white; box-shadow: var(--shadow-sm); }
+.slide-overlay-btn.danger { border-color: var(--red-primary); color: var(--red-primary); }
+
+/* ══════════════════════════════════════════
+   SLIDE EDITOR MODAL
+   ══════════════════════════════════════════ */
+.editor-layout { display: flex; flex-direction: column; gap: 0; }
+.editor-preview {
+  border-bottom: 1px solid var(--gray-30);
+}
+.preview-toolbar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6px 16px; background: var(--gray-10);
+  border-bottom: 1px solid var(--gray-30);
+}
+.preview-toolbar-left { display: flex; align-items: center; gap: 8px; }
+.preview-toolbar-right { display: flex; align-items: center; gap: 6px; }
+.preview-label { font-size: 12px; font-weight: 600; color: var(--gray-80); text-transform: uppercase; letter-spacing: .5px; }
+.device-btn {
+  padding: 4px 10px; border-radius: var(--radius-sm);
+  font-size: 11px; cursor: pointer; border: 1px solid var(--gray-30);
+  background: var(--white); color: var(--gray-80);
+  font-family: var(--font); font-weight: 600;
+  transition: all .15s;
+}
+.device-btn.active { background: var(--blue-primary); color: white; border-color: var(--blue-primary); }
+.preview-viewport {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  background: #e8e6e4;
+  min-height: 100px;
+}
+.preview-slide-wrap {
+  width: 100%;
+  transition: width .3s;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  position: relative;
+}
+.preview-slide-wrap.tablet { width: 600px; }
+.preview-slide-wrap.mobile { width: 375px; }
+
+/* Preview slide (mirrors real slide) */
+.preview-slide {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 24px;
+  color: white;
+  overflow: hidden;
+}
+.preview-slide::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 0;
+}
+.preview-slide > * { position: relative; z-index: 1; }
+.preview-slide h2 { font-size: 28px; font-weight: 700; }
+.preview-slide .subtitle { font-size: 16px; opacity: .9; margin-top: 4px; }
+.preview-slide .desc { font-size: 14px; opacity: .8; margin-top: 4px; }
+.preview-slide .cta-group { display: flex; gap: 8px; margin-top: 12px; }
+.preview-cta {
+  display: inline-block; padding: 8px 20px;
+  border-radius: var(--radius-sm); font-weight: 600; font-size: 13px;
+}
+
+/* Entrance animations */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideLeft { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes slideRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes scaleUp { from { opacity: 0; transform: scale(.8); } to { opacity: 1; transform: scale(1); } }
+@keyframes bounceIn { 0% { opacity: 0; transform: scale(.3); } 50% { opacity: 1; transform: scale(1.05); } 70% { transform: scale(.9); } 100% { transform: scale(1); } }
+.anim-fadeUp { animation: fadeUp .6s ease-out forwards; }
+.anim-fadeIn { animation: fadeIn .6s ease-out forwards; }
+.anim-slideLeft { animation: slideLeft .6s ease-out forwards; }
+.anim-slideRight { animation: slideRight .6s ease-out forwards; }
+.anim-scaleUp { animation: scaleUp .6s ease-out forwards; }
+.anim-bounceIn { animation: bounceIn .6s ease-out forwards; }
+
+/* Tab bar */
+.tab-bar {
+  display: flex;
+  border-bottom: 2px solid var(--gray-30);
+  background: var(--white);
+  overflow-x: auto;
+}
+.tab-btn {
+  padding: 10px 16px;
+  border: none; border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  background: none; cursor: pointer;
+  font-size: 13px; font-weight: 600;
+  color: var(--gray-80);
+  transition: all .15s;
+  white-space: nowrap;
+  font-family: var(--font);
+}
+.tab-btn:hover { color: var(--gray-100); background: var(--gray-10); }
+.tab-btn.active { color: var(--blue-primary); border-bottom-color: var(--blue-primary); }
+.tab-content { padding: 12px 16px; max-height: 360px; overflow-y: auto; background: var(--gray-10); }
+
+/* Color picker */
+.color-palette { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+.color-swatch {
+  width: 28px; height: 28px; border-radius: var(--radius-sm);
+  border: 2px solid transparent; cursor: pointer; transition: transform .1s;
+}
+.color-swatch:hover { transform: scale(1.15); }
+.color-swatch.selected { border-color: var(--gray-100); box-shadow: 0 0 0 1px white inset; }
+.color-picker-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.color-preview { width: 36px; height: 36px; border-radius: 6px; border: 1px solid var(--gray-30); }
+
+/* CTA editor items */
+.cta-item {
+  border: 1px solid var(--gray-30);
+  border-radius: var(--radius-md);
+  padding: 10px;
+  margin-bottom: 6px;
+}
+.cta-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.cta-item-title { font-size: 14px; font-weight: 600; }
+
+/* Variant selector */
+.variant-grid { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 3px; }
+.variant-btn {
+  padding: 4px 10px; border-radius: var(--radius-sm);
+  font-size: 11px; font-weight: 600; cursor: pointer;
+  border: 1px solid var(--gray-40); background: var(--white);
+  transition: all .15s; font-family: var(--font);
+}
+.variant-btn:hover { border-color: var(--blue-primary); }
+.variant-btn.selected { border-color: var(--blue-primary); background: var(--blue-bg); color: var(--blue-primary); }
+
+/* ══════════════════════════════════════════
+   CONFIG MANAGER
+   ══════════════════════════════════════════ */
+.config-list { list-style: none; }
+.config-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--gray-20);
+  cursor: pointer; transition: background .1s;
+}
+.config-item:hover { background: var(--gray-10); }
+.config-item-info { display: flex; flex-direction: column; }
+.config-item-name { font-size: 14px; font-weight: 600; }
+.config-item-meta { font-size: 11px; color: var(--gray-60); }
+.config-item-actions { display: flex; gap: 4px; }
+.empty-state {
+  text-align: center; padding: 32px 16px;
+}
+.empty-state-icon { font-size: 48px; opacity: .5; }
+.empty-state-title { font-size: 16px; font-weight: 600; margin-top: 8px; }
+.empty-state-desc { font-size: 13px; color: var(--gray-80); margin-top: 4px; max-width: 300px; margin-left: auto; margin-right: auto; }
+
+/* ══════════════════════════════════════════
+   SELECT / DROPDOWN
+   ══════════════════════════════════════════ */
+.select-input {
+  width: 100%; padding: 8px 12px;
+  border: 1px solid var(--gray-40); border-radius: var(--radius-sm);
+  font-size: 14px; font-family: var(--font);
+  background: var(--white);
+}
+
+/* ══════════════════════════════════════════
+   ASPECT RATIO
+   ══════════════════════════════════════════ */
+.ar-options { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.ar-btn {
+  padding: 8px 16px; border-radius: var(--radius-sm);
+  border: 2px solid var(--gray-30); background: var(--white);
+  cursor: pointer; transition: all .15s;
+  text-align: center; font-family: var(--font);
+}
+.ar-btn:hover { border-color: var(--blue-primary); }
+.ar-btn.selected { border-color: var(--blue-primary); background: var(--blue-bg); }
+.ar-btn .ar-visual {
+  width: 60px; height: 34px; background: var(--gray-30);
+  border-radius: 2px; margin: 0 auto 4px;
+}
+.ar-btn .ar-label { font-size: 12px; font-weight: 600; }
+
+/* ══════════════════════════════════════════
+   LIST PICKER
+   ══════════════════════════════════════════ */
+.or-divider {
+  display: flex; align-items: center; gap: 12px;
+  color: var(--gray-60); font-size: 12px; font-weight: 600;
+  margin: 16px 0; text-transform: uppercase;
+}
+.or-divider::before, .or-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--gray-30);
+}
+.field-mapping-table {
+  width: 100%; border-collapse: collapse; margin-top: 12px;
+  font-size: 13px;
+}
+.field-mapping-table th {
+  text-align: left; padding: 6px 12px; background: var(--gray-10);
+  font-weight: 600; font-size: 11px; text-transform: uppercase;
+  color: var(--gray-80);
+}
+.field-mapping-table td { padding: 6px 12px; border-bottom: 1px solid var(--gray-20); }
+.field-mapping-table .col-arrow { text-align: center; color: var(--gray-60); }
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .choice-grid-2 { grid-template-columns: 1fr; }
+  .template-grid { grid-template-columns: 1fr; }
+}
+
+/* ══════════════════════════════════════════
+   PAGE WRAPPER
+   ══════════════════════════════════════════ */
+.page-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+.page-title {
+  font-size: 14px; color: var(--gray-60); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.page-title .proto-badge {
+  background: var(--dwx-accent); color: var(--dwx-navy);
+  font-size: 10px; font-weight: 700; padding: 2px 8px;
+  border-radius: 10px; text-transform: uppercase;
+}
+
+/* Nav buttons */
+.nav-buttons {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 24px;
+  border-top: 1px solid var(--gray-30);
+  background: var(--gray-10);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+/* Animation for entrance effects in preview */
+.preview-slide .anim-element { opacity: 0; }
+.preview-slide.animate .anim-element { opacity: 1; }
+
+/* Toast notification */
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--gray-130); color: var(--white);
+  padding: 12px 20px; border-radius: var(--radius-md);
+  font-size: 14px; font-weight: 600;
+  box-shadow: var(--shadow-lg);
+  z-index: 100000;
+  transform: translateY(100px); opacity: 0;
+  transition: all .3s;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* ══════════════════════════════════════════
+   THEME PRESETS (Wizard Settings)
+   ══════════════════════════════════════════ */
+.theme-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+.theme-card {
+  width: 100px; border: 2px solid var(--gray-30); border-radius: var(--radius-md);
+  overflow: hidden; cursor: pointer; transition: all .2s; flex-shrink: 0;
+}
+.theme-card:hover { border-color: var(--blue-primary); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.theme-card.selected { border-color: var(--blue-primary); box-shadow: 0 0 0 1px var(--blue-primary); }
+.theme-card-preview { height: 56px; display: flex; align-items: flex-end; padding: 6px; }
+.theme-card-preview span { font-size: 8px; font-weight: 700; }
+.theme-card-name { font-size: 10px; font-weight: 600; text-align: center; padding: 4px; background: var(--white); }
+
+/* ══════════════════════════════════════════
+   GRADIENT BUILDER (Editor)
+   ══════════════════════════════════════════ */
+.gradient-builder { margin-top: 12px; }
+.gradient-preview-bar {
+  height: 40px; border-radius: var(--radius-sm); border: 1px solid var(--gray-30);
+  margin-bottom: 8px; position: relative; cursor: crosshair;
+}
+.gradient-stops { display: flex; gap: 12px; align-items: center; margin-top: 8px; }
+.gradient-stop {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 10px; border: 1px solid var(--gray-30); border-radius: var(--radius-sm);
+  background: var(--white);
+}
+.gradient-stop .stop-swatch {
+  width: 20px; height: 20px; border-radius: 3px; border: 1px solid var(--gray-30); cursor: pointer;
+}
+.gradient-stop label { font-size: 11px; font-weight: 600; color: var(--gray-80); }
+
+/* ══════════════════════════════════════════
+   HOVER EFFECTS (Editor Advanced)
+   ══════════════════════════════════════════ */
+.hover-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+.hover-card {
+  border: 2px solid var(--gray-30); border-radius: var(--radius-md);
+  padding: 10px; text-align: center; cursor: pointer; transition: all .15s;
+}
+.hover-card:hover { border-color: var(--blue-primary); }
+.hover-card.selected { border-color: var(--blue-primary); background: var(--blue-bg); }
+.hover-card-icon { font-size: 20px; margin-bottom: 4px; }
+.hover-card-label { font-size: 11px; font-weight: 600; }
+
+/* ══════════════════════════════════════════
+   FOCAL POINT PICKER
+   ══════════════════════════════════════════ */
+.focal-point-container {
+  position: relative; width: 200px; height: 120px;
+  background: var(--gray-30); border-radius: var(--radius-sm);
+  border: 1px solid var(--gray-40); cursor: crosshair; overflow: hidden;
+  display: inline-block;
+}
+.focal-point-dot {
+  position: absolute; width: 16px; height: 16px;
+  border: 2px solid white; border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.3), 0 2px 4px rgba(0,0,0,.3);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.focal-point-crosshair-h, .focal-point-crosshair-v {
+  position: absolute; background: rgba(255,255,255,.5); pointer-events: none;
+}
+.focal-point-crosshair-h { width: 100%; height: 1px; }
+.focal-point-crosshair-v { width: 1px; height: 100%; }
+
+/* ══════════════════════════════════════════
+   ANIMATION TIMELINE (Editor)
+   ══════════════════════════════════════════ */
+.timeline-container { margin-top: 12px; }
+.timeline-row {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 6px; height: 28px;
+}
+.timeline-label { width: 80px; font-size: 11px; font-weight: 600; color: var(--gray-80); text-align: right; flex-shrink: 0; }
+.timeline-track { flex: 1; height: 20px; background: var(--gray-20); border-radius: 4px; position: relative; overflow: hidden; }
+.timeline-bar {
+  position: absolute; height: 100%; border-radius: 4px;
+  cursor: grab; transition: left .15s ease, width .15s ease;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; color: white;
+  user-select: none;
+}
+.timeline-bar:hover { filter: brightness(1.15); box-shadow: 0 0 0 2px rgba(255,255,255,.4); }
+.timeline-bar.dragging { cursor: grabbing; transition: none; opacity: .9; box-shadow: 0 0 0 2px rgba(255,255,255,.6); }
+.tl-bar-text { pointer-events: none; z-index: 1; }
+.tl-resize-handle {
+  position: absolute; top: 0; width: 8px; height: 100%;
+  cursor: ew-resize; z-index: 2;
+}
+.tl-resize-handle:hover { background: rgba(255,255,255,.25); }
+.tl-resize-left { left: 0; border-radius: 4px 0 0 4px; }
+.tl-resize-right { right: 0; border-radius: 0 4px 4px 0; }
+.timeline-ruler {
+  display: flex; justify-content: space-between;
+  padding: 0 0 0 88px; font-size: 9px; color: var(--gray-60);
+  margin-bottom: 4px;
+}
+.timeline-track { overflow: visible !important; }
+
+/* ══════════════════════════════════════════
+   ACCESSIBILITY PANEL
+   ══════════════════════════════════════════ */
+.a11y-card {
+  border: 1px solid var(--gray-30); border-radius: var(--radius-md);
+  padding: 12px; margin-bottom: 8px;
+}
+.a11y-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.a11y-label { font-size: 12px; font-weight: 600; }
+.a11y-badge { font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 10px; }
+.a11y-pass { background: var(--green-bg); color: var(--green-primary); }
+.a11y-warn { background: #fff4ce; color: #7a6400; }
+.a11y-fail { background: var(--red-bg); color: var(--red-primary); }
+.contrast-preview {
+  display: flex; gap: 8px; align-items: center; margin-top: 6px;
+}
+.contrast-swatch {
+  width: 60px; height: 36px; border-radius: 4px; display: flex;
+  align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+  border: 1px solid var(--gray-30);
+}
+
+/* ══════════════════════════════════════════
+   QUICK STYLE PRESETS (Editor)
+   ══════════════════════════════════════════ */
+.quick-styles { display: flex; gap: 8px; overflow-x: auto; padding: 8px 0; }
+.quick-style-chip {
+  flex-shrink: 0; padding: 6px 14px; border-radius: 16px;
+  border: 1px solid var(--gray-30); background: var(--white);
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  transition: all .15s; white-space: nowrap; font-family: var(--font);
+}
+.quick-style-chip:hover { border-color: var(--blue-primary); background: var(--blue-bg); }
+
+/* ══════════════════════════════════════════
+   UNDO / REDO BAR
+   ══════════════════════════════════════════ */
+.undo-bar { display: flex; gap: 4px; }
+.undo-btn {
+  width: 28px; height: 28px; border-radius: var(--radius-sm);
+  border: 1px solid var(--gray-30); background: var(--white);
+  cursor: pointer; font-size: 14px; display: flex;
+  align-items: center; justify-content: center;
+  transition: all .1s; font-family: var(--font);
+}
+.undo-btn:hover { background: var(--gray-10); }
+.undo-btn:disabled { opacity: .3; cursor: not-allowed; }
+
+/* ══════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS CONFIG
+   ══════════════════════════════════════════ */
+.breakpoint-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 8px; }
+.breakpoint-card {
+  border: 1px solid var(--gray-30); border-radius: var(--radius-md);
+  padding: 10px; text-align: center;
+}
+.breakpoint-icon { font-size: 24px; margin-bottom: 4px; }
+.breakpoint-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--gray-80); margin-bottom: 6px; }
+
+/* ══════════════════════════════════════════
+   SLIDE TRANSITION PREVIEW (Main toolbar)
+   ══════════════════════════════════════════ */
+.transition-preview-overlay {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 20; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.6); border-radius: inherit;
+}
+.transition-label {
+  background: var(--white); padding: 8px 20px; border-radius: 20px;
+  font-size: 13px; font-weight: 600; box-shadow: var(--shadow-md);
+}
+
+/* ══════════════════════════════════════════
+   KEYBOARD SHORTCUTS PANEL
+   ══════════════════════════════════════════ */
+.shortcuts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.shortcut-item { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.shortcut-key {
+  display: inline-block; padding: 2px 8px; border-radius: 4px;
+  background: var(--gray-20); border: 1px solid var(--gray-30);
+  font-size: 11px; font-weight: 600; font-family: monospace;
+  min-width: 28px; text-align: center;
+}
+
+/* ══════════════════════════════════════════
+   SLIDE NOTES (Editor)
+   ══════════════════════════════════════════ */
+.notes-area {
+  width: 100%; min-height: 60px; padding: 8px 12px;
+  border: 1px solid var(--gray-30); border-radius: var(--radius-sm);
+  font-size: 13px; font-family: var(--font); resize: vertical;
+  background: #fffef5;
+}
+
+/* Additional entrance animations */
+@keyframes typewriter { from { width: 0; } to { width: 100%; } }
+@keyframes blurIn { from { opacity: 0; filter: blur(10px); } to { opacity: 1; filter: blur(0); } }
+@keyframes flipUp { from { opacity: 0; transform: perspective(600px) rotateX(90deg); } to { opacity: 1; transform: perspective(600px) rotateX(0); } }
+@keyframes swoopIn { from { opacity: 0; transform: translateX(-100px) rotate(-10deg); } to { opacity: 1; transform: translateX(0) rotate(0); } }
+.anim-blurIn { animation: blurIn .6s ease-out forwards; }
+.anim-flipUp { animation: flipUp .6s ease-out forwards; }
+.anim-swoopIn { animation: swoopIn .6s ease-out forwards; }
+
+/* ══════════════════════════════════════════
+   SLIDE MANAGER (inside editor modal)
+   ══════════════════════════════════════════ */
+.view-toggle {
+  display: inline-flex; border: 1px solid var(--gray-40); border-radius: var(--radius-sm); overflow: hidden;
+}
+.view-toggle-btn {
+  padding: 5px 14px; font-size: 12px; font-weight: 600; font-family: var(--font);
+  background: var(--white); border: none; cursor: pointer; color: var(--gray-80);
+  transition: all .15s; display: flex; align-items: center; gap: 4px;
+}
+.view-toggle-btn:not(:last-child) { border-right: 1px solid var(--gray-40); }
+.view-toggle-btn.active { background: var(--blue-primary); color: var(--white); }
+.view-toggle-btn:hover:not(.active) { background: var(--gray-10); }
+
+.slide-manager { padding: 16px 24px; }
+.slide-manager-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 12px;
+}
+.slide-manager-header h3 { font-size: 15px; font-weight: 700; }
+.slide-manager-count {
+  font-size: 12px; color: var(--gray-60); background: var(--gray-20);
+  padding: 2px 10px; border-radius: 10px;
+}
+.slide-manager-list { display: flex; flex-direction: column; gap: 2px; }
+.slide-manager-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: var(--radius-md);
+  background: var(--white); border: 1px solid var(--gray-30);
+  transition: all .15s; position: relative;
+}
+.slide-manager-item:hover { border-color: var(--blue-primary); box-shadow: var(--shadow-sm); }
+.slide-manager-item.active { border-color: var(--blue-primary); background: var(--blue-bg); }
+.slide-manager-item.locked { opacity: .7; }
+.slide-manager-item.locked .sm-lock-icon { color: var(--orange); }
+
+.sm-drag-handle {
+  cursor: grab; color: var(--gray-60); font-size: 16px; flex-shrink: 0;
+  display: flex; align-items: center; user-select: none;
+}
+.sm-drag-handle:active { cursor: grabbing; }
+.sm-number {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--gray-20); color: var(--gray-80);
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.slide-manager-item.active .sm-number { background: var(--blue-primary); color: var(--white); }
+.sm-preview {
+  width: 80px; height: 45px; border-radius: var(--radius-sm);
+  flex-shrink: 0; display: flex; align-items: flex-end; padding: 4px 6px;
+  font-size: 9px; font-weight: 600; color: #fff; overflow: hidden;
+}
+.sm-info { flex: 1; min-width: 0; }
+.sm-title { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sm-subtitle { font-size: 11px; color: var(--gray-60); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sm-badges { display: flex; gap: 4px; margin-top: 2px; }
+.sm-badge {
+  font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 8px;
+  text-transform: uppercase;
+}
+.sm-badge-anim { background: #e8d5f5; color: #5c2d91; }
+.sm-badge-cta { background: var(--blue-light); color: var(--blue-primary); }
+.sm-badge-locked { background: #fff3cd; color: #856404; }
+.sm-badge-scheduled { background: #d4edda; color: #155724; }
+
+.sm-actions {
+  display: flex; gap: 2px; flex-shrink: 0; opacity: 0;
+  transition: opacity .15s;
+}
+.slide-manager-item:hover .sm-actions { opacity: 1; }
+.sm-action-btn {
+  width: 28px; height: 28px; border: none; border-radius: var(--radius-sm);
+  background: transparent; cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gray-80); transition: all .1s;
+}
+.sm-action-btn:hover { background: var(--gray-20); }
+.sm-action-btn.danger:hover { background: var(--red-bg); color: var(--red-primary); }
+.sm-action-btn:disabled { opacity: .3; cursor: not-allowed; }
+.sm-action-btn:disabled:hover { background: transparent; }
+
+/* ══════════════════════════════════════════
+   INTERACTIVE CANVAS (click-to-select in preview)
+   ══════════════════════════════════════════ */
+.canvas-element {
+  position: relative; cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: 4px;
+  transition: outline-color .1s;
+  border-radius: 2px;
+}
+.canvas-element:hover {
+  outline-color: rgba(0,120,212,.4);
+}
+.canvas-element.selected {
+  outline-color: var(--blue-primary);
+  outline-style: solid;
+}
+.canvas-element.selected::after {
+  content: attr(data-label);
+  position: absolute; top: -20px; left: 0;
+  font-size: 10px; font-weight: 700; color: var(--white);
+  background: var(--blue-primary);
+  padding: 1px 6px; border-radius: 3px;
+  white-space: nowrap; pointer-events: none; z-index: 5;
+  line-height: 16px;
+}
+
+/* Resize handles on selected element */
+.resize-handle {
+  position: absolute; width: 8px; height: 8px;
+  background: var(--white); border: 2px solid var(--blue-primary);
+  border-radius: 2px; z-index: 6;
+  display: none;
+}
+.canvas-element.selected .resize-handle { display: block; }
+.resize-handle.nw { top: -4px; left: -4px; cursor: nw-resize; }
+.resize-handle.ne { top: -4px; right: -4px; cursor: ne-resize; }
+.resize-handle.sw { bottom: -4px; left: -4px; cursor: sw-resize; }
+.resize-handle.se { bottom: -4px; right: -4px; cursor: se-resize; }
+
+/* Context toolbar that appears above selected element */
+.canvas-toolbar {
+  position: absolute; top: -36px; left: 50%; transform: translateX(-50%);
+  background: var(--gray-130); color: var(--white);
+  padding: 3px 4px; border-radius: var(--radius-sm);
+  display: none; gap: 2px; z-index: 7;
+  white-space: nowrap; box-shadow: var(--shadow-md);
+}
+.canvas-element.selected .canvas-toolbar { display: flex; }
+.canvas-toolbar-btn {
+  background: none; border: none; color: var(--white);
+  font-size: 12px; padding: 2px 6px; cursor: pointer;
+  border-radius: 2px; font-family: var(--font);
+}
+.canvas-toolbar-btn:hover { background: rgba(255,255,255,.2); }
+
+/* Inline edit mode */
+.canvas-element.editing {
+  outline-color: var(--dwx-accent);
+  min-width: 40px;
+}
+.canvas-element.editing [contenteditable] {
+  outline: none; cursor: text;
+}
+
+/* Element property bar at bottom of preview */
+.element-props-bar {
+  display: none; padding: 6px 12px;
+  background: var(--gray-130); color: var(--white);
+  font-size: 11px; gap: 12px; align-items: center;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+.element-props-bar.visible { display: flex; }
+.element-props-bar label { color: rgba(255,255,255,.6); margin-right: 4px; }
+.element-props-bar input[type="number"] {
+  width: 48px; padding: 2px 4px; border: 1px solid rgba(255,255,255,.3);
+  border-radius: 2px; background: rgba(255,255,255,.1); color: var(--white);
+  font-size: 11px; font-family: var(--font);
+}
+.element-props-bar .prop-sep { width: 1px; height: 16px; background: rgba(255,255,255,.2); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     MAIN PAGE
+     ═══════════════════════════════════════════ -->
+<div class="page-wrapper" id="mainPage">
+  <div class="page-title">
+    <span>HyperHero Web Part</span>
+    <span class="proto-badge">UX Prototype</span>
+    <span style="margin-left:auto;font-size:12px">Edit Mode</span>
+  </div>
+
+  <!-- Edit Toolbar -->
+  <div class="edit-toolbar" id="editToolbar">
+    <button class="btn btn-primary btn-sm" onclick="addSlide()">+ Add Slide</button>
+    <button class="btn btn-secondary btn-sm" onclick="duplicateActiveSlide()">Duplicate</button>
+    <div class="toolbar-divider"></div>
+    <div class="undo-bar">
+      <button class="undo-btn" title="Undo (Ctrl+Z)" onclick="showToast('Undo')">↩</button>
+      <button class="undo-btn" title="Redo (Ctrl+Y)" onclick="showToast('Redo')" disabled>↪</button>
+    </div>
+    <div class="toolbar-divider"></div>
+    <button class="btn btn-secondary btn-sm" onclick="previewTransitions()">▶ Preview Transitions</button>
+    <div class="toolbar-divider"></div>
+    <button class="btn btn-secondary btn-sm" onclick="openConfigManager('save')">💾 Save As</button>
+    <button class="btn btn-secondary btn-sm" onclick="openConfigManager('open')">📂 Open</button>
+    <div class="toolbar-divider"></div>
+    <button class="btn btn-ghost btn-sm" onclick="openSliderManager()">📚 My Sliders</button>
+    <button class="btn btn-ghost btn-sm" onclick="openWizard()">🧙 Re-run Setup</button>
+    <button class="btn btn-ghost btn-sm" onclick="showKeyboardShortcuts()">⌨ Shortcuts</button>
+    <span class="slide-count-badge" id="slideCountBadge">3 slides</span>
+  </div>
+
+  <!-- Hero Container -->
+  <div class="hero-container" id="heroContainer" style="border-radius: 8px;">
+    <div class="hero-grid" id="heroGrid">
+      <!-- Slides rendered by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SPLASH SCREEN (First Run Only)
+     ═══════════════════════════════════════════ -->
+<div class="modal-backdrop" id="splashBackdrop">
+  <div class="modal modal-md" style="overflow:hidden">
+    <div class="splash-hero">
+      <div class="splash-logo">
+        <span class="splash-logo-mark">DW<span class="accent">x</span></span>
+        HyperParts Suite
+      </div>
+      <div class="splash-version">v1.0 &bull; HyperHero</div>
+      <h1 class="splash-title">HyperHero</h1>
+      <p class="splash-tagline">The most powerful hero banner for SharePoint. Rotating slides, animations, video backgrounds, parallax, and more.</p>
+    </div>
+    <div class="splash-features">
+      <div class="splash-feature-card">
+        <div class="splash-feature-icon">🎬</div>
+        <div class="splash-feature-title">Rich Backgrounds</div>
+        <div class="splash-feature-desc">Images, videos, gradients, Lottie animations, and parallax scrolling</div>
+      </div>
+      <div class="splash-feature-card">
+        <div class="splash-feature-icon">🎨</div>
+        <div class="splash-feature-title">Visual Designer</div>
+        <div class="splash-feature-desc">Click-to-edit canvas, drag elements, and real-time live preview</div>
+      </div>
+      <div class="splash-feature-card">
+        <div class="splash-feature-icon">⚡</div>
+        <div class="splash-feature-title">Smart Automation</div>
+        <div class="splash-feature-desc">Auto-rotation, scheduling, audience targeting, and A/B testing</div>
+      </div>
+      <div class="splash-feature-card">
+        <div class="splash-feature-icon">♿</div>
+        <div class="splash-feature-title">Fully Accessible</div>
+        <div class="splash-feature-desc">WCAG 2.1 AA, keyboard navigation, reduced-motion support</div>
+      </div>
+    </div>
+    <div class="splash-cta">
+      <button class="splash-cta-btn" onclick="splashGetStarted()">Get Started <span style="font-size:18px">→</span></button>
+      <button class="splash-skip" onclick="splashSkip()">Skip — I've used HyperHero before</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SLIDER MANAGER MODAL (Cross-Page Library)
+     ═══════════════════════════════════════════ -->
+<div class="modal-backdrop" id="sliderManagerBackdrop">
+  <div class="modal modal-lg">
+    <div class="dwx-strip">
+      <div style="display:flex;align-items:center;">
+        <span class="dwx-logo">DW<span class="accent">x</span></span>
+        <span class="dwx-sub">Digital Workplace Excellence</span>
+      </div>
+      <span class="dwx-badge">📚 Slider Library</span>
+    </div>
+    <div class="modal-header" style="border-top:none">
+      <span class="modal-title">My Sliders</span>
+      <button class="modal-close" onclick="closeSliderManager()">&times;</button>
+    </div>
+    <div class="modal-body" id="sliderManagerContent" style="min-height:200px">
+      <!-- Rendered by JS -->
+    </div>
+    <div class="modal-footer" style="justify-content:flex-end">
+      <button class="btn btn-secondary" onclick="closeSliderManager()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     WIZARD MODAL
+     ═══════════════════════════════════════════ -->
+<div class="modal-backdrop" id="wizardBackdrop">
+  <div class="modal modal-lg">
+    <!-- DWx Brand Strip -->
+    <div class="dwx-strip">
+      <div style="display:flex;align-items:center;">
+        <span class="dwx-logo">DW<span class="accent">x</span></span>
+        <span class="dwx-sub">Digital Workplace Excellence</span>
+      </div>
+      <span class="dwx-badge">⚡ HyperHero Setup</span>
+    </div>
+
+    <!-- Stepper -->
+    <div class="stepper" id="wizardStepper"></div>
+
+    <!-- Help Banner -->
+    <div class="help-banner" id="wizardHelp" style="display:none">
+      <span class="help-icon">💡</span>
+      <span id="wizardHelpText"></span>
+    </div>
+
+    <!-- Step Content -->
+    <div class="modal-body" id="wizardContent" style="min-height: 300px;"></div>
+
+    <!-- Navigation -->
+    <div class="nav-buttons" id="wizardNav"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SLIDE EDITOR MODAL
+     ═══════════════════════════════════════════ -->
+<div class="modal-backdrop" id="editorBackdrop">
+  <div class="modal modal-xl">
+    <div class="modal-header">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="modal-title" id="editorTitle">Edit Slide</span>
+        <div class="view-toggle" id="editorViewToggle">
+          <button class="view-toggle-btn" onclick="setEditorView('manager',this)">📋 Slide Manager</button>
+          <button class="view-toggle-btn active" onclick="setEditorView('editor',this)">✏ Editor</button>
+        </div>
+      </div>
+      <button class="modal-close" onclick="closeEditor()">&times;</button>
+    </div>
+
+    <!-- Slide Manager View (hidden by default) -->
+    <div id="slideManagerView" style="display:none"></div>
+
+    <div class="editor-layout" id="editorLayoutView">
+      <!-- Preview Section -->
+      <div class="editor-preview">
+        <div class="preview-toolbar">
+          <div class="preview-toolbar-left">
+            <span class="preview-label">Live Preview</span>
+          </div>
+          <div class="preview-toolbar-right">
+            <button class="device-btn active" onclick="setDevice('desktop',this)">🖥 Desktop</button>
+            <button class="device-btn" onclick="setDevice('tablet',this)">📱 Tablet</button>
+            <button class="device-btn" onclick="setDevice('mobile',this)">📱 Mobile</button>
+            <div class="toolbar-divider"></div>
+            <button class="btn btn-ghost btn-sm" onclick="replayAnimations()">▶ Preview Animations</button>
+          </div>
+        </div>
+        <div class="preview-viewport">
+          <div class="preview-slide-wrap" id="previewWrap">
+            <div class="preview-slide" id="previewSlide" style="background: #0078d4; aspect-ratio: 16/9;" onclick="canvasDeselect(event)">
+              <div class="preview-slide-content">
+                <div class="canvas-element" data-element="heading" data-label="Heading" onclick="canvasSelect(event,'heading')" ondblclick="canvasEditStart(event,'heading')">
+                  <h2 id="prevHeading" class="anim-element">Welcome to HyperHero</h2>
+                  <div class="canvas-toolbar">
+                    <button class="canvas-toolbar-btn" onclick="canvasEditStart(event,'heading')" title="Edit text">✏</button>
+                    <button class="canvas-toolbar-btn" onclick="canvasMoveUp('heading')" title="Move up">⬆</button>
+                    <button class="canvas-toolbar-btn" onclick="canvasMoveDown('heading')" title="Move down">⬇</button>
+                    <button class="canvas-toolbar-btn" onclick="canvasScaleUp('heading')" title="Increase size">A+</button>
+                    <button class="canvas-toolbar-btn" onclick="canvasScaleDown('heading')" title="Decrease size">A-</button>
+                  </div>
+                  <div class="resize-handle nw"></div><div class="resize-handle ne"></div>
+                  <div class="resize-handle sw"></div><div class="resize-handle se"></div>
+                </div>
+                <div class="canvas-element" data-element="subtitle" data-label="Subtitle" onclick="canvasSelect(event,'subtitle')" ondblclick="canvasEditStart(event,'subtitle')">
+                  <p class="subtitle anim-element" id="prevSubtitle">Create stunning hero banners</p>
+                  <div class="canvas-toolbar">
+                    <button class="canvas-toolbar-btn" onclick="canvasEditStart(event,'subtitle')" title="Edit text">✏</button>
+                    <button class="canvas-toolbar-btn" onclick="canvasMoveUp('subtitle')" title="Move up">⬆</button>
+                    <button class="canvas-toolbar-btn" onclick="canvasMoveDown('subtitle')" title="Move down">⬇</button>
+                    <button class="canvas-toolbar-btn" onclick="canvasScaleUp('subtitle')" title="Increase size">A+</button>
+                    <button class="canvas-toolbar-btn" onclick="canvasScaleDown('subtitle')" title="Decrease size">A-</button>
+                  </div>
+                  <div class="resize-handle nw"></div><div class="resize-handle ne"></div>
+                  <div class="resize-handle sw"></div><div class="resize-handle se"></div>
+                </div>
+                <div class="canvas-element" data-element="desc" data-label="Description" onclick="canvasSelect(event,'desc')" ondblclick="canvasEditStart(event,'desc')">
+                  <p class="desc anim-element" id="prevDesc"></p>
+                  <div class="canvas-toolbar">
+                    <button class="canvas-toolbar-btn" onclick="canvasEditStart(event,'desc')" title="Edit text">✏</button>
+                    <button class="canvas-toolbar-btn" onclick="canvasScaleUp('desc')" title="Increase size">A+</button>
+                    <button class="canvas-toolbar-btn" onclick="canvasScaleDown('desc')" title="Decrease size">A-</button>
+                  </div>
+                  <div class="resize-handle nw"></div><div class="resize-handle ne"></div>
+                  <div class="resize-handle sw"></div><div class="resize-handle se"></div>
+                </div>
+                <div class="canvas-element" data-element="ctas" data-label="Buttons" onclick="canvasSelect(event,'ctas')">
+                  <div class="cta-group" id="prevCtas"></div>
+                  <div class="canvas-toolbar">
+                    <button class="canvas-toolbar-btn" onclick="setEditorTab('ctas')" title="Edit buttons">✏</button>
+                    <button class="canvas-toolbar-btn" onclick="canvasScaleUp('ctas')" title="Increase size">A+</button>
+                    <button class="canvas-toolbar-btn" onclick="canvasScaleDown('ctas')" title="Decrease size">A-</button>
+                  </div>
+                  <div class="resize-handle nw"></div><div class="resize-handle ne"></div>
+                  <div class="resize-handle sw"></div><div class="resize-handle se"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Element properties bar -->
+          <div class="element-props-bar" id="elementPropsBar">
+            <span id="propElementName" style="font-weight:700;color:var(--dwx-accent)">Heading</span>
+            <div class="prop-sep"></div>
+            <label>Size:</label><input type="number" id="propFontSize" value="28" min="8" max="120" onchange="canvasSetFontSize(this.value)">
+            <div class="prop-sep"></div>
+            <label>X:</label><input type="number" id="propX" value="0" onchange="canvasSetPos('x',this.value)">
+            <label>Y:</label><input type="number" id="propY" value="0" onchange="canvasSetPos('y',this.value)">
+            <div class="prop-sep"></div>
+            <label>Opacity:</label><input type="number" id="propOpacity" value="100" min="0" max="100" step="5" onchange="canvasSetOpacity(this.value)">
+            <div style="margin-left:auto;display:flex;gap:4px">
+              <button class="canvas-toolbar-btn" style="color:var(--white)" onclick="canvasDuplicate()" title="Duplicate element">📋</button>
+              <button class="canvas-toolbar-btn" style="color:var(--red-primary)" onclick="canvasDelete()" title="Delete element">🗑</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Style Presets Bar (Hyper mode only — populated by JS) -->
+      <div id="quickStylesBar" style="padding:6px 16px;background:var(--gray-10);border-bottom:1px solid var(--gray-30);display:none;align-items:center;gap:8px">
+        <span style="font-size:11px;font-weight:700;color:var(--gray-80);text-transform:uppercase;flex-shrink:0">Quick Styles:</span>
+        <div class="quick-styles">
+          <button class="quick-style-chip" onclick="applyQuickStyle('corporate')">Corporate Clean</button>
+          <button class="quick-style-chip" onclick="applyQuickStyle('bold')">Bold & Vibrant</button>
+          <button class="quick-style-chip" onclick="applyQuickStyle('dark')">Dark Elegance</button>
+          <button class="quick-style-chip" onclick="applyQuickStyle('gradient')">Gradient Pop</button>
+          <button class="quick-style-chip" onclick="applyQuickStyle('minimal')">Minimal White</button>
+          <button class="quick-style-chip" onclick="applyQuickStyle('neon')">Neon Glow</button>
+          <button class="quick-style-chip" onclick="applyQuickStyle('sunset')">Sunset Warm</button>
+          <button class="quick-style-chip" onclick="applyQuickStyle('ocean')">Ocean Deep</button>
+        </div>
+      </div>
+
+      <!-- Tab Bar (populated dynamically by renderEditorTabBar) -->
+      <div class="tab-bar" id="editorTabBar"></div>
+
+      <!-- Tab Content -->
+      <div class="tab-content" id="editorTabContent"></div>
+    </div>
+
+    <div class="modal-footer" id="editorFooter" style="justify-content:space-between">
+      <div style="display:flex;gap:8px;align-items:center">
+        <div class="undo-bar">
+          <button class="undo-btn" title="Undo" onclick="showToast('Undo')">↩</button>
+          <button class="undo-btn" title="Redo" onclick="showToast('Redo')" disabled>↪</button>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="showToast('Saved as template')">Save as Template</button>
+        <span style="width:1px;height:20px;background:var(--gray-30)"></span>
+        <button class="btn btn-ghost btn-sm" onclick="addSlideFromEditor()">+ Add Slide</button>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary" onclick="closeEditor()">Cancel</button>
+        <button class="btn btn-secondary" onclick="saveSlideAndContinue()">Save & Continue</button>
+        <button class="btn btn-primary" onclick="saveSlide()">Save & Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     CONFIG MANAGER MODAL
+     ═══════════════════════════════════════════ -->
+<div class="modal-backdrop" id="configBackdrop">
+  <div class="modal modal-md">
+    <div class="modal-header">
+      <span class="modal-title" id="configTitle">Saved Configurations</span>
+      <button class="modal-close" onclick="closeConfigManager()">&times;</button>
+    </div>
+    <div class="modal-body" id="configContent"></div>
+    <div class="modal-footer" id="configFooter"></div>
+  </div>
+</div>
+
+<!-- Keyboard Shortcuts Modal -->
+<div class="modal-backdrop" id="shortcutsBackdrop">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <span class="modal-title">⌨ Keyboard Shortcuts</span>
+      <button class="modal-close" onclick="document.getElementById('shortcutsBackdrop').classList.remove('active')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="shortcuts-grid">
+        <div class="shortcut-item"><span class="shortcut-key">Ctrl+Z</span> Undo</div>
+        <div class="shortcut-item"><span class="shortcut-key">Ctrl+Y</span> Redo</div>
+        <div class="shortcut-item"><span class="shortcut-key">Ctrl+S</span> Save slide</div>
+        <div class="shortcut-item"><span class="shortcut-key">Ctrl+D</span> Duplicate slide</div>
+        <div class="shortcut-item"><span class="shortcut-key">Esc</span> Close modal</div>
+        <div class="shortcut-item"><span class="shortcut-key">←</span><span class="shortcut-key">→</span> Navigate slides</div>
+        <div class="shortcut-item"><span class="shortcut-key">Space</span> Play/pause rotation</div>
+        <div class="shortcut-item"><span class="shortcut-key">Del</span> Delete slide</div>
+        <div class="shortcut-item"><span class="shortcut-key">Ctrl+N</span> Add new slide</div>
+        <div class="shortcut-item"><span class="shortcut-key">P</span> Preview animations</div>
+        <div class="shortcut-item"><span class="shortcut-key">1-6</span> Switch editor tab</div>
+        <div class="shortcut-item"><span class="shortcut-key">?</span> Show shortcuts</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════════════════════════════════════
+     JAVASCRIPT
+     ═══════════════════════════════════════════ -->
+<script>
+/* ══════════════════════════════════════════
+   STATE
+   ══════════════════════════════════════════ */
+const state = {
+  // First run
+  firstRun: true,
+
+  // Wizard
+  wizardOpen: false,
+  wizardStep: 0,
+  wizardPath: null,      // 'scratch' | 'template'
+  sliderMode: 'hyper',   // 'simple' | 'hyper' — default to hyper so demo shows full experience
+  contentSource: null,   // 'manual' | 'list'
+  slideCount: 3,
+  layoutPreset: 'single',
+  aspectRatio: '16:9',
+  heroHeight: 400,
+  borderRadius: 8,
+  fullBleed: false,
+  rotationEnabled: true,
+  rotationInterval: 5000,
+  rotationEffect: 'fade',
+
+  // Slides
+  slides: [
+    { id: 1, heading: 'Welcome to Contoso', subtitle: 'Building the future together', desc: '', bg: '#0078d4', gradient: 'linear-gradient(135deg, #0078d4, #106ebe)', textColor: '#fff', textAlign: 'left', verticalAlign: 'bottom', ctas: [{ label: 'Learn More', variant: 'primary', url: '#' }], animation: 'fadeUp' },
+    { id: 2, heading: 'Q1 Town Hall', subtitle: 'March 15 at 2:00 PM EST', desc: '', bg: '#5c2d91', gradient: 'linear-gradient(135deg, #5c2d91, #8661c5)', textColor: '#fff', textAlign: 'center', verticalAlign: 'center', ctas: [{ label: 'Register Now', variant: 'primary', url: '#' }, { label: 'Add to Calendar', variant: 'ghost', url: '#' }], animation: 'slideLeft' },
+    { id: 3, heading: 'New Benefits Portal', subtitle: 'Open enrollment starts April 1', desc: 'Review your options and make changes before the deadline.', bg: '#107c10', gradient: 'linear-gradient(180deg, rgba(0,0,0,.1), rgba(0,0,0,.5))', textColor: '#fff', textAlign: 'left', verticalAlign: 'bottom', ctas: [{ label: 'Explore Benefits', variant: 'primary', url: '#' }], animation: 'fadeUp' },
+  ],
+
+  // Editor
+  editorOpen: false,
+  editorView: 'editor',  // 'editor' | 'manager'
+  editingIndex: null,
+  editingSlide: null,
+  editorTab: 'background',
+
+  // Config Manager
+  savedConfigs: [
+    { id: 1, name: 'Corporate Default', date: '2026-02-08', slides: 3, desc: 'Standard 3-slide corporate hero' },
+    { id: 2, name: 'Event Countdown', date: '2026-02-07', slides: 1, desc: 'Single slide with countdown timer' },
+  ],
+};
+
+/* ══════════════════════════════════════════
+   RENDER: HERO GRID
+   ══════════════════════════════════════════ */
+function renderHeroGrid() {
+  const grid = document.getElementById('heroGrid');
+  const ar = state.aspectRatio === '16:9' ? '16/9' : state.aspectRatio === '4:3' ? '4/3' : state.aspectRatio === '21:9' ? '21/9' : '16/9';
+
+  if (state.slides.length === 1) {
+    grid.style.gridTemplateColumns = '1fr';
+    grid.style.gridTemplateRows = 'auto';
+  } else if (state.slides.length === 2) {
+    grid.style.gridTemplateColumns = '1fr 1fr';
+    grid.style.gridTemplateRows = 'auto';
+  } else if (state.slides.length === 3) {
+    grid.style.gridTemplateColumns = '1fr 1fr 1fr';
+    grid.style.gridTemplateRows = 'auto';
+  } else if (state.slides.length === 4) {
+    grid.style.gridTemplateColumns = '1fr 1fr';
+    grid.style.gridTemplateRows = 'auto auto';
+  } else {
+    grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(300px, 1fr))';
+    grid.style.gridTemplateRows = 'auto';
+  }
+
+  let html = '';
+  state.slides.forEach(function(s, i) {
+    const justify = s.verticalAlign === 'top' ? 'flex-start' : s.verticalAlign === 'center' ? 'center' : 'flex-end';
+    const align = s.textAlign;
+    html += '<div class="hero-slide" style="background: ' + s.gradient + '; aspect-ratio: ' + ar + '; justify-content: ' + justify + '; text-align: ' + align + '; color: ' + s.textColor + '">';
+    html += '<div class="hero-slide-content">';
+    html += '<h2>' + s.heading + '</h2>';
+    if (s.subtitle) html += '<p>' + s.subtitle + '</p>';
+    if (s.desc) html += '<p style="font-size:13px;opacity:.8;margin-top:4px">' + s.desc + '</p>';
+    if (s.ctas && s.ctas.length > 0) {
+      s.ctas.forEach(function(c) {
+        const bg = c.variant === 'primary' ? 'rgba(255,255,255,.95)' : c.variant === 'ghost' ? 'transparent' : 'rgba(255,255,255,.2)';
+        const color = c.variant === 'primary' ? '#323130' : '#fff';
+        const border = c.variant === 'ghost' ? '1px solid rgba(255,255,255,.6)' : 'none';
+        html += '<span class="cta-btn" style="background:' + bg + ';color:' + color + ';border:' + border + '">' + c.label + '</span> ';
+      });
+    }
+    html += '</div>';
+    // Overlay
+    html += '<div class="slide-overlay">';
+    html += '<div class="slide-badge">' + (i + 1) + '</div>';
+    html += '<div class="slide-overlay-actions">';
+    html += '<button class="slide-overlay-btn" onclick="openEditor(' + i + ')">✏ Edit</button>';
+    html += '<button class="slide-overlay-btn" onclick="duplicateSlide(' + i + ')">📋 Duplicate</button>';
+    if (i > 0) html += '<button class="slide-overlay-btn" onclick="moveSlide(' + i + ',-1)">⬆ Up</button>';
+    if (i < state.slides.length - 1) html += '<button class="slide-overlay-btn" onclick="moveSlide(' + i + ',1)">⬇ Down</button>';
+    if (state.slides.length > 1) html += '<button class="slide-overlay-btn danger" onclick="deleteSlide(' + i + ')">🗑 Delete</button>';
+    html += '</div></div>';
+    html += '</div>';
+  });
+  grid.innerHTML = html;
+  document.getElementById('slideCountBadge').textContent = state.slides.length + (state.slides.length === 1 ? ' slide' : ' slides');
+}
+
+function addSlide() {
+  state.slides.push({
+    id: Date.now(),
+    heading: 'New Slide',
+    subtitle: 'Click edit to customize',
+    desc: '',
+    bg: '#0078d4',
+    gradient: 'linear-gradient(135deg, #0078d4, #50e6ff)',
+    textColor: '#fff',
+    textAlign: 'left',
+    verticalAlign: 'bottom',
+    ctas: [],
+    animation: 'fadeUp',
+  });
+  renderHeroGrid();
+  openEditor(state.slides.length - 1);
+  showToast('Slide added');
+}
+
+function duplicateSlide(idx) {
+  const copy = JSON.parse(JSON.stringify(state.slides[idx]));
+  copy.id = Date.now();
+  copy.heading += ' (Copy)';
+  state.slides.splice(idx + 1, 0, copy);
+  renderHeroGrid();
+  showToast('Slide duplicated');
+}
+function duplicateActiveSlide() {
+  if (state.slides.length > 0) duplicateSlide(state.slides.length - 1);
+}
+
+function moveSlide(idx, dir) {
+  const target = idx + dir;
+  if (target < 0 || target >= state.slides.length) return;
+  const temp = state.slides[idx];
+  state.slides[idx] = state.slides[target];
+  state.slides[target] = temp;
+  renderHeroGrid();
+}
+
+function deleteSlide(idx) {
+  if (state.slides.length <= 1) return;
+  if (!confirm('Delete "' + state.slides[idx].heading + '"? This cannot be undone.')) return;
+  state.slides.splice(idx, 1);
+  renderHeroGrid();
+  showToast('Slide deleted');
+}
+
+/* ══════════════════════════════════════════
+   WIZARD
+   ══════════════════════════════════════════ */
+const WIZARD_STEPS = [
+  { key: 'mode', label: 'Mode', short: 'Mode' },
+  { key: 'start', label: 'Get Started', short: 'Start' },
+  { key: 'configure', label: 'Configure', short: 'Config' },
+  { key: 'settings', label: 'Settings', short: 'Settings' },
+  { key: 'summary', label: 'Review', short: 'Review' },
+];
+
+function openWizard() {
+  state.wizardOpen = true;
+  state.wizardStep = 0;
+  state.wizardPath = null;
+  state.sliderMode = null;
+  state.contentSource = null;
+  document.getElementById('wizardBackdrop').classList.add('active');
+  renderWizard();
+}
+function closeWizard() {
+  state.wizardOpen = false;
+  document.getElementById('wizardBackdrop').classList.remove('active');
+}
+
+function renderWizard() {
+  renderWizardStepper();
+  renderWizardContent();
+  renderWizardNav();
+}
+
+function renderWizardStepper() {
+  const el = document.getElementById('wizardStepper');
+  let html = '';
+  WIZARD_STEPS.forEach(function(s, i) {
+    if (i > 0) {
+      html += '<div class="step-connector ' + (i <= state.wizardStep ? 'active' : '') + '"></div>';
+    }
+    const cls = i < state.wizardStep ? 'complete' : i === state.wizardStep ? 'active' : '';
+    html += '<div class="step-item" onclick="jumpToStep(' + i + ')">';
+    html += '<div class="step-circle ' + cls + '">' + (i < state.wizardStep ? '✓' : (i + 1)) + '</div>';
+    html += '<div class="step-label ' + cls + '">' + s.short + '</div>';
+    html += '</div>';
+  });
+  el.innerHTML = html;
+}
+
+function jumpToStep(idx) {
+  if (idx <= state.wizardStep) {
+    state.wizardStep = idx;
+    renderWizard();
+  }
+}
+
+function renderWizardContent() {
+  const el = document.getElementById('wizardContent');
+  const help = document.getElementById('wizardHelp');
+  const helpText = document.getElementById('wizardHelpText');
+
+  switch (state.wizardStep) {
+    case 0: renderStep0_Mode(el); help.style.display = 'flex'; helpText.textContent = 'Choose your editing experience. Simple Slider is perfect for quick rotating banners. Hyper Slider unlocks the full creative toolkit.'; break;
+    case 1: renderStep1_Start(el); help.style.display = 'flex'; break;
+    case 2: renderStep2_Configure(el); help.style.display = 'flex'; break;
+    case 3: renderStep3_Settings(el); help.style.display = 'flex'; helpText.textContent = 'Fine-tune your hero appearance. All settings can be changed later in the property pane.'; break;
+    case 4: renderStep4_Summary(el); help.style.display = 'flex'; helpText.textContent = 'Review your configuration. Click Apply to set up your HyperHero.'; break;
+  }
+}
+
+/* Step 0: Simple Slider vs Hyper Slider */
+function renderStep0_Mode(el) {
+  el.innerHTML = `
+    <div style="text-align:center;margin-bottom:20px">
+      <h2 style="font-size:22px;font-weight:700">Choose Your Experience</h2>
+      <p style="color:var(--gray-80);font-size:14px;margin-top:4px">Select the editing mode that fits your needs</p>
+    </div>
+    <div class="choice-grid choice-grid-2">
+      <div class="mode-hero-card ${state.sliderMode === 'simple' ? 'selected' : ''}" onclick="selectSliderMode('simple')">
+        <div class="mode-hero-banner" style="background: linear-gradient(135deg, #0078d4, #50e6ff);">
+          <div class="icon">🎯</div>
+          <div class="title">Simple Slider</div>
+          <div class="sub">Quick & easy rotating banner</div>
+        </div>
+        <div class="mode-hero-body">
+          <ul class="mode-hero-features">
+            <li><span class="feature-check">✓</span> Title, Subtitle & Image</li>
+            <li><span class="feature-check">✓</span> Gradient overlays & presets</li>
+            <li><span class="feature-check">✓</span> Call-to-action buttons (6 styles)</li>
+            <li><span class="feature-check">✓</span> Auto-rotation with transitions</li>
+            <li><span class="feature-check">✓</span> Responsive preview (3 breakpoints)</li>
+            <li><span class="feature-check">✓</span> Theme presets (6 looks)</li>
+            <li><span class="feature-check">✓</span> Save & load configurations</li>
+            <li><span class="feature-x">—</span> <span style="color:var(--gray-60)">Video / Lottie backgrounds</span></li>
+            <li><span class="feature-x">—</span> <span style="color:var(--gray-60)">Canvas designer / free positioning</span></li>
+            <li><span class="feature-x">—</span> <span style="color:var(--gray-60)">Per-element animations</span></li>
+            <li><span class="feature-x">—</span> <span style="color:var(--gray-60)">Hover effects & parallax</span></li>
+            <li><span class="feature-x">—</span> <span style="color:var(--gray-60)">Accessibility checker</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="mode-hero-card ${state.sliderMode === 'hyper' ? 'selected' : ''}" onclick="selectSliderMode('hyper')">
+        <div class="mode-hero-banner" style="background: linear-gradient(135deg, #5c2d91, #b4a0ff);">
+          <span class="choice-card-badge" style="position:absolute;top:8px;right:8px;background:var(--dwx-gold);color:#000">Full Power</span>
+          <div class="icon">⚡</div>
+          <div class="title">Hyper Slider</div>
+          <div class="sub">Full creative control</div>
+        </div>
+        <div class="mode-hero-body">
+          <ul class="mode-hero-features">
+            <li><span class="feature-check">✓</span> Everything in Simple, plus:</li>
+            <li><span class="feature-check">✓</span> Video & Lottie backgrounds</li>
+            <li><span class="feature-check">✓</span> Hero Designer (Canvas mode)</li>
+            <li><span class="feature-check">✓</span> 12 entrance animations + timeline</li>
+            <li><span class="feature-check">✓</span> Per-element typography</li>
+            <li><span class="feature-check">✓</span> Parallax, Ken Burns, vignette</li>
+            <li><span class="feature-check">✓</span> Countdown timers</li>
+            <li><span class="feature-check">✓</span> 9 hover effects</li>
+            <li><span class="feature-check">✓</span> Gradient builder + focal point</li>
+            <li><span class="feature-check">✓</span> Accessibility checker (WCAG)</li>
+            <li><span class="feature-check">✓</span> Audience targeting + scheduling</li>
+            <li><span class="feature-check">✓</span> Quick style presets</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function selectSliderMode(mode) {
+  state.sliderMode = mode;
+  renderWizard();
+}
+
+/* Step 1: Get Started — Template or Scratch */
+function renderStep1_Start(el) {
+  const helpText = document.getElementById('wizardHelpText');
+  helpText.textContent = 'Start from a template for instant setup, or build your own from scratch.';
+
+  el.innerHTML = `
+    <div style="text-align:center;margin-bottom:20px">
+      <h2 style="font-size:22px;font-weight:700">How Would You Like to Start?</h2>
+      <p style="color:var(--gray-80);font-size:14px;margin-top:4px">Pick a template or build from scratch</p>
+    </div>
+    <div class="choice-grid choice-grid-2">
+      <div class="choice-card ${state.wizardPath === 'template' ? 'selected' : ''}" onclick="selectWizardPath('template')">
+        <span class="choice-card-badge">Recommended</span>
+        <span class="choice-card-icon">🎨</span>
+        <div class="choice-card-title">Choose a Template</div>
+        <div class="choice-card-desc">Browse pre-built hero designs. Apply instantly or customize to match your brand.</div>
+      </div>
+      <div class="choice-card ${state.wizardPath === 'scratch' ? 'selected' : ''}" onclick="selectWizardPath('scratch')">
+        <span class="choice-card-icon">🔧</span>
+        <div class="choice-card-title">Start from Scratch</div>
+        <div class="choice-card-desc">Build your hero from a blank canvas with full control over every detail.</div>
+      </div>
+    </div>
+
+    ${state.wizardPath === 'template' ? renderTemplateGallery() : ''}
+    ${state.wizardPath === 'scratch' ? renderScratchOptions() : ''}
+  `;
+}
+
+function selectWizardPath(path) {
+  state.wizardPath = path;
+  renderWizard();
+}
+
+function renderTemplateGallery() {
+  const templates = [
+    { name: 'Corporate Banner', cat: 'corporate', desc: 'Clean professional hero with gradient', bg: 'linear-gradient(135deg, #0078d4, #106ebe)', text: 'left', slides: 1, preview: { h: 'Welcome to Contoso', s: 'Innovation starts here', cta: 'Learn More', ctaBg: 'rgba(255,255,255,.95)', ctaColor: '#0078d4' } },
+    { name: 'Split Announcement', cat: 'corporate', desc: 'Two-panel hero for dual messaging', bg: 'linear-gradient(135deg, #0a1e36, #1a3a5c)', text: 'left', slides: 2, preview: { h: 'Company Update', s: 'Q1 Results', cta: 'Read More', ctaBg: '#50e6ff', ctaColor: '#0a1e36' } },
+    { name: 'Company Hub', cat: 'corporate', desc: 'Four-tile grid for navigation', bg: 'linear-gradient(135deg, #323130, #605e5c)', text: 'center', slides: 4, preview: { h: 'Our Pillars', s: '4 strategic themes', cta: '', ctaBg: '', ctaColor: '' } },
+    { name: 'Event Countdown', cat: 'event', desc: 'Purple hero with live countdown', bg: 'linear-gradient(135deg, #5c2d91, #8661c5)', text: 'center', slides: 1, preview: { h: 'Annual Conference', s: 'March 15, 2026', cta: 'Register', ctaBg: '#ffc107', ctaColor: '#1a1a1a' } },
+    { name: 'Conference Hero', cat: 'event', desc: 'Main stage + speaker sidebar', bg: 'linear-gradient(135deg, #004578, #0078d4)', text: 'left', slides: 2, preview: { h: 'TechConnect 2026', s: 'Keynote Speakers', cta: 'View Agenda', ctaBg: 'rgba(255,255,255,.9)', ctaColor: '#004578' } },
+    { name: 'Gradient Showcase', cat: 'creative', desc: 'Bold coral-to-purple gradient', bg: 'linear-gradient(135deg, #ff6b6b, #845ec2)', text: 'center', slides: 1, preview: { h: 'Think Different', s: 'Creativity unleashed', cta: 'Explore', ctaBg: 'transparent', ctaColor: '#fff' } },
+    { name: 'Minimal White', cat: 'minimal', desc: 'Clean white with dark text', bg: 'linear-gradient(180deg, #ffffff, #f5f5f5)', text: 'left', slides: 1, preview: { h: 'Less is More', s: 'Focus on what matters', cta: 'Get Started', ctaBg: '#323130', ctaColor: '#fff' } },
+    { name: 'Minimal Dark', cat: 'minimal', desc: 'Elegant dark background', bg: 'linear-gradient(180deg, #1a1a1a, #2d2d2d)', text: 'center', slides: 1, preview: { h: 'Premium Experience', s: 'Designed for impact', cta: 'Discover', ctaBg: 'transparent', ctaColor: '#fff' } },
+    { name: 'Neon Glow', cat: 'creative', desc: 'Dark background with neon accents', bg: 'linear-gradient(135deg, #0a0a23, #1a1a3e)', text: 'center', slides: 1, preview: { h: 'Next Generation', s: 'Innovation at scale', cta: 'Explore', ctaBg: '#00ff88', ctaColor: '#0a0a23' } },
+    { name: 'Magazine Spread', cat: 'creative', desc: 'Three-panel editorial layout', bg: 'linear-gradient(135deg, #2c3e50, #3498db)', text: 'left', slides: 3, preview: { h: 'The Future of Work', s: 'A deep dive', cta: 'Read Story', ctaBg: 'rgba(255,255,255,.9)', ctaColor: '#2c3e50' } },
+    { name: 'Leadership Hub', cat: 'corporate', desc: 'Photo grid with team message', bg: 'linear-gradient(135deg, #1a3a5c, #2d6a8a)', text: 'left', slides: 4, preview: { h: 'Meet the Team', s: 'Our leadership', cta: '', ctaBg: '', ctaColor: '' } },
+    { name: 'Launch Countdown', cat: 'event', desc: 'Full-width with live timer', bg: 'linear-gradient(135deg, #e91e63, #9c27b0)', text: 'center', slides: 1, preview: { h: 'Product Launch', s: 'Countdown to reveal', cta: 'Pre-Register', ctaBg: '#fff', ctaColor: '#e91e63' } },
+    { name: 'Video Hero', cat: 'creative', desc: 'Full video background with text', bg: 'linear-gradient(180deg, rgba(0,0,0,.3), rgba(0,0,0,.7))', text: 'center', slides: 1, preview: { h: 'Watch Our Story', s: 'Video background with overlay', cta: 'Play Video', ctaBg: 'transparent', ctaColor: '#fff' } },
+    { name: 'Mosaic Grid', cat: 'corporate', desc: 'Asymmetric tile layout (5 panels)', bg: 'linear-gradient(135deg, #34495e, #2c3e50)', text: 'left', slides: 5, preview: { h: 'Our Values', s: '5 pillars of excellence', cta: '', ctaBg: '', ctaColor: '' } },
+  ];
+
+  const cats = ['All', 'Corporate', 'Event', 'Creative', 'Minimal'];
+  let html = '<div style="margin-top:24px">';
+  html += '<div class="template-filters">';
+  cats.forEach(function(c) {
+    html += '<button class="filter-btn active" onclick="this.classList.toggle(\'active\')">' + c + '</button>';
+  });
+  html += '</div>';
+  html += '<div class="template-grid">';
+  templates.forEach(function(t) {
+    const tagClass = 'tag-' + t.cat;
+    const ctaStyle = t.preview.cta ? 'background:' + t.preview.ctaBg + ';color:' + t.preview.ctaColor + ';border:' + (t.preview.ctaBg === 'transparent' ? '1px solid rgba(255,255,255,.5)' : 'none') : '';
+    const textColor = t.preview.ctaColor === '#fff' || t.cat === 'event' || t.cat === 'creative' ? '#fff' : (t.cat === 'minimal' && t.name.indexOf('White') !== -1 ? '#323130' : '#fff');
+
+    html += '<div class="template-card">';
+    html += '<div class="template-preview" style="background:' + t.bg + ';justify-content:' + (t.text === 'center' ? 'center' : 'flex-end') + ';text-align:' + t.text + ';align-items:' + (t.text === 'center' ? 'center' : 'flex-end') + '">';
+    html += '<div class="template-preview-text" style="color:' + textColor + '">';
+    html += '<h4>' + t.preview.h + '</h4>';
+    html += '<p>' + t.preview.s + '</p>';
+    if (t.preview.cta) html += '<span class="cta-preview" style="' + ctaStyle + '">' + t.preview.cta + '</span>';
+    html += '</div></div>';
+    html += '<div class="template-card-body">';
+    html += '<div class="template-card-name">' + t.name + '</div>';
+    html += '<div class="template-card-desc">' + t.desc + '</div>';
+    html += '<div class="template-card-meta"><span class="template-tag ' + tagClass + '">' + t.cat + '</span><span style="font-size:11px;color:var(--gray-60)">' + t.slides + ' slide' + (t.slides > 1 ? 's' : '') + '</span></div>';
+    html += '</div>';
+    html += '<div class="template-card-actions">';
+    html += '<button class="btn btn-primary btn-sm" style="flex:1" onclick="useTemplate(\'' + t.name + '\')">Use Template</button>';
+    html += '<button class="btn btn-secondary btn-sm" onclick="customizeTemplate(\'' + t.name + '\')">Customize</button>';
+    html += '</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // SP List option at bottom
+  html += '<div style="margin-top:16px;padding:16px;border:1px dashed var(--gray-40);border-radius:var(--radius-md);text-align:center;cursor:pointer" onclick="selectWizardPath(\'scratch\');state.contentSource=\'list\';renderWizard();">';
+  html += '<span style="font-size:20px">📋</span> ';
+  html += '<span style="font-weight:600;color:var(--gray-80)">Or connect to a SharePoint List</span>';
+  html += '</div>';
+
+  html += '</div>';
+  return html;
+}
+
+function renderScratchOptions() {
+  return `
+    <div style="margin-top:24px">
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px">Content Source</h3>
+      <div class="choice-grid choice-grid-2">
+        <div class="choice-card ${state.contentSource === 'manual' ? 'selected' : ''}" onclick="selectContentSource('manual')">
+          <span class="choice-card-icon">✏️</span>
+          <div class="choice-card-title">Manual Slides</div>
+          <div class="choice-card-desc">Create custom slides with full creative control over every element.</div>
+        </div>
+        <div class="choice-card ${state.contentSource === 'list' ? 'selected' : ''}" onclick="selectContentSource('list')">
+          <span class="choice-card-icon">📋</span>
+          <div class="choice-card-title">SharePoint List</div>
+          <div class="choice-card-desc">Pull content dynamically. Great for team-managed rotating content.</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function selectContentSource(src) {
+  state.contentSource = src;
+  renderWizard();
+}
+
+function useTemplate(name) {
+  showToast('Template "' + name + '" applied!');
+  closeWizard();
+}
+
+function customizeTemplate(name) {
+  showToast('Customizing "' + name + '"...');
+  state.wizardStep = 3; // Jump to settings
+  renderWizard();
+}
+
+/* Step 2: Configure — Slide Count/Layout or List Picker */
+function renderStep2_Configure(el) {
+  const helpText = document.getElementById('wizardHelpText');
+
+  if (state.contentSource === 'list') {
+    helpText.textContent = 'Select a SharePoint list or create a new one. The wizard will auto-provision the required columns.';
+    el.innerHTML = `
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:16px">📋 Connect to SharePoint List</h2>
+      <div class="field-row">
+        <label class="field-label">Select Existing List</label>
+        <select class="select-input">
+          <option value="">— Select a list —</option>
+          <option>Hero Content</option>
+          <option>Announcements</option>
+          <option>Featured Stories</option>
+        </select>
+      </div>
+      <div class="or-divider"><span>or</span></div>
+      <div class="field-row">
+        <label class="field-label">Create New List</label>
+        <div style="display:flex;gap:8px">
+          <input type="text" class="text-input" placeholder="Enter list name..." style="flex:1">
+          <button class="btn btn-primary btn-sm">Create List</button>
+        </div>
+        <p class="field-hint">Creates a list with all required HyperHero columns (Title, Subheading, Image, etc.)</p>
+      </div>
+      <div style="margin-top:20px">
+        <h3 style="font-size:14px;font-weight:700;margin-bottom:8px">Field Mapping</h3>
+        <table class="field-mapping-table">
+          <thead><tr><th>Hero Field</th><th class="col-arrow"></th><th>SP Column</th></tr></thead>
+          <tbody>
+            <tr><td>Heading</td><td class="col-arrow">→</td><td><code>Title</code></td></tr>
+            <tr><td>Subheading</td><td class="col-arrow">→</td><td><code>HeroSubheading</code></td></tr>
+            <tr><td>Image URL</td><td class="col-arrow">→</td><td><code>HeroImageUrl</code></td></tr>
+            <tr><td>Link URL</td><td class="col-arrow">→</td><td><code>HeroLinkUrl</code></td></tr>
+            <tr><td>Description</td><td class="col-arrow">→</td><td><code>HeroDescription</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    `;
+  } else {
+    helpText.textContent = 'Choose how many slides and the grid layout. Each slide gets placeholder content ready for editing.';
+    el.innerHTML = `
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:16px">📐 Slide Count & Layout</h2>
+      <div class="field-row">
+        <label class="field-label">How many slides?</label>
+        <div class="count-buttons">
+          ${[1,2,3,4,5].map(function(n) {
+            return '<button class="count-btn ' + (state.slideCount === n ? 'selected' : '') + '" onclick="state.slideCount=' + n + ';renderWizard()">' + n + '</button>';
+          }).join('')}
+        </div>
+      </div>
+      <div class="field-row">
+        <label class="field-label">Layout Preset</label>
+        <div class="choice-grid" style="grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 8px;">
+          ${renderLayoutCards()}
+        </div>
+      </div>
+      <div class="layout-preview">
+        <div style="font-size:12px;font-weight:600;color:var(--gray-80);margin-bottom:8px">PREVIEW</div>
+        <div class="layout-grid-preview" id="layoutPreview">
+          ${renderLayoutPreview()}
+        </div>
+      </div>
+    `;
+  }
+}
+
+function renderLayoutCards() {
+  const layouts = [
+    { id: 'single', label: 'Full Width', icon: '▬' },
+    { id: 'split', label: 'Split', icon: '◧' },
+    { id: 'thirds', label: 'Thirds', icon: '☰' },
+    { id: 'heroSidebar', label: 'Hero + Side', icon: '⬛▫' },
+    { id: 'grid2x2', label: 'Grid 2x2', icon: '⊞' },
+    { id: 'magazine', label: 'Magazine', icon: '📰' },
+    { id: 'asymmetric', label: 'Asymmetric', icon: '◫' },
+    { id: 'mosaic', label: 'Mosaic', icon: '🧩' },
+    { id: 'carousel', label: 'Carousel', icon: '⟳' },
+  ];
+  return layouts.map(function(l) {
+    return '<div class="choice-card ' + (state.layoutPreset === l.id ? 'selected' : '') + '" style="padding:12px;cursor:pointer" onclick="state.layoutPreset=\'' + l.id + '\';renderWizard()">'
+      + '<div style="font-size:24px;margin-bottom:4px">' + l.icon + '</div>'
+      + '<div style="font-size:13px;font-weight:600">' + l.label + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+function renderLayoutPreview() {
+  const n = state.slideCount;
+  const colors = ['#0078d4', '#50e6ff', '#5c2d91', '#107c10', '#ca5010'];
+  const p = state.layoutPreset;
+  let cols, rows, areas;
+
+  if (p === 'split' && n >= 2) { cols = '1fr 1fr'; rows = '1fr'; }
+  else if (p === 'thirds' && n >= 3) { cols = '1fr 1fr 1fr'; rows = '1fr'; }
+  else if (p === 'heroSidebar' && n >= 2) { cols = '2fr 1fr'; rows = '1fr'; }
+  else if (p === 'grid2x2' && n >= 4) { cols = '1fr 1fr'; rows = '1fr 1fr'; }
+  else { cols = '1fr'; rows = Array(n).fill('1fr').join(' '); }
+
+  const el = document.getElementById('layoutPreview');
+  if (el) {
+    el.style.gridTemplateColumns = cols;
+    el.style.gridTemplateRows = rows;
+  }
+
+  let html = '';
+  for (let i = 0; i < n; i++) {
+    html += '<div class="layout-cell" style="background:' + colors[i % 5] + '">Slide ' + (i + 1) + '</div>';
+  }
+  return html;
+}
+
+/* Step 3: General Settings */
+function renderStep3_Settings(el) {
+  el.innerHTML = `
+    <h2 style="font-size:20px;font-weight:700;margin-bottom:16px">⚙ General Settings</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+      <div>
+        <div class="settings-group">
+          <div class="settings-group-title">Appearance</div>
+          <div class="field-row">
+            <label class="field-label">Hero Title <span style="color:var(--gray-60);font-weight:400">(optional)</span></label>
+            <input type="text" class="text-input" placeholder="e.g. Welcome to Contoso" value="">
+          </div>
+          <div class="field-row">
+            <label class="field-label">Hero Height</label>
+            <div class="slider-row">
+              <input type="range" class="slider-input" min="200" max="800" step="25" value="${state.heroHeight}" oninput="state.heroHeight=+this.value;this.nextElementSibling.textContent=this.value+'px'">
+              <span class="slider-value">${state.heroHeight}px</span>
+            </div>
+          </div>
+          <div class="field-row">
+            <label class="field-label">Corner Rounding</label>
+            <div class="slider-row">
+              <input type="range" class="slider-input" min="0" max="32" step="2" value="${state.borderRadius}" oninput="state.borderRadius=+this.value;this.nextElementSibling.textContent=this.value===0?'None':this.value+'px'">
+              <span class="slider-value">${state.borderRadius}px</span>
+            </div>
+          </div>
+          <div class="field-row">
+            <label class="field-label">Aspect Ratio</label>
+            <div class="ar-options">
+              ${['16:9', '4:3', '21:9', 'Auto'].map(function(ar) {
+                const w = ar === '16:9' ? 60 : ar === '4:3' ? 48 : ar === '21:9' ? 70 : 60;
+                const h = ar === '16:9' ? 34 : ar === '4:3' ? 36 : ar === '21:9' ? 30 : 34;
+                return '<div class="ar-btn ' + (state.aspectRatio === ar ? 'selected' : '') + '" onclick="state.aspectRatio=\'' + ar + '\';renderWizard()">'
+                  + '<div class="ar-visual" style="width:' + w + 'px;height:' + h + 'px"></div>'
+                  + '<div class="ar-label">' + ar + '</div></div>';
+              }).join('')}
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-group-title">Layout</div>
+          <div class="toggle-row">
+            <div class="toggle-label-group">
+              <span class="toggle-label">Full Bleed</span>
+              <span class="toggle-hint">Stretch edge-to-edge, removing page padding</span>
+            </div>
+            <button class="toggle-switch ${state.fullBleed ? 'on' : ''}" onclick="state.fullBleed=!state.fullBleed;this.classList.toggle('on')"></button>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="settings-group">
+          <div class="settings-group-title">Auto-Rotation</div>
+          <div class="toggle-row">
+            <div class="toggle-label-group">
+              <span class="toggle-label">Enable Auto-Rotation</span>
+              <span class="toggle-hint">Automatically cycle through slides</span>
+            </div>
+            <button class="toggle-switch ${state.rotationEnabled ? 'on' : ''}" onclick="state.rotationEnabled=!state.rotationEnabled;this.classList.toggle('on')"></button>
+          </div>
+          <div class="field-row" style="margin-top:12px">
+            <label class="field-label">Rotation Interval</label>
+            <div class="slider-row">
+              <input type="range" class="slider-input" min="2000" max="15000" step="500" value="${state.rotationInterval}" oninput="state.rotationInterval=+this.value;this.nextElementSibling.textContent=(this.value/1000)+'s'">
+              <span class="slider-value">${state.rotationInterval / 1000}s</span>
+            </div>
+          </div>
+          <div class="field-row">
+            <label class="field-label">Transition Effect</label>
+            <select class="select-input" onchange="state.rotationEffect=this.value">
+              <option value="fade" ${state.rotationEffect === 'fade' ? 'selected' : ''}>Fade</option>
+              <option value="slide" ${state.rotationEffect === 'slide' ? 'selected' : ''}>Slide</option>
+              <option value="zoom" ${state.rotationEffect === 'zoom' ? 'selected' : ''}>Zoom</option>
+              <option value="kenBurns" ${state.rotationEffect === 'kenBurns' ? 'selected' : ''}>Ken Burns</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-group-title">Theme Preset</div>
+          <div class="theme-grid" id="themeGrid">
+            <div class="theme-card selected" onclick="selectTheme('corporate',this)">
+              <div class="theme-card-preview" style="background:linear-gradient(135deg,#0078d4,#106ebe)"><span style="color:white">Aa</span></div>
+              <div class="theme-card-name">Corporate</div>
+            </div>
+            <div class="theme-card" onclick="selectTheme('modern',this)">
+              <div class="theme-card-preview" style="background:linear-gradient(135deg,#6264a7,#8b8cc7)"><span style="color:white">Aa</span></div>
+              <div class="theme-card-name">Modern</div>
+            </div>
+            <div class="theme-card" onclick="selectTheme('bold',this)">
+              <div class="theme-card-preview" style="background:linear-gradient(135deg,#ff6b6b,#ee5a24)"><span style="color:white">Aa</span></div>
+              <div class="theme-card-name">Bold</div>
+            </div>
+            <div class="theme-card" onclick="selectTheme('elegant',this)">
+              <div class="theme-card-preview" style="background:linear-gradient(135deg,#1a1a2e,#16213e)"><span style="color:#c9b037">Aa</span></div>
+              <div class="theme-card-name">Elegant</div>
+            </div>
+            <div class="theme-card" onclick="selectTheme('nature',this)">
+              <div class="theme-card-preview" style="background:linear-gradient(135deg,#11998e,#38ef7d)"><span style="color:white">Aa</span></div>
+              <div class="theme-card-name">Nature</div>
+            </div>
+            <div class="theme-card" onclick="selectTheme('warm',this)">
+              <div class="theme-card-preview" style="background:linear-gradient(135deg,#f12711,#f5af19)"><span style="color:white">Aa</span></div>
+              <div class="theme-card-name">Warm</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-group-title">Responsive Heights</div>
+          <div class="breakpoint-grid">
+            <div class="breakpoint-card">
+              <div class="breakpoint-icon">🖥</div>
+              <div class="breakpoint-label">Desktop</div>
+              <input type="number" class="text-input" value="${state.heroHeight}" style="text-align:center;font-weight:600">
+              <div style="font-size:10px;color:var(--gray-60);margin-top:2px">&gt; 1024px</div>
+            </div>
+            <div class="breakpoint-card">
+              <div class="breakpoint-icon">📱</div>
+              <div class="breakpoint-label">Tablet</div>
+              <input type="number" class="text-input" value="${Math.round(state.heroHeight * 0.75)}" style="text-align:center;font-weight:600">
+              <div style="font-size:10px;color:var(--gray-60);margin-top:2px">768 - 1024px</div>
+            </div>
+            <div class="breakpoint-card">
+              <div class="breakpoint-icon">📲</div>
+              <div class="breakpoint-label">Mobile</div>
+              <input type="number" class="text-input" value="${Math.round(state.heroHeight * 0.5)}" style="text-align:center;font-weight:600">
+              <div style="font-size:10px;color:var(--gray-60);margin-top:2px">&lt; 768px</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live mini preview -->
+        <div style="border:1px solid var(--gray-30);border-radius:var(--radius-md);padding:12px;background:var(--gray-10)">
+          <div style="font-size:11px;font-weight:600;color:var(--gray-80);text-transform:uppercase;margin-bottom:8px">Mini Preview</div>
+          <div style="background:linear-gradient(135deg,#0078d4,#106ebe);border-radius:${state.borderRadius}px;aspect-ratio:${state.aspectRatio.replace(':','/')};max-height:120px;display:flex;align-items:flex-end;padding:12px;color:white">
+            <div>
+              <div style="font-size:12px;font-weight:700">Hero Title</div>
+              <div style="font-size:9px;opacity:.8">Subtitle text</div>
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--gray-60);margin-top:6px;text-align:center">
+            ${state.heroHeight}px tall &bull; ${state.aspectRatio} &bull; ${state.borderRadius}px radius
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* Step 4: Summary */
+function renderStep4_Summary(el) {
+  const mode = state.sliderMode === 'simple' ? 'Simple Slider' : 'Hyper Slider';
+  const source = state.contentSource === 'list' ? 'SharePoint List' : 'Manual Slides';
+  const modeClass = state.sliderMode === 'simple' ? 'badge-blue' : 'badge-purple';
+
+  el.innerHTML = `
+    <div style="text-align:center;margin-bottom:20px">
+      <span style="font-size:32px">✅</span>
+      <h2 style="font-size:20px;font-weight:700;margin-top:8px">Review Your Configuration</h2>
+      <p style="color:var(--gray-80);font-size:14px">Click Apply to set up your HyperHero, or go back to make changes.</p>
+    </div>
+    <div class="summary-card">
+      <div class="summary-row">
+        <span class="summary-label">Slider Mode</span>
+        <span class="summary-badge ${modeClass}">${mode}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">Content Source</span>
+        <span class="summary-badge badge-blue">${source}</span>
+      </div>
+      ${state.contentSource === 'manual' ? `
+        <div class="summary-row">
+          <span class="summary-label">Slides</span>
+          <span class="summary-value">${state.slideCount}</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Layout</span>
+          <span class="summary-value">${state.layoutPreset}</span>
+        </div>
+      ` : ''}
+      <div class="summary-row" style="border-top:2px solid var(--gray-30)">
+        <span class="summary-label">Height</span>
+        <span class="summary-value">${state.heroHeight}px</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">Aspect Ratio</span>
+        <span class="summary-value">${state.aspectRatio}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">Corner Rounding</span>
+        <span class="summary-value">${state.borderRadius > 0 ? state.borderRadius + 'px' : 'None'}</span>
+      </div>
+      ${state.rotationEnabled ? `
+        <div class="summary-row">
+          <span class="summary-label">Auto-Rotation</span>
+          <span class="summary-value">${state.rotationInterval/1000}s &bull; ${state.rotationEffect}</span>
+        </div>
+      ` : ''}
+      ${state.fullBleed ? `
+        <div class="summary-row">
+          <span class="summary-label">Full Bleed</span>
+          <span class="summary-badge badge-green">Enabled</span>
+        </div>
+      ` : ''}
+      <div class="summary-row">
+        <span class="summary-label">Theme</span>
+        <span class="summary-badge badge-blue">Corporate</span>
+      </div>
+      ${state.sliderMode === 'hyper' ? `
+        <div class="summary-row">
+          <span class="summary-label">Features Unlocked</span>
+          <span class="summary-value">Animations, Video BG, Canvas, Hover FX, A11y</span>
+        </div>
+      ` : ''}
+    </div>
+
+    <div style="margin-top:16px;border:1px solid var(--gray-30);border-radius:var(--radius-md);padding:16px;background:var(--gray-10)">
+      <div style="font-size:13px;font-weight:700;color:var(--gray-80);text-transform:uppercase;margin-bottom:8px">What Happens Next</div>
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:8px 12px;font-size:13px">
+        <span style="color:var(--blue-primary);font-weight:700">1.</span> <span>${state.contentSource === 'manual' ? state.slideCount + ' blank slides will be created with placeholder content' : 'Slides will be populated from your SharePoint list'}</span>
+        <span style="color:var(--blue-primary);font-weight:700">2.</span> <span>Click "Edit" on any slide to customize it with the visual editor</span>
+        <span style="color:var(--blue-primary);font-weight:700">3.</span> <span>Use "Save As" to save your configuration for reuse on other pages</span>
+      </div>
+    </div>
+
+    <div class="summary-footnote">ℹ️ You can change any of these settings later via the property pane or Re-run Setup.</div>
+  `;
+}
+
+function renderWizardNav() {
+  const el = document.getElementById('wizardNav');
+  const isFirst = state.wizardStep === 0;
+  const isLast = state.wizardStep === WIZARD_STEPS.length - 1;
+
+  // Determine if Next should be disabled
+  let nextDisabled = false;
+  if (state.wizardStep === 0 && !state.sliderMode) nextDisabled = true;
+  if (state.wizardStep === 1 && !state.wizardPath) nextDisabled = true;
+  if (state.wizardStep === 1 && state.wizardPath === 'template') nextDisabled = true; // Templates have their own buttons
+  if (state.wizardStep === 1 && state.wizardPath === 'scratch' && !state.contentSource) nextDisabled = true;
+
+  let html = '';
+  html += '<button class="btn btn-secondary" onclick="' + (isFirst ? 'closeWizard()' : 'state.wizardStep--;renderWizard()') + '">' + (isFirst ? 'Cancel' : '← Back') + '</button>';
+  if (isLast) {
+    html += '<div style="display:flex;gap:8px">';
+    html += '<button class="btn btn-secondary btn-lg" onclick="applyWizardAndClose()">Apply & Close</button>';
+    html += '<button class="btn btn-primary btn-lg" onclick="applyWizardAndEdit()">Apply & Start Editing →</button>';
+    html += '</div>';
+  } else {
+    html += '<button class="btn btn-primary" ' + (nextDisabled ? 'disabled' : '') + ' onclick="state.wizardStep++;renderWizard()">Next →</button>';
+  }
+  el.innerHTML = html;
+}
+
+function applyWizardAndClose() {
+  showToast('Configuration applied!');
+  closeWizard();
+  renderHeroGrid();
+}
+
+function applyWizardAndEdit() {
+  closeWizard();
+  renderHeroGrid();
+  showToast('Configuration applied — opening first slide for editing...');
+  // Auto-open the first slide in the editor
+  setTimeout(function() { openEditor(0); }, 300);
+}
+
+/* ══════════════════════════════════════════
+   SLIDE MANAGER (inside editor modal)
+   ══════════════════════════════════════════ */
+function setEditorView(view, btn) {
+  // Toggle active button
+  document.querySelectorAll('.view-toggle-btn').forEach(function(b) { b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+
+  var editorLayout = document.getElementById('editorLayoutView');
+  var managerView = document.getElementById('slideManagerView');
+  var quickBar = document.getElementById('quickStylesBar');
+  var tabBar = document.getElementById('editorTabBar');
+  var tabContent = document.getElementById('editorTabContent');
+  var footer = document.getElementById('editorFooter');
+
+  if (view === 'manager') {
+    // Auto-save current slide before switching
+    if (state.editingIndex !== null && state.editingSlide) {
+      state.slides[state.editingIndex] = JSON.parse(JSON.stringify(state.editingSlide));
+      renderHeroGrid();
+    }
+    state.editorView = 'manager';
+    editorLayout.style.display = 'none';
+    if (quickBar) quickBar.style.display = 'none';
+    if (tabBar) tabBar.style.display = 'none';
+    if (tabContent) tabContent.style.display = 'none';
+    if (footer) footer.style.display = 'none';
+    managerView.style.display = 'block';
+    document.getElementById('editorTitle').textContent = 'Slide Manager — ' + state.slides.length + ' slides';
+    renderSlideManager();
+  } else {
+    state.editorView = 'editor';
+    editorLayout.style.display = '';
+    if (quickBar) quickBar.style.display = state.sliderMode === 'hyper' ? 'flex' : 'none';
+    if (tabBar) tabBar.style.display = '';
+    if (tabContent) tabContent.style.display = '';
+    if (footer) footer.style.display = 'flex';
+    managerView.style.display = 'none';
+    if (state.editingIndex !== null && state.editingSlide) {
+      document.getElementById('editorTitle').textContent = 'Edit Slide ' + (state.editingIndex + 1) + ' of ' + state.slides.length + ': ' + state.editingSlide.heading;
+    }
+    renderEditorTabBar();
+    renderEditorPreview();
+    renderEditorTab();
+  }
+}
+
+function renderSlideManager() {
+  var el = document.getElementById('slideManagerView');
+  var html = '<div class="slide-manager">';
+
+  // Header
+  html += '<div class="slide-manager-header">';
+  html += '<div style="display:flex;align-items:center;gap:8px"><h3>All Slides</h3><span class="slide-manager-count">' + state.slides.length + ' slides</span></div>';
+  html += '<button class="btn btn-primary btn-sm" onclick="managerAddSlide()">+ Add Slide</button>';
+  html += '</div>';
+
+  // Global Settings Section
+  html += '<div style="margin-bottom:16px;padding:12px 16px;background:var(--gray-10);border:1px solid var(--gray-30);border-radius:var(--radius-md)">';
+  html += '<div style="font-size:12px;font-weight:700;color:var(--gray-80);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px">🌐 Global Settings <span style="font-size:10px;font-weight:400;color:var(--gray-60)">(apply to all slides)</span></div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">';
+
+  // Global text color
+  html += '<div>';
+  html += '<label style="font-size:11px;font-weight:600;color:var(--gray-80);display:block;margin-bottom:4px">Text Color</label>';
+  html += '<div style="display:flex;gap:4px">';
+  html += '<button class="btn btn-sm btn-secondary" onclick="applyGlobalSetting(\'textColor\',\'#ffffff\')">White</button>';
+  html += '<button class="btn btn-sm btn-secondary" onclick="applyGlobalSetting(\'textColor\',\'#323130\')">Dark</button>';
+  html += '</div></div>';
+
+  // Global text alignment
+  html += '<div>';
+  html += '<label style="font-size:11px;font-weight:600;color:var(--gray-80);display:block;margin-bottom:4px">Text Align</label>';
+  html += '<div style="display:flex;gap:4px">';
+  html += '<button class="btn btn-sm btn-secondary" onclick="applyGlobalSetting(\'textAlign\',\'left\')">Left</button>';
+  html += '<button class="btn btn-sm btn-secondary" onclick="applyGlobalSetting(\'textAlign\',\'center\')">Center</button>';
+  html += '<button class="btn btn-sm btn-secondary" onclick="applyGlobalSetting(\'textAlign\',\'right\')">Right</button>';
+  html += '</div></div>';
+
+  // Global animation
+  html += '<div>';
+  html += '<label style="font-size:11px;font-weight:600;color:var(--gray-80);display:block;margin-bottom:4px">Animation</label>';
+  html += '<div style="display:flex;gap:4px">';
+  html += '<button class="btn btn-sm btn-secondary" onclick="applyGlobalSetting(\'animation\',\'fadeUp\')">Fade Up</button>';
+  html += '<button class="btn btn-sm btn-secondary" onclick="applyGlobalSetting(\'animation\',\'fadeIn\')">Fade In</button>';
+  html += '<button class="btn btn-sm btn-secondary" onclick="applyGlobalSetting(\'animation\',\'none\')">None</button>';
+  html += '</div></div>';
+
+  html += '</div>'; // grid
+  html += '<div style="margin-top:8px;display:flex;gap:8px">';
+  html += '<button class="btn btn-sm btn-secondary" onclick="applyGlobalGradient()">🎨 Apply gradient to all</button>';
+  html += '<button class="btn btn-sm btn-secondary" onclick="unlockAllSlides()">🔓 Unlock all</button>';
+  html += '<button class="btn btn-sm btn-danger" style="margin-left:auto" onclick="deleteUnlockedSlides()">🗑 Delete unlocked</button>';
+  html += '</div>';
+  html += '</div>';
+
+  // Slide List
+  html += '<div class="slide-manager-list">';
+  state.slides.forEach(function(s, i) {
+    var isActive = state.editingIndex === i;
+    var isLocked = s.locked;
+    var classes = 'slide-manager-item' + (isActive ? ' active' : '') + (isLocked ? ' locked' : '');
+
+    html += '<div class="' + classes + '" data-index="' + i + '">';
+
+    // Drag handle
+    html += '<div class="sm-drag-handle" title="Drag to reorder">⠿</div>';
+
+    // Number
+    html += '<div class="sm-number">' + (i + 1) + '</div>';
+
+    // Mini preview
+    html += '<div class="sm-preview" style="background:' + (s.gradient || s.bg) + '">' + s.heading.substring(0, 12) + '</div>';
+
+    // Info
+    html += '<div class="sm-info">';
+    html += '<div class="sm-title">' + s.heading + '</div>';
+    html += '<div class="sm-subtitle">' + (s.subtitle || 'No subtitle') + '</div>';
+    html += '<div class="sm-badges">';
+    if (s.animation && s.animation !== 'none') html += '<span class="sm-badge sm-badge-anim">' + s.animation + '</span>';
+    if (s.ctas && s.ctas.length > 0) html += '<span class="sm-badge sm-badge-cta">' + s.ctas.length + ' CTA' + (s.ctas.length > 1 ? 's' : '') + '</span>';
+    if (isLocked) html += '<span class="sm-badge sm-badge-locked">Locked</span>';
+    html += '</div></div>';
+
+    // Actions
+    html += '<div class="sm-actions">';
+    html += '<button class="sm-action-btn" title="Edit slide" onclick="managerEditSlide(' + i + ')">✏</button>';
+    html += '<button class="sm-action-btn" title="Duplicate" onclick="managerDuplicateSlide(' + i + ')">📋</button>';
+    html += '<button class="sm-action-btn" title="' + (isLocked ? 'Unlock' : 'Lock') + '" onclick="managerToggleLock(' + i + ')">' + (isLocked ? '🔒' : '🔓') + '</button>';
+    html += '<button class="sm-action-btn" title="Move up"' + (i === 0 ? ' disabled' : '') + ' onclick="managerMoveSlide(' + i + ',-1)">⬆</button>';
+    html += '<button class="sm-action-btn" title="Move down"' + (i === state.slides.length - 1 ? ' disabled' : '') + ' onclick="managerMoveSlide(' + i + ',1)">⬇</button>';
+    html += '<button class="sm-action-btn danger" title="Delete"' + (isLocked ? ' disabled' : '') + (state.slides.length <= 1 ? ' disabled' : '') + ' onclick="managerDeleteSlide(' + i + ')">🗑</button>';
+    html += '</div>';
+
+    html += '</div>';
+  });
+  html += '</div>'; // list
+  html += '</div>'; // manager
+  el.innerHTML = html;
+}
+
+function managerEditSlide(idx) {
+  // Save current slide if editing
+  if (state.editingIndex !== null && state.editingSlide) {
+    state.slides[state.editingIndex] = JSON.parse(JSON.stringify(state.editingSlide));
+  }
+  state.editingIndex = idx;
+  state.editingSlide = JSON.parse(JSON.stringify(state.slides[idx]));
+  state.editorTab = 'background';
+  // Switch to editor view
+  setEditorView('editor', document.querySelectorAll('.view-toggle-btn')[1]);
+}
+
+function managerAddSlide() {
+  state.slides.push({
+    id: Date.now(),
+    heading: 'New Slide',
+    subtitle: 'Click edit to customize',
+    desc: '', bg: '#0078d4',
+    gradient: 'linear-gradient(135deg, #0078d4, #50e6ff)',
+    textColor: '#fff', textAlign: 'left', verticalAlign: 'bottom',
+    ctas: [], animation: 'fadeUp',
+  });
+  renderHeroGrid();
+  renderSlideManager();
+  showToast('Slide added');
+}
+
+function managerDuplicateSlide(idx) {
+  var copy = JSON.parse(JSON.stringify(state.slides[idx]));
+  copy.id = Date.now();
+  copy.heading += ' (Copy)';
+  copy.locked = false;
+  state.slides.splice(idx + 1, 0, copy);
+  renderHeroGrid();
+  renderSlideManager();
+  showToast('Slide duplicated');
+}
+
+function managerToggleLock(idx) {
+  state.slides[idx].locked = !state.slides[idx].locked;
+  renderSlideManager();
+  showToast(state.slides[idx].locked ? 'Slide locked' : 'Slide unlocked');
+}
+
+function managerMoveSlide(idx, dir) {
+  var newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= state.slides.length) return;
+  var temp = state.slides[idx];
+  state.slides[idx] = state.slides[newIdx];
+  state.slides[newIdx] = temp;
+  // Update editing index if needed
+  if (state.editingIndex === idx) state.editingIndex = newIdx;
+  else if (state.editingIndex === newIdx) state.editingIndex = idx;
+  renderHeroGrid();
+  renderSlideManager();
+  showToast('Slide moved');
+}
+
+function managerDeleteSlide(idx) {
+  if (state.slides.length <= 1) return;
+  if (state.slides[idx].locked) { showToast('Cannot delete locked slide'); return; }
+  var name = state.slides[idx].heading;
+  state.slides.splice(idx, 1);
+  // Adjust editing index
+  if (state.editingIndex !== null) {
+    if (state.editingIndex === idx) {
+      state.editingIndex = Math.min(idx, state.slides.length - 1);
+      state.editingSlide = JSON.parse(JSON.stringify(state.slides[state.editingIndex]));
+    } else if (state.editingIndex > idx) {
+      state.editingIndex--;
+    }
+  }
+  renderHeroGrid();
+  renderSlideManager();
+  showToast('"' + name + '" deleted');
+}
+
+function applyGlobalSetting(prop, value) {
+  var count = 0;
+  state.slides.forEach(function(s) {
+    if (!s.locked) { s[prop] = value; count++; }
+  });
+  // Update editing slide too
+  if (state.editingSlide && !state.slides[state.editingIndex].locked) {
+    state.editingSlide[prop] = value;
+  }
+  renderHeroGrid();
+  renderSlideManager();
+  showToast(prop + ' → "' + value + '" applied to ' + count + ' unlocked slides');
+}
+
+function applyGlobalGradient() {
+  if (!state.editingSlide) { showToast('Edit a slide first to pick a gradient'); return; }
+  var grad = state.editingSlide.gradient;
+  var count = 0;
+  state.slides.forEach(function(s) {
+    if (!s.locked) { s.gradient = grad; count++; }
+  });
+  renderHeroGrid();
+  renderSlideManager();
+  showToast('Gradient applied to ' + count + ' unlocked slides');
+}
+
+function unlockAllSlides() {
+  state.slides.forEach(function(s) { s.locked = false; });
+  renderSlideManager();
+  showToast('All slides unlocked');
+}
+
+function deleteUnlockedSlides() {
+  var locked = state.slides.filter(function(s) { return s.locked; });
+  if (locked.length === 0) { showToast('Lock at least one slide first'); return; }
+  var deleted = state.slides.length - locked.length;
+  state.slides = locked;
+  state.editingIndex = 0;
+  state.editingSlide = JSON.parse(JSON.stringify(state.slides[0]));
+  renderHeroGrid();
+  renderSlideManager();
+  showToast(deleted + ' unlocked slides deleted');
+}
+
+/* ══════════════════════════════════════════
+   SLIDE EDITOR
+   ══════════════════════════════════════════ */
+function openEditor(idx) {
+  state.editingIndex = idx;
+  state.editingSlide = JSON.parse(JSON.stringify(state.slides[idx]));
+  state.editorTab = 'background';
+  state.editorView = 'editor';
+  document.getElementById('editorBackdrop').classList.add('active');
+  document.getElementById('editorTitle').textContent = 'Edit Slide ' + (idx + 1) + ' of ' + state.slides.length + ': ' + state.editingSlide.heading;
+  // Reset to editor view
+  document.getElementById('slideManagerView').style.display = 'none';
+  document.getElementById('editorLayoutView').style.display = '';
+  document.querySelectorAll('.view-toggle-btn').forEach(function(b, i) {
+    b.classList.toggle('active', i === 1); // Editor is index 1 (Manager=0, Editor=1)
+  });
+  renderEditorTabBar();
+  renderEditorPreview();
+  renderEditorTab();
+}
+
+function renderEditorTabBar() {
+  const isHyper = state.sliderMode === 'hyper';
+  const bar = document.getElementById('editorTabBar');
+  const quickBar = document.getElementById('quickStylesBar');
+
+  // Show/hide quick styles bar based on mode
+  quickBar.style.display = isHyper ? 'flex' : 'none';
+
+  // Build tab buttons — Simple gets 4 tabs, Hyper gets all 7
+  let tabs = [
+    { id: 'background', icon: '🖼', label: 'Background' },
+    { id: 'content', icon: '✏', label: 'Content' },
+    { id: 'ctas', icon: '🔗', label: 'Buttons' },
+    { id: 'typography', icon: 'Aa', label: 'Fonts' },
+  ];
+  if (isHyper) {
+    tabs = [
+      { id: 'background', icon: '🖼', label: 'Background' },
+      { id: 'content', icon: '✏', label: 'Content' },
+      { id: 'ctas', icon: '🔗', label: 'Buttons' },
+      { id: 'advanced', icon: '⚙', label: 'Advanced' },
+      { id: 'animations', icon: '🎬', label: 'Animations' },
+      { id: 'typography', icon: 'Aa', label: 'Fonts' },
+      { id: 'accessibility', icon: '♿', label: 'A11y' },
+    ];
+  }
+
+  bar.innerHTML = tabs.map(function(t) {
+    var active = state.editorTab === t.id ? ' active' : '';
+    return '<button class="tab-btn' + active + '" onclick="setEditorTab(\'' + t.id + '\',this)">' + t.icon + ' ' + t.label + '</button>';
+  }).join('');
+}
+
+function closeEditor() {
+  document.getElementById('editorBackdrop').classList.remove('active');
+  state.editingIndex = null;
+  state.editingSlide = null;
+}
+
+function saveSlide() {
+  if (state.editingIndex !== null && state.editingSlide) {
+    state.slides[state.editingIndex] = state.editingSlide;
+    renderHeroGrid();
+    showToast('Slide saved & closed');
+  }
+  closeEditor();
+}
+
+function saveSlideAndContinue() {
+  if (state.editingIndex !== null && state.editingSlide) {
+    state.slides[state.editingIndex] = JSON.parse(JSON.stringify(state.editingSlide));
+    renderHeroGrid();
+    document.getElementById('editorTitle').textContent = 'Edit Slide ' + (state.editingIndex + 1) + ' of ' + state.slides.length + ': ' + state.editingSlide.heading;
+    showToast('Saved! Continue editing...');
+  }
+}
+
+function addSlideFromEditor() {
+  // Save current slide first
+  if (state.editingIndex !== null && state.editingSlide) {
+    state.slides[state.editingIndex] = JSON.parse(JSON.stringify(state.editingSlide));
+  }
+  // Add new slide
+  state.slides.push({
+    id: Date.now(),
+    heading: 'New Slide',
+    subtitle: 'Click edit to customize',
+    desc: '',
+    bg: '#0078d4',
+    gradient: 'linear-gradient(135deg, #0078d4, #50e6ff)',
+    textColor: '#fff',
+    textAlign: 'left',
+    verticalAlign: 'bottom',
+    ctas: [],
+    animation: 'fadeUp',
+  });
+  renderHeroGrid();
+  // Switch to editing the new slide
+  var newIdx = state.slides.length - 1;
+  state.editingIndex = newIdx;
+  state.editingSlide = JSON.parse(JSON.stringify(state.slides[newIdx]));
+  state.editorTab = 'background';
+  document.getElementById('editorTitle').textContent = 'Edit Slide ' + (newIdx + 1) + ' of ' + state.slides.length + ': ' + state.editingSlide.heading;
+  renderEditorTabBar();
+  renderEditorPreview();
+  renderEditorTab();
+  showToast('New slide added — editing it now');
+}
+
+function renderEditorPreview() {
+  const s = state.editingSlide;
+  if (!s) return;
+  const slide = document.getElementById('previewSlide');
+  const ar = state.aspectRatio === '16:9' ? '16/9' : state.aspectRatio === '4:3' ? '4/3' : state.aspectRatio === '21:9' ? '21/9' : '16/9';
+  slide.style.background = s.gradient || s.bg;
+  slide.style.color = s.textColor;
+  slide.style.textAlign = s.textAlign;
+  slide.style.justifyContent = s.verticalAlign === 'top' ? 'flex-start' : s.verticalAlign === 'center' ? 'center' : 'flex-end';
+  slide.style.aspectRatio = ar;
+
+  document.getElementById('prevHeading').textContent = s.heading;
+  document.getElementById('prevSubtitle').textContent = s.subtitle || '';
+  document.getElementById('prevDesc').textContent = s.desc || '';
+
+  // Show/hide canvas wrappers for empty elements (still clickable as placeholders)
+  var descWrap = document.querySelector('[data-element="desc"]');
+  if (descWrap) {
+    if (!s.desc) {
+      document.getElementById('prevDesc').textContent = '(click to add description)';
+      document.getElementById('prevDesc').style.opacity = '0.4';
+      document.getElementById('prevDesc').style.fontStyle = 'italic';
+    } else {
+      document.getElementById('prevDesc').style.opacity = '';
+      document.getElementById('prevDesc').style.fontStyle = '';
+    }
+    descWrap.style.display = '';
+  }
+
+  // CTAs
+  let ctaHtml = '';
+  if (s.ctas && s.ctas.length > 0) {
+    s.ctas.forEach(function(c) {
+      const bg = c.variant === 'primary' ? 'rgba(255,255,255,.95)' : c.variant === 'ghost' ? 'transparent' : 'rgba(255,255,255,.2)';
+      const color = c.variant === 'primary' ? '#323130' : '#fff';
+      const border = c.variant === 'ghost' ? '1px solid rgba(255,255,255,.6)' : 'none';
+      ctaHtml += '<span class="preview-cta" style="background:' + bg + ';color:' + color + ';border:' + border + ';border-radius:4px">' + c.label + '</span>';
+    });
+  } else {
+    ctaHtml = '<span style="opacity:.4;font-style:italic;font-size:12px">(click to add buttons)</span>';
+  }
+  document.getElementById('prevCtas').innerHTML = ctaHtml;
+
+  // Re-apply any canvas element styles (font size, offset, opacity)
+  ['heading', 'subtitle', 'desc', 'ctas'].forEach(function(id) {
+    applyCanvasElementStyle(id);
+  });
+}
+
+function replayAnimations() {
+  const slide = document.getElementById('previewSlide');
+  const elems = slide.querySelectorAll('.anim-element');
+  // Reset
+  elems.forEach(function(e) { e.style.animation = 'none'; e.style.opacity = '0'; });
+  // Trigger reflow
+  void slide.offsetWidth;
+  // Re-apply
+  const anims = ['fadeUp', 'fadeUp', 'fadeIn', 'fadeUp'];
+  const delays = [0, 200, 400, 600];
+  elems.forEach(function(e, i) {
+    e.style.animation = anims[i % anims.length] + ' 0.6s ease-out ' + delays[i] + 'ms forwards';
+  });
+  showToast('Replaying animations...');
+}
+
+/* ══════════════════════════════════════════
+   TIMELINE BAR DRAG & RESIZE
+   ══════════════════════════════════════════ */
+var tlDragState = null; // { idx, mode: 'move'|'resize-left'|'resize-right', startX, origLeft, origWidth, trackWidth }
+var tlTotalMs = 2000;
+
+function initTimelineDrag() {
+  // Small delay so DOM is ready
+  setTimeout(function() {
+    var bars = document.querySelectorAll('.timeline-bar[data-idx]');
+    bars.forEach(function(bar) {
+      // Move handler (on the bar itself)
+      bar.addEventListener('mousedown', function(e) {
+        if (e.target.classList.contains('tl-resize-handle')) return; // let resize handle its own
+        e.preventDefault();
+        var idx = parseInt(bar.getAttribute('data-idx'));
+        var track = bar.parentElement;
+        var trackRect = track.getBoundingClientRect();
+        bar.classList.add('dragging');
+        tlDragState = {
+          idx: idx,
+          mode: 'move',
+          startX: e.clientX,
+          origLeft: parseFloat(bar.style.left) || 0,
+          origWidth: parseFloat(bar.style.width) || 30,
+          trackWidth: trackRect.width
+        };
+      });
+    });
+
+    // Resize handles
+    var handles = document.querySelectorAll('.tl-resize-handle');
+    handles.forEach(function(handle) {
+      handle.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var idx = parseInt(handle.getAttribute('data-idx'));
+        var edge = handle.getAttribute('data-edge');
+        var bar = handle.parentElement;
+        var track = bar.parentElement;
+        var trackRect = track.getBoundingClientRect();
+        bar.classList.add('dragging');
+        tlDragState = {
+          idx: idx,
+          mode: 'resize-' + edge,
+          startX: e.clientX,
+          origLeft: parseFloat(bar.style.left) || 0,
+          origWidth: parseFloat(bar.style.width) || 30,
+          trackWidth: trackRect.width
+        };
+      });
+    });
+  }, 50);
+}
+
+document.addEventListener('mousemove', function(e) {
+  if (!tlDragState) return;
+  var dx = e.clientX - tlDragState.startX;
+  var dxPct = (dx / tlDragState.trackWidth) * 100;
+  var bar = document.querySelector('.timeline-bar[data-idx="' + tlDragState.idx + '"]');
+  if (!bar) return;
+
+  if (tlDragState.mode === 'move') {
+    var newLeft = Math.max(0, Math.min(100 - tlDragState.origWidth, tlDragState.origLeft + dxPct));
+    bar.style.left = newLeft.toFixed(1) + '%';
+    // Update text
+    var delayMs = Math.round(newLeft / 100 * tlTotalMs);
+    var textEl = bar.querySelector('.tl-bar-text');
+    var durMs = Math.round(tlDragState.origWidth / 100 * tlTotalMs);
+    if (textEl) textEl.textContent = durMs + 'ms';
+  } else if (tlDragState.mode === 'resize-right') {
+    var newWidth = Math.max(5, Math.min(100 - tlDragState.origLeft, tlDragState.origWidth + dxPct));
+    bar.style.width = newWidth.toFixed(1) + '%';
+    var durMs2 = Math.round(newWidth / 100 * tlTotalMs);
+    var textEl2 = bar.querySelector('.tl-bar-text');
+    if (textEl2) textEl2.textContent = durMs2 + 'ms';
+  } else if (tlDragState.mode === 'resize-left') {
+    var delta = dxPct;
+    var newLeft2 = Math.max(0, tlDragState.origLeft + delta);
+    var newWidth2 = Math.max(5, tlDragState.origWidth - (newLeft2 - tlDragState.origLeft));
+    bar.style.left = newLeft2.toFixed(1) + '%';
+    bar.style.width = newWidth2.toFixed(1) + '%';
+    var durMs3 = Math.round(newWidth2 / 100 * tlTotalMs);
+    var textEl3 = bar.querySelector('.tl-bar-text');
+    if (textEl3) textEl3.textContent = durMs3 + 'ms';
+  }
+});
+
+document.addEventListener('mouseup', function() {
+  if (!tlDragState) return;
+  var bar = document.querySelector('.timeline-bar[data-idx="' + tlDragState.idx + '"]');
+  if (bar) {
+    bar.classList.remove('dragging');
+    // Sync the delay/duration sliders if the element panel is open
+    var leftPct = parseFloat(bar.style.left) || 0;
+    var widthPct = parseFloat(bar.style.width) || 30;
+    var delayMs = Math.round(leftPct / 100 * tlTotalMs);
+    var durMs = Math.round(widthPct / 100 * tlTotalMs);
+    showToast('Updated: ' + delayMs + 'ms delay, ' + durMs + 'ms duration');
+  }
+  tlDragState = null;
+});
+
+function updateTimelineBar(idx, prop, val) {
+  var bar = document.querySelector('.timeline-bar[data-idx="' + idx + '"]');
+  if (!bar) return;
+  var curLeft = parseFloat(bar.style.left) || 0;
+  var curWidth = parseFloat(bar.style.width) || 30;
+  if (prop === 'delay') {
+    var newLeft = (parseInt(val) / tlTotalMs * 100);
+    bar.style.left = newLeft.toFixed(1) + '%';
+  } else if (prop === 'duration') {
+    var newWidth = (parseInt(val) / tlTotalMs * 100);
+    bar.style.width = newWidth.toFixed(1) + '%';
+    var textEl = bar.querySelector('.tl-bar-text');
+    if (textEl) textEl.textContent = val + 'ms';
+  }
+}
+
+/* ══════════════════════════════════════════
+   INTERACTIVE CANVAS — click/edit/move/scale
+   ══════════════════════════════════════════ */
+var selectedElement = null; // 'heading' | 'subtitle' | 'desc' | 'ctas'
+var elementFontSizes = { heading: 28, subtitle: 16, desc: 13, ctas: 14 };
+var elementOffsets = { heading: { x: 0, y: 0 }, subtitle: { x: 0, y: 0 }, desc: { x: 0, y: 0 }, ctas: { x: 0, y: 0 } };
+var elementOpacity = { heading: 100, subtitle: 100, desc: 100, ctas: 100 };
+
+function canvasSelect(event, elementId) {
+  event.stopPropagation();
+  // Deselect all
+  document.querySelectorAll('.canvas-element').forEach(function(el) {
+    el.classList.remove('selected', 'editing');
+    var editable = el.querySelector('[contenteditable]');
+    if (editable) { editable.contentEditable = 'false'; }
+  });
+  // Select this one
+  var el = document.querySelector('[data-element="' + elementId + '"]');
+  if (el) el.classList.add('selected');
+  selectedElement = elementId;
+
+  // Update properties bar
+  var bar = document.getElementById('elementPropsBar');
+  bar.classList.add('visible');
+  document.getElementById('propElementName').textContent =
+    elementId === 'heading' ? 'Heading' :
+    elementId === 'subtitle' ? 'Subtitle' :
+    elementId === 'desc' ? 'Description' : 'Buttons';
+  document.getElementById('propFontSize').value = elementFontSizes[elementId] || 14;
+  document.getElementById('propX').value = (elementOffsets[elementId] || {}).x || 0;
+  document.getElementById('propY').value = (elementOffsets[elementId] || {}).y || 0;
+  document.getElementById('propOpacity').value = elementOpacity[elementId] || 100;
+
+  // Scroll the tab panel to the relevant section
+  var tabMap = { heading: 'content', subtitle: 'content', desc: 'content', ctas: 'ctas' };
+  if (state.editorTab !== tabMap[elementId]) {
+    setEditorTab(tabMap[elementId]);
+  }
+}
+
+function canvasDeselect(event) {
+  // Only deselect if clicking directly on the slide background
+  if (event.target.id === 'previewSlide' || event.target.classList.contains('preview-slide-content')) {
+    document.querySelectorAll('.canvas-element').forEach(function(el) {
+      el.classList.remove('selected', 'editing');
+      var editable = el.querySelector('[contenteditable]');
+      if (editable) editable.contentEditable = 'false';
+    });
+    selectedElement = null;
+    document.getElementById('elementPropsBar').classList.remove('visible');
+  }
+}
+
+function canvasEditStart(event, elementId) {
+  event.stopPropagation();
+  canvasSelect(event, elementId);
+  if (elementId === 'ctas') { setEditorTab('ctas'); return; } // CTAs edit via tab
+
+  var el = document.querySelector('[data-element="' + elementId + '"]');
+  el.classList.add('editing');
+  var textEl = elementId === 'heading' ? document.getElementById('prevHeading') :
+               elementId === 'subtitle' ? document.getElementById('prevSubtitle') :
+               document.getElementById('prevDesc');
+  textEl.contentEditable = 'true';
+  textEl.focus();
+
+  // Select all text
+  var range = document.createRange();
+  range.selectNodeContents(textEl);
+  var sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+
+  // Save on blur
+  textEl.onblur = function() {
+    textEl.contentEditable = 'false';
+    el.classList.remove('editing');
+    // Write back to state
+    if (state.editingSlide) {
+      if (elementId === 'heading') state.editingSlide.heading = textEl.textContent;
+      if (elementId === 'subtitle') state.editingSlide.subtitle = textEl.textContent;
+      if (elementId === 'desc') state.editingSlide.desc = textEl.textContent;
+      renderEditorTab(); // Update the form fields
+    }
+  };
+  // Save on Enter (no newlines)
+  textEl.onkeydown = function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); textEl.blur(); }
+    if (e.key === 'Escape') { textEl.blur(); }
+  };
+}
+
+function canvasScaleUp(elementId) {
+  elementFontSizes[elementId] = Math.min((elementFontSizes[elementId] || 14) + 2, 120);
+  applyCanvasElementStyle(elementId);
+  if (selectedElement === elementId) {
+    document.getElementById('propFontSize').value = elementFontSizes[elementId];
+  }
+}
+
+function canvasScaleDown(elementId) {
+  elementFontSizes[elementId] = Math.max((elementFontSizes[elementId] || 14) - 2, 8);
+  applyCanvasElementStyle(elementId);
+  if (selectedElement === elementId) {
+    document.getElementById('propFontSize').value = elementFontSizes[elementId];
+  }
+}
+
+function canvasSetFontSize(val) {
+  if (!selectedElement) return;
+  elementFontSizes[selectedElement] = parseInt(val, 10) || 14;
+  applyCanvasElementStyle(selectedElement);
+}
+
+function canvasMoveUp(elementId) {
+  elementOffsets[elementId] = elementOffsets[elementId] || { x: 0, y: 0 };
+  elementOffsets[elementId].y -= 5;
+  applyCanvasElementStyle(elementId);
+  if (selectedElement === elementId) {
+    document.getElementById('propY').value = elementOffsets[elementId].y;
+  }
+}
+
+function canvasMoveDown(elementId) {
+  elementOffsets[elementId] = elementOffsets[elementId] || { x: 0, y: 0 };
+  elementOffsets[elementId].y += 5;
+  applyCanvasElementStyle(elementId);
+  if (selectedElement === elementId) {
+    document.getElementById('propY').value = elementOffsets[elementId].y;
+  }
+}
+
+function canvasSetPos(axis, val) {
+  if (!selectedElement) return;
+  elementOffsets[selectedElement] = elementOffsets[selectedElement] || { x: 0, y: 0 };
+  elementOffsets[selectedElement][axis] = parseInt(val, 10) || 0;
+  applyCanvasElementStyle(selectedElement);
+}
+
+function canvasSetOpacity(val) {
+  if (!selectedElement) return;
+  elementOpacity[selectedElement] = parseInt(val, 10) || 100;
+  applyCanvasElementStyle(selectedElement);
+}
+
+function canvasDuplicate() {
+  if (!selectedElement) return;
+  showToast('Duplicated ' + selectedElement + ' (in real app, creates new layer)');
+}
+
+function canvasDelete() {
+  if (!selectedElement) return;
+  if (selectedElement === 'heading') { showToast('Cannot delete heading'); return; }
+  var el = document.querySelector('[data-element="' + selectedElement + '"]');
+  if (el) { el.style.display = 'none'; }
+  showToast(selectedElement + ' hidden');
+  if (state.editingSlide) {
+    if (selectedElement === 'subtitle') state.editingSlide.subtitle = '';
+    if (selectedElement === 'desc') state.editingSlide.desc = '';
+    if (selectedElement === 'ctas') state.editingSlide.ctas = [];
+  }
+  document.getElementById('elementPropsBar').classList.remove('visible');
+  selectedElement = null;
+}
+
+function applyCanvasElementStyle(elementId) {
+  var textEl = elementId === 'heading' ? document.getElementById('prevHeading') :
+               elementId === 'subtitle' ? document.getElementById('prevSubtitle') :
+               elementId === 'desc' ? document.getElementById('prevDesc') :
+               document.getElementById('prevCtas');
+  if (!textEl) return;
+  var size = elementFontSizes[elementId] || 14;
+  var offset = elementOffsets[elementId] || { x: 0, y: 0 };
+  var opacity = (elementOpacity[elementId] || 100) / 100;
+
+  textEl.style.fontSize = size + 'px';
+  textEl.style.opacity = opacity;
+  // Apply offset via transform on the wrapper
+  var wrapper = textEl.closest('.canvas-element');
+  if (wrapper && (offset.x !== 0 || offset.y !== 0)) {
+    wrapper.style.transform = 'translate(' + offset.x + 'px, ' + offset.y + 'px)';
+  } else if (wrapper) {
+    wrapper.style.transform = '';
+  }
+}
+
+// Drag-to-move support
+(function() {
+  var dragging = null;
+  var dragStartX = 0, dragStartY = 0;
+  var origX = 0, origY = 0;
+
+  document.addEventListener('mousedown', function(e) {
+    var canvasEl = e.target.closest('.canvas-element.selected');
+    if (!canvasEl) return;
+    // Don't start drag on toolbar buttons, resize handles, or contenteditable
+    if (e.target.closest('.canvas-toolbar') || e.target.closest('.resize-handle') || e.target.contentEditable === 'true') return;
+    var elementId = canvasEl.getAttribute('data-element');
+    if (!elementId) return;
+    dragging = elementId;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    elementOffsets[elementId] = elementOffsets[elementId] || { x: 0, y: 0 };
+    origX = elementOffsets[elementId].x;
+    origY = elementOffsets[elementId].y;
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', function(e) {
+    if (!dragging) return;
+    var dx = e.clientX - dragStartX;
+    var dy = e.clientY - dragStartY;
+    elementOffsets[dragging].x = origX + dx;
+    elementOffsets[dragging].y = origY + dy;
+    applyCanvasElementStyle(dragging);
+    document.getElementById('propX').value = elementOffsets[dragging].x;
+    document.getElementById('propY').value = elementOffsets[dragging].y;
+  });
+
+  document.addEventListener('mouseup', function() {
+    if (dragging) {
+      dragging = null;
+    }
+  });
+})();
+
+// Keyboard shortcuts for selected element
+document.addEventListener('keydown', function(e) {
+  if (!selectedElement) return;
+  if (e.target.contentEditable === 'true' || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+  var moved = false;
+  var step = e.shiftKey ? 10 : 1;
+  elementOffsets[selectedElement] = elementOffsets[selectedElement] || { x: 0, y: 0 };
+
+  if (e.key === 'ArrowUp') { elementOffsets[selectedElement].y -= step; moved = true; e.preventDefault(); }
+  if (e.key === 'ArrowDown') { elementOffsets[selectedElement].y += step; moved = true; e.preventDefault(); }
+  if (e.key === 'ArrowLeft') { elementOffsets[selectedElement].x -= step; moved = true; e.preventDefault(); }
+  if (e.key === 'ArrowRight') { elementOffsets[selectedElement].x += step; moved = true; e.preventDefault(); }
+  if (e.key === 'Escape') {
+    canvasDeselect({ target: document.getElementById('previewSlide') });
+    e.preventDefault();
+  }
+  if (e.key === 'Delete' || e.key === 'Backspace') {
+    canvasDelete();
+    e.preventDefault();
+  }
+
+  if (moved) {
+    applyCanvasElementStyle(selectedElement);
+    document.getElementById('propX').value = elementOffsets[selectedElement].x;
+    document.getElementById('propY').value = elementOffsets[selectedElement].y;
+  }
+});
+
+function setDevice(device, btn) {
+  document.querySelectorAll('.device-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  const wrap = document.getElementById('previewWrap');
+  wrap.classList.remove('tablet', 'mobile');
+  if (device === 'tablet') wrap.classList.add('tablet');
+  if (device === 'mobile') wrap.classList.add('mobile');
+}
+
+function setEditorTab(tab, btn) {
+  state.editorTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  renderEditorTab();
+}
+
+/* Accordion panel helper */
+function propPanel(id, icon, title, expanded, badgeText, bodyHtml) {
+  const cls = expanded ? ' expanded' : '';
+  const badge = badgeText ? '<span class="prop-panel-badge">' + badgeText + '</span>' : '';
+  return '<div class="prop-panel' + cls + '" id="pp-' + id + '">' +
+    '<div class="prop-panel-header" onclick="togglePropPanel(\'' + id + '\')">' +
+      '<div class="prop-panel-title"><span class="prop-panel-icon">' + icon + '</span>' + title + '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px">' + badge + '<span class="prop-panel-chevron">▼</span></div>' +
+    '</div>' +
+    '<div class="prop-panel-body">' + bodyHtml + '</div>' +
+  '</div>';
+}
+function togglePropPanel(id) {
+  var panel = document.getElementById('pp-' + id);
+  if (panel) panel.classList.toggle('expanded');
+}
+
+function renderEditorTab() {
+  const el = document.getElementById('editorTabContent');
+  const s = state.editingSlide;
+  if (!s) return;
+
+  switch (state.editorTab) {
+    case 'background':
+      el.innerHTML =
+        propPanel('bg-type', '🎨', 'Color & Gradient', true, '',
+          '<div class="prop-panel-hint">Choose a base color or build a custom gradient</div>' +
+          '<div class="variant-grid" style="margin-bottom:10px">' +
+            ['Solid Color', 'Gradient', 'Image', 'Video', 'Lottie'].map(function(t) {
+              const sel = (t === 'Gradient') ? 'selected' : '';
+              return '<button class="variant-btn ' + sel + '" onclick="showToast(\'Background: ' + t + '\')">' + t + '</button>';
+            }).join('') +
+          '</div>' +
+          '<div class="field-grid-2">' +
+            '<div class="field-row">' +
+              '<label class="field-label">Color</label>' +
+              '<div class="color-palette">' +
+                ['#0078d4','#106ebe','#50e6ff','#00b7c3','#107c10','#5c2d91','#ca5010','#d83b01','#a4262c','#323130','#1a1a1a','#ffffff'].map(function(c) {
+                  const sel = s.bg === c ? 'selected' : '';
+                  return '<div class="color-swatch ' + sel + '" style="background:' + c + ';border:' + (c === '#ffffff' ? '1px solid #ccc' : '2px solid transparent') + '" onclick="updateBg(\'' + c + '\')"></div>';
+                }).join('') +
+              '</div>' +
+              '<div class="color-picker-row" style="margin-top:6px">' +
+                '<div class="color-preview" style="background:' + s.bg + ';width:28px;height:28px"></div>' +
+                '<input type="color" value="' + s.bg + '" onchange="updateBg(this.value)" style="height:28px;width:28px">' +
+                '<input type="text" class="text-input" value="' + s.bg + '" style="width:80px;padding:4px 8px;font-size:12px" onchange="updateBg(this.value)">' +
+              '</div>' +
+            '</div>' +
+            '<div class="field-row">' +
+              '<label class="field-label">Gradient Builder</label>' +
+              '<div class="gradient-preview-bar" id="gradientBar" style="background:' + s.gradient + ';height:24px;border-radius:4px;margin-bottom:6px"></div>' +
+              '<div style="display:flex;gap:8px;align-items:center">' +
+                '<div style="display:flex;gap:4px;align-items:center">' +
+                  '<input type="color" value="' + s.bg + '" onchange="updateGradient()" style="width:24px;height:24px;border:none;cursor:pointer" id="gradStop1">' +
+                  '<input type="color" value="#106ebe" onchange="updateGradient()" style="width:24px;height:24px;border:none;cursor:pointer" id="gradStop2">' +
+                '</div>' +
+                '<div style="flex:1"><div class="slider-row">' +
+                  '<input type="range" class="slider-input" min="0" max="360" step="15" value="135" id="gradAngle" oninput="updateGradient();this.nextElementSibling.textContent=this.value+\'°\'">' +
+                  '<span class="slider-value">135°</span>' +
+                '</div></div>' +
+              '</div>' +
+              '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:6px">' +
+                [{n:'Ocean',g:'linear-gradient(135deg,#0078d4,#50e6ff)'},{n:'Sunset',g:'linear-gradient(135deg,#f12711,#f5af19)'},{n:'Forest',g:'linear-gradient(135deg,#11998e,#38ef7d)'},{n:'Berry',g:'linear-gradient(135deg,#5c2d91,#b4a0ff)'},{n:'Fire',g:'linear-gradient(135deg,#ff416c,#ff4b2b)'},{n:'Night',g:'linear-gradient(135deg,#0f0c29,#302b63)'},{n:'Peach',g:'linear-gradient(135deg,#ed6ea0,#ec8c69)'},{n:'Mint',g:'linear-gradient(135deg,#00b09b,#96c93d)'}].map(function(p) {
+                  return '<div style="width:36px;height:20px;border-radius:3px;cursor:pointer;background:'+p.g+';border:1px solid rgba(0,0,0,.1)" title="'+p.n+'" onclick="state.editingSlide.gradient=\''+p.g+'\';renderEditorPreview();renderEditorTab()"></div>';
+                }).join('') +
+              '</div>' +
+            '</div>' +
+          '</div>'
+        ) +
+        propPanel('bg-image', '🖼', 'Image & Overlay', false, '',
+          '<div class="field-grid-2">' +
+            '<div class="field-row">' +
+              '<label class="field-label">Image URL</label>' +
+              '<div style="display:flex;gap:4px">' +
+                '<input type="text" class="text-input" placeholder="https://..." style="flex:1">' +
+                '<button class="btn btn-secondary btn-sm" onclick="showToast(\'Browse...\')" style="padding:4px 8px;font-size:11px">📁</button>' +
+                '<button class="btn btn-secondary btn-sm" onclick="showToast(\'Stock...\')" style="padding:4px 8px;font-size:11px">🔍</button>' +
+              '</div>' +
+            '</div>' +
+            '<div class="field-row">' +
+              '<label class="field-label">Overlay Opacity</label>' +
+              '<div class="slider-row">' +
+                '<input type="range" class="slider-input" min="0" max="100" step="5" value="40" oninput="this.nextElementSibling.textContent=this.value+\'%\'">' +
+                '<span class="slider-value">40%</span>' +
+              '</div>' +
+              '<p class="field-hint">Darkens background for text readability</p>' +
+            '</div>' +
+          '</div>'
+        ) +
+        propPanel('bg-focal', '🎯', 'Focal Point', false, '50/50',
+          '<div class="field-grid-2">' +
+            '<div class="field-row">' +
+              '<label class="field-label">Click to set focus</label>' +
+              '<div class="focal-point-container" id="focalPointBox" onclick="setFocalPoint(event)" style="background:' + s.gradient + ';height:80px">' +
+                '<div class="focal-point-dot" id="focalDot" style="left:50%;top:50%"></div>' +
+                '<div class="focal-point-crosshair-h" id="focalH" style="top:50%"></div>' +
+                '<div class="focal-point-crosshair-v" id="focalV" style="left:50%"></div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="field-row" style="display:flex;flex-direction:column;justify-content:center">' +
+              '<div style="font-size:12px;color:var(--gray-80);margin-bottom:4px"><strong>X:</strong> <span id="focalX">50</span>% &nbsp; <strong>Y:</strong> <span id="focalY">50</span>%</div>' +
+              '<p class="field-hint">Which part stays visible when cropped</p>' +
+              '<button class="btn btn-ghost btn-sm" style="margin-top:4px;align-self:flex-start" onclick="resetFocalPoint()">Reset to Center</button>' +
+            '</div>' +
+          '</div>'
+        );
+      break;
+
+    case 'content':
+      el.innerHTML =
+        propPanel('ct-text', '✏', 'Text Content', true, '',
+          '<div class="field-grid-2">' +
+            '<div class="field-row"><label class="field-label">Heading</label>' +
+              '<input type="text" class="text-input" value="' + s.heading + '" oninput="state.editingSlide.heading=this.value;renderEditorPreview()"></div>' +
+            '<div class="field-row"><label class="field-label">Subtitle</label>' +
+              '<input type="text" class="text-input" value="' + (s.subtitle || '') + '" oninput="state.editingSlide.subtitle=this.value;renderEditorPreview()"></div>' +
+            '<div class="field-row field-span-2"><label class="field-label">Description</label>' +
+              '<textarea class="text-input" rows="2" oninput="state.editingSlide.desc=this.value;renderEditorPreview()">' + (s.desc || '') + '</textarea></div>' +
+          '</div>'
+        ) +
+        propPanel('ct-pos', '📐', 'Positioning', false, s.textAlign + ' / ' + s.verticalAlign,
+          '<div class="field-grid-2">' +
+            '<div class="field-row"><label class="field-label">Text Alignment</label>' +
+              '<div class="variant-grid">' +
+                ['left','center','right'].map(function(a) {
+                  return '<button class="variant-btn ' + (s.textAlign === a ? 'selected' : '') + '" onclick="state.editingSlide.textAlign=\'' + a + '\';renderEditorPreview();renderEditorTab()">' + a.charAt(0).toUpperCase() + a.slice(1) + '</button>';
+                }).join('') +
+              '</div></div>' +
+            '<div class="field-row"><label class="field-label">Vertical Position</label>' +
+              '<div class="variant-grid">' +
+                ['top','center','bottom'].map(function(a) {
+                  return '<button class="variant-btn ' + (s.verticalAlign === a ? 'selected' : '') + '" onclick="state.editingSlide.verticalAlign=\'' + a + '\';renderEditorPreview();renderEditorTab()">' + a.charAt(0).toUpperCase() + a.slice(1) + '</button>';
+                }).join('') +
+              '</div></div>' +
+          '</div>'
+        );
+      break;
+
+    case 'ctas':
+      let ctaBody = '';
+      if (s.ctas && s.ctas.length > 0) {
+        s.ctas.forEach(function(c, i) {
+          ctaBody += '<div class="cta-item">' +
+            '<div class="cta-item-header"><span class="cta-item-title">Button ' + (i + 1) + '</span>' +
+            '<div style="display:flex;gap:4px">' +
+              (i > 0 ? '<button class="btn btn-ghost btn-sm" onclick="moveCta(' + i + ',-1)">⬆</button>' : '') +
+              (i < s.ctas.length - 1 ? '<button class="btn btn-ghost btn-sm" onclick="moveCta(' + i + ',1)">⬇</button>' : '') +
+              '<button class="btn btn-ghost btn-sm" style="color:var(--red-primary)" onclick="removeCta(' + i + ')">✕</button>' +
+            '</div></div>' +
+            '<div class="field-grid-2">' +
+              '<div class="field-row"><label class="field-label">Label</label>' +
+                '<input type="text" class="text-input" value="' + c.label + '" oninput="state.editingSlide.ctas[' + i + '].label=this.value;renderEditorPreview()"></div>' +
+              '<div class="field-row"><label class="field-label">URL</label>' +
+                '<input type="text" class="text-input" value="' + c.url + '" oninput="state.editingSlide.ctas[' + i + '].url=this.value"></div>' +
+            '</div>' +
+            '<div class="field-row" style="margin-top:8px"><label class="field-label">Style</label>' +
+              '<div class="variant-grid">' +
+                ['primary','secondary','ghost','pill','gradient','outline'].map(function(v) {
+                  return '<button class="variant-btn ' + (c.variant === v ? 'selected' : '') + '" onclick="state.editingSlide.ctas[' + i + '].variant=\'' + v + '\';renderEditorPreview();renderEditorTab()">' + v + '</button>';
+                }).join('') +
+              '</div></div>' +
+          '</div>';
+        });
+      } else {
+        ctaBody += '<div class="empty-state" style="padding:16px"><span class="empty-state-icon">🔗</span><div class="empty-state-title" style="font-size:14px">No buttons yet</div><div class="empty-state-desc">Add a call-to-action to drive engagement</div></div>';
+      }
+      ctaBody += '<button class="btn btn-secondary" onclick="addCta()" style="margin-top:8px">+ Add Button</button>';
+      el.innerHTML = propPanel('cta-btns', '🔗', 'Buttons', true, s.ctas ? s.ctas.length + '' : '0', ctaBody);
+      break;
+
+    case 'advanced':
+      el.innerHTML =
+        propPanel('adv-fx', '✨', 'Effects', true, '1 active',
+          '<div class="toggle-row"><div class="toggle-label-group"><span class="toggle-label">Gradient Overlay</span><span class="toggle-hint">Color gradient over the background</span></div><button class="toggle-switch on" onclick="this.classList.toggle(\'on\')"></button></div>' +
+          '<div class="toggle-row"><div class="toggle-label-group"><span class="toggle-label">Parallax Scrolling</span><span class="toggle-hint">Background moves slower on scroll</span></div><button class="toggle-switch" onclick="this.classList.toggle(\'on\')"></button></div>' +
+          '<div class="toggle-row"><div class="toggle-label-group"><span class="toggle-label">Countdown Timer</span><span class="toggle-hint">Live countdown to a target date</span></div><button class="toggle-switch" onclick="this.classList.toggle(\'on\')"></button></div>' +
+          '<div class="toggle-row"><div class="toggle-label-group"><span class="toggle-label">Text Overlay Backdrop</span><span class="toggle-hint">Semi-transparent box behind text</span></div><button class="toggle-switch" onclick="this.classList.toggle(\'on\')"></button></div>' +
+          '<div class="toggle-row"><div class="toggle-label-group"><span class="toggle-label">Ken Burns Effect</span><span class="toggle-hint">Slow zoom on background image</span></div><button class="toggle-switch" onclick="this.classList.toggle(\'on\')"></button></div>' +
+          '<div class="toggle-row"><div class="toggle-label-group"><span class="toggle-label">Vignette Border</span><span class="toggle-hint">Dark edges for cinematic look</span></div><button class="toggle-switch" onclick="this.classList.toggle(\'on\')"></button></div>'
+        ) +
+        propPanel('adv-hover', '👆', 'Hover Effect', false, 'Zoom',
+          '<div class="hover-grid">' +
+            [{id:'none',icon:'🚫',label:'None'},{id:'zoom',icon:'🔍',label:'Zoom'},{id:'darken',icon:'🌑',label:'Darken'},{id:'blur',icon:'💨',label:'Blur'},{id:'kenburns',icon:'📷',label:'Ken Burns'},{id:'colorshift',icon:'🎨',label:'Color Shift'},{id:'lift',icon:'⬆',label:'Lift'},{id:'glow',icon:'✨',label:'Glow'},{id:'reveal',icon:'👁',label:'Reveal Text'}].map(function(h) {
+              return '<div class="hover-card' + (h.id === 'zoom' ? ' selected' : '') + '" onclick="selectHoverEffect(this)"><div class="hover-card-icon">' + h.icon + '</div><div class="hover-card-label">' + h.label + '</div></div>';
+            }).join('') +
+          '</div>'
+        ) +
+        propPanel('adv-sched', '📅', 'Scheduling & Targeting', false, 'Everyone',
+          '<div class="field-grid-2">' +
+            '<div class="field-row"><label class="field-label">Publish Date</label><input type="datetime-local" class="text-input"></div>' +
+            '<div class="field-row"><label class="field-label">Unpublish Date</label><input type="datetime-local" class="text-input"></div>' +
+            '<div class="field-row"><label class="field-label">Audience</label><select class="select-input"><option value="everyone">Everyone</option><option value="group">Security Group</option><option value="audience">Microsoft 365 Audience</option></select></div>' +
+            '<div class="field-row" style="display:flex;align-items:flex-end"><p class="field-hint">Leave dates blank for immediate publish / no expiry</p></div>' +
+          '</div>'
+        ) +
+        propPanel('adv-notes', '📝', 'Internal Notes', false, '',
+          '<textarea class="notes-area" placeholder="Add notes for other editors (not shown to viewers)..." style="min-height:60px"></textarea>'
+        );
+      break;
+
+    case 'animations':
+      const timelineElements = [
+        { label: 'Heading', color: '#0078d4', delay: 0, duration: 600 },
+        { label: 'Subtitle', color: '#50e6ff', delay: 200, duration: 600 },
+        { label: 'Description', color: '#5c2d91', delay: 400, duration: 600 },
+        { label: 'Buttons', color: '#107c10', delay: 600, duration: 600 },
+      ];
+      const totalMs = 2000;
+
+      // Build timeline body
+      const timelineBody =
+        '<div class="prop-panel-hint">Drag bars to move, drag edges to resize duration</div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
+          '<span style="font-size:11px;color:var(--gray-60)">Total: 1.2s stagger</span>' +
+          '<button class="btn btn-ghost btn-sm" onclick="replayAnimations()" style="font-size:11px">▶ Preview</button>' +
+        '</div>' +
+        '<div class="timeline-ruler"><span>0ms</span><span>500ms</span><span>1000ms</span><span>1500ms</span><span>2000ms</span></div>' +
+        timelineElements.map(function(t, idx) {
+          const leftPct = (t.delay / totalMs * 100).toFixed(1);
+          const widthPct = (t.duration / totalMs * 100).toFixed(1);
+          return '<div class="timeline-row">' +
+            '<div class="timeline-label">' + t.label + '</div>' +
+            '<div class="timeline-track">' +
+            '<div class="timeline-bar" data-idx="' + idx + '" style="left:' + leftPct + '%;width:' + widthPct + '%;background:' + t.color + ';cursor:grab;position:relative">' +
+              '<span class="tl-bar-text">' + t.duration + 'ms</span>' +
+              '<div class="tl-resize-handle tl-resize-left" data-idx="' + idx + '" data-edge="left"></div>' +
+              '<div class="tl-resize-handle tl-resize-right" data-idx="' + idx + '" data-edge="right"></div>' +
+            '</div>' +
+            '</div></div>';
+        }).join('');
+
+      // Build per-element config bodies
+      const elemConfigBodies = timelineElements.map(function(t, idx) {
+        const elemId = 'anim-' + t.label.toLowerCase();
+        return propPanel(elemId, '<div style="width:12px;height:12px;border-radius:2px;background:' + t.color + '"></div>', t.label, idx === 0, 'Fade Up',
+          '<div class="field-grid-2" style="grid-template-columns:1fr 1fr 1fr">' +
+            '<div class="field-row"><label class="field-label">Effect</label>' +
+            '<select class="select-input"><option>None</option><option selected>Fade Up</option><option>Fade In</option><option>Slide Left</option><option>Slide Right</option><option>Scale Up</option><option>Bounce In</option><option>Blur In</option><option>Flip Up</option><option>Swoop In</option><option>Typewriter</option></select></div>' +
+            '<div class="field-row"><label class="field-label">Delay</label>' +
+            '<div class="slider-row"><input type="range" class="slider-input" min="0" max="2000" step="50" value="' + t.delay + '" oninput="this.nextElementSibling.textContent=this.value+\'ms\';updateTimelineBar(' + idx + ',\'delay\',this.value)"><span class="slider-value">' + t.delay + 'ms</span></div></div>' +
+            '<div class="field-row"><label class="field-label">Duration</label>' +
+            '<div class="slider-row"><input type="range" class="slider-input" min="200" max="2000" step="50" value="' + t.duration + '" oninput="this.nextElementSibling.textContent=this.value+\'ms\';updateTimelineBar(' + idx + ',\'duration\',this.value)"><span class="slider-value">' + t.duration + 'ms</span></div></div>' +
+          '</div>'
+        );
+      }).join('');
+
+      // Build transition body
+      const transitionBody =
+        '<div class="field-row" style="margin-bottom:8px"><label class="field-label">Transition Style</label>' +
+          '<div class="variant-grid">' +
+            ['Fade', 'Slide', 'Zoom', 'Ken Burns', 'Flip', 'Cube', 'Parallax', 'None'].map(function(t) {
+              return '<button class="variant-btn' + (t === 'Fade' ? ' selected' : '') + '" onclick="selectVariantBtn(this)">' + t + '</button>';
+            }).join('') +
+          '</div></div>' +
+        '<div class="field-grid-2">' +
+          '<div class="field-row"><label class="field-label">Duration</label>' +
+            '<div class="slider-row"><input type="range" class="slider-input" min="200" max="2000" step="100" value="500" oninput="this.nextElementSibling.textContent=this.value+\'ms\'"><span class="slider-value">500ms</span></div></div>' +
+          '<div class="field-row"><label class="field-label">Easing</label>' +
+            '<select class="select-input"><option>Ease Out (Recommended)</option><option>Ease In</option><option>Ease In Out</option><option>Linear</option><option>Bounce</option><option>Elastic</option></select></div>' +
+        '</div>';
+
+      el.innerHTML =
+        propPanel('anim-timeline', '⏱', 'Animation Timeline', true, '4 elements', timelineBody) +
+        elemConfigBodies +
+        propPanel('anim-transition', '🔄', 'Slide Transition', false, 'Fade', transitionBody);
+      initTimelineDrag();
+      break;
+
+    case 'typography':
+      const typoIcons = { 'Heading': 'H', 'Subtitle': 'S', 'Description': 'P' };
+      const typoDefaults = { 'Heading': { size: 32, weight: 'Bold', lh: '1.2' }, 'Subtitle': { size: 18, weight: 'Semibold', lh: '1.4' }, 'Description': { size: 14, weight: 'Regular', lh: '1.6' } };
+      el.innerHTML =
+        ['Heading', 'Subtitle', 'Description'].map(function(label, idx) {
+          const defs = typoDefaults[label];
+          const panelIcon = '<span style="font-weight:800;font-size:13px;font-family:Georgia,serif">' + typoIcons[label] + '</span>';
+          return propPanel('typo-' + label.toLowerCase(), panelIcon, label, idx === 0, defs.size + 'px ' + defs.weight,
+            '<div class="field-grid-2">' +
+              '<div class="field-row"><label class="field-label">Font Family</label>' +
+                '<select class="select-input"><option>Segoe UI</option><option>Arial</option><option>Georgia</option><option>Verdana</option><option>Impact</option><option>Courier New</option><option>Trebuchet MS</option><option>Palatino</option></select></div>' +
+              '<div class="field-row"><label class="field-label">Font Size</label>' +
+                '<div class="slider-row"><input type="range" class="slider-input" min="8" max="80" value="' + defs.size + '" oninput="this.nextElementSibling.textContent=this.value+\'px\'"><span class="slider-value">' + defs.size + 'px</span></div></div>' +
+              '<div class="field-row"><label class="field-label">Weight</label>' +
+                '<div class="variant-grid">' +
+                  ['Light','Regular','Semibold','Bold','Extra Bold'].map(function(w) {
+                    return '<button class="variant-btn' + (w === defs.weight ? ' selected' : '') + '" onclick="selectVariantBtn(this)">' + w + '</button>';
+                  }).join('') +
+                '</div></div>' +
+              '<div class="field-row"><label class="field-label">Color</label>' +
+                '<div style="display:flex;gap:6px;align-items:center">' +
+                  '<input type="color" value="#ffffff" style="width:28px;height:28px;border:none;cursor:pointer">' +
+                  '<input type="text" class="text-input" value="#ffffff" style="width:80px;padding:4px 8px;font-size:12px">' +
+                  '<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 6px" onclick="showToast(\'Reset to default\')">Reset</button>' +
+                '</div></div>' +
+              '<div class="field-row"><label class="field-label">Letter Spacing</label>' +
+                '<div class="slider-row"><input type="range" class="slider-input" min="-2" max="10" step="0.5" value="0" oninput="this.nextElementSibling.textContent=this.value==0?\'Normal\':this.value+\'px\'"><span class="slider-value">Normal</span></div></div>' +
+              '<div class="field-row"><label class="field-label">Line Height</label>' +
+                '<div class="slider-row"><input type="range" class="slider-input" min="0.8" max="2.5" step="0.1" value="' + defs.lh + '" oninput="this.nextElementSibling.textContent=this.value"><span class="slider-value">' + defs.lh + '</span></div></div>' +
+            '</div>'
+          );
+        }).join('');
+      break;
+
+    case 'accessibility':
+      el.innerHTML = `
+        <p class="field-hint" style="margin-bottom:16px">Accessibility score and recommendations for this slide. WCAG 2.1 AA compliance.</p>
+
+        <div style="display:flex;align-items:center;gap:16px;padding:16px;border:2px solid var(--green-primary);border-radius:var(--radius-md);background:var(--green-bg);margin-bottom:16px">
+          <div style="font-size:36px;font-weight:800;color:var(--green-primary)">92</div>
+          <div>
+            <div style="font-size:16px;font-weight:700;color:var(--green-primary)">Good Accessibility Score</div>
+            <div style="font-size:13px;color:var(--gray-80)">2 minor recommendations below</div>
+          </div>
+        </div>
+
+        <div class="a11y-card">
+          <div class="a11y-row">
+            <span class="a11y-label">Text Contrast Ratio</span>
+            <span class="a11y-badge a11y-pass">7.2:1 Pass (AAA)</span>
+          </div>
+          <div class="contrast-preview">
+            <div class="contrast-swatch" style="background:${s.bg};color:${s.textColor}">Aa</div>
+            <div style="font-size:12px;color:var(--gray-80)">
+              Foreground: <strong>${s.textColor}</strong> on Background: <strong>${s.bg}</strong><br>
+              Large text: <span style="color:var(--green-primary)">Pass (AAA)</span> &bull;
+              Normal text: <span style="color:var(--green-primary)">Pass (AA)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="a11y-card">
+          <div class="a11y-row">
+            <span class="a11y-label">CTA Button Contrast</span>
+            <span class="a11y-badge a11y-pass">4.8:1 Pass (AA)</span>
+          </div>
+        </div>
+
+        <div class="a11y-card">
+          <div class="a11y-row">
+            <span class="a11y-label">Alt Text for Images</span>
+            <span class="a11y-badge a11y-warn">Needs Attention</span>
+          </div>
+          <div style="margin-top:6px">
+            <input type="text" class="text-input" placeholder="Describe this slide's image for screen readers..." value="">
+            <p class="field-hint">Required for images. Auto-generated if left blank.</p>
+          </div>
+        </div>
+
+        <div class="a11y-card">
+          <div class="a11y-row">
+            <span class="a11y-label">Reduced Motion</span>
+            <span class="a11y-badge a11y-pass">Respected</span>
+          </div>
+          <p class="field-hint" style="margin-top:4px">Animations will be disabled when users have prefers-reduced-motion enabled.</p>
+        </div>
+
+        <div class="a11y-card">
+          <div class="a11y-row">
+            <span class="a11y-label">Heading Structure</span>
+            <span class="a11y-badge a11y-pass">H2 Element</span>
+          </div>
+        </div>
+
+        <div class="a11y-card">
+          <div class="a11y-row">
+            <span class="a11y-label">Focus Indicators</span>
+            <span class="a11y-badge a11y-pass">Visible</span>
+          </div>
+        </div>
+
+        <div class="a11y-card">
+          <div class="a11y-row">
+            <span class="a11y-label">Auto-Rotation</span>
+            <span class="a11y-badge a11y-warn">Provide Pause Control</span>
+          </div>
+          <p class="field-hint" style="margin-top:4px">WCAG 2.2.2: Users must be able to pause auto-advancing content. Pause-on-hover is enabled.</p>
+        </div>
+
+        <div style="margin-top:16px;padding:12px;background:var(--blue-bg);border-radius:var(--radius-md);font-size:13px;color:var(--blue-primary);display:flex;gap:8px;align-items:center">
+          <span style="font-size:16px">💡</span>
+          <span><strong>Tip:</strong> Use the contrast checker above when changing colors. Maintain at least 4.5:1 ratio for normal text and 3:1 for large text.</span>
+        </div>
+      `;
+      break;
+  }
+}
+
+function updateBg(color) {
+  if (!state.editingSlide) return;
+  state.editingSlide.bg = color;
+  state.editingSlide.gradient = color;
+  renderEditorPreview();
+  renderEditorTab();
+}
+
+function addCta() {
+  if (!state.editingSlide) return;
+  state.editingSlide.ctas.push({ label: 'New Button', variant: 'primary', url: '#' });
+  renderEditorPreview();
+  renderEditorTab();
+}
+
+function removeCta(idx) {
+  if (!state.editingSlide) return;
+  state.editingSlide.ctas.splice(idx, 1);
+  renderEditorPreview();
+  renderEditorTab();
+}
+
+function moveCta(idx, dir) {
+  if (!state.editingSlide) return;
+  const target = idx + dir;
+  if (target < 0 || target >= state.editingSlide.ctas.length) return;
+  const temp = state.editingSlide.ctas[idx];
+  state.editingSlide.ctas[idx] = state.editingSlide.ctas[target];
+  state.editingSlide.ctas[target] = temp;
+  renderEditorPreview();
+  renderEditorTab();
+}
+
+/* ══════════════════════════════════════════
+   CONFIG MANAGER
+   ══════════════════════════════════════════ */
+function openConfigManager(mode) {
+  document.getElementById('configBackdrop').classList.add('active');
+  document.getElementById('configTitle').textContent = mode === 'save' ? '💾 Save Configuration' : '📂 Open Configuration';
+  renderConfigContent(mode);
+}
+
+function closeConfigManager() {
+  document.getElementById('configBackdrop').classList.remove('active');
+}
+
+function renderConfigContent(mode) {
+  const el = document.getElementById('configContent');
+  const footer = document.getElementById('configFooter');
+
+  if (mode === 'save') {
+    el.innerHTML = `
+      <div class="field-row">
+        <label class="field-label">Configuration Name</label>
+        <input type="text" class="text-input" id="configNameInput" placeholder="e.g. Corporate Default">
+      </div>
+      <div class="field-row">
+        <label class="field-label">Description <span style="color:var(--gray-60);font-weight:400">(optional)</span></label>
+        <input type="text" class="text-input" placeholder="Brief description...">
+      </div>
+      <div style="margin-top:16px;padding:12px;background:var(--gray-10);border-radius:var(--radius-md);font-size:13px;color:var(--gray-80)">
+        This will save the current hero configuration (${state.slides.length} slides, ${state.aspectRatio} ratio, ${state.heroHeight}px height).
+      </div>
+    `;
+    footer.innerHTML = `
+      <button class="btn btn-secondary" onclick="closeConfigManager()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveConfig()">Save Configuration</button>
+    `;
+  } else {
+    let listHtml = '';
+    if (state.savedConfigs.length === 0) {
+      listHtml = '<div class="empty-state"><span class="empty-state-icon">📂</span><div class="empty-state-title">No Saved Configurations</div><div class="empty-state-desc">Use "Save As" to save your current hero setup for later.</div></div>';
+    } else {
+      listHtml = '<ul class="config-list">';
+      state.savedConfigs.forEach(function(c) {
+        listHtml += `
+          <li class="config-item" onclick="loadConfig(${c.id})">
+            <div class="config-item-info">
+              <span class="config-item-name">${c.name}</span>
+              <span class="config-item-meta">${c.slides} slides &bull; ${c.date} &bull; ${c.desc || ''}</span>
+            </div>
+            <div class="config-item-actions">
+              <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();deleteConfig(${c.id})">🗑</button>
+            </div>
+          </li>
+        `;
+      });
+      listHtml += '</ul>';
+    }
+
+    el.innerHTML = listHtml + `
+      <div class="or-divider"><span>or</span></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary" style="flex:1" onclick="showToast('Import from JSON...')">📥 Import from JSON</button>
+        <button class="btn btn-secondary" style="flex:1" onclick="showToast('Export to JSON...')">📤 Export to JSON</button>
+      </div>
+    `;
+    footer.innerHTML = '<button class="btn btn-secondary" onclick="closeConfigManager()">Close</button>';
+  }
+}
+
+function saveConfig() {
+  const name = document.getElementById('configNameInput').value;
+  if (!name) { showToast('Please enter a name'); return; }
+  state.savedConfigs.push({
+    id: Date.now(),
+    name: name,
+    date: new Date().toISOString().split('T')[0],
+    slides: state.slides.length,
+    desc: state.slides.length + ' slides, ' + state.aspectRatio,
+  });
+  showToast('Configuration "' + name + '" saved!');
+  closeConfigManager();
+}
+
+function loadConfig(id) {
+  showToast('Configuration loaded!');
+  closeConfigManager();
+}
+
+function deleteConfig(id) {
+  state.savedConfigs = state.savedConfigs.filter(function(c) { return c.id !== id; });
+  renderConfigContent('open');
+  showToast('Configuration deleted');
+}
+
+/* ══════════════════════════════════════════
+   TOAST
+   ══════════════════════════════════════════ */
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(function() { el.classList.remove('show'); }, 2000);
+}
+
+/* ══════════════════════════════════════════
+   NEW FEATURE FUNCTIONS
+   ══════════════════════════════════════════ */
+
+/* Quick Style Presets */
+function applyQuickStyle(style) {
+  if (!state.editingSlide) return;
+  var presets = {
+    corporate: { bg: '#0078d4', gradient: 'linear-gradient(135deg, #0078d4, #106ebe)', textColor: '#fff', textAlign: 'left', verticalAlign: 'bottom' },
+    bold: { bg: '#d83b01', gradient: 'linear-gradient(135deg, #ff416c, #ff4b2b)', textColor: '#fff', textAlign: 'center', verticalAlign: 'center' },
+    dark: { bg: '#1a1a2e', gradient: 'linear-gradient(135deg, #1a1a2e, #16213e)', textColor: '#e0e0e0', textAlign: 'left', verticalAlign: 'bottom' },
+    gradient: { bg: '#5c2d91', gradient: 'linear-gradient(135deg, #5c2d91, #50e6ff)', textColor: '#fff', textAlign: 'center', verticalAlign: 'center' },
+    minimal: { bg: '#f5f5f5', gradient: 'linear-gradient(180deg, #ffffff, #f0f0f0)', textColor: '#323130', textAlign: 'left', verticalAlign: 'bottom' },
+    neon: { bg: '#0a0a23', gradient: 'linear-gradient(135deg, #0a0a23, #1a1a3e)', textColor: '#00ff88', textAlign: 'center', verticalAlign: 'center' },
+    sunset: { bg: '#f12711', gradient: 'linear-gradient(135deg, #f12711, #f5af19)', textColor: '#fff', textAlign: 'left', verticalAlign: 'bottom' },
+    ocean: { bg: '#0078d4', gradient: 'linear-gradient(135deg, #004e92, #000428)', textColor: '#50e6ff', textAlign: 'left', verticalAlign: 'bottom' },
+  };
+  var p = presets[style];
+  if (p) {
+    Object.keys(p).forEach(function(k) { state.editingSlide[k] = p[k]; });
+    renderEditorPreview();
+    renderEditorTab();
+    showToast('Applied "' + style + '" style');
+  }
+}
+
+/* Theme Presets (Wizard) */
+function selectTheme(theme, el) {
+  document.querySelectorAll('.theme-card').forEach(function(c) { c.classList.remove('selected'); });
+  el.classList.add('selected');
+  showToast('Theme: ' + theme.charAt(0).toUpperCase() + theme.slice(1));
+}
+
+/* Hover Effect selection */
+function selectHoverEffect(el) {
+  el.parentElement.querySelectorAll('.hover-card').forEach(function(c) { c.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+
+/* Variant button (generic single-select) */
+function selectVariantBtn(btn) {
+  btn.parentElement.querySelectorAll('.variant-btn').forEach(function(b) { b.classList.remove('selected'); });
+  btn.classList.add('selected');
+}
+
+/* Gradient Builder */
+function updateGradient() {
+  var s1 = document.getElementById('gradStop1');
+  var s2 = document.getElementById('gradStop2');
+  var angle = document.getElementById('gradAngle');
+  if (!s1 || !s2 || !angle) return;
+  var grad = 'linear-gradient(' + angle.value + 'deg, ' + s1.value + ', ' + s2.value + ')';
+  state.editingSlide.gradient = grad;
+  var bar = document.getElementById('gradientBar');
+  if (bar) bar.style.background = grad;
+  renderEditorPreview();
+}
+
+/* Focal Point Picker */
+function setFocalPoint(event) {
+  var box = document.getElementById('focalPointBox');
+  var rect = box.getBoundingClientRect();
+  var x = Math.round((event.clientX - rect.left) / rect.width * 100);
+  var y = Math.round((event.clientY - rect.top) / rect.height * 100);
+  x = Math.max(0, Math.min(100, x));
+  y = Math.max(0, Math.min(100, y));
+  document.getElementById('focalDot').style.left = x + '%';
+  document.getElementById('focalDot').style.top = y + '%';
+  document.getElementById('focalH').style.top = y + '%';
+  document.getElementById('focalV').style.left = x + '%';
+  document.getElementById('focalX').textContent = x;
+  document.getElementById('focalY').textContent = y;
+}
+
+function resetFocalPoint() {
+  document.getElementById('focalDot').style.left = '50%';
+  document.getElementById('focalDot').style.top = '50%';
+  document.getElementById('focalH').style.top = '50%';
+  document.getElementById('focalV').style.left = '50%';
+  document.getElementById('focalX').textContent = '50';
+  document.getElementById('focalY').textContent = '50';
+  showToast('Focal point reset');
+}
+
+/* Transition Preview (Main Toolbar) */
+function previewTransitions() {
+  if (state.slides.length < 2) { showToast('Need at least 2 slides'); return; }
+  var container = document.getElementById('heroContainer');
+  var overlay = document.createElement('div');
+  overlay.className = 'transition-preview-overlay';
+  overlay.innerHTML = '<div class="transition-label">Previewing ' + state.rotationEffect + ' transition...</div>';
+  overlay.style.position = 'absolute';
+  container.style.position = 'relative';
+  container.appendChild(overlay);
+
+  // Cycle slides visually
+  var slides = container.querySelectorAll('.hero-slide');
+  var current = 0;
+  slides.forEach(function(s, i) { s.style.opacity = i === 0 ? '1' : '0.3'; });
+
+  var interval = setInterval(function() {
+    slides.forEach(function(s) { s.style.transition = 'opacity 0.5s'; s.style.opacity = '0.3'; });
+    current = (current + 1) % slides.length;
+    slides[current].style.opacity = '1';
+  }, 1000);
+
+  setTimeout(function() {
+    clearInterval(interval);
+    slides.forEach(function(s) { s.style.opacity = '1'; s.style.transition = ''; });
+    overlay.remove();
+    showToast('Transition preview complete');
+  }, state.slides.length * 1000 + 500);
+}
+
+/* Keyboard Shortcuts Panel */
+function showKeyboardShortcuts() {
+  document.getElementById('shortcutsBackdrop').classList.add('active');
+}
+
+/* ══════════════════════════════════════════
+   SPLASH SCREEN
+   ══════════════════════════════════════════ */
+function showSplash() {
+  document.getElementById('splashBackdrop').classList.add('active');
+}
+function closeSplash() {
+  document.getElementById('splashBackdrop').classList.remove('active');
+}
+function splashGetStarted() {
+  state.firstRun = false;
+  closeSplash();
+  openWizard();
+}
+function splashSkip() {
+  state.firstRun = false;
+  closeSplash();
+  renderHeroGrid();
+}
+
+/* ══════════════════════════════════════════
+   SLIDER MANAGER (Cross-Page Configuration Library)
+   ══════════════════════════════════════════ */
+const savedSliders = [
+  { id: 1, name: 'Corporate Homepage Hero', slides: 3, lastEdited: '2026-02-08', thumbnail: 'linear-gradient(135deg, #0078d4, #106ebe)', pages: ['Home', 'About Us'], aspectRatio: '16:9', mode: 'hyper' },
+  { id: 2, name: 'Q1 Town Hall Banner', slides: 2, lastEdited: '2026-02-07', thumbnail: 'linear-gradient(135deg, #5c2d91, #8661c5)', pages: ['Events'], aspectRatio: '16:9', mode: 'simple' },
+  { id: 3, name: 'Benefits Open Enrollment', slides: 1, lastEdited: '2026-02-05', thumbnail: 'linear-gradient(135deg, #107c10, #38ef7d)', pages: ['HR Portal'], aspectRatio: '21:9', mode: 'simple' },
+  { id: 4, name: 'Summer Campaign 2026', slides: 5, lastEdited: '2026-01-30', thumbnail: 'linear-gradient(135deg, #f12711, #f5af19)', pages: [], aspectRatio: '16:9', mode: 'hyper' },
+];
+
+function openSliderManager() {
+  document.getElementById('sliderManagerBackdrop').classList.add('active');
+  renderSliderManagerContent();
+}
+function closeSliderManager() {
+  document.getElementById('sliderManagerBackdrop').classList.remove('active');
+}
+function renderSliderManagerContent() {
+  const el = document.getElementById('sliderManagerContent');
+  let html = '';
+
+  html += '<div style="display:flex;gap:8px;margin-bottom:16px;align-items:center">';
+  html += '<input type="text" class="text-input" placeholder="Search sliders..." style="flex:1" oninput="filterSliderManager(this.value)">';
+  html += '<button class="btn btn-primary btn-sm" onclick="closeSliderManager();openWizard()">+ Create New Slider</button>';
+  html += '</div>';
+
+  html += '<div id="sliderManagerList">';
+  html += renderSliderCards(savedSliders);
+  html += '</div>';
+
+  el.innerHTML = html;
+}
+function renderSliderCards(sliders) {
+  if (sliders.length === 0) {
+    return '<div class="empty-state" style="padding:32px"><span class="empty-state-icon">📂</span><div class="empty-state-title">No Saved Sliders</div><div class="empty-state-desc">Create your first slider to see it here.</div></div>';
+  }
+
+  let html = '';
+  sliders.forEach(function(s) {
+    const pageList = s.pages.length > 0 ? s.pages.join(', ') : '<em style="color:var(--gray-60)">Not deployed</em>';
+    html += '<div class="slider-lib-card">';
+    html += '<div class="slider-lib-thumb" style="background:' + s.thumbnail + '"></div>';
+    html += '<div class="slider-lib-info">';
+    html += '<div class="slider-lib-name">' + s.name + '</div>';
+    html += '<div class="slider-lib-meta">';
+    html += '<span class="slider-lib-badge slider-lib-badge-' + s.mode + '">' + (s.mode === 'hyper' ? '⚡ Hyper' : '🎯 Simple') + '</span>';
+    html += s.slides + ' slide' + (s.slides !== 1 ? 's' : '') + ' &bull; ' + s.aspectRatio + ' &bull; Edited ' + s.lastEdited;
+    html += '</div>';
+    html += '<div class="slider-lib-pages">Used on: ' + pageList + '</div>';
+    html += '</div>';
+    html += '<div class="slider-lib-actions">';
+    html += '<button class="btn btn-primary btn-sm" onclick="useSliderConfig(' + s.id + ')" title="Use on this page">Use Here</button>';
+    html += '<button class="btn btn-secondary btn-sm" onclick="cloneSliderConfig(' + s.id + ')" title="Clone and customize">Clone</button>';
+    html += '<button class="btn btn-ghost btn-sm" onclick="editSliderConfig(' + s.id + ')" title="Edit original">✏</button>';
+    html += '<button class="btn btn-ghost btn-sm" style="color:var(--red-primary)" onclick="deleteSliderConfig(' + s.id + ')" title="Delete">🗑</button>';
+    html += '</div>';
+    html += '</div>';
+  });
+  return html;
+}
+function filterSliderManager(q) {
+  const lower = q.toLowerCase();
+  const filtered = savedSliders.filter(function(s) {
+    return s.name.toLowerCase().indexOf(lower) >= 0 || s.pages.join(' ').toLowerCase().indexOf(lower) >= 0;
+  });
+  document.getElementById('sliderManagerList').innerHTML = renderSliderCards(filtered);
+}
+function useSliderConfig(id) {
+  const s = savedSliders.filter(function(x) { return x.id === id; })[0];
+  if (s) {
+    showToast('Loaded "' + s.name + '" on this page');
+    closeSliderManager();
+  }
+}
+function cloneSliderConfig(id) {
+  const s = savedSliders.filter(function(x) { return x.id === id; })[0];
+  if (s) {
+    savedSliders.push({ id: Date.now(), name: s.name + ' (Copy)', slides: s.slides, lastEdited: new Date().toISOString().split('T')[0], thumbnail: s.thumbnail, pages: [], aspectRatio: s.aspectRatio, mode: s.mode });
+    showToast('Cloned "' + s.name + '"');
+    renderSliderManagerContent();
+  }
+}
+function editSliderConfig(id) {
+  const s = savedSliders.filter(function(x) { return x.id === id; })[0];
+  if (s) {
+    showToast('Opening "' + s.name + '" for editing...');
+    closeSliderManager();
+  }
+}
+function deleteSliderConfig(id) {
+  const idx = savedSliders.findIndex(function(x) { return x.id === id; });
+  if (idx >= 0) {
+    const name = savedSliders[idx].name;
+    savedSliders.splice(idx, 1);
+    showToast('Deleted "' + name + '"');
+    renderSliderManagerContent();
+  }
+}
+
+/* ══════════════════════════════════════════
+   INIT
+   ══════════════════════════════════════════ */
+if (state.firstRun) {
+  showSplash();
+} else {
+  renderHeroGrid();
+}
+</script>
+</body>
+</html>

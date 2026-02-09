@@ -19,6 +19,7 @@ import type {
 import { parseArticles, stringifyArticles } from "../../models/IExternalArticle";
 import type { IExternalArticle } from "../../models/IExternalArticle";
 import { LAYOUT_OPTIONS } from "../../models/IHyperNewsLayout";
+import TemplatesStep from "./TemplatesStep";
 import SourcesStep from "./SourcesStep";
 import LayoutStep from "./LayoutStep";
 import DisplayStep from "./DisplayStep";
@@ -31,6 +32,13 @@ import FiltersStep from "./FiltersStep";
 
 /** Step definitions */
 var steps: Array<IWizardStepDef<INewsWizardState>> = [
+  {
+    id: "templates",
+    label: "Choose a Template",
+    shortLabel: "Template",
+    helpText: "Pick a pre-built template to get started quickly, or choose Custom to configure everything yourself.",
+    component: TemplatesStep,
+  },
   {
     id: "sources",
     label: "Content Sources",
