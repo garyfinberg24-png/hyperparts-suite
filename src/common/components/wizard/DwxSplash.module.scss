@@ -1,0 +1,238 @@
+// ══════════════════════════════════════════════════
+// DWx Brand Splash Screen — Shared Styles
+// Used by all HyperParts web part WelcomeStep components
+// ══════════════════════════════════════════════════
+
+// ── DWx Brand Strip ──
+.brandStrip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: linear-gradient(90deg, #0a1e36 0%, #0e2a47 100%);
+  border-bottom: 2px solid #2b88d8;
+}
+
+.brandLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brandNameBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.brandDwx {
+  font-size: 18px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+
+.brandDwxAccent {
+  color: #4fc3f7;
+}
+
+.brandSub {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+}
+
+.brandBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  background: rgba(79, 195, 247, 0.15);
+  border: 1px solid rgba(79, 195, 247, 0.25);
+  border-radius: 12px;
+  font-size: 10px;
+  color: #4fc3f7;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.brandBadgeStar {
+  font-size: 12px;
+  line-height: 1;
+}
+
+// ── Hero Banner ──
+.splashHero {
+  background: linear-gradient(135deg, #0e2a47 0%, #143d6b 35%, #1e6cb5 70%, #2b88d8 100%);
+  padding: 32px 48px 28px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+  }
+}
+
+.splashHeroBrand {
+  position: relative;
+  z-index: 1;
+}
+
+.splashLogoRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.splashBolt {
+  font-size: 22px;
+  filter: drop-shadow(0 0 8px rgba(80, 181, 255, 0.6));
+}
+
+.splashHyperText {
+  font-size: 38px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -1px;
+}
+
+.splashPartText {
+  font-size: 38px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #7ec8e3, #c8e6f5);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -1px;
+}
+
+.splashTagline {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 400;
+  position: relative;
+  z-index: 1;
+  line-height: 1.6;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.splashTaglineStrong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+// ── Body / Cards ──
+.splashBody {
+  flex: 1;
+  padding: 24px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  background: #ffffff;
+}
+
+.splashCards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  width: 100%;
+}
+
+.splashCardsThreeCol {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.splashCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 10px 14px;
+  border-radius: 10px;
+  background: #f7f9fc;
+  border: 1px solid #e1e8ef;
+  transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+
+  &:hover {
+    border-color: #2b88d8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(43, 136, 216, 0.12);
+  }
+}
+
+.splashCardIcon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #0e2a47, #1e6cb5);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 2px 8px rgba(14, 42, 71, 0.2);
+}
+
+.splashCardTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0e2a47;
+  text-align: center;
+}
+
+.splashCardDesc {
+  font-size: 11px;
+  color: #8a96a8;
+  text-align: center;
+  line-height: 1.35;
+}
+
+// ── CTA ──
+.splashCta {
+  padding: 12px 44px;
+  background: linear-gradient(135deg, #143d6b, #2b88d8);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(20, 61, 107, 0.3);
+  transition: transform 0.15s, box-shadow 0.15s;
+  letter-spacing: 0.3px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(43, 136, 216, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #4fc3f7;
+    outline-offset: 2px;
+  }
+}
+
+.splashHint {
+  font-size: 12px;
+  color: #a19f9d;
+}
