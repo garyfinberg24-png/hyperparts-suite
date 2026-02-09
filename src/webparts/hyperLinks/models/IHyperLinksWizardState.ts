@@ -5,6 +5,7 @@ import type {
   HyperLinksHoverEffect,
   HyperLinksBorderRadius,
   HyperLinksAlignment,
+  HyperLinksBackgroundMode,
 } from "./IHyperLink";
 
 // ============================================================
@@ -19,6 +20,14 @@ export interface IWizardLayoutStyle {
   tileSize: HyperLinksTileSize;
   gridColumns: number;
   compactAlignment: HyperLinksAlignment;
+  backgroundMode: HyperLinksBackgroundMode;
+  backgroundColor: string;
+  backgroundGradient: string;
+  backgroundImageUrl: string;
+  backgroundImageDarken: boolean;
+  textColor: string;
+  iconColor: string;
+  activePresetId: string;
 }
 
 /** Icons & display settings (Step 2) */
@@ -61,6 +70,14 @@ export var DEFAULT_LINKS_WIZARD_STATE: ILinksWizardState = {
     tileSize: "medium",
     gridColumns: 4,
     compactAlignment: "left",
+    backgroundMode: "none",
+    backgroundColor: "",
+    backgroundGradient: "",
+    backgroundImageUrl: "",
+    backgroundImageDarken: false,
+    textColor: "",
+    iconColor: "",
+    activePresetId: "",
   },
   iconsDisplay: {
     showIcons: true,
@@ -104,7 +121,23 @@ export function getHoverEffectDisplayName(effect: HyperLinksHoverEffect): string
     case "glow": return "Glow";
     case "zoom": return "Zoom";
     case "darken": return "Darken";
+    case "pulse": return "Pulse";
+    case "bounce": return "Bounce";
+    case "shake": return "Shake";
+    case "rotate": return "Rotate";
+    case "shimmer": return "Shimmer";
     default: return effect;
+  }
+}
+
+/** Background mode display names */
+export function getBackgroundModeDisplayName(mode: HyperLinksBackgroundMode): string {
+  switch (mode) {
+    case "none": return "None";
+    case "color": return "Solid Color";
+    case "gradient": return "Gradient";
+    case "image": return "Image";
+    default: return mode;
   }
 }
 

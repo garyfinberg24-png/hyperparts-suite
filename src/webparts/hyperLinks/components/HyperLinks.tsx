@@ -1,5 +1,5 @@
 import * as React from "react";
-import type { IHyperLinksWebPartProps, HyperLinksLayoutMode, IHyperLink } from "../models";
+import type { IHyperLinksWebPartProps, HyperLinksLayoutMode, HyperLinksBackgroundMode, IHyperLink } from "../models";
 import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton } from "../../../common/components";
 import { HyperWizard } from "../../../common/components/wizard/HyperWizard";
 import { useHyperLinks } from "../hooks/useHyperLinks";
@@ -63,7 +63,35 @@ function buildLayoutProps(
     borderRadius: props.borderRadius || "medium",
     compactAlignment: props.compactAlignment || "left",
     enableColorCustomization: props.enableColorCustomization,
+    textColor: props.textColor || undefined,
+    iconColor: props.iconColor || undefined,
   };
+}
+
+/** Build background container inline styles */
+function buildBackgroundStyle(
+  mode: HyperLinksBackgroundMode,
+  color: string,
+  gradient: string,
+  imageUrl: string,
+  darken: boolean
+): React.CSSProperties | undefined {
+  if (!mode || mode === "none") return undefined;
+
+  var style: React.CSSProperties = {};
+
+  if (mode === "color" && color) {
+    style.backgroundColor = color;
+  } else if (mode === "gradient" && gradient) {
+    style.background = gradient;
+  } else if (mode === "image" && imageUrl) {
+    style.backgroundImage = "url(" + imageUrl + ")";
+    style.backgroundSize = "cover";
+    style.backgroundPosition = "center";
+    style.backgroundRepeat = "no-repeat";
+  }
+
+  return Object.keys(style).length > 0 ? style : undefined;
 }
 
 const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
@@ -105,6 +133,9 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
     props.enableGrouping, props.enableAudienceTargeting, props.enableSearch,
     props.enableAnalytics, props.enableHealthCheck, props.enablePopularBadges,
     props.showWizardOnInit,
+    props.backgroundMode, props.backgroundColor, props.backgroundGradient,
+    props.backgroundImageUrl, props.backgroundImageDarken,
+    props.textColor, props.iconColor, props.activePresetId,
   ]);
 
   // Handle wizard apply
@@ -172,6 +203,17 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
   }
 
   const LayoutComponent = getLayoutComponent(props.layoutMode);
+
+  // Background wrapper helper
+  var bgMode = props.backgroundMode || "none";
+  var bgStyle = buildBackgroundStyle(
+    bgMode,
+    props.backgroundColor || "",
+    props.backgroundGradient || "",
+    props.backgroundImageUrl || "",
+    !!props.backgroundImageDarken
+  );
+  var hasBackground = bgMode !== "none" && !!bgStyle;
 
   // Search bar element (if enabled)
   var searchBarElement = props.enableSearch
@@ -244,6 +286,22 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
       );
     });
 
+    // Build content area — grouped
+    var groupedContent = React.createElement("div", { className: styles.content }, groupElements);
+
+    // Wrap in background container if needed
+    var groupedBody = hasBackground
+      ? React.createElement("div", {
+          className: styles.backgroundContainer,
+          style: bgStyle,
+        },
+          bgMode === "image" && props.backgroundImageDarken
+            ? React.createElement("div", { className: styles.backgroundOverlay })
+            : undefined,
+          React.createElement("div", { className: styles.backgroundContent }, groupedContent)
+        )
+      : groupedContent;
+
     return React.createElement(
       "div",
       {
@@ -255,12 +313,31 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
         ? React.createElement("h2", { className: styles.title }, props.title)
         : undefined,
       searchBarElement,
-      React.createElement("div", { className: styles.content }, groupElements),
+      groupedBody,
       wizardElement
     );
   }
 
-  // Non-grouped rendering
+  // Non-grouped rendering — layout content
+  var layoutContent = React.createElement(
+    "div",
+    { className: styles.content },
+    React.createElement(LayoutComponent, buildLayoutProps(displayLinks, handleLinkClick, props))
+  );
+
+  // Wrap in background container if needed
+  var mainBody = hasBackground
+    ? React.createElement("div", {
+        className: styles.backgroundContainer,
+        style: bgStyle,
+      },
+        bgMode === "image" && props.backgroundImageDarken
+          ? React.createElement("div", { className: styles.backgroundOverlay })
+          : undefined,
+        React.createElement("div", { className: styles.backgroundContent }, layoutContent)
+      )
+    : layoutContent;
+
   return React.createElement(
     "div",
     {
@@ -272,11 +349,7 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
       ? React.createElement("h2", { className: styles.title }, props.title)
       : undefined,
     searchBarElement,
-    React.createElement(
-      "div",
-      { className: styles.content },
-      React.createElement(LayoutComponent, buildLayoutProps(displayLinks, handleLinkClick, props))
-    ),
+    mainBody,
     wizardElement
   );
 };

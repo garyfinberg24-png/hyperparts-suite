@@ -24,6 +24,8 @@ export const ListLayout: React.FC<ILinksLayoutProps> = function (props) {
             enableColorCustomization: props.enableColorCustomization,
             onLinkClick: props.onLinkClick,
             className: styles.listItem,
+            textColor: props.textColor,
+            iconColor: props.iconColor,
           },
           React.createElement("i", {
             key: "chevron",

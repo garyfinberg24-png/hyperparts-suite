@@ -62,6 +62,8 @@ export const FilmstripLayout: React.FC<ILinksLayoutProps> = function (props) {
             enableColorCustomization: props.enableColorCustomization,
             onLinkClick: props.onLinkClick,
             className: styles.filmstripItem,
+            textColor: props.textColor,
+            iconColor: props.iconColor,
           })
         );
       })

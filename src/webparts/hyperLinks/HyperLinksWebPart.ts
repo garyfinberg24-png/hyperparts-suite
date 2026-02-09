@@ -125,6 +125,30 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
     if (this.properties.enablePopularBadges === undefined) {
       this.properties.enablePopularBadges = false;
     }
+    if (this.properties.backgroundMode === undefined) {
+      this.properties.backgroundMode = "none";
+    }
+    if (this.properties.backgroundColor === undefined) {
+      this.properties.backgroundColor = "";
+    }
+    if (this.properties.backgroundGradient === undefined) {
+      this.properties.backgroundGradient = "";
+    }
+    if (this.properties.backgroundImageUrl === undefined) {
+      this.properties.backgroundImageUrl = "";
+    }
+    if (this.properties.backgroundImageDarken === undefined) {
+      this.properties.backgroundImageDarken = false;
+    }
+    if (this.properties.textColor === undefined) {
+      this.properties.textColor = "";
+    }
+    if (this.properties.iconColor === undefined) {
+      this.properties.iconColor = "";
+    }
+    if (this.properties.activePresetId === undefined) {
+      this.properties.activePresetId = "";
+    }
   }
 
   protected onDispose(): void {
@@ -650,6 +674,11 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
           { key: "glow", text: "Glow" },
           { key: "zoom", text: "Zoom" },
           { key: "darken", text: "Darken" },
+          { key: "pulse", text: "Pulse" },
+          { key: "bounce", text: "Bounce" },
+          { key: "shake", text: "Shake" },
+          { key: "rotate", text: "Rotate" },
+          { key: "shimmer", text: "Shimmer" },
         ],
       }),
       PropertyPaneDropdown("borderRadius", {
@@ -674,6 +703,63 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
             { key: "center", text: "Center" },
             { key: "right", text: "Right" },
           ],
+        })
+      );
+    }
+
+    // Background mode
+    page1Fields.push(
+      PropertyPaneHorizontalRule(),
+      PropertyPaneDropdown("backgroundMode", {
+        label: strings.BackgroundModeFieldLabel,
+        options: [
+          { key: "none", text: "None" },
+          { key: "color", text: "Solid Color" },
+          { key: "gradient", text: "Gradient" },
+          { key: "image", text: "Image" },
+        ],
+      })
+    );
+
+    // Conditional background fields
+    if (this.properties.backgroundMode === "color") {
+      page1Fields.push(
+        PropertyPaneTextField("backgroundColor", {
+          label: strings.BackgroundColorFieldLabel,
+          description: "CSS color (e.g. #f5f5f5, rgba(0,120,212,0.1))",
+        })
+      );
+    }
+    if (this.properties.backgroundMode === "gradient") {
+      page1Fields.push(
+        PropertyPaneTextField("backgroundGradient", {
+          label: strings.BackgroundGradientFieldLabel,
+          description: "CSS gradient (e.g. linear-gradient(135deg, #667eea, #764ba2))",
+        })
+      );
+    }
+    if (this.properties.backgroundMode === "image") {
+      page1Fields.push(
+        PropertyPaneTextField("backgroundImageUrl", {
+          label: strings.BackgroundImageUrlFieldLabel,
+          description: "URL to a background image",
+        }),
+        PropertyPaneToggle("backgroundImageDarken", {
+          label: strings.BackgroundImageDarkenLabel,
+        })
+      );
+    }
+
+    // Text / icon color overrides (when background is active)
+    if (this.properties.backgroundMode !== "none") {
+      page1Fields.push(
+        PropertyPaneTextField("textColor", {
+          label: strings.TextColorFieldLabel,
+          description: "CSS color for link text (e.g. #ffffff)",
+        }),
+        PropertyPaneTextField("iconColor", {
+          label: strings.IconColorFieldLabel,
+          description: "CSS color for icons (e.g. #ffffff)",
         })
       );
     }

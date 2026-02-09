@@ -8,11 +8,14 @@ import {
   DEFAULT_LINKS_WIZARD_STATE,
   getLayoutDisplayName,
   getHoverEffectDisplayName,
+  getBackgroundModeDisplayName,
   getBorderRadiusDisplayName,
   getIconSizeDisplayName,
   countEnabledFeatures,
 } from "../../models/IHyperLinksWizardState";
 import type { IHyperLinksWebPartProps } from "../../models/IHyperLinksWebPartProps";
+import { getPresetById } from "../../utils/presetStyles";
+import PresetGalleryStep from "./PresetGalleryStep";
 import LayoutStyleStep from "./LayoutStyleStep";
 import IconsDisplayStep from "./IconsDisplayStep";
 import GroupingTargetingStep from "./GroupingTargetingStep";
@@ -24,10 +27,25 @@ import FeaturesStep from "./FeaturesStep";
 
 var steps: Array<IWizardStepDef<ILinksWizardState>> = [
   {
+    id: "presetGallery",
+    label: "Style Gallery",
+    shortLabel: "Gallery",
+    helpText: function (state: ILinksWizardState): string {
+      if (state.layoutStyle.activePresetId) {
+        var preset = getPresetById(state.layoutStyle.activePresetId);
+        if (preset) {
+          return "Using \"" + preset.name + "\" preset. Continue to Layout & Style to customize further.";
+        }
+      }
+      return "Pick a preset style to instantly theme your links, or choose Custom to configure everything yourself.";
+    },
+    component: PresetGalleryStep,
+  },
+  {
     id: "layoutStyle",
     label: "Layout & Style",
     shortLabel: "Layout",
-    helpText: "Choose your layout and visual style. Grid works great for most scenarios, but try Filmstrip for horizontal scrolling or Tiles for image-rich links.",
+    helpText: "Choose your layout, hover effects, background, and visual style. 10 hover effects and 4 background modes available.",
     component: LayoutStyleStep,
   },
   {
@@ -86,6 +104,16 @@ function buildResult(state: ILinksWizardState): Partial<IHyperLinksWebPartProps>
     gridColumns: state.layoutStyle.gridColumns,
     compactAlignment: state.layoutStyle.compactAlignment,
 
+    // Background
+    backgroundMode: state.layoutStyle.backgroundMode,
+    backgroundColor: state.layoutStyle.backgroundColor,
+    backgroundGradient: state.layoutStyle.backgroundGradient,
+    backgroundImageUrl: state.layoutStyle.backgroundImageUrl,
+    backgroundImageDarken: state.layoutStyle.backgroundImageDarken,
+    textColor: state.layoutStyle.textColor,
+    iconColor: state.layoutStyle.iconColor,
+    activePresetId: state.layoutStyle.activePresetId,
+
     // Icons & display
     showIcons: state.iconsDisplay.showIcons,
     iconSize: state.iconsDisplay.iconSize,
@@ -112,6 +140,16 @@ function buildResult(state: ILinksWizardState): Partial<IHyperLinksWebPartProps>
 function buildSummary(state: ILinksWizardState): IWizardSummaryRow[] {
   var rows: IWizardSummaryRow[] = [];
 
+  // Preset
+  if (state.layoutStyle.activePresetId) {
+    var preset = getPresetById(state.layoutStyle.activePresetId);
+    rows.push({
+      label: "Preset Style",
+      value: preset ? preset.name : state.layoutStyle.activePresetId,
+      type: "badgeGreen",
+    });
+  }
+
   // Layout
   rows.push({
     label: "Layout",
@@ -130,6 +168,27 @@ function buildSummary(state: ILinksWizardState): IWizardSummaryRow[] {
     value: getBorderRadiusDisplayName(state.layoutStyle.borderRadius),
     type: "text",
   });
+
+  // Background
+  if (state.layoutStyle.backgroundMode !== "none") {
+    rows.push({
+      label: "Background",
+      value: getBackgroundModeDisplayName(state.layoutStyle.backgroundMode),
+      type: "badge",
+    });
+  }
+
+  // Color overrides
+  if (state.layoutStyle.textColor || state.layoutStyle.iconColor) {
+    var colorParts: string[] = [];
+    if (state.layoutStyle.textColor) { colorParts.push("Text: " + state.layoutStyle.textColor); }
+    if (state.layoutStyle.iconColor) { colorParts.push("Icon: " + state.layoutStyle.iconColor); }
+    rows.push({
+      label: "Color Overrides",
+      value: colorParts.join(", "),
+      type: "text",
+    });
+  }
 
   // Show columns for grid-based layouts
   if (["grid", "tiles", "card", "iconGrid"].indexOf(state.layoutStyle.layoutMode) !== -1) {
@@ -192,6 +251,14 @@ export function buildStateFromProps(props: IHyperLinksWebPartProps): ILinksWizar
       tileSize: props.tileSize || "medium",
       gridColumns: props.gridColumns || 4,
       compactAlignment: props.compactAlignment || "left",
+      backgroundMode: props.backgroundMode || "none",
+      backgroundColor: props.backgroundColor || "",
+      backgroundGradient: props.backgroundGradient || "",
+      backgroundImageUrl: props.backgroundImageUrl || "",
+      backgroundImageDarken: !!props.backgroundImageDarken,
+      textColor: props.textColor || "",
+      iconColor: props.iconColor || "",
+      activePresetId: props.activePresetId || "",
     },
     iconsDisplay: {
       showIcons: props.showIcons,
@@ -223,13 +290,13 @@ export var LINKS_WIZARD_CONFIG: IHyperWizardConfig<ILinksWizardState, Partial<IH
     features: [
       {
         icon: "\uD83C\uDFA8",
-        title: "8 Layout Modes",
-        description: "Grid, Filmstrip, Tiles, Card, Button, List, Compact, and Icon Grid with 5 hover effects",
+        title: "12 Preset Styles",
+        description: "Ocean Breeze, Dark Mode, Neon Pop, Corporate Blue, and more. One-click themes for your links.",
       },
       {
-        icon: "\uD83D\uDD0D",
-        title: "Search & Filter",
-        description: "Instant search bar to find links by title, description, or group name",
+        icon: "\uD83D\uDCAB",
+        title: "10 Hover Effects",
+        description: "Lift, Glow, Pulse, Bounce, Shimmer, Shake, Rotate, Zoom, Darken, and more",
       },
       {
         icon: "\uD83C\uDFAF",

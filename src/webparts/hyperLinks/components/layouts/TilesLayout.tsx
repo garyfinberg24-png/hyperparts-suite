@@ -17,6 +17,8 @@ interface ITileItemProps {
   showThumbnail: boolean;
   enableColorCustomization: boolean;
   onLinkClick: (link: IHyperLink) => void;
+  textColor?: string;
+  iconColor?: string;
 }
 
 const TileItem: React.FC<ITileItemProps> = function (props) {
@@ -25,6 +27,11 @@ const TileItem: React.FC<ITileItemProps> = function (props) {
   const tileStyle: React.CSSProperties = {
     height: props.height + "px",
   };
+
+  // Apply container-level color overrides
+  if (props.textColor) {
+    tileStyle.color = props.textColor;
+  }
 
   // Background image
   if (props.showThumbnail && link.thumbnailUrl) {
@@ -50,11 +57,13 @@ const TileItem: React.FC<ITileItemProps> = function (props) {
   const contentChildren: React.ReactNode[] = [];
 
   if (props.showIcon && link.icon && link.icon.type === "fluent") {
+    var tileIconColor = (link.icon.color) ? link.icon.color : props.iconColor;
     contentChildren.push(
       React.createElement("i", {
         key: "icon",
         className: styles.tileIcon + " ms-Icon ms-Icon--" + link.icon.value,
         "aria-hidden": "true",
+        style: tileIconColor ? { color: tileIconColor } : undefined,
       })
     );
   }
@@ -111,6 +120,8 @@ export const TilesLayout: React.FC<ILinksLayoutProps> = function (props) {
         showThumbnail: props.showThumbnails,
         enableColorCustomization: props.enableColorCustomization,
         onLinkClick: props.onLinkClick,
+        textColor: props.textColor,
+        iconColor: props.iconColor,
       });
     })
   );

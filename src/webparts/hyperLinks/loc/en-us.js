@@ -44,6 +44,13 @@ define([], function () {
     GroupNameLabel: "Group",
     RemoveGroupLabel: "Remove Group",
     AddGroupLabel: "Add Group",
-    NewGroupDefaultName: "Group"
+    NewGroupDefaultName: "Group",
+    BackgroundModeFieldLabel: "Background Mode",
+    BackgroundColorFieldLabel: "Background Color",
+    BackgroundGradientFieldLabel: "Background Gradient",
+    BackgroundImageUrlFieldLabel: "Background Image URL",
+    BackgroundImageDarkenLabel: "Darken Background Image",
+    TextColorFieldLabel: "Text Color Override",
+    IconColorFieldLabel: "Icon Color Override"
   };
 });

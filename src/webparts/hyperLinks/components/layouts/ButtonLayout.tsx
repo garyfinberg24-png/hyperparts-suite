@@ -22,6 +22,8 @@ export const ButtonLayout: React.FC<ILinksLayoutProps> = function (props) {
           enableColorCustomization: props.enableColorCustomization,
           onLinkClick: props.onLinkClick,
           className: styles.button,
+          textColor: props.textColor,
+          iconColor: props.iconColor,
         })
       );
     })

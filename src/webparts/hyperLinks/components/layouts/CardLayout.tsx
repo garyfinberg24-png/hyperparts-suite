@@ -9,6 +9,8 @@ interface ICardItemProps {
   showDescription: boolean;
   showThumbnail: boolean;
   onLinkClick: (link: IHyperLink) => void;
+  textColor?: string;
+  iconColor?: string;
 }
 
 const CardItem: React.FC<ICardItemProps> = function (props) {
@@ -34,11 +36,13 @@ const CardItem: React.FC<ICardItemProps> = function (props) {
   // Icon + title row
   const titleRow: React.ReactNode[] = [];
   if (props.showIcon && link.icon && link.icon.type === "fluent") {
+    var cardIconColor = (link.icon.color) ? link.icon.color : props.iconColor;
     titleRow.push(
       React.createElement("i", {
         key: "icon",
         className: styles.cardIcon + " ms-Icon ms-Icon--" + link.icon.value,
         "aria-hidden": "true",
+        style: cardIconColor ? { color: cardIconColor } : undefined,
       })
     );
   }
@@ -80,6 +84,7 @@ const CardItem: React.FC<ICardItemProps> = function (props) {
       href: link.url || "#",
       target: link.openInNewTab ? "_blank" : undefined,
       rel: link.openInNewTab ? "noopener noreferrer" : undefined,
+      style: props.textColor ? { color: props.textColor } as React.CSSProperties : undefined,
       role: "listitem",
       onClick: function (e: React.MouseEvent) {
         props.onLinkClick(link);
@@ -106,6 +111,8 @@ export const CardLayout: React.FC<ILinksLayoutProps> = function (props) {
         showDescription: props.showDescriptions,
         showThumbnail: props.showThumbnails,
         onLinkClick: props.onLinkClick,
+        textColor: props.textColor,
+        iconColor: props.iconColor,
       });
     })
   );

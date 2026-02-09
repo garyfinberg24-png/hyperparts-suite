@@ -27,6 +27,8 @@ export const CompactLayout: React.FC<ILinksLayoutProps> = function (props) {
           enableColorCustomization: props.enableColorCustomization,
           onLinkClick: props.onLinkClick,
           className: styles.chip,
+          textColor: props.textColor,
+          iconColor: props.iconColor,
         })
       );
     })

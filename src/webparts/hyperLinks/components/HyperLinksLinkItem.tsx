@@ -15,6 +15,10 @@ export interface IHyperLinksLinkItemProps {
   onLinkClick: (link: IHyperLink) => void;
   className?: string;
   children?: React.ReactNode;
+  /** Override text color (CSS color) from container background */
+  textColor?: string;
+  /** Override icon color (CSS color) from container background */
+  iconColor?: string;
 }
 
 function capitalize(str: string): string {
@@ -48,14 +52,20 @@ export const HyperLinksLinkItem: React.FC<IHyperLinksLinkItemProps> = React.memo
       if (sizeClass) classList.push(sizeClass);
     }
 
-    // Inline style for custom background color
+    // Inline style for custom background color + text/icon color overrides
     const inlineStyle: React.CSSProperties = {};
     if (props.enableColorCustomization && link.backgroundColor) {
       inlineStyle.backgroundColor = link.backgroundColor;
     }
+    if (props.textColor) {
+      inlineStyle.color = props.textColor;
+    }
 
     // Build children
     const children: React.ReactNode[] = [];
+
+    // Determine icon color: per-link override > container override > default
+    var effectiveIconColor = (link.icon && link.icon.color) ? link.icon.color : props.iconColor;
 
     // Icon
     if (resolved) {
@@ -65,7 +75,7 @@ export const HyperLinksLinkItem: React.FC<IHyperLinksLinkItemProps> = React.memo
             key: "icon",
             className: styles.linkIcon + " " + resolved.className,
             "aria-hidden": "true",
-            style: link.icon && link.icon.color ? { color: link.icon.color } : undefined,
+            style: effectiveIconColor ? { color: effectiveIconColor } : undefined,
           })
         );
       } else if (resolved.type === "emoji") {

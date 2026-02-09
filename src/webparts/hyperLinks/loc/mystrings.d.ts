@@ -44,6 +44,13 @@ declare interface IHyperLinksWebPartStrings {
   RemoveGroupLabel: string;
   AddGroupLabel: string;
   NewGroupDefaultName: string;
+  BackgroundModeFieldLabel: string;
+  BackgroundColorFieldLabel: string;
+  BackgroundGradientFieldLabel: string;
+  BackgroundImageUrlFieldLabel: string;
+  BackgroundImageDarkenLabel: string;
+  TextColorFieldLabel: string;
+  IconColorFieldLabel: string;
 }
 
 declare module "HyperLinksWebPartStrings" {

@@ -41,6 +41,89 @@
   }
 }
 
+// ── New shape / animation hover effects ──
+
+:global {
+  @keyframes hyperLinkPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes hyperLinkBounce {
+    0%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-6px); }
+    60% { transform: translateY(-3px); }
+  }
+
+  @keyframes hyperLinkShake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-3px); }
+    40% { transform: translateX(3px); }
+    60% { transform: translateX(-2px); }
+    80% { transform: translateX(2px); }
+  }
+
+  @keyframes hyperLinkShimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+}
+
+.hoverPulse {
+  &:hover {
+    animation: hyperLinkPulse 0.6s ease;
+  }
+}
+
+.hoverBounce {
+  &:hover {
+    animation: hyperLinkBounce 0.5s ease;
+  }
+}
+
+.hoverShake {
+  &:hover {
+    animation: hyperLinkShake 0.4s ease;
+  }
+}
+
+.hoverRotate {
+  &:hover {
+    transform: rotate(2deg) scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.hoverShimmer {
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.2) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+
+  &:hover::after {
+    opacity: 1;
+    animation: hyperLinkShimmer 1.2s linear infinite;
+  }
+}
+
 // Border radius variants
 .radiusSmall {
   border-radius: 4px;

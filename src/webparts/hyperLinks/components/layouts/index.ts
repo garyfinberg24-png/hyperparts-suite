@@ -21,6 +21,10 @@ export interface ILinksLayoutProps {
   borderRadius: HyperLinksBorderRadius;
   compactAlignment: HyperLinksAlignment;
   enableColorCustomization: boolean;
+  /** Text color override from background/preset */
+  textColor?: string;
+  /** Icon color override from background/preset */
+  iconColor?: string;
 }
 
 export { CompactLayout } from "./CompactLayout";

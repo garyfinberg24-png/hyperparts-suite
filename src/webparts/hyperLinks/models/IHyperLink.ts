@@ -25,13 +25,45 @@ export type HyperLinksTileSize = "small" | "medium" | "large";
 export type HyperLinksIconSize = "small" | "medium" | "large";
 
 /** Hover effect options */
-export type HyperLinksHoverEffect = "none" | "lift" | "glow" | "zoom" | "darken";
+export type HyperLinksHoverEffect =
+  | "none" | "lift" | "glow" | "zoom" | "darken"
+  | "pulse" | "bounce" | "shake" | "rotate" | "shimmer";
 
 /** Border radius presets */
 export type HyperLinksBorderRadius = "none" | "small" | "medium" | "large" | "round";
 
 /** Compact layout alignment */
 export type HyperLinksAlignment = "left" | "center" | "right";
+
+/** Background mode for links container */
+export type HyperLinksBackgroundMode = "none" | "color" | "gradient" | "image";
+
+/** Background configuration for the links container */
+export interface IHyperLinksBackground {
+  mode: HyperLinksBackgroundMode;
+  color?: string;
+  gradient?: string;
+  imageUrl?: string;
+  imageDarken?: boolean;
+}
+
+/** Preset style definition for the links gallery */
+export interface IHyperLinkPresetStyle {
+  id: string;
+  name: string;
+  description: string;
+  preview: string;
+  background: IHyperLinksBackground;
+  hoverEffect: HyperLinksHoverEffect;
+  borderRadius: HyperLinksBorderRadius;
+  textColor?: string;
+  iconColor?: string;
+}
+
+/** Default background */
+export var DEFAULT_BACKGROUND: IHyperLinksBackground = {
+  mode: "none",
+};
 
 /** A single quick link */
 export interface IHyperLink {

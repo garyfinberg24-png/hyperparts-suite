@@ -26,6 +26,8 @@ export const GridLayout: React.FC<ILinksLayoutProps> = function (props) {
           enableColorCustomization: props.enableColorCustomization,
           onLinkClick: props.onLinkClick,
           className: styles.gridItem,
+          textColor: props.textColor,
+          iconColor: props.iconColor,
         })
       );
     })

@@ -8,6 +8,8 @@ interface IIconGridItemProps {
   link: IHyperLink;
   showIcon: boolean;
   onLinkClick: (link: IHyperLink) => void;
+  textColor?: string;
+  iconColor?: string;
 }
 
 const IconGridItem: React.FC<IIconGridItemProps> = function (props) {
@@ -23,7 +25,7 @@ const IconGridItem: React.FC<IIconGridItemProps> = function (props) {
           key: "icon",
           className: styles.icon + " " + resolved.className,
           "aria-hidden": "true",
-          style: link.icon && link.icon.color ? { color: link.icon.color } : undefined,
+          style: (link.icon && link.icon.color) ? { color: link.icon.color } : props.iconColor ? { color: props.iconColor } : undefined,
         })
       );
     } else if (resolved.type === "emoji") {
@@ -68,6 +70,7 @@ const IconGridItem: React.FC<IIconGridItemProps> = function (props) {
       href: link.url || "#",
       target: link.openInNewTab ? "_blank" : undefined,
       rel: link.openInNewTab ? "noopener noreferrer" : undefined,
+      style: props.textColor ? { color: props.textColor } as React.CSSProperties : undefined,
       role: "listitem",
       onClick: function (e: React.MouseEvent) {
         props.onLinkClick(link);
@@ -92,6 +95,8 @@ export const IconGridLayout: React.FC<ILinksLayoutProps> = function (props) {
         link: link,
         showIcon: props.showIcons,
         onLinkClick: props.onLinkClick,
+        textColor: props.textColor,
+        iconColor: props.iconColor,
       });
     })
   );
