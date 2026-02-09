@@ -11,7 +11,6 @@ import styles from "./WizardSteps.module.scss";
 // ============================================================
 
 var TemplatesStep: React.FC<IWizardStepProps<INewsWizardState>> = function (props) {
-  var state = props.state;
   var onChange = props.onChange;
 
   // Track which template is selected (by id)
