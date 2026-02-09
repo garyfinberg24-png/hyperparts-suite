@@ -10,7 +10,15 @@ export type CelebrationType =
   | "promotion"
   | "custom";
 
-export type BirthdaysViewMode = "upcomingList" | "monthlyCalendar" | "cardCarousel";
+export type BirthdaysViewMode =
+  | "upcomingList"
+  | "monthlyCalendar"
+  | "cardCarousel"
+  | "timeline"
+  | "featuredSpotlight"
+  | "masonryWall"
+  | "compactStrip"
+  | "cardGrid";
 export type BirthdaysTimeRange = "thisWeek" | "thisMonth" | "thisQuarter";
 export type AnimationType = "confetti" | "balloons" | "sparkle" | "none";
 
@@ -19,7 +27,10 @@ export const ALL_CELEBRATION_TYPES: CelebrationType[] = [
   "graduation", "retirement", "promotion", "custom",
 ];
 
-export const ALL_VIEW_MODES: BirthdaysViewMode[] = ["upcomingList", "monthlyCalendar", "cardCarousel"];
+export const ALL_VIEW_MODES: BirthdaysViewMode[] = [
+  "upcomingList", "monthlyCalendar", "cardCarousel",
+  "timeline", "featuredSpotlight", "masonryWall", "compactStrip", "cardGrid",
+];
 export const ALL_TIME_RANGES: BirthdaysTimeRange[] = ["thisWeek", "thisMonth", "thisQuarter"];
 export const ALL_ANIMATION_TYPES: AnimationType[] = ["confetti", "balloons", "sparkle", "none"];
 
@@ -28,6 +39,11 @@ export function getViewModeDisplayName(mode: BirthdaysViewMode): string {
     upcomingList: "Upcoming List",
     monthlyCalendar: "Monthly Calendar",
     cardCarousel: "Card Carousel",
+    timeline: "Timeline",
+    featuredSpotlight: "Featured Spotlight",
+    masonryWall: "Celebration Wall",
+    compactStrip: "Compact Strip",
+    cardGrid: "Card Grid",
   };
   return map[mode];
 }

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { format } from "date-fns";
 import type { BirthdaysViewMode } from "../models";
+import { getViewModeDisplayName } from "../models";
 import styles from "./HyperBirthdaysToolbar.module.scss";
 
 export interface IHyperBirthdaysToolbarProps {
@@ -15,28 +16,35 @@ export interface IHyperBirthdaysToolbarProps {
   onConfigure?: () => void;
 }
 
+var VIEW_MODE_OPTIONS: Array<{ key: BirthdaysViewMode; icon: string }> = [
+  { key: "upcomingList", icon: "\uD83D\uDCCB" },
+  { key: "monthlyCalendar", icon: "\uD83D\uDCC5" },
+  { key: "cardCarousel", icon: "\uD83C\uDFA0" },
+  { key: "timeline", icon: "\u23F3" },
+  { key: "featuredSpotlight", icon: "\u2B50" },
+  { key: "masonryWall", icon: "\uD83E\uDDF1" },
+  { key: "compactStrip", icon: "\uD83D\uDC65" },
+  { key: "cardGrid", icon: "\uD83D\uDD33" },
+];
+
 const HyperBirthdaysToolbar: React.FC<IHyperBirthdaysToolbarProps> = function (props) {
   const monthDate = new Date(props.currentYear, props.currentMonth, 1);
   const monthLabel = format(monthDate, "MMMM yyyy");
 
-  function makeViewButton(mode: BirthdaysViewMode, label: string): React.ReactNode {
-    const isActive = props.viewMode === mode;
-    const btnClass = isActive
-      ? styles.viewButton + " " + styles.viewButtonActive
-      : styles.viewButton;
+  var handleViewChange = React.useCallback(function (e: React.ChangeEvent<HTMLSelectElement>): void {
+    props.onViewModeChange(e.target.value as BirthdaysViewMode);
+  }, [props.onViewModeChange]);
 
-    return React.createElement(
-      "button",
-      {
-        key: mode,
-        className: btnClass,
-        onClick: function (): void { props.onViewModeChange(mode); },
-        type: "button",
-        "aria-pressed": isActive,
-      },
-      label
+  // View mode dropdown options
+  var viewOptions: React.ReactElement[] = [];
+  VIEW_MODE_OPTIONS.forEach(function (opt) {
+    viewOptions.push(
+      React.createElement("option", {
+        key: opt.key,
+        value: opt.key,
+      }, opt.icon + " " + getViewModeDisplayName(opt.key))
     );
-  }
+  });
 
   const monthNav = props.showMonthNav
     ? React.createElement(
@@ -87,9 +95,12 @@ const HyperBirthdaysToolbar: React.FC<IHyperBirthdaysToolbarProps> = function (p
     React.createElement(
       "div",
       { className: styles.controls },
-      makeViewButton("upcomingList", "List"),
-      makeViewButton("monthlyCalendar", "Calendar"),
-      makeViewButton("cardCarousel", "Carousel")
+      React.createElement("select", {
+        className: styles.viewSelect,
+        value: props.viewMode,
+        onChange: handleViewChange,
+        "aria-label": "Select view mode",
+      }, viewOptions)
     ),
     monthNav,
     configureButton

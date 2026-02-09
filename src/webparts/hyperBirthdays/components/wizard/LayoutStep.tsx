@@ -24,6 +24,36 @@ var VIEW_MODES: Array<{ key: BirthdaysViewMode; icon: string; name: string; desc
     name: "Card Carousel",
     description: "Horizontal scroll with navigation arrows",
   },
+  {
+    key: "timeline",
+    icon: "\u23F3",
+    name: "Timeline",
+    description: "Vertical timeline with alternating left/right cards",
+  },
+  {
+    key: "featuredSpotlight",
+    icon: "\u2B50",
+    name: "Featured Spotlight",
+    description: "Hero card for today's celebration with others below",
+  },
+  {
+    key: "masonryWall",
+    icon: "\uD83E\uDDF1",
+    name: "Celebration Wall",
+    description: "Pinterest-style masonry grid with varied card heights",
+  },
+  {
+    key: "compactStrip",
+    icon: "\uD83D\uDC65",
+    name: "Compact Strip",
+    description: "Mini avatar row with hover tooltips \u2014 great for narrow zones",
+  },
+  {
+    key: "cardGrid",
+    icon: "\uD83D\uDD33",
+    name: "Card Grid",
+    description: "Responsive CSS grid of celebration cards",
+  },
 ];
 
 var TIME_RANGES: Array<{ key: BirthdaysTimeRange; label: string }> = [

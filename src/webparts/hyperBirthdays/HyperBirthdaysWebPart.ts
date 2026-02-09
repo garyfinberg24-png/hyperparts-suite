@@ -150,6 +150,11 @@ export default class HyperBirthdaysWebPart extends BaseHyperWebPart<IHyperBirthd
                     { key: "upcomingList", text: "Upcoming List" },
                     { key: "monthlyCalendar", text: "Monthly Calendar" },
                     { key: "cardCarousel", text: "Card Carousel" },
+                    { key: "timeline", text: "Timeline" },
+                    { key: "featuredSpotlight", text: "Featured Spotlight" },
+                    { key: "masonryWall", text: "Celebration Wall" },
+                    { key: "compactStrip", text: "Compact Strip" },
+                    { key: "cardGrid", text: "Card Grid" },
                   ],
                 }),
                 PropertyPaneDropdown("timeRange", {

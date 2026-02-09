@@ -14,6 +14,11 @@ import HyperBirthdaysToolbar from "./HyperBirthdaysToolbar";
 import HyperBirthdaysUpcomingList from "./HyperBirthdaysUpcomingList";
 import HyperBirthdaysMonthCalendar from "./HyperBirthdaysMonthCalendar";
 import HyperBirthdaysCardCarousel from "./HyperBirthdaysCardCarousel";
+import HyperBirthdaysTimeline from "./HyperBirthdaysTimeline";
+import HyperBirthdaysFeaturedSpotlight from "./HyperBirthdaysFeaturedSpotlight";
+import HyperBirthdaysMasonryWall from "./HyperBirthdaysMasonryWall";
+import HyperBirthdaysCompactStrip from "./HyperBirthdaysCompactStrip";
+import HyperBirthdaysCardGrid from "./HyperBirthdaysCardGrid";
 import HyperBirthdaysAnimation from "./HyperBirthdaysAnimation";
 import styles from "./HyperBirthdays.module.scss";
 
@@ -184,45 +189,57 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
     setViewMode(mode);
   };
 
+  // Shared props for all layout components
+  var sharedLayoutProps = {
+    photoMap: photoMap,
+    photoSize: props.photoSize || 48,
+    enableTeamsDeepLink: props.enableTeamsDeepLink,
+    enableMilestoneBadges: props.enableMilestoneBadges,
+    sendWishesLabel: strings.SendWishesLabel,
+    onSelectCelebration: selectCelebration,
+  };
+
   // Render the active view
   let viewContent: React.ReactNode;
 
   if (viewMode === "monthlyCalendar") {
-    viewContent = React.createElement(HyperBirthdaysMonthCalendar, {
+    viewContent = React.createElement(HyperBirthdaysMonthCalendar, Object.assign({
       celebrations: visibleCelebrations,
-      photoMap: photoMap,
-      photoSize: props.photoSize || 48,
       year: currentYear,
       month: currentMonth,
-      enableTeamsDeepLink: props.enableTeamsDeepLink,
-      enableMilestoneBadges: props.enableMilestoneBadges,
-      sendWishesLabel: strings.SendWishesLabel,
-      onSelectCelebration: selectCelebration,
-    });
+    }, sharedLayoutProps));
   } else if (viewMode === "cardCarousel") {
-    viewContent = React.createElement(HyperBirthdaysCardCarousel, {
+    viewContent = React.createElement(HyperBirthdaysCardCarousel, Object.assign({
       celebrations: upcomingCelebrations,
-      photoMap: photoMap,
-      photoSize: props.photoSize || 48,
-      enableTeamsDeepLink: props.enableTeamsDeepLink,
-      enableMilestoneBadges: props.enableMilestoneBadges,
-      sendWishesLabel: strings.SendWishesLabel,
-      onSelectCelebration: selectCelebration,
-    });
+    }, sharedLayoutProps));
+  } else if (viewMode === "timeline") {
+    viewContent = React.createElement(HyperBirthdaysTimeline, Object.assign({
+      celebrations: upcomingCelebrations,
+    }, sharedLayoutProps));
+  } else if (viewMode === "featuredSpotlight") {
+    viewContent = React.createElement(HyperBirthdaysFeaturedSpotlight, Object.assign({
+      celebrations: upcomingCelebrations,
+    }, sharedLayoutProps));
+  } else if (viewMode === "masonryWall") {
+    viewContent = React.createElement(HyperBirthdaysMasonryWall, Object.assign({
+      celebrations: upcomingCelebrations,
+    }, sharedLayoutProps));
+  } else if (viewMode === "compactStrip") {
+    viewContent = React.createElement(HyperBirthdaysCompactStrip, Object.assign({
+      celebrations: upcomingCelebrations,
+    }, sharedLayoutProps));
+  } else if (viewMode === "cardGrid") {
+    viewContent = React.createElement(HyperBirthdaysCardGrid, Object.assign({
+      celebrations: upcomingCelebrations,
+    }, sharedLayoutProps));
   } else {
     // upcomingList (default)
-    viewContent = React.createElement(HyperBirthdaysUpcomingList, {
+    viewContent = React.createElement(HyperBirthdaysUpcomingList, Object.assign({
       celebrations: upcomingCelebrations,
-      photoMap: photoMap,
-      photoSize: props.photoSize || 48,
-      enableTeamsDeepLink: props.enableTeamsDeepLink,
-      enableMilestoneBadges: props.enableMilestoneBadges,
-      sendWishesLabel: strings.SendWishesLabel,
       todayLabel: strings.TodayLabel,
       thisWeekLabel: strings.ThisWeekLabel,
       thisMonthLabel: strings.ThisMonthLabel,
-      onSelectCelebration: selectCelebration,
-    });
+    }, sharedLayoutProps));
   }
 
   // Animation overlay (only for today's celebrations)

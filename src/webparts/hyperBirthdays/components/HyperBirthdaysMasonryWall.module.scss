@@ -1,0 +1,157 @@
+@import "~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss";
+
+.masonryGrid {
+  display: flex;
+  margin-left: -12px;
+  width: auto;
+}
+
+.masonryColumn {
+  padding-left: 12px;
+  background-clip: padding-box;
+}
+
+.wallCard {
+  background: $ms-color-white;
+  border: 1px solid $ms-color-neutralLight;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  margin-bottom: 12px;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+  }
+}
+
+.wallCardFeatured {
+  border-color: transparent;
+}
+
+.wallBanner {
+  position: relative;
+  padding: 20px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bannerEmoji {
+  font-size: 36px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+}
+
+.todayTag {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.25);
+  color: $ms-color-white;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: $ms-font-size-10;
+  font-weight: $ms-font-weight-bold;
+}
+
+.wallCardBody {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+.wallPhoto {
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.wallInitials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: $ms-color-white;
+  font-weight: $ms-font-weight-semibold;
+  flex-shrink: 0;
+}
+
+.wallInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.wallNameRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.wallEmoji {
+  font-size: 14px;
+}
+
+.wallName {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wallType {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+}
+
+.wallDate {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralTertiary;
+}
+
+.wallJobTitle {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralTertiary;
+  margin-top: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wallActions {
+  padding: 0 16px 14px;
+}
+
+.wallWishButton {
+  display: inline-block;
+  padding: 6px 14px;
+  border: 1px solid $ms-color-themePrimary;
+  border-radius: 6px;
+  background: $ms-color-white;
+  color: $ms-color-themePrimary;
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  text-decoration: none;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: $ms-color-themePrimary;
+    color: $ms-color-white;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+}
+
+.emptyWall {
+  text-align: center;
+  padding: 32px;
+  color: $ms-color-neutralTertiary;
+  font-size: $ms-font-size-14;
+}

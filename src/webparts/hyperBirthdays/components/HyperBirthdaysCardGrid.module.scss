@@ -1,0 +1,20 @@
+@import "~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss";
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+}
+
+.emptyGrid {
+  text-align: center;
+  padding: 32px;
+  color: $ms-color-neutralTertiary;
+  font-size: $ms-font-size-14;
+}
+
+@media (max-width: 600px) {
+  .cardGrid {
+    grid-template-columns: 1fr;
+  }
+}

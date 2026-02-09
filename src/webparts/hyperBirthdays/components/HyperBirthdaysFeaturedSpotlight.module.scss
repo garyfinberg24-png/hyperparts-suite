@@ -1,0 +1,158 @@
+@import "~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss";
+
+.spotlightContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+// Hero featured card
+.heroCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 24px;
+  border-radius: 16px;
+  color: $ms-color-white;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.todayBadge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(4px);
+  padding: 4px 14px;
+  border-radius: 12px;
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-bold;
+  color: $ms-color-white;
+  letter-spacing: 0.5px;
+}
+
+.heroEmoji {
+  font-size: 48px;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.heroPhoto {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  margin-bottom: 16px;
+}
+
+.heroInitials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: $ms-color-white;
+  font-weight: $ms-font-weight-bold;
+  border: 4px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  margin-bottom: 16px;
+}
+
+.heroInfo {
+  text-align: center;
+}
+
+.heroName {
+  font-size: $ms-font-size-24;
+  font-weight: $ms-font-weight-bold;
+  margin-bottom: 4px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.heroType {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: $ms-font-size-16;
+  opacity: 0.9;
+  margin-bottom: 4px;
+}
+
+.heroDate {
+  font-size: $ms-font-size-14;
+  opacity: 0.8;
+}
+
+.heroJobTitle {
+  font-size: $ms-font-size-12;
+  opacity: 0.7;
+  margin-top: 8px;
+}
+
+.heroDepartment {
+  font-size: $ms-font-size-12;
+  opacity: 0.6;
+}
+
+.heroWishButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  padding: 10px 24px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  color: $ms-color-white;
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: translateY(-1px);
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-white;
+    outline-offset: 2px;
+  }
+}
+
+// Remaining celebrations grid
+.remainingGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.emptySpotlight {
+  text-align: center;
+  padding: 32px;
+  color: $ms-color-neutralTertiary;
+  font-size: $ms-font-size-14;
+}
+
+@media (max-width: 600px) {
+  .heroCard {
+    padding: 24px 16px;
+  }
+
+  .heroName {
+    font-size: $ms-font-size-20;
+  }
+
+  .remainingGrid {
+    grid-template-columns: 1fr;
+  }
+}
