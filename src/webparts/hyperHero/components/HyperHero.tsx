@@ -2,100 +2,100 @@ import * as React from "react";
 import { useRef, useMemo } from "react";
 import type {
   IHyperHeroWebPartProps,
-  IHyperHeroTile,
+  IHyperHeroSlide,
   IHyperHeroCta,
   IHyperHeroGridLayout,
   IHyperHeroResponsiveLayouts,
 } from "../models";
 import {
-  DEFAULT_TILE,
+  DEFAULT_SLIDE,
   DEFAULT_GRADIENT,
   DEFAULT_HERO_FIELD_MAPPING,
 } from "../models";
 import type { Breakpoint } from "../../../common/models";
 import { useResponsive } from "../../../common/hooks";
 import { HyperErrorBoundary } from "../../../common/components";
-import { HyperHeroTile } from "./HyperHeroTile";
+import { HyperHeroSlide } from "./HyperHeroSlide";
 import { HyperHeroTransitionWrapper } from "./HyperHeroTransitionWrapper";
 import { HyperHeroSkeleton } from "./HyperHeroSkeleton";
 import { useHeroDynamicContent } from "../hooks/useHeroDynamicContent";
-import { useTileVisibility } from "../hooks/useTileVisibility";
+import { useSlideVisibility } from "../hooks/useSlideVisibility";
 import { hyperAnalytics } from "../../../common/services/HyperAnalytics";
 import HyperHeroSetupWizard from "./wizard/HyperHeroSetupWizard";
 import type { IWizardResult } from "./wizard/HyperHeroSetupWizard";
-import { HyperHeroTileEditor } from "./editor";
+import { HyperHeroSlideEditor } from "./editor";
 import { HyperHeroEditOverlay, HyperHeroEditToolbar } from "./editor";
 import styles from "./HyperHero.module.scss";
 
 export interface IHyperHeroComponentProps extends IHyperHeroWebPartProps {
   instanceId: string;
   isEditMode?: boolean;
-  onTilesChange?: (tiles: IHyperHeroTile[]) => void;
+  onSlidesChange?: (slides: IHyperHeroSlide[]) => void;
   onSettingsChange?: (partial: Partial<IHyperHeroWebPartProps>) => void;
 }
 
 /** Layout presets for the manual wizard mode */
 interface ILayoutPresetConfig {
-  tileCount: number;
+  slideCount: number;
   templateAreas: string;
   columnTemplate: string;
   rowTemplate: string;
 }
 
-function getLayoutPresetConfig(preset: string, tileCount: number): ILayoutPresetConfig {
+function getLayoutPresetConfig(preset: string, slideCount: number): ILayoutPresetConfig {
   if (preset === "split") {
     return {
-      tileCount: 2,
-      templateAreas: "'tile1 tile2'",
+      slideCount: 2,
+      templateAreas: "'slide1 slide2'",
       columnTemplate: "1fr 1fr",
       rowTemplate: "400px",
     };
   }
   if (preset === "thirds") {
     return {
-      tileCount: 3,
-      templateAreas: "'tile1 tile2 tile3'",
+      slideCount: 3,
+      templateAreas: "'slide1 slide2 slide3'",
       columnTemplate: "1fr 1fr 1fr",
       rowTemplate: "400px",
     };
   }
   if (preset === "heroSidebar") {
     return {
-      tileCount: 2,
-      templateAreas: "'tile1 tile1 tile2'",
+      slideCount: 2,
+      templateAreas: "'slide1 slide1 slide2'",
       columnTemplate: "1fr 1fr 1fr",
       rowTemplate: "400px",
     };
   }
   if (preset === "grid2x2") {
     return {
-      tileCount: 4,
-      templateAreas: "'tile1 tile2' 'tile3 tile4'",
+      slideCount: 4,
+      templateAreas: "'slide1 slide2' 'slide3 slide4'",
       columnTemplate: "1fr 1fr",
       rowTemplate: "200px 200px",
     };
   }
   // "single" or fallback
   return {
-    tileCount: tileCount || 1,
+    slideCount: slideCount || 1,
     templateAreas: "'main'",
     columnTemplate: "1fr",
     rowTemplate: "400px",
   };
 }
 
-function generateTilesForPreset(count: number, preset: string): IHyperHeroTile[] {
+function generateSlidesForPreset(count: number, preset: string): IHyperHeroSlide[] {
   const config = getLayoutPresetConfig(preset, count);
-  const finalCount = config.tileCount;
-  const tiles: IHyperHeroTile[] = [];
+  const finalCount = config.slideCount;
+  const slides: IHyperHeroSlide[] = [];
   const colors = ["#0078d4", "#107c10", "#d83b01", "#5c2d91", "#008272", "#ca5010"];
 
   for (let i = 0; i < finalCount; i++) {
-    const gridArea = preset === "single" ? "main" : "tile" + (i + 1);
-    tiles.push({
-      id: "tile-" + Date.now() + "-" + i,
+    const gridArea = preset === "single" ? "main" : "slide" + (i + 1);
+    slides.push({
+      id: "slide-" + Date.now() + "-" + i,
       gridArea: gridArea,
-      heading: "Tile " + (i + 1),
+      heading: "Slide " + (i + 1),
       subheading: "Click edit to customize",
       background: { type: "solidColor", backgroundColor: colors[i % colors.length] },
       gradientOverlay: DEFAULT_GRADIENT,
@@ -107,11 +107,11 @@ function generateTilesForPreset(count: number, preset: string): IHyperHeroTile[]
       enabled: true,
     });
   }
-  return tiles;
+  return slides;
 }
 
-function generateLayoutsForPreset(preset: string, tileCount: number, heroHeight?: number): IHyperHeroResponsiveLayouts {
-  const config = getLayoutPresetConfig(preset, tileCount);
+function generateLayoutsForPreset(preset: string, slideCount: number, heroHeight?: number): IHyperHeroResponsiveLayouts {
+  const config = getLayoutPresetConfig(preset, slideCount);
   const baseHeight = heroHeight || 400;
   const rowTemplate = config.rowTemplate.replace(/400/g, String(baseHeight));
 
@@ -128,18 +128,18 @@ function generateLayoutsForPreset(preset: string, tileCount: number, heroHeight?
   // Mobile always stacks to single column
   const mobileHeight = Math.round(baseHeight / 2);
   const mobileAreas: string[] = [];
-  for (let i = 0; i < config.tileCount; i++) {
-    const area = preset === "single" ? "main" : "tile" + (i + 1);
+  for (let i = 0; i < config.slideCount; i++) {
+    const area = preset === "single" ? "main" : "slide" + (i + 1);
     mobileAreas.push("'" + area + "'");
   }
   const mobile: IHyperHeroGridLayout = {
     columns: 1,
-    rows: config.tileCount,
+    rows: config.slideCount,
     gap: 8,
     templateAreas: mobileAreas.join(" "),
     columnTemplate: "1fr",
-    rowTemplate: Array(config.tileCount).fill(mobileHeight + "px").join(" "),
-    height: mobileHeight * config.tileCount,
+    rowTemplate: Array(config.slideCount).fill(mobileHeight + "px").join(" "),
+    height: mobileHeight * config.slideCount,
   };
 
   const tabletHeight = Math.round(baseHeight * 0.875);
@@ -159,24 +159,24 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
   const breakpoint: Breakpoint = useResponsive(containerRef as React.RefObject<HTMLElement>);
 
   const {
-    tiles, layouts, rotation, contentBinding, borderRadius, fullBleed,
-    title, instanceId, isEditMode, onTilesChange, onSettingsChange,
+    slides, layouts, rotation, contentBinding, borderRadius, fullBleed,
+    title, instanceId, isEditMode, onSlidesChange, onSettingsChange,
     wizardCompleted,
   } = props;
 
   // ── Edit state ──
   const [showWizard, setShowWizard] = React.useState(false);
-  const [editingTileId, setEditingTileId] = React.useState<string | undefined>(undefined);
+  const [editingSlideId, setEditingSlideId] = React.useState<string | undefined>(undefined);
 
   // Auto-open wizard on first use in edit mode
   React.useEffect(function () {
-    if (isEditMode && !wizardCompleted && tiles && tiles.length === 1) {
-      const firstTile = tiles[0];
-      if (firstTile && firstTile.id === "default-1") {
+    if (isEditMode && !wizardCompleted && slides && slides.length === 1) {
+      const firstSlide = slides[0];
+      if (firstSlide && firstSlide.id === "default-1") {
         setShowWizard(true);
       }
     }
-  }, [isEditMode, wizardCompleted, tiles]);
+  }, [isEditMode, wizardCompleted, slides]);
 
   // ── Wizard callbacks ──
   const handleWizardClose = React.useCallback(function () {
@@ -184,7 +184,7 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
   }, []);
 
   const handleWizardApply = React.useCallback(function (result: IWizardResult) {
-    if (!onSettingsChange || !onTilesChange) return;
+    if (!onSettingsChange || !onSlidesChange) return;
 
     // Build general settings partial from wizard
     const generalPartial: Partial<IHyperHeroWebPartProps> = {
@@ -222,14 +222,14 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
         },
       });
     } else if (result.mode === "manual") {
-      // Manual mode: generate tiles + layouts (use template tiles if provided)
+      // Manual mode: generate slides + layouts (use template slides if provided)
       const preset = result.layoutPreset || "single";
-      const count = result.tileCount || 1;
+      const count = result.slideCount || 1;
       const height = result.generalSettings ? result.generalSettings.heroHeight : 400;
-      const newTiles = result.templateTiles || generateTilesForPreset(count, preset);
+      const newSlides = result.templateSlides || generateSlidesForPreset(count, preset);
       const newLayouts = generateLayoutsForPreset(preset, count, height);
 
-      onTilesChange(newTiles);
+      onSlidesChange(newSlides);
       onSettingsChange({
         ...generalPartial,
         layouts: newLayouts,
@@ -237,57 +237,57 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
     }
 
     setShowWizard(false);
-  }, [onSettingsChange, onTilesChange]);
+  }, [onSettingsChange, onSlidesChange]);
 
-  // ── Tile editor callbacks ──
-  const editingTile = useMemo(function (): IHyperHeroTile | undefined {
-    if (!editingTileId || !tiles) return undefined;
-    let found: IHyperHeroTile | undefined = undefined;
-    tiles.forEach(function (t) {
-      if (t.id === editingTileId) found = t;
+  // ── Slide editor callbacks ──
+  const editingSlide = useMemo(function (): IHyperHeroSlide | undefined {
+    if (!editingSlideId || !slides) return undefined;
+    let found: IHyperHeroSlide | undefined = undefined;
+    slides.forEach(function (t) {
+      if (t.id === editingSlideId) found = t;
     });
     return found;
-  }, [editingTileId, tiles]);
+  }, [editingSlideId, slides]);
 
-  const handleEditTile = React.useCallback(function (tileId: string) {
-    setEditingTileId(tileId);
+  const handleEditSlide = React.useCallback(function (slideId: string) {
+    setEditingSlideId(slideId);
   }, []);
 
   const handleEditorClose = React.useCallback(function () {
-    setEditingTileId(undefined);
+    setEditingSlideId(undefined);
   }, []);
 
-  const handleEditorSave = React.useCallback(function (updatedTile: IHyperHeroTile) {
-    if (!onTilesChange || !tiles) return;
-    const updated: IHyperHeroTile[] = [];
-    tiles.forEach(function (t) {
-      if (t.id === updatedTile.id) {
-        updated.push(updatedTile);
+  const handleEditorSave = React.useCallback(function (updatedSlide: IHyperHeroSlide) {
+    if (!onSlidesChange || !slides) return;
+    const updated: IHyperHeroSlide[] = [];
+    slides.forEach(function (t) {
+      if (t.id === updatedSlide.id) {
+        updated.push(updatedSlide);
       } else {
         updated.push(t);
       }
     });
-    onTilesChange(updated);
-    setEditingTileId(undefined);
-  }, [tiles, onTilesChange]);
+    onSlidesChange(updated);
+    setEditingSlideId(undefined);
+  }, [slides, onSlidesChange]);
 
-  const handleDeleteTile = React.useCallback(function (tileId: string) {
-    if (!onTilesChange || !tiles) return;
-    const remaining = tiles.filter(function (t) { return t.id !== tileId; });
+  const handleDeleteSlide = React.useCallback(function (slideId: string) {
+    if (!onSlidesChange || !slides) return;
+    const remaining = slides.filter(function (t) { return t.id !== slideId; });
     if (remaining.length === 0) {
-      // Don't allow deleting the last tile — reset to default
-      onTilesChange([DEFAULT_TILE]);
+      // Don't allow deleting the last slide — reset to default
+      onSlidesChange([DEFAULT_SLIDE]);
     } else {
-      onTilesChange(remaining);
+      onSlidesChange(remaining);
     }
-  }, [tiles, onTilesChange]);
+  }, [slides, onSlidesChange]);
 
-  const handleAddTile = React.useCallback(function () {
-    if (!onTilesChange || !tiles) return;
-    const newTile: IHyperHeroTile = {
-      id: "tile-" + Date.now(),
+  const handleAddSlide = React.useCallback(function () {
+    if (!onSlidesChange || !slides) return;
+    const newSlide: IHyperHeroSlide = {
+      id: "slide-" + Date.now(),
       gridArea: "main",
-      heading: "New Tile",
+      heading: "New Slide",
       subheading: "Click edit to customize",
       background: { type: "solidColor", backgroundColor: "#0078d4" },
       gradientOverlay: DEFAULT_GRADIENT,
@@ -295,12 +295,12 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
       audienceTarget: { enabled: false, groups: [], matchAll: false },
       textAlign: "left",
       verticalAlign: "bottom",
-      sortOrder: tiles.length,
+      sortOrder: slides.length,
       enabled: true,
     };
-    onTilesChange(tiles.concat([newTile]));
-    setEditingTileId(newTile.id);
-  }, [tiles, onTilesChange]);
+    onSlidesChange(slides.concat([newSlide]));
+    setEditingSlideId(newSlide.id);
+  }, [slides, onSlidesChange]);
 
   const handleRerunSetup = React.useCallback(function () {
     if (onSettingsChange) {
@@ -312,22 +312,22 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
   // Select layout for current breakpoint
   const layout: IHyperHeroGridLayout = layouts[breakpoint] || layouts.desktop;
 
-  // Dynamic content binding — fetch tiles from SharePoint list when enabled
+  // Dynamic content binding — fetch slides from SharePoint list when enabled
   const dynamicResult = useHeroDynamicContent(contentBinding);
-  const dynamicTiles = dynamicResult.dynamicTiles;
+  const dynamicSlides = dynamicResult.dynamicSlides;
   const dynamicLoading = dynamicResult.loading;
 
-  // Merge static + dynamic tiles: dynamic tiles come after static ones
-  const allTiles = useMemo(function (): IHyperHeroTile[] {
-    const staticTiles = tiles || [];
-    if (contentBinding && contentBinding.enabled && dynamicTiles.length > 0) {
-      return staticTiles.concat(dynamicTiles);
+  // Merge static + dynamic slides: dynamic slides come after static ones
+  const allSlides = useMemo(function (): IHyperHeroSlide[] {
+    const staticSlides = slides || [];
+    if (contentBinding && contentBinding.enabled && dynamicSlides.length > 0) {
+      return staticSlides.concat(dynamicSlides);
     }
-    return staticTiles;
-  }, [tiles, contentBinding, dynamicTiles]);
+    return staticSlides;
+  }, [slides, contentBinding, dynamicSlides]);
 
   // Apply scheduling filter (publish/unpublish dates)
-  const scheduledTiles = useTileVisibility(allTiles);
+  const scheduledSlides = useSlideVisibility(allSlides);
 
   // CTA click tracking
   const handleCtaClick = React.useCallback(function (cta: IHyperHeroCta): void {
@@ -348,12 +348,12 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
       })
     );
 
-    // Tile Editor modal
+    // Slide Editor modal
     editModals.push(
-      React.createElement(HyperHeroTileEditor, {
+      React.createElement(HyperHeroSlideEditor, {
         key: "editor",
-        isOpen: editingTileId !== undefined,
-        tile: editingTile,
+        isOpen: editingSlideId !== undefined,
+        slide: editingSlide,
         onSave: handleEditorSave,
         onClose: handleEditorClose,
       })
@@ -370,8 +370,8 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
     );
   }
 
-  // No tiles configured or all filtered out
-  if (scheduledTiles.length === 0) {
+  // No slides configured or all filtered out
+  if (scheduledSlides.length === 0) {
     return React.createElement(
       "div",
       { ref: containerRef, className: styles.heroContainer },
@@ -397,40 +397,40 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
     .filter(Boolean)
     .join(" ");
 
-  // Use transition wrapper when rotation is enabled and there are multiple tiles
-  const useRotation = rotation && rotation.enabled && scheduledTiles.length > 1;
+  // Use transition wrapper when rotation is enabled and there are multiple slides
+  const useRotation = rotation && rotation.enabled && scheduledSlides.length > 1;
 
-  // Build tile elements — wrap with edit overlay in edit mode
-  const buildTileElements = function (): React.ReactElement[] {
-    return scheduledTiles.map(function (tile, idx) {
-      const tileEl = React.createElement(HyperHeroTile, {
-        key: tile.id,
-        tile: tile,
+  // Build slide elements — wrap with edit overlay in edit mode
+  const buildSlideElements = function (): React.ReactElement[] {
+    return scheduledSlides.map(function (slide, idx) {
+      const slideEl = React.createElement(HyperHeroSlide, {
+        key: slide.id,
+        slide: slide,
         onCtaClick: handleCtaClick,
       });
 
       if (isEditMode) {
         return React.createElement(
           "div",
-          { key: tile.id, style: { position: "relative", gridArea: tile.gridArea } },
-          tileEl,
+          { key: slide.id, style: { position: "relative", gridArea: slide.gridArea } },
+          slideEl,
           React.createElement(HyperHeroEditOverlay, {
-            tileId: tile.id,
-            tileHeading: tile.heading || "Untitled",
-            tileIndex: idx,
-            onEdit: handleEditTile,
-            onDelete: handleDeleteTile,
+            slideId: slide.id,
+            slideHeading: slide.heading || "Untitled",
+            slideIndex: idx,
+            onEdit: handleEditSlide,
+            onDelete: handleDeleteSlide,
           })
         );
       }
 
-      return tileEl;
+      return slideEl;
     });
   };
 
   const gridContent = useRotation && !isEditMode
     ? React.createElement(HyperHeroTransitionWrapper, {
-        tiles: scheduledTiles,
+        slides: scheduledSlides,
         rotation: rotation,
         gridStyle: gridStyle,
         onCtaClick: handleCtaClick,
@@ -438,7 +438,7 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
     : React.createElement(
         "div",
         { className: styles.heroGrid, style: gridStyle, role: "region", "aria-label": title || "Hero banner" },
-        buildTileElements()
+        buildSlideElements()
       );
 
   return React.createElement(
@@ -447,9 +447,9 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
     // Edit toolbar (edit mode only)
     isEditMode
       ? React.createElement(HyperHeroEditToolbar, {
-          onAddTile: handleAddTile,
+          onAddSlide: handleAddSlide,
           onRerunSetup: handleRerunSetup,
-          tileCount: scheduledTiles.length,
+          slideCount: scheduledSlides.length,
         })
       : undefined,
     // Title

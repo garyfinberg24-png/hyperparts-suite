@@ -2,11 +2,11 @@ import { useMemo } from "react";
 import { useListItems } from "../../../common/hooks";
 import type { UseListItemsResult } from "../../../common/hooks/useListItems";
 import type { IHyperListItem } from "../../../common/models";
-import type { IHyperHeroContentBinding, IHyperHeroTile } from "../models";
+import type { IHyperHeroContentBinding, IHyperHeroSlide } from "../models";
 import { DEFAULT_GRADIENT } from "../models";
 
 export interface IUseHeroDynamicContentResult {
-  dynamicTiles: IHyperHeroTile[];
+  dynamicSlides: IHyperHeroSlide[];
   loading: boolean;
   error: Error | undefined;
   refresh: () => void;
@@ -14,7 +14,7 @@ export interface IUseHeroDynamicContentResult {
 
 /**
  * Hook that fetches items from a SharePoint list and maps them
- * to IHyperHeroTile[] using the configured field mapping.
+ * to IHyperHeroSlide[] using the configured field mapping.
  */
 export function useHeroDynamicContent(
   binding: IHyperHeroContentBinding
@@ -28,23 +28,23 @@ export function useHeroDynamicContent(
     cacheTTL: binding.cacheTTL,
   });
 
-  const dynamicTiles = useMemo(() => {
+  const dynamicSlides = useMemo(() => {
     if (!binding.enabled || !binding.listName) return [];
-    return mapItemsToTiles(listResult.items, binding);
+    return mapItemsToSlides(listResult.items, binding);
   }, [binding, listResult.items]);
 
   return {
-    dynamicTiles,
+    dynamicSlides,
     loading: listResult.loading,
     error: listResult.error,
     refresh: listResult.refresh,
   };
 }
 
-function mapItemsToTiles(
+function mapItemsToSlides(
   items: IHyperListItem[],
   binding: IHyperHeroContentBinding
-): IHyperHeroTile[] {
+): IHyperHeroSlide[] {
   const fm = binding.fieldMapping;
 
   return items.map((item, index) => {
@@ -57,7 +57,7 @@ function mapItemsToTiles(
     const unpublishDate = fm.unpublishDateField ? String(item[fm.unpublishDateField] ?? "") : undefined;
     const sortOrder = fm.sortOrderField ? Number(item[fm.sortOrderField] ?? index) : index;
 
-    const tile: IHyperHeroTile = {
+    const slide: IHyperHeroSlide = {
       id: "dynamic-" + String(item.Id),
       gridArea: "main",
       heading: heading,
@@ -79,6 +79,6 @@ function mapItemsToTiles(
       enabled: true,
     };
 
-    return tile;
+    return slide;
   });
 }

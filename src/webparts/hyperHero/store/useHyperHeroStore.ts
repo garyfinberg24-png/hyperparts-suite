@@ -7,8 +7,8 @@ export interface IHyperHeroStoreState {
   isRotationPaused: boolean;
   /** Whether the web part is in edit mode */
   isEditMode: boolean;
-  /** Map of tile IDs to their visibility (for audience targeting / scheduling) */
-  tileVisibility: Record<string, boolean>;
+  /** Map of slide IDs to their visibility (for audience targeting / scheduling) */
+  slideVisibility: Record<string, boolean>;
   /** Active A/B test variation ID (if A/B testing is enabled) */
   activeVariationId: string | undefined;
 }
@@ -19,7 +19,7 @@ export interface IHyperHeroStoreActions {
   goToPrevSlide: (totalSlides: number) => void;
   setRotationPaused: (paused: boolean) => void;
   setEditMode: (editing: boolean) => void;
-  setTileVisibility: (tileId: string, visible: boolean) => void;
+  setSlideVisibility: (slideId: string, visible: boolean) => void;
   setActiveVariation: (variationId: string | undefined) => void;
   reset: () => void;
 }
@@ -30,7 +30,7 @@ const initialState: IHyperHeroStoreState = {
   activeSlideIndex: 0,
   isRotationPaused: false,
   isEditMode: false,
-  tileVisibility: {},
+  slideVisibility: {},
   activeVariationId: undefined,
 };
 
@@ -61,15 +61,15 @@ export const useHyperHeroStore = create<IHyperHeroStore>((set) => ({
     set({ isEditMode: editing });
   },
 
-  setTileVisibility: (tileId: string, visible: boolean): void => {
+  setSlideVisibility: (slideId: string, visible: boolean): void => {
     set((state) => {
       const updated: Record<string, boolean> = {};
-      const keys = Object.keys(state.tileVisibility);
+      const keys = Object.keys(state.slideVisibility);
       keys.forEach((key) => {
-        updated[key] = state.tileVisibility[key];
+        updated[key] = state.slideVisibility[key];
       });
-      updated[tileId] = visible;
-      return { tileVisibility: updated };
+      updated[slideId] = visible;
+      return { slideVisibility: updated };
     });
   },
 

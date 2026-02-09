@@ -1,0 +1,164 @@
+/* HyperLottieGallery — Curated Lottie animation gallery modal */
+
+.galleryContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.categoryBar {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.categoryChip {
+  padding: 6px 14px;
+  border-radius: 16px;
+  border: 1px solid #edebe9;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.15s ease;
+  color: #323130;
+
+  &:hover {
+    background: #f3f2f1;
+  }
+}
+
+.categoryChipActive {
+  background: #0078d4;
+  color: #ffffff;
+  border-color: #0078d4;
+
+  &:hover {
+    background: #106ebe;
+  }
+}
+
+.lottieGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.lottieCard {
+  border: 2px solid #edebe9;
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.15s ease;
+
+  &:hover {
+    border-color: #c8c6c4;
+  }
+}
+
+.lottieCardSelected {
+  border-color: #0078d4;
+  box-shadow: 0 0 0 1px #0078d4;
+
+  &:hover {
+    border-color: #0078d4;
+  }
+}
+
+.lottiePreview {
+  width: 100%;
+  height: 90px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.lottiePreviewAbstract {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.lottiePreviewShapes {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+}
+
+.lottiePreviewNature {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+.lottiePreviewBusiness {
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+}
+
+.lottiePreviewTechnology {
+  background: linear-gradient(135deg, #fa709a, #fee140);
+}
+
+.lottiePreviewCelebrations {
+  background: linear-gradient(135deg, #a18cd1, #fbc2eb);
+}
+
+.lottieName {
+  font-size: 12px;
+  font-weight: 600;
+  color: #323130;
+  margin: 0;
+}
+
+.lottieCategory {
+  font-size: 11px;
+  color: #a19f9d;
+  margin-top: 2px;
+}
+
+.footerRow {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.selectBtn {
+  padding: 8px 20px;
+  background: #0078d4;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: #106ebe;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.cancelBtn {
+  padding: 8px 20px;
+  background: transparent;
+  border: 1px solid #8a8886;
+  border-radius: 4px;
+  color: #323130;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: #f3f2f1;
+  }
+}
+
+.emptyText {
+  text-align: center;
+  padding: 40px;
+  color: #605e5c;
+  font-size: 14px;
+}

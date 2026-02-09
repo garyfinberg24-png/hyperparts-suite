@@ -17,7 +17,7 @@
     "officeFabricIconFontName": "ViewAll",
     "properties": {
       "title": "",
-      "tiles": [
+      "slides": [
         {
           "id": "default-1",
           "gridArea": "main",

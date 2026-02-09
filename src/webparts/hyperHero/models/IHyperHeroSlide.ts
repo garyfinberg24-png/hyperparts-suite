@@ -1,7 +1,11 @@
 import type { IAudienceTarget } from "../../../common/models";
 import type { IHyperHeroCta } from "./IHyperHeroCta";
+import type { IHyperHeroLayer } from "./IHyperHeroLayer";
 
-/** Background types for a hero tile */
+/** Content mode for a slide — stack (flex column) or canvas (free positioning) */
+export type ContentMode = "stack" | "canvas";
+
+/** Background types for a hero slide */
 export type BackgroundType = "image" | "video" | "lottie" | "solidColor";
 
 /** Video source types */
@@ -26,8 +30,8 @@ export interface IHyperHeroLottieConfig {
   renderer: "svg" | "canvas";
 }
 
-/** Tile background configuration */
-export interface IHyperHeroTileBackground {
+/** Slide background configuration */
+export interface IHyperHeroSlideBackground {
   type: BackgroundType;
   imageUrl?: string;
   imageAlt?: string;
@@ -71,8 +75,8 @@ export interface IHyperHeroCountdown {
   completedMessage?: string;
 }
 
-/** Tile link — makes the entire tile clickable */
-export interface IHyperHeroTileLink {
+/** Slide link — makes the entire slide clickable */
+export interface IHyperHeroSlideLink {
   url: string;
   openInNewTab: boolean;
   ariaLabel?: string;
@@ -91,12 +95,56 @@ export interface IElementAnimation {
 }
 
 /** Per-element animations for heading, subheading, description, CTAs */
-export interface ITileElementAnimations {
+export interface ISlideElementAnimations {
   heading?: IElementAnimation;
   subheading?: IElementAnimation;
   description?: IElementAnimation;
   ctas?: IElementAnimation;
 }
+
+/** Text overlay configuration — semi-transparent backdrop behind content */
+export interface IHyperHeroTextOverlay {
+  enabled: boolean;
+  backgroundColor: string;
+  opacity: number;
+  padding: number;
+  paddingHorizontal: number;
+  paddingVertical: number;
+  borderRadius: number;
+  margin: number;
+  maxWidth: number;
+}
+
+/** Per-element font settings */
+export interface IHyperHeroFontSettings {
+  fontFamily: string;
+  fontSize: number;
+  fontWeight: number;
+  color: string;
+  letterSpacing: number;
+  lineHeight: number;
+  textTransform: string;
+  textShadow: string;
+}
+
+/** Font configuration for heading, subheading, and description */
+export interface IHyperHeroFontConfig {
+  heading: IHyperHeroFontSettings;
+  subheading: IHyperHeroFontSettings;
+  description: IHyperHeroFontSettings;
+}
+
+/** Default font settings */
+export const DEFAULT_FONT_SETTINGS: IHyperHeroFontSettings = {
+  fontFamily: "Segoe UI",
+  fontSize: 0,
+  fontWeight: 0,
+  color: "",
+  letterSpacing: 0,
+  lineHeight: 0,
+  textTransform: "none",
+  textShadow: "none",
+};
 
 /** Default element animation */
 export const DEFAULT_ELEMENT_ANIMATION: IElementAnimation = {
@@ -105,26 +153,34 @@ export const DEFAULT_ELEMENT_ANIMATION: IElementAnimation = {
   durationMs: 600,
 };
 
-/** A single HyperHero tile */
-export interface IHyperHeroTile {
+/** A single HyperHero slide */
+export interface IHyperHeroSlide {
   id: string;
   gridArea: string;
   heading: string;
   subheading?: string;
   description?: string;
-  background: IHyperHeroTileBackground;
+  background: IHyperHeroSlideBackground;
   gradientOverlay?: IHyperHeroGradient;
   ctas: IHyperHeroCta[];
   audienceTarget: IAudienceTarget;
   countdown?: IHyperHeroCountdown;
   parallax?: IHyperHeroParallax;
-  tileLink?: IHyperHeroTileLink;
+  slideLink?: IHyperHeroSlideLink;
   entranceEffect?: EntranceEffect;
   /** Per-element entrance animations */
-  elementAnimations?: ITileElementAnimations;
+  elementAnimations?: ISlideElementAnimations;
   textAlign: "left" | "center" | "right";
   verticalAlign: "top" | "center" | "bottom";
   textColor?: string;
+  /** Semi-transparent backdrop behind text content */
+  textOverlay?: IHyperHeroTextOverlay;
+  /** Per-element font customization */
+  fontConfig?: IHyperHeroFontConfig;
+  /** Content layout mode — "stack" (default flex column) or "canvas" (free positioning) */
+  contentMode?: ContentMode;
+  /** Free-positioned layers (used when contentMode is "canvas") */
+  layers?: IHyperHeroLayer[];
   publishDate?: string;
   unpublishDate?: string;
   sortOrder: number;
@@ -142,8 +198,8 @@ export const DEFAULT_GRADIENT: IHyperHeroGradient = {
   ],
 };
 
-/** Default tile for first-time web part addition */
-export const DEFAULT_TILE: IHyperHeroTile = {
+/** Default slide for first-time web part addition */
+export const DEFAULT_SLIDE: IHyperHeroSlide = {
   id: "default-1",
   gridArea: "main",
   heading: "Welcome to HyperHero",

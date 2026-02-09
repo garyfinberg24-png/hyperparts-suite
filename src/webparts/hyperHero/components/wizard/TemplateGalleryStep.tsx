@@ -1,6 +1,6 @@
 import * as React from "react";
 import type {
-  IHyperHeroTile,
+  IHyperHeroSlide,
   IHyperHeroGradient,
   IHyperHeroCta,
   EntranceEffect,
@@ -28,7 +28,7 @@ export interface IHeroTemplate {
     patternClass?: string;
   };
   /** What this template produces */
-  tiles: IHyperHeroTile[];
+  slides: IHyperHeroSlide[];
   layoutPreset: LayoutPreset;
   generalSettings: Partial<IGeneralSettings>;
 }
@@ -101,7 +101,7 @@ const HERO_TEMPLATES: IHeroTemplate[] = [
   {
     id: "corporate-banner",
     name: "Corporate Banner",
-    description: "Clean single-tile blue hero with white text, gradient overlay, and a primary CTA.",
+    description: "Clean single-slide blue hero with white text, gradient overlay, and a primary CTA.",
     category: "corporate",
     preview: {
       backgroundColor: "#0078d4",
@@ -111,7 +111,7 @@ const HERO_TEMPLATES: IHeroTemplate[] = [
       subheadingSample: "Empowering every person and organization",
       patternClass: "previewPatternDots",
     },
-    tiles: [
+    slides: [
       {
         id: "corp-banner-1",
         gridArea: "main",
@@ -144,7 +144,7 @@ const HERO_TEMPLATES: IHeroTemplate[] = [
   {
     id: "split-announcement",
     name: "Split Announcement",
-    description: "Two-tile split layout with dark navy heading and teal accent sidebar.",
+    description: "Two-slide split layout with dark navy heading and teal accent sidebar.",
     category: "corporate",
     preview: {
       backgroundColor: "#1b1f3b",
@@ -152,7 +152,7 @@ const HERO_TEMPLATES: IHeroTemplate[] = [
       headingSample: "Important Update",
       subheadingSample: "Stay informed",
     },
-    tiles: [
+    slides: [
       {
         id: "split-ann-1",
         gridArea: "a",
@@ -206,7 +206,7 @@ const HERO_TEMPLATES: IHeroTemplate[] = [
   {
     id: "company-hub",
     name: "Company Hub",
-    description: "Grid 2x2 layout with four brand-colored tiles, each with a heading and description.",
+    description: "Grid 2x2 layout with four brand-colored slides, each with a heading and description.",
     category: "corporate",
     preview: {
       backgroundColor: "#0078d4",
@@ -214,7 +214,7 @@ const HERO_TEMPLATES: IHeroTemplate[] = [
       headingSample: "Company Hub",
       patternClass: "previewPatternGrid",
     },
-    tiles: [
+    slides: [
       {
         id: "hub-1",
         gridArea: "a",
@@ -300,7 +300,7 @@ const HERO_TEMPLATES: IHeroTemplate[] = [
   {
     id: "event-countdown",
     name: "Event Countdown",
-    description: "Single tile with dark purple-to-blue gradient, centered text, and live countdown timer.",
+    description: "Single slide with dark purple-to-blue gradient, centered text, and live countdown timer.",
     category: "event",
     preview: {
       backgroundColor: "#2d1b69",
@@ -310,7 +310,7 @@ const HERO_TEMPLATES: IHeroTemplate[] = [
       subheadingSample: "30 days to go",
       patternClass: "previewPatternDiagonal",
     },
-    tiles: [
+    slides: [
       {
         id: "evt-cd-1",
         gridArea: "main",
@@ -368,7 +368,7 @@ const HERO_TEMPLATES: IHeroTemplate[] = [
       headingSample: "Annual Conference",
       subheadingSample: "Speakers & Sessions",
     },
-    tiles: [
+    slides: [
       {
         id: "conf-main",
         gridArea: "a",
@@ -423,7 +423,7 @@ const HERO_TEMPLATES: IHeroTemplate[] = [
   {
     id: "launch-countdown",
     name: "Launch Countdown",
-    description: "Single tile, black background, centered text with green CTA and scaleUp entrance.",
+    description: "Single slide, black background, centered text with green CTA and scaleUp entrance.",
     category: "event",
     preview: {
       backgroundColor: "#000000",
@@ -432,7 +432,7 @@ const HERO_TEMPLATES: IHeroTemplate[] = [
       subheadingSample: "Coming soon...",
       patternClass: "previewPatternDots",
     },
-    tiles: [
+    slides: [
       {
         id: "launch-1",
         gridArea: "main",
@@ -487,7 +487,7 @@ const HERO_TEMPLATES: IHeroTemplate[] = [
       subheadingSample: "Where ideas come to life",
       patternClass: "previewPatternDiagonal",
     },
-    tiles: [
+    slides: [
       {
         id: "grad-1",
         gridArea: "main",
@@ -532,7 +532,7 @@ const HERO_TEMPLATES: IHeroTemplate[] = [
       headingSample: "Split Media",
       subheadingSample: "Two stories, one banner",
     },
-    tiles: [
+    slides: [
       {
         id: "sm-left",
         gridArea: "a",
@@ -590,7 +590,7 @@ const HERO_TEMPLATES: IHeroTemplate[] = [
       headingSample: "Less is More",
       subheadingSample: "Simple. Clean. Effective.",
     },
-    tiles: [
+    slides: [
       {
         id: "min-w-1",
         gridArea: "main",
@@ -632,7 +632,7 @@ const HERO_TEMPLATES: IHeroTemplate[] = [
       headingSample: "Explore",
       patternClass: "previewPatternGrid",
     },
-    tiles: [
+    slides: [
       {
         id: "min-d-1",
         gridArea: "main",
@@ -688,7 +688,7 @@ const CATEGORY_BADGE_MAP: Record<string, string> = {
   minimal: styles.categoryBadgeMinimal,
 };
 
-// ── Layout preview config for multi-tile templates ──
+// ── Layout preview config for multi-slide templates ──
 interface ILayoutPreviewConfig {
   gridTemplateAreas: string;
   gridTemplateColumns: string;
@@ -717,7 +717,7 @@ const LAYOUT_PREVIEW_MAP: Record<string, ILayoutPreviewConfig> = {
 // Render helpers (pure functions returning React elements)
 // ═══════════════════════════════════════════════════════════════
 
-/** Render a single-tile preview */
+/** Render a single-slide preview */
 function renderSinglePreview(template: IHeroTemplate): React.ReactElement {
   const bg = template.preview.backgroundColor;
   const gradient = template.preview.gradientCss;
@@ -732,12 +732,12 @@ function renderSinglePreview(template: IHeroTemplate): React.ReactElement {
     singleStyle.backgroundImage = gradient;
   }
 
-  // Determine text wrapper class based on template tile alignment
-  const tile = template.tiles[0];
+  // Determine text wrapper class based on template slide alignment
+  const slide = template.slides[0];
   let textWrapClass = styles.previewTextWrap;
-  if (tile && tile.textAlign === "center" && tile.verticalAlign === "center") {
+  if (slide && slide.textAlign === "center" && slide.verticalAlign === "center") {
     textWrapClass = styles.previewTextWrapCenter;
-  } else if (tile && tile.textAlign === "right") {
+  } else if (slide && slide.textAlign === "right") {
     textWrapClass = styles.previewTextWrapRight;
   }
 
@@ -768,7 +768,7 @@ function renderSinglePreview(template: IHeroTemplate): React.ReactElement {
   );
 }
 
-/** Render a multi-tile preview (split, heroSidebar, grid2x2) */
+/** Render a multi-slide preview (split, heroSidebar, grid2x2) */
 function renderMultiPreview(template: IHeroTemplate): React.ReactElement {
   const layoutConfig = LAYOUT_PREVIEW_MAP[template.layoutPreset];
   if (!layoutConfig) {
@@ -781,25 +781,25 @@ function renderMultiPreview(template: IHeroTemplate): React.ReactElement {
     gridTemplateRows: layoutConfig.gridTemplateRows,
   };
 
-  const tileElements: React.ReactElement[] = [];
-  template.tiles.forEach(function (tile) {
-    const tileBg = tile.background.backgroundColor || "#333333";
-    const tileTextColor = tile.textColor || "#ffffff";
+  const slideElements: React.ReactElement[] = [];
+  template.slides.forEach(function (slide) {
+    const slideBg = slide.background.backgroundColor || "#333333";
+    const slideTextColor = slide.textColor || "#ffffff";
 
-    tileElements.push(
+    slideElements.push(
       React.createElement("div", {
-        key: tile.id,
-        className: styles.previewMultiTile,
+        key: slide.id,
+        className: styles.previewMultiSlide,
         style: {
-          gridArea: tile.gridArea,
-          backgroundColor: tileBg,
+          gridArea: slide.gridArea,
+          backgroundColor: slideBg,
         },
       },
         React.createElement("div", { className: styles.previewMultiText },
           React.createElement("div", {
             className: styles.previewMultiHeading,
-            style: { color: tileTextColor },
-          }, tile.heading)
+            style: { color: slideTextColor },
+          }, slide.heading)
         )
       )
     );
@@ -808,7 +808,7 @@ function renderMultiPreview(template: IHeroTemplate): React.ReactElement {
   return React.createElement("div", {
     className: styles.previewMulti,
     style: gridStyle,
-  }, tileElements);
+  }, slideElements);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -867,8 +867,8 @@ const TemplateGalleryStep: React.FC<ITemplateGalleryStepProps> = function (props
   // ── Build template cards ──
   const templateCards: React.ReactElement[] = [];
   filteredTemplates.forEach(function (template) {
-    // Determine if single or multi-tile preview
-    const isMulti = template.tiles.length > 1;
+    // Determine if single or multi-slide preview
+    const isMulti = template.slides.length > 1;
     const previewElement = isMulti ? renderMultiPreview(template) : renderSinglePreview(template);
 
     // Category badge class

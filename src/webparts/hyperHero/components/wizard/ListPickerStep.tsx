@@ -26,7 +26,7 @@ interface ILayoutPresetConfig {
   id: LayoutPreset;
   label: string;
   description: string;
-  tileCount: number;
+  slideCount: number;
   /** CSS grid areas for the mini preview */
   previewAreas: string;
   previewColumns: string;
@@ -37,8 +37,8 @@ const LAYOUT_PRESETS: ILayoutPresetConfig[] = [
   {
     id: "single",
     label: "Full Width",
-    description: "One large hero tile spanning the full width",
-    tileCount: 1,
+    description: "One large hero slide spanning the full width",
+    slideCount: 1,
     previewAreas: "'a'",
     previewColumns: "1fr",
     previewRows: "1fr",
@@ -46,8 +46,8 @@ const LAYOUT_PRESETS: ILayoutPresetConfig[] = [
   {
     id: "split",
     label: "Split",
-    description: "Two equal tiles side by side",
-    tileCount: 2,
+    description: "Two equal slides side by side",
+    slideCount: 2,
     previewAreas: "'a b'",
     previewColumns: "1fr 1fr",
     previewRows: "1fr",
@@ -55,8 +55,8 @@ const LAYOUT_PRESETS: ILayoutPresetConfig[] = [
   {
     id: "thirds",
     label: "Thirds",
-    description: "Three equal tiles in a row",
-    tileCount: 3,
+    description: "Three equal slides in a row",
+    slideCount: 3,
     previewAreas: "'a b c'",
     previewColumns: "1fr 1fr 1fr",
     previewRows: "1fr",
@@ -64,8 +64,8 @@ const LAYOUT_PRESETS: ILayoutPresetConfig[] = [
   {
     id: "heroSidebar",
     label: "Hero + Sidebar",
-    description: "Large hero tile with a smaller sidebar",
-    tileCount: 2,
+    description: "Large hero slide with a smaller sidebar",
+    slideCount: 2,
     previewAreas: "'a a b'",
     previewColumns: "1fr 1fr 1fr",
     previewRows: "1fr",
@@ -73,15 +73,15 @@ const LAYOUT_PRESETS: ILayoutPresetConfig[] = [
   {
     id: "grid2x2",
     label: "Grid 2x2",
-    description: "Four tiles in a 2-by-2 grid",
-    tileCount: 4,
+    description: "Four slides in a 2-by-2 grid",
+    slideCount: 4,
     previewAreas: "'a b' 'c d'",
     previewColumns: "1fr 1fr",
     previewRows: "1fr 1fr",
   },
 ];
 
-/** Color swatches for mini preview tiles */
+/** Color swatches for mini preview slides */
 const PREVIEW_COLORS = ["#0078d4", "#50e6ff", "#6264a7", "#00b7c3"];
 
 const ListPickerStep: React.FC<IListPickerStepProps> = function (props) {
@@ -142,7 +142,7 @@ const ListPickerStep: React.FC<IListPickerStepProps> = function (props) {
         { label: "Subheading", spColumn: "HeroSubheading", description: "Secondary text" },
         { label: "Description", spColumn: "HeroDescription", description: "Body text" },
         { label: "Image URL", spColumn: "HeroImageUrl", description: "Background image" },
-        { label: "Link URL", spColumn: "HeroLinkUrl", description: "Tile click destination" },
+        { label: "Link URL", spColumn: "HeroLinkUrl", description: "Slide click destination" },
         { label: "Publish Date", spColumn: "HeroPublishDate", description: "When to show" },
         { label: "Unpublish Date", spColumn: "HeroUnpublishDate", description: "When to hide" },
         { label: "Sort Order", spColumn: "HeroSortOrder", description: "Display sequence" },
@@ -242,7 +242,7 @@ const ListPickerStep: React.FC<IListPickerStepProps> = function (props) {
         ? React.createElement("div", { className: styles.fieldMappingPreview },
             React.createElement("h4", { className: styles.fieldMappingTitle }, "Column Mapping"),
             React.createElement("p", { className: styles.fieldMappingHint },
-              "These SP list columns will map to HyperHero tile properties:"
+              "These SP list columns will map to HyperHero slide properties:"
             ),
             React.createElement("div", undefined, fieldMappingRows)
           )
@@ -262,14 +262,14 @@ const ListPickerStep: React.FC<IListPickerStepProps> = function (props) {
     const isSelected = props.layoutPreset === preset.id;
     const className = styles.layoutPreset + (isSelected ? " " + styles.layoutPresetSelected : "");
 
-    // Build mini preview tiles
+    // Build mini preview slides
     const previewAreas = ["a", "b", "c", "d"];
-    const previewTiles: React.ReactElement[] = [];
-    for (let i = 0; i < preset.tileCount; i++) {
-      previewTiles.push(
+    const previewSlides: React.ReactElement[] = [];
+    for (let i = 0; i < preset.slideCount; i++) {
+      previewSlides.push(
         React.createElement("div", {
           key: previewAreas[i],
-          className: styles.previewTile,
+          className: styles.previewSlide,
           style: {
             gridArea: previewAreas[i],
             background: PREVIEW_COLORS[i % PREVIEW_COLORS.length],
@@ -298,11 +298,11 @@ const ListPickerStep: React.FC<IListPickerStepProps> = function (props) {
             gridTemplateRows: preset.previewRows,
           },
           "aria-hidden": "true",
-        }, previewTiles),
-        // Label + tile count
+        }, previewSlides),
+        // Label + slide count
         React.createElement("div", { className: styles.layoutPresetLabel }, preset.label),
         React.createElement("div", { className: styles.layoutPresetCount },
-          preset.tileCount === 1 ? "1 tile" : preset.tileCount + " tiles"
+          preset.slideCount === 1 ? "1 slide" : preset.slideCount + " slides"
         )
       )
     );
@@ -315,7 +315,7 @@ const ListPickerStep: React.FC<IListPickerStepProps> = function (props) {
       React.createElement("div", { className: styles.stepHeaderContent },
         React.createElement("h3", { className: styles.stepHeaderTitle }, "Choose Your Layout"),
         React.createElement("p", { className: styles.stepHeaderDescription },
-          "Select a layout preset. Each tile can be individually customized after setup."
+          "Select a layout preset. Each slide can be individually customized after setup."
         )
       )
     ),
@@ -331,8 +331,8 @@ const ListPickerStep: React.FC<IListPickerStepProps> = function (props) {
           React.createElement("span", { className: styles.selectedPresetName }, (selectedConfig as ILayoutPresetConfig).label),
           React.createElement("span", { className: styles.selectedPresetDesc },
             " \u2014 " + (selectedConfig as ILayoutPresetConfig).description +
-            ". Creates " + (selectedConfig as ILayoutPresetConfig).tileCount +
-            ((selectedConfig as ILayoutPresetConfig).tileCount === 1 ? " tile" : " tiles") +
+            ". Creates " + (selectedConfig as ILayoutPresetConfig).slideCount +
+            ((selectedConfig as ILayoutPresetConfig).slideCount === 1 ? " slide" : " slides") +
             " with placeholder content ready for editing."
           )
         )

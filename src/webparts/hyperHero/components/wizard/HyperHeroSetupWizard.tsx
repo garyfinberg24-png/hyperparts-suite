@@ -1,6 +1,6 @@
 import * as React from "react";
 import { HyperModal } from "../../../../common/components";
-import type { IHyperHeroFieldMapping, IHyperHeroTile } from "../../models";
+import type { IHyperHeroFieldMapping, IHyperHeroSlide } from "../../models";
 import { useListBrowser } from "../shared/useListBrowser";
 import WelcomeStep from "./WelcomeStep";
 import TemplateGalleryStep from "./TemplateGalleryStep";
@@ -26,12 +26,12 @@ export interface IWizardResult {
   listName?: string;
   fieldMapping?: IHyperHeroFieldMapping;
   // Manual mode
-  tileCount?: number;
+  slideCount?: number;
   layoutPreset?: LayoutPreset;
   // General settings
   generalSettings?: IGeneralSettings;
-  // Template mode — direct tile application (bypasses normal tile generation)
-  templateTiles?: IHyperHeroTile[];
+  // Template mode — direct slide application (bypasses normal slide generation)
+  templateSlides?: IHyperHeroSlide[];
 }
 
 /**
@@ -77,8 +77,8 @@ const STEPS: IStepDef[] = [
   },
 ];
 
-/** Preset tile counts by layout */
-const PRESET_TILE_COUNTS: Record<LayoutPreset, number> = {
+/** Preset slide counts by layout */
+const PRESET_SLIDE_COUNTS: Record<LayoutPreset, number> = {
   single: 1,
   split: 2,
   thirds: 3,
@@ -177,8 +177,8 @@ const HyperHeroSetupWizard: React.FC<IHyperHeroSetupWizardProps> = function (pro
     const result: IWizardResult = {
       mode: "manual",
       layoutPreset: template.layoutPreset,
-      tileCount: template.tiles.length,
-      templateTiles: template.tiles,
+      slideCount: template.slides.length,
+      templateSlides: template.slides,
       generalSettings: {
         ...DEFAULT_GENERAL_SETTINGS,
         heroHeight: gs.heroHeight || 400,
@@ -218,7 +218,7 @@ const HyperHeroSetupWizard: React.FC<IHyperHeroSetupWizardProps> = function (pro
       result.listName = selectedListName;
       result.fieldMapping = DEFAULT_FIELD_MAPPING;
     } else if (mode === "manual") {
-      result.tileCount = PRESET_TILE_COUNTS[layoutPreset];
+      result.slideCount = PRESET_SLIDE_COUNTS[layoutPreset];
       result.layoutPreset = layoutPreset;
     }
 
@@ -267,7 +267,7 @@ const HyperHeroSetupWizard: React.FC<IHyperHeroSetupWizardProps> = function (pro
   if (step === 3 && mode === "list") {
     configureHelpText = "Select an existing SharePoint list or create a new one. The wizard will auto-provision the required columns for HyperHero content.";
   } else if (step === 3 && mode === "manual") {
-    configureHelpText = "Pick a layout preset. Each layout creates a set of placeholder tiles that you can customize individually after setup.";
+    configureHelpText = "Pick a layout preset. Each layout creates a set of placeholder slides that you can customize individually after setup.";
   }
 
   // ── Render current step ──
@@ -446,13 +446,13 @@ function renderSummary(
       });
     }
   } else if (mode === "manual") {
-    const tileCount = PRESET_TILE_COUNTS[layoutPreset];
+    const slideCount = PRESET_SLIDE_COUNTS[layoutPreset];
 
     summaryRows.push(
       React.createElement("div", { key: "mode", className: styles.summaryRow },
         React.createElement("span", { className: styles.summaryLabel }, "Content Mode"),
         React.createElement("span", { className: styles.summaryValue },
-          React.createElement("span", { className: styles.summaryBadge }, "Manual Tiles")
+          React.createElement("span", { className: styles.summaryBadge }, "Manual Slides")
         )
       )
     );
@@ -466,8 +466,8 @@ function renderSummary(
 
     summaryRows.push(
       React.createElement("div", { key: "count", className: styles.summaryRow },
-        React.createElement("span", { className: styles.summaryLabel }, "Tiles Created"),
-        React.createElement("span", { className: styles.summaryValue }, String(tileCount))
+        React.createElement("span", { className: styles.summaryLabel }, "Slides Created"),
+        React.createElement("span", { className: styles.summaryValue }, String(slideCount))
       )
     );
   }
@@ -548,11 +548,11 @@ function renderSummary(
  */
 function formatLayoutPreset(preset: LayoutPreset): string {
   const map: Record<LayoutPreset, string> = {
-    single: "Full Width (1 tile)",
-    split: "Split (2 tiles)",
-    thirds: "Thirds (3 tiles)",
-    heroSidebar: "Hero + Sidebar (2 tiles)",
-    grid2x2: "Grid 2x2 (4 tiles)",
+    single: "Full Width (1 slide)",
+    split: "Split (2 slides)",
+    thirds: "Thirds (3 slides)",
+    heroSidebar: "Hero + Sidebar (2 slides)",
+    grid2x2: "Grid 2x2 (4 slides)",
   };
   return map[preset] || preset;
 }

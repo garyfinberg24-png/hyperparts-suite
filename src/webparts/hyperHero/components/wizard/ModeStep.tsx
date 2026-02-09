@@ -54,9 +54,9 @@ const ModeStep: React.FC<IModeStepProps> = function (props) {
         tabIndex: 0,
       },
         React.createElement("span", { className: styles.modeCardIcon, "aria-hidden": "true" }, "\uD83C\uDFA8"),
-        React.createElement("h4", { className: styles.modeCardTitle }, "Manual Tiles"),
+        React.createElement("h4", { className: styles.modeCardTitle }, "Manual Slides"),
         React.createElement("p", { className: styles.modeCardDescription },
-          "Create custom tiles with images, videos, and call-to-action buttons. Full control over every tile."
+          "Create custom slides with images, videos, and call-to-action buttons. Full control over every slide."
         )
       ),
       // List binding card

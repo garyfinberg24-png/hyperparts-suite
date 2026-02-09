@@ -174,7 +174,7 @@ const GeneralSettingsStep: React.FC<IGeneralSettingsStepProps> = function (props
           React.createElement("div", { className: styles.toggleRow },
             React.createElement("div", { className: styles.toggleInfo },
               React.createElement("span", { className: styles.toggleLabel }, "Auto-Rotation"),
-              React.createElement("span", { className: styles.toggleHint }, "Automatically cycle through tiles with a transition effect")
+              React.createElement("span", { className: styles.toggleHint }, "Automatically cycle through slides with a transition effect")
             ),
             React.createElement("button", {
               className: settings.rotationEnabled
@@ -253,7 +253,7 @@ const GeneralSettingsStep: React.FC<IGeneralSettingsStepProps> = function (props
                 React.createElement("div", { className: styles.toggleRow },
                   React.createElement("div", { className: styles.toggleInfo },
                     React.createElement("span", { className: styles.toggleLabel }, "Navigation Dots"),
-                    React.createElement("span", { className: styles.toggleHint }, "Show dot indicators for each tile")
+                    React.createElement("span", { className: styles.toggleHint }, "Show dot indicators for each slide")
                   ),
                   React.createElement("button", {
                     className: settings.showDots

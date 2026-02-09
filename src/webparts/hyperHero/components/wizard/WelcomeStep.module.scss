@@ -1,130 +1,229 @@
-.welcomeContainer {
+// ── DWx Brand Strip ──
+.brandStrip {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 32px;
-  padding: 8px 0;
-  text-align: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: linear-gradient(90deg, #0a1e36 0%, #0e2a47 100%);
+  border-bottom: 2px solid #2b88d8;
 }
 
-// Brand section
-.brandSection {
+.brandLeft {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
-.brandLogo {
+.brandNameBlock {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  gap: 1px;
 }
 
 .brandDwx {
-  font-size: 28px;
-  font-weight: 800;
-  color: #0078d4;
+  font-size: 18px;
+  font-weight: 900;
+  color: #ffffff;
   letter-spacing: -0.5px;
+  line-height: 1;
 }
 
-.brandSeparator {
-  width: 2px;
-  height: 28px;
-  background: linear-gradient(180deg, #0078d4, #50e6ff);
-  border-radius: 1px;
+.brandDwxAccent {
+  color: #4fc3f7;
 }
 
-.brandProduct {
-  font-size: 28px;
+.brandSub {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+}
+
+.brandBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  background: rgba(79, 195, 247, 0.15);
+  border: 1px solid rgba(79, 195, 247, 0.25);
+  border-radius: 12px;
+  font-size: 10px;
+  color: #4fc3f7;
   font-weight: 700;
-  background: linear-gradient(135deg, #0078d4, #50e6ff);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.brandBadgeStar {
+  font-size: 12px;
+  line-height: 1;
+}
+
+// ── Hero Banner ──
+.splashHero {
+  background: linear-gradient(135deg, #0e2a47 0%, #143d6b 35%, #1e6cb5 70%, #2b88d8 100%);
+  padding: 32px 48px 28px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+  }
+}
+
+.splashHeroBrand {
+  position: relative;
+  z-index: 1;
+}
+
+.splashLogoRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.splashBolt {
+  font-size: 22px;
+  filter: drop-shadow(0 0 8px rgba(80, 181, 255, 0.6));
+}
+
+.splashHyperText {
+  font-size: 38px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -1px;
+}
+
+.splashPartText {
+  font-size: 38px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #7ec8e3, #c8e6f5);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  letter-spacing: -0.3px;
+  letter-spacing: -1px;
 }
 
-.brandTagline {
-  font-size: 14px;
-  color: #605e5c;
-  font-weight: 500;
-  letter-spacing: 0.5px;
+.splashTagline {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 400;
+  position: relative;
+  z-index: 1;
+  line-height: 1.6;
+  max-width: 420px;
+  margin: 0 auto;
 }
 
-// Feature grid
-.featureGrid {
+.splashTaglineStrong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+// ── Body / Cards ──
+.splashBody {
+  flex: 1;
+  padding: 24px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  background: #ffffff;
+}
+
+.splashCards {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
   width: 100%;
 }
 
-.featureCard {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 16px 12px;
-  background: #faf9f8;
-  border: 1px solid #edebe9;
-  border-radius: 8px;
-  transition: border-color 0.2s, box-shadow 0.2s;
-
-  &:hover {
-    border-color: #c8c6c4;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
-  }
-}
-
-.featureIcon {
-  font-size: 24px;
-}
-
-.featureTitle {
-  font-size: 13px;
-  font-weight: 600;
-  color: #323130;
-}
-
-.featureDesc {
-  font-size: 12px;
-  color: #a19f9d;
-  line-height: 1.4;
-}
-
-// CTA section
-.ctaSection {
+.splashCard {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-}
-
-.getStartedBtn {
-  padding: 10px 32px;
-  background: linear-gradient(135deg, #0078d4, #106ebe);
-  color: #ffffff;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
-  box-shadow: 0 2px 8px rgba(0, 120, 212, 0.3);
+  padding: 18px 10px 14px;
+  border-radius: 10px;
+  background: #f7f9fc;
+  border: 1px solid #e1e8ef;
+  transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
 
   &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 120, 212, 0.4);
+    border-color: #2b88d8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(43, 136, 216, 0.12);
+  }
+}
+
+.splashCardIcon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #0e2a47, #1e6cb5);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 2px 8px rgba(14, 42, 71, 0.2);
+}
+
+.splashCardTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0e2a47;
+  text-align: center;
+}
+
+.splashCardDesc {
+  font-size: 11px;
+  color: #8a96a8;
+  text-align: center;
+  line-height: 1.35;
+}
+
+// ── CTA ──
+.splashCta {
+  padding: 12px 44px;
+  background: linear-gradient(135deg, #143d6b, #2b88d8);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(20, 61, 107, 0.3);
+  transition: transform 0.15s, box-shadow 0.15s;
+  letter-spacing: 0.3px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(43, 136, 216, 0.4);
   }
 
   &:active {
     transform: translateY(0);
   }
+
+  &:focus-visible {
+    outline: 2px solid #4fc3f7;
+    outline-offset: 2px;
+  }
 }
 
-.ctaHint {
+.splashHint {
   font-size: 12px;
   color: #a19f9d;
-  margin: 0;
 }

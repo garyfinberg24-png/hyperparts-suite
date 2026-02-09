@@ -1,4 +1,4 @@
-/** CTA button configuration for a HyperHero tile */
+/** CTA button configuration for a HyperHero slide */
 export interface IHyperHeroCta {
   id: string;
   label: string;
@@ -10,4 +10,4 @@ export interface IHyperHeroCta {
   ariaLabel?: string;
 }
 
-export type CtaVariant = "primary" | "secondary" | "ghost";
+export type CtaVariant = "primary" | "secondary" | "ghost" | "pill" | "outline" | "gradient" | "shadow" | "minimal" | "rounded" | "block";

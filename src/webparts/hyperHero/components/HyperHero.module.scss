@@ -38,7 +38,7 @@
 // TILE
 // ============================================================
 
-.tile {
+.slide {
   position: relative;
   overflow: hidden;
   display: flex;
@@ -47,23 +47,23 @@
   min-height: 0;
 }
 
-.tileAlignTop {
+.slideAlignTop {
   justify-content: flex-start;
 }
 
-.tileAlignCenter {
+.slideAlignCenter {
   justify-content: center;
 }
 
-.tileAlignBottom {
+.slideAlignBottom {
   justify-content: flex-end;
 }
 
-.tileTextLeft {
+.slideTextLeft {
   text-align: left;
 }
 
-.tileTextCenter {
+.slideTextCenter {
   text-align: center;
 
   .contentLayer {
@@ -71,7 +71,7 @@
   }
 }
 
-.tileTextRight {
+.slideTextRight {
   text-align: right;
 
   .contentLayer {
@@ -217,6 +217,95 @@
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+  }
+}
+
+.ctaPill {
+  @extend .ctaButton;
+  background-color: #0078d4;
+  color: #ffffff;
+  border-radius: 50px;
+  padding: 12px 32px;
+
+  &:hover {
+    background-color: #106ebe;
+    color: #ffffff;
+  }
+}
+
+.ctaOutline {
+  @extend .ctaButton;
+  background-color: transparent;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+
+  &:hover {
+    background-color: #ffffff;
+    color: #323130;
+  }
+}
+
+.ctaGradient {
+  @extend .ctaButton;
+  background: linear-gradient(135deg, #0078d4, #50e6ff);
+  color: #ffffff;
+
+  &:hover {
+    background: linear-gradient(135deg, #106ebe, #3dcfff);
+    color: #ffffff;
+  }
+}
+
+.ctaShadow {
+  @extend .ctaButton;
+  background-color: #ffffff;
+  color: #323130;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  &:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
+    color: #323130;
+  }
+}
+
+.ctaMinimal {
+  @extend .ctaButton;
+  background-color: transparent;
+  color: #ffffff;
+  padding: 10px 12px;
+
+  &:hover {
+    text-decoration: underline;
+    color: #ffffff;
+  }
+}
+
+.ctaRounded {
+  @extend .ctaButton;
+  background-color: #0078d4;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 10px 24px;
+
+  &:hover {
+    background-color: #106ebe;
+    color: #ffffff;
+  }
+}
+
+.ctaBlock {
+  @extend .ctaButton;
+  background-color: #0078d4;
+  color: #ffffff;
+  display: block;
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: #106ebe;
     color: #ffffff;
   }
 }
@@ -434,7 +523,7 @@
 // SKELETON
 // ============================================================
 
-.skeletonTile {
+.skeletonSlide {
   border-radius: 8px;
   background: #edebe9;
   animation: hyperSkeletonPulse 1.5s ease-in-out infinite;
@@ -536,6 +625,13 @@
   .ctaPrimary,
   .ctaSecondary,
   .ctaGhost,
+  .ctaPill,
+  .ctaOutline,
+  .ctaGradient,
+  .ctaShadow,
+  .ctaMinimal,
+  .ctaRounded,
+  .ctaBlock,
   .parallaxContainer,
   .editOverlay,
   .dot {

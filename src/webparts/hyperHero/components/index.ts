@@ -1,6 +1,6 @@
 export { default as HyperHero } from "./HyperHero";
 export type { IHyperHeroComponentProps } from "./HyperHero";
-export { HyperHeroTile } from "./HyperHeroTile";
+export { HyperHeroSlide } from "./HyperHeroSlide";
 export { HyperHeroCtaGroup } from "./HyperHeroCtaGroup";
 export { HyperHeroGradientOverlay } from "./HyperHeroGradientOverlay";
 export { HyperHeroSkeleton } from "./HyperHeroSkeleton";
@@ -10,4 +10,4 @@ export { HyperHeroVideoBackground } from "./HyperHeroVideoBackground";
 export { HyperHeroLottieBackground } from "./HyperHeroLottieBackground";
 export { HyperHeroTransitionWrapper } from "./HyperHeroTransitionWrapper";
 export { HyperHeroEditOverlay, HyperHeroEditToolbar } from "./editor";
-export { HyperHeroTileEditor } from "./editor";
+export { HyperHeroSlideEditor } from "./editor";

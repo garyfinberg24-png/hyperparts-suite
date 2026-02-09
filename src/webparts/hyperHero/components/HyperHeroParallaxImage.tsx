@@ -1,10 +1,10 @@
 import * as React from "react";
-import type { IHyperHeroTileBackground, IHyperHeroParallax } from "../models";
+import type { IHyperHeroSlideBackground, IHyperHeroParallax } from "../models";
 import { useParallax } from "../hooks";
 import styles from "./HyperHero.module.scss";
 
 export interface IHyperHeroParallaxImageProps {
-  background: IHyperHeroTileBackground;
+  background: IHyperHeroSlideBackground;
   parallax: IHyperHeroParallax;
   heading: string;
 }

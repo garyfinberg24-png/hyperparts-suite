@@ -30,10 +30,10 @@ export function useParallax(options: IUseParallaxOptions): IUseParallaxResult {
     const rect = container.getBoundingClientRect();
     const viewHeight = window.innerHeight;
 
-    // Only apply when tile is in viewport
+    // Only apply when slide is in viewport
     if (rect.bottom < 0 || rect.top > viewHeight) return;
 
-    // Calculate offset: 0 when tile enters from bottom, 1 when tile leaves from top
+    // Calculate offset: 0 when slide enters from bottom, 1 when slide leaves from top
     const progress = 1 - (rect.bottom / (viewHeight + rect.height));
     // Clamp speed between 0.1 and 1.0
     const clampedSpeed = Math.max(0.1, Math.min(1.0, options.speed));

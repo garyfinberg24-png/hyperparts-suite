@@ -7,7 +7,7 @@ export interface IHyperHeroSkeletonProps {
 
 export const HyperHeroSkeleton: React.FC<IHyperHeroSkeletonProps> = (props) => {
   return React.createElement("div", {
-    className: styles.skeletonTile,
+    className: styles.skeletonSlide,
     style: {
       width: "100%",
       height: props.height + "px",

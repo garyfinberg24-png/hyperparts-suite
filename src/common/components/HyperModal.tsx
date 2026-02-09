@@ -4,7 +4,7 @@ export interface IHyperModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  size?: "small" | "medium" | "large";
+  size?: "small" | "medium" | "large" | "xlarge" | "fullscreen";
   children?: React.ReactNode;
   footer?: React.ReactNode;
 }
@@ -13,6 +13,8 @@ const sizeMap: Record<string, string> = {
   small: "400px",
   medium: "600px",
   large: "900px",
+  xlarge: "1200px",
+  fullscreen: "95vw",
 };
 
 export const HyperModal: React.FC<IHyperModalProps> = (props) => {

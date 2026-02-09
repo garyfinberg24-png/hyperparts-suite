@@ -2,7 +2,7 @@ define([], function() {
   return {
     "PropertyPaneDescription": "Configure the HyperHero web part",
     "LayoutGroupName": "Hero Settings",
-    "TilesGroupName": "Tile Management",
+    "SlidesGroupName": "Slide Management",
     "RotationGroupName": "Auto-Rotation",
     "ContentBindingGroupName": "Dynamic Content",
     "AdvancedGroupName": "Advanced",
@@ -10,7 +10,7 @@ define([], function() {
     "HeroHeightFieldLabel": "Hero Height (px)",
     "BorderRadiusFieldLabel": "Border Radius (px)",
     "FullBleedFieldLabel": "Full Bleed (full width)",
-    "ConfigureTilesLabel": "Configure Tiles",
+    "ConfigureSlidesLabel": "Configure Slides",
     "ConfigureLayoutLabel": "Configure Layout",
     "RotationEnabledLabel": "Enable Auto-Rotation",
     "RotationIntervalLabel": "Rotation Interval (ms)",

@@ -12,4 +12,4 @@ export type { IUseAutoRotationOptions, IUseAutoRotationResult } from "./useAutoR
 export { useHeroDynamicContent } from "./useHeroDynamicContent";
 export type { IUseHeroDynamicContentResult } from "./useHeroDynamicContent";
 
-export { useTileVisibility } from "./useTileVisibility";
+export { useSlideVisibility } from "./useSlideVisibility";

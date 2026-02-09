@@ -1,7 +1,7 @@
 declare interface IHyperHeroWebPartStrings {
   PropertyPaneDescription: string;
   LayoutGroupName: string;
-  TilesGroupName: string;
+  SlidesGroupName: string;
   RotationGroupName: string;
   ContentBindingGroupName: string;
   AdvancedGroupName: string;
@@ -9,7 +9,7 @@ declare interface IHyperHeroWebPartStrings {
   HeroHeightFieldLabel: string;
   BorderRadiusFieldLabel: string;
   FullBleedFieldLabel: string;
-  ConfigureTilesLabel: string;
+  ConfigureSlidesLabel: string;
   ConfigureLayoutLabel: string;
   RotationEnabledLabel: string;
   RotationIntervalLabel: string;

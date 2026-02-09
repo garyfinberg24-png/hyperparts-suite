@@ -1,20 +1,20 @@
 import * as React from "react";
 import { useCallback } from "react";
-import type { IHyperHeroRotation, IHyperHeroTile, IHyperHeroCta } from "../models";
+import type { IHyperHeroRotation, IHyperHeroSlide, IHyperHeroCta } from "../models";
 import { useAutoRotation } from "../hooks/useAutoRotation";
 import { useHyperHeroStore } from "../store/useHyperHeroStore";
-import { HyperHeroTile } from "./HyperHeroTile";
+import { HyperHeroSlide } from "./HyperHeroSlide";
 import styles from "./HyperHero.module.scss";
 
 export interface IHyperHeroTransitionWrapperProps {
-  tiles: IHyperHeroTile[];
+  slides: IHyperHeroSlide[];
   rotation: IHyperHeroRotation;
   gridStyle: React.CSSProperties;
   onCtaClick?: (cta: IHyperHeroCta) => void;
 }
 
 const HyperHeroTransitionWrapperInner: React.FC<IHyperHeroTransitionWrapperProps> = (props) => {
-  const { tiles, rotation, gridStyle, onCtaClick } = props;
+  const { slides, rotation, gridStyle, onCtaClick } = props;
 
   const activeSlideIndex = useHyperHeroStore((s) => s.activeSlideIndex);
   const goToNextSlide = useHyperHeroStore((s) => s.goToNextSlide);
@@ -22,41 +22,41 @@ const HyperHeroTransitionWrapperInner: React.FC<IHyperHeroTransitionWrapperProps
   const setActiveSlide = useHyperHeroStore((s) => s.setActiveSlide);
 
   const handleNext = useCallback((): void => {
-    goToNextSlide(tiles.length);
-  }, [goToNextSlide, tiles.length]);
+    goToNextSlide(slides.length);
+  }, [goToNextSlide, slides.length]);
 
   const handlePrev = useCallback((): void => {
-    goToPrevSlide(tiles.length);
-  }, [goToPrevSlide, tiles.length]);
+    goToPrevSlide(slides.length);
+  }, [goToPrevSlide, slides.length]);
 
   const { containerProps } = useAutoRotation(
     {
       enabled: rotation.enabled,
       intervalMs: rotation.intervalMs,
-      totalSlides: tiles.length,
+      totalSlides: slides.length,
       pauseOnHover: rotation.pauseOnHover,
     },
     handleNext
   );
 
-  // When rotation is disabled, render all tiles in the grid
-  if (!rotation.enabled || tiles.length <= 1) {
+  // When rotation is disabled, render all slides in the grid
+  if (!rotation.enabled || slides.length <= 1) {
     return React.createElement(
       "div",
       { className: styles.heroGrid, style: gridStyle, role: "region" },
-      tiles.map((tile) =>
-        React.createElement(HyperHeroTile, {
-          key: tile.id,
-          tile: tile,
+      slides.map((slide) =>
+        React.createElement(HyperHeroSlide, {
+          key: slide.id,
+          slide: slide,
           onCtaClick: onCtaClick,
         })
       )
     );
   }
 
-  // Rotation mode: show one tile at a time with transition effects
-  const currentIndex = activeSlideIndex % tiles.length;
-  const currentTile = tiles[currentIndex];
+  // Rotation mode: show one slide at a time with transition effects
+  const currentIndex = activeSlideIndex % slides.length;
+  const currentSlide = slides[currentIndex];
 
   // Build transition style
   const transitionStyle: React.CSSProperties = {};
@@ -84,15 +84,15 @@ const HyperHeroTransitionWrapperInner: React.FC<IHyperHeroTransitionWrapperProps
     React.createElement(
       "div",
       {
-        key: currentTile.id + "-" + currentIndex,
+        key: currentSlide.id + "-" + currentIndex,
         className: styles.heroGrid + kenBurnsClass,
         style: { ...gridStyle, ...transitionStyle },
         role: "tabpanel",
         "aria-roledescription": "slide",
-        "aria-label": "Slide " + (currentIndex + 1) + " of " + tiles.length,
+        "aria-label": "Slide " + (currentIndex + 1) + " of " + slides.length,
       },
-      React.createElement(HyperHeroTile, {
-        tile: currentTile,
+      React.createElement(HyperHeroSlide, {
+        slide: currentSlide,
         onCtaClick: onCtaClick,
       })
     ),
@@ -128,9 +128,9 @@ const HyperHeroTransitionWrapperInner: React.FC<IHyperHeroTransitionWrapperProps
       ? React.createElement(
           "div",
           { className: styles.rotationDots, role: "tablist", "aria-label": "Slide navigation" },
-          tiles.map((tile, idx) =>
+          slides.map((slide, idx) =>
             React.createElement("button", {
-              key: tile.id,
+              key: slide.id,
               className:
                 styles.dot + (idx === currentIndex ? " " + styles.dotActive : ""),
               onClick: () => setActiveSlide(idx),

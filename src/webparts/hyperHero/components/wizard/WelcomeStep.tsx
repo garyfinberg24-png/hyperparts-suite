@@ -6,50 +6,83 @@ export interface IWelcomeStepProps {
 }
 
 const WelcomeStep: React.FC<IWelcomeStepProps> = function (props) {
-  return React.createElement("div", { className: styles.welcomeContainer },
-    // Brand logo area
-    React.createElement("div", { className: styles.brandSection },
-      React.createElement("div", { className: styles.brandLogo },
-        React.createElement("span", { className: styles.brandDwx }, "DWx"),
-        React.createElement("span", { className: styles.brandSeparator }),
-        React.createElement("span", { className: styles.brandProduct }, "HyperHero")
-      ),
-      React.createElement("div", { className: styles.brandTagline }, "Premium Hero Experiences for SharePoint")
-    ),
+  return React.createElement("div", undefined,
 
-    // Feature highlights
-    React.createElement("div", { className: styles.featureGrid },
-      React.createElement("div", { className: styles.featureCard },
-        React.createElement("div", { className: styles.featureIcon, "aria-hidden": "true" }, "\uD83C\uDFA8"),
-        React.createElement("div", { className: styles.featureTitle }, "Visual Layouts"),
-        React.createElement("div", { className: styles.featureDesc }, "5 grid presets with responsive breakpoints")
+    // ── DWx Brand Strip ──
+    React.createElement("div", { className: styles.brandStrip },
+      React.createElement("div", { className: styles.brandLeft },
+        React.createElement("div", { className: styles.brandNameBlock },
+          React.createElement("span", { className: styles.brandDwx },
+            "DW",
+            React.createElement("span", { className: styles.brandDwxAccent }, "x")
+          ),
+          React.createElement("span", { className: styles.brandSub }, "Digital Workplace Excellence")
+        )
       ),
-      React.createElement("div", { className: styles.featureCard },
-        React.createElement("div", { className: styles.featureIcon, "aria-hidden": "true" }, "\uD83D\uDCF9"),
-        React.createElement("div", { className: styles.featureTitle }, "Rich Media"),
-        React.createElement("div", { className: styles.featureDesc }, "Images, videos, Lottie animations & parallax")
-      ),
-      React.createElement("div", { className: styles.featureCard },
-        React.createElement("div", { className: styles.featureIcon, "aria-hidden": "true" }, "\uD83D\uDD17"),
-        React.createElement("div", { className: styles.featureTitle }, "Dynamic Content"),
-        React.createElement("div", { className: styles.featureDesc }, "Bind to SharePoint lists for auto-updating tiles")
-      ),
-      React.createElement("div", { className: styles.featureCard },
-        React.createElement("div", { className: styles.featureIcon, "aria-hidden": "true" }, "\u23F1\uFE0F"),
-        React.createElement("div", { className: styles.featureTitle }, "Scheduling"),
-        React.createElement("div", { className: styles.featureDesc }, "Publish dates, countdowns & audience targeting")
+      React.createElement("span", { className: styles.brandBadge },
+        React.createElement("span", { className: styles.brandBadgeStar, "aria-hidden": "true" }, "\u2B50"),
+        " HyperParts Suite"
       )
     ),
 
-    // Get started CTA
-    React.createElement("div", { className: styles.ctaSection },
+    // ── Hero Banner ──
+    React.createElement("div", { className: styles.splashHero },
+      React.createElement("div", { className: styles.splashHeroBrand },
+        React.createElement("div", { className: styles.splashLogoRow },
+          React.createElement("span", { className: styles.splashBolt, "aria-hidden": "true" }, "\u26A1"),
+          React.createElement("span", { className: styles.splashHyperText }, "Hyper"),
+          React.createElement("span", { className: styles.splashPartText }, "Hero")
+        ),
+        React.createElement("div", { className: styles.splashTagline },
+          React.createElement("span", { className: styles.splashTaglineStrong }, "Supercharge"),
+          " your SharePoint intranet.",
+          React.createElement("br"),
+          "Hero banners that ",
+          React.createElement("span", { className: styles.splashTaglineStrong }, "demand attention"),
+          "."
+        )
+      )
+    ),
+
+    // ── Body: Feature Cards + CTA ──
+    React.createElement("div", { className: styles.splashBody },
+      React.createElement("div", { className: styles.splashCards },
+        // Card 1: 5 Grid Layouts
+        React.createElement("div", { className: styles.splashCard },
+          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83C\uDFA8"),
+          React.createElement("div", { className: styles.splashCardTitle }, "5 Grid Layouts"),
+          React.createElement("div", { className: styles.splashCardDesc }, "Single, split, thirds, sidebar & 2\u00D72")
+        ),
+        // Card 2: Rich Media
+        React.createElement("div", { className: styles.splashCard },
+          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83C\uDFAC"),
+          React.createElement("div", { className: styles.splashCardTitle }, "Rich Media"),
+          React.createElement("div", { className: styles.splashCardDesc }, "Video, Lottie, parallax & images")
+        ),
+        // Card 3: Animations
+        React.createElement("div", { className: styles.splashCard },
+          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\u2728"),
+          React.createElement("div", { className: styles.splashCardTitle }, "Animations"),
+          React.createElement("div", { className: styles.splashCardDesc }, "12 entrance effects per element")
+        ),
+        // Card 4: SP List Binding
+        React.createElement("div", { className: styles.splashCard },
+          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDD17"),
+          React.createElement("div", { className: styles.splashCardTitle }, "SP List Binding"),
+          React.createElement("div", { className: styles.splashCardDesc }, "Auto-updating dynamic content")
+        )
+      ),
+
+      // CTA button
       React.createElement("button", {
-        className: styles.getStartedBtn,
+        className: styles.splashCta,
         onClick: props.onGetStarted,
         type: "button",
-      }, "Get Started"),
-      React.createElement("p", { className: styles.ctaHint },
-        "This wizard will help you configure your hero web part in just a few steps."
+      }, "Get Started \u2192"),
+
+      // Hint
+      React.createElement("span", { className: styles.splashHint },
+        "Guided setup takes less than a minute"
       )
     )
   );

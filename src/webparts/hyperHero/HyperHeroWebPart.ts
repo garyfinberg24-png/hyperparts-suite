@@ -13,9 +13,9 @@ import * as strings from "HyperHeroWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
 import HyperHero from "./components/HyperHero";
 import type { IHyperHeroComponentProps } from "./components/HyperHero";
-import type { IHyperHeroWebPartProps, IHyperHeroTile } from "./models";
+import type { IHyperHeroWebPartProps, IHyperHeroSlide } from "./models";
 import {
-  DEFAULT_TILE,
+  DEFAULT_SLIDE,
   DEFAULT_RESPONSIVE_LAYOUTS,
   DEFAULT_ROTATION,
   DEFAULT_CONTENT_BINDING,
@@ -30,8 +30,8 @@ export default class HyperHeroWebPart extends BaseHyperWebPart<IHyperHeroWebPart
       ...this.properties,
       instanceId: this.instanceId,
       isEditMode: this.displayMode === 2,
-      onTilesChange: function (tiles: IHyperHeroTile[]): void {
-        self.properties.tiles = tiles;
+      onSlidesChange: function (slides: IHyperHeroSlide[]): void {
+        self.properties.slides = slides;
         self.render();
       },
       onSettingsChange: function (partial: Partial<IHyperHeroWebPartProps>): void {
@@ -51,8 +51,8 @@ export default class HyperHeroWebPart extends BaseHyperWebPart<IHyperHeroWebPart
     await super.onInit();
 
     // Ensure defaults for all top-level properties
-    if (!this.properties.tiles || this.properties.tiles.length === 0) {
-      this.properties.tiles = [DEFAULT_TILE];
+    if (!this.properties.slides || this.properties.slides.length === 0) {
+      this.properties.slides = [DEFAULT_SLIDE];
     }
     if (!this.properties.layouts) {
       this.properties.layouts = DEFAULT_RESPONSIVE_LAYOUTS;

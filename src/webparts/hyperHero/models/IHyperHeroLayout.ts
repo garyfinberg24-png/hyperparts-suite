@@ -20,7 +20,7 @@ export interface IHyperHeroResponsiveLayouts {
   widescreen: IHyperHeroGridLayout;
 }
 
-/** Default single-tile layout used when no custom layout is configured */
+/** Default single-slide layout used when no custom layout is configured */
 export const DEFAULT_GRID_LAYOUT: IHyperHeroGridLayout = {
   columns: 1,
   rows: 1,

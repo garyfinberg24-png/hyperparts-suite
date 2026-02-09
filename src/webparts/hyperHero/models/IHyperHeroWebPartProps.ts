@@ -1,9 +1,9 @@
 import type { IBaseHyperWebPartProps } from "../../../common/BaseHyperWebPart";
-import type { IHyperHeroTile } from "./IHyperHeroTile";
+import type { IHyperHeroSlide } from "./IHyperHeroSlide";
 import type { IHyperHeroResponsiveLayouts } from "./IHyperHeroLayout";
 import type { IHyperHeroRotation } from "./IHyperHeroTransition";
 
-/** Field mapping from a SharePoint list to tile properties */
+/** Field mapping from a SharePoint list to slide properties */
 export interface IHyperHeroFieldMapping {
   headingField: string;
   subheadingField?: string;
@@ -32,7 +32,7 @@ export interface IHyperHeroABVariation {
   id: string;
   name: string;
   weight: number;
-  tileOverrides: Array<Record<string, unknown>>;
+  slideOverrides: Array<Record<string, unknown>>;
 }
 
 /** A/B testing configuration */
@@ -72,7 +72,7 @@ export const DEFAULT_AB_TESTING: IHyperHeroABTestConfig = {
 /** The full HyperHero web part property bag */
 export interface IHyperHeroWebPartProps extends IBaseHyperWebPartProps {
   title: string;
-  tiles: IHyperHeroTile[];
+  slides: IHyperHeroSlide[];
   layouts: IHyperHeroResponsiveLayouts;
   heroHeight: number;
   rotation: IHyperHeroRotation;

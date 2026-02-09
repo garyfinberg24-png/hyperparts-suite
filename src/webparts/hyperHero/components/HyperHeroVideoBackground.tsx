@@ -20,8 +20,10 @@ function buildEmbedUrl(config: IHyperHeroVideoConfig): string | undefined {
     params.push("controls=0");
     params.push("modestbranding=1");
     params.push("rel=0");
+    params.push("enablejsapi=1");
+    params.push("origin=" + encodeURIComponent(window.location.origin));
 
-    return "https://www.youtube.com/embed/" + videoId + "?" + params.join("&");
+    return "https://www.youtube-nocookie.com/embed/" + videoId + "?" + params.join("&");
   }
 
   if (config.source === "vimeo") {
@@ -91,7 +93,7 @@ const EmbedVideo: React.FC<{ config: IHyperHeroVideoConfig }> = (props) => {
     { className: styles.backgroundVideo, "aria-hidden": "true" },
     React.createElement("iframe", {
       src: embedUrl,
-      allow: "autoplay; encrypted-media",
+      allow: "autoplay; encrypted-media; fullscreen; picture-in-picture",
       allowFullScreen: true,
       title: "Video background",
       loading: "lazy",

@@ -11,6 +11,13 @@ const variantClassMap: Record<string, string> = {
   primary: styles.ctaPrimary,
   secondary: styles.ctaSecondary,
   ghost: styles.ctaGhost,
+  pill: styles.ctaPill,
+  outline: styles.ctaOutline,
+  gradient: styles.ctaGradient,
+  shadow: styles.ctaShadow,
+  minimal: styles.ctaMinimal,
+  rounded: styles.ctaRounded,
+  block: styles.ctaBlock,
 };
 
 export const HyperHeroCtaGroup: React.FC<IHyperHeroCtaGroupProps> = (props) => {

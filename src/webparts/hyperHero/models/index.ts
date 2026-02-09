@@ -21,20 +21,32 @@ export { DEFAULT_ROTATION } from "./IHyperHeroTransition";
 export type {
   BackgroundType,
   VideoSource,
+  ContentMode,
   IHyperHeroVideoConfig,
   IHyperHeroLottieConfig,
-  IHyperHeroTileBackground,
+  IHyperHeroSlideBackground,
   IHyperHeroGradient,
   IHyperHeroGradientStop,
   IHyperHeroParallax,
   IHyperHeroCountdown,
-  IHyperHeroTileLink,
+  IHyperHeroSlideLink,
   EntranceEffect,
   IElementAnimation,
-  ITileElementAnimations,
-  IHyperHeroTile,
-} from "./IHyperHeroTile";
-export { DEFAULT_GRADIENT, DEFAULT_TILE, DEFAULT_ELEMENT_ANIMATION } from "./IHyperHeroTile";
+  ISlideElementAnimations,
+  IHyperHeroTextOverlay,
+  IHyperHeroFontSettings,
+  IHyperHeroFontConfig,
+  IHyperHeroSlide,
+} from "./IHyperHeroSlide";
+export { DEFAULT_GRADIENT, DEFAULT_SLIDE, DEFAULT_ELEMENT_ANIMATION, DEFAULT_FONT_SETTINGS } from "./IHyperHeroSlide";
+
+export type {
+  LayerType,
+  ShapeType,
+  ImageFitMode,
+  IHyperHeroLayer,
+} from "./IHyperHeroLayer";
+export { createDefaultLayer } from "./IHyperHeroLayer";
 
 export type {
   IHyperHeroFieldMapping,
