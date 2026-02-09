@@ -181,6 +181,22 @@ export interface IHyperHeroSlide {
   contentMode?: ContentMode;
   /** Free-positioned layers (used when contentMode is "canvas") */
   layers?: IHyperHeroLayer[];
+  /** Per-slide transition effect override */
+  slideTransition?: "fade" | "slide" | "zoom" | "kenBurns" | "flip" | "cube" | "cards" | "none";
+  /** Per-slide transition duration in ms */
+  slideTransitionDurationMs?: number;
+  /** Per-slide transition easing */
+  slideTransitionEasing?: "ease" | "ease-in" | "ease-out" | "ease-in-out" | "linear";
+  /** Hover effect applied to the slide */
+  hoverEffect?: "none" | "zoom" | "darken" | "blur" | "kenBurns" | "colorShift" | "lift" | "glow" | "reveal";
+  /** Ken Burns effect (slow zoom pan on static images) */
+  kenBurnsEnabled?: boolean;
+  /** Text backdrop blur (frosted glass behind text) */
+  textBackdropEnabled?: boolean;
+  /** Vignette darkening around edges */
+  vignetteEnabled?: boolean;
+  /** Internal notes (not displayed, editor-only) */
+  internalNotes?: string;
   publishDate?: string;
   unpublishDate?: string;
   sortOrder: number;

@@ -321,6 +321,40 @@
   font-weight: 500;
 }
 
+// Aspect ratio selector
+.aspectRatioGroup {
+  display: flex;
+  gap: 8px;
+}
+
+.aspectRatioBtn {
+  padding: 6px 16px;
+  border: 1px solid #8a8886;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #323130;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+
+  &:hover {
+    border-color: #0078d4;
+    background: #f3f9ff;
+  }
+}
+
+.aspectRatioBtnActive {
+  border-color: #0078d4;
+  background: #0078d4;
+  color: #ffffff;
+
+  &:hover {
+    background: #106ebe;
+    border-color: #106ebe;
+  }
+}
+
 // Selected preset info bar
 .selectedPresetInfo {
   background: #f3f9ff;

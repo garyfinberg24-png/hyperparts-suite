@@ -1,26 +1,10 @@
 import * as React from "react";
-import type { WizardMode } from "./ModeStep";
-import type { IListInfo } from "../shared/useListBrowser";
+import type { IWizardStepProps } from "../../../../common/components/wizard/IHyperWizard";
+import type { IHeroWizardState } from "./heroWizardConfig";
+import { useListBrowser } from "../shared/useListBrowser";
 import styles from "./ListPickerStep.module.scss";
 
 export type LayoutPreset = "single" | "split" | "thirds" | "heroSidebar" | "grid2x2";
-
-export interface IListPickerStepProps {
-  mode: WizardMode;
-  // List mode props
-  lists: IListInfo[];
-  listsLoading: boolean;
-  listsError: string | undefined;
-  selectedListName: string;
-  onListSelect: (listName: string) => void;
-  onCreateList: (name: string) => void;
-  creating: boolean;
-  createStatus: string | undefined;
-  createError: string | undefined;
-  // Manual mode props
-  layoutPreset: LayoutPreset;
-  onLayoutPresetChange: (preset: LayoutPreset) => void;
-}
 
 interface ILayoutPresetConfig {
   id: LayoutPreset;
@@ -33,7 +17,7 @@ interface ILayoutPresetConfig {
   previewRows: string;
 }
 
-const LAYOUT_PRESETS: ILayoutPresetConfig[] = [
+var LAYOUT_PRESETS: ILayoutPresetConfig[] = [
   {
     id: "single",
     label: "Full Width",
@@ -82,62 +66,91 @@ const LAYOUT_PRESETS: ILayoutPresetConfig[] = [
 ];
 
 /** Color swatches for mini preview slides */
-const PREVIEW_COLORS = ["#0078d4", "#50e6ff", "#6264a7", "#00b7c3"];
+var PREVIEW_COLORS = ["#0078d4", "#50e6ff", "#6264a7", "#00b7c3"];
 
-const ListPickerStep: React.FC<IListPickerStepProps> = function (props) {
-  const [createInputValue, setCreateInputValue] = React.useState<string>("");
+var ListPickerStep: React.FC<IWizardStepProps<IHeroWizardState>> = function (props) {
+  var state = props.state;
+  var onChange = props.onChange;
 
-  const handleListSelectChange = React.useCallback(function (e: React.ChangeEvent<HTMLSelectElement>) {
-    props.onListSelect(e.target.value);
-  }, [props.onListSelect]);
+  // Local state for list creation
+  var createInputState = React.useState<string>("");
+  var createInputValue = createInputState[0];
+  var setCreateInputValue = createInputState[1];
 
-  const handleCreateInputChange = React.useCallback(function (e: React.ChangeEvent<HTMLInputElement>) {
+  var createStatusState = React.useState<string | undefined>(undefined);
+  var createStatus = createStatusState[0];
+  var setCreateStatus = createStatusState[1];
+
+  var createErrorState = React.useState<string | undefined>(undefined);
+  var createError = createErrorState[0];
+  var setCreateError = createErrorState[1];
+
+  // List browser hook — only active in list mode
+  var listBrowser = useListBrowser();
+
+  var handleListSelectChange = React.useCallback(function (e: React.ChangeEvent<HTMLSelectElement>): void {
+    onChange({ listName: e.target.value });
+  }, [onChange]);
+
+  var handleCreateInputChange = React.useCallback(function (e: React.ChangeEvent<HTMLInputElement>): void {
     setCreateInputValue(e.target.value);
   }, []);
 
-  const handleCreateClick = React.useCallback(function () {
+  var handleCreateClick = React.useCallback(function (): void {
     if (createInputValue.length > 0) {
-      props.onCreateList(createInputValue);
-      setCreateInputValue("");
+      setCreateStatus(undefined);
+      setCreateError(undefined);
+      listBrowser.createList(createInputValue).then(function (createdName: string) {
+        onChange({ listName: createdName });
+        setCreateStatus("List '" + createdName + "' created with all HyperHero columns!");
+        setCreateInputValue("");
+        listBrowser.refresh();
+      }).catch(function (err: Error) {
+        setCreateError(err.message || "Failed to create list");
+      });
     }
-  }, [createInputValue, props.onCreateList]);
+  }, [createInputValue, listBrowser, onChange]);
 
-  const handleLayoutPresetClick = React.useCallback(function (preset: LayoutPreset) {
-    return function () {
-      props.onLayoutPresetChange(preset);
+  var handleLayoutPresetClick = React.useCallback(function (preset: LayoutPreset): () => void {
+    return function (): void {
+      onChange({ layoutPreset: preset });
     };
-  }, [props.onLayoutPresetChange]);
+  }, [onChange]);
 
-  const handleLayoutPresetKeyDown = React.useCallback(function (preset: LayoutPreset) {
-    return function (e: React.KeyboardEvent<HTMLDivElement>) {
+  var handleLayoutPresetKeyDown = React.useCallback(function (preset: LayoutPreset): (e: React.KeyboardEvent<HTMLDivElement>) => void {
+    return function (e: React.KeyboardEvent<HTMLDivElement>): void {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        props.onLayoutPresetChange(preset);
+        onChange({ layoutPreset: preset });
       }
     };
-  }, [props.onLayoutPresetChange]);
+  }, [onChange]);
 
-  if (props.mode === "list") {
+  var handleAspectRatioClick = React.useCallback(function (ratio: string): () => void {
+    return function (): void {
+      onChange({ aspectRatio: ratio as "16:9" | "4:3" | "21:9" | "custom" });
+    };
+  }, [onChange]);
+
+  if (state.mode === "list") {
     // Build option elements
-    const optionElements: React.ReactElement[] = [];
+    var optionElements: React.ReactElement[] = [];
 
-    // Default option
     optionElements.push(
       React.createElement("option", { key: "default", value: "" }, "-- Select a list --")
     );
 
-    // List options
-    props.lists.forEach(function (list) {
-      const labelText = list.title + " (" + list.itemCount + " items)";
+    listBrowser.lists.forEach(function (list) {
+      var labelText = list.title + " (" + list.itemCount + " items)";
       optionElements.push(
         React.createElement("option", { key: list.id, value: list.title }, labelText)
       );
     });
 
     // Build field mapping preview rows if a list is selected
-    const fieldMappingRows: React.ReactElement[] = [];
-    if (props.selectedListName.length > 0) {
-      const mappings = [
+    var fieldMappingRows: React.ReactElement[] = [];
+    if (state.listName.length > 0) {
+      var mappings = [
         { label: "Heading", spColumn: "Title", description: "Main heading text" },
         { label: "Subheading", spColumn: "HeroSubheading", description: "Secondary text" },
         { label: "Description", spColumn: "HeroDescription", description: "Body text" },
@@ -175,19 +188,19 @@ const ListPickerStep: React.FC<IListPickerStepProps> = function (props) {
       React.createElement("div", { className: styles.sectionBox },
         React.createElement("label", { className: styles.sectionLabel }, "Browse Existing Lists"),
         React.createElement("div", { className: styles.selectWrapper },
-          props.listsLoading
+          listBrowser.loading
             ? React.createElement("div", { className: styles.statusLoading },
                 React.createElement("span", { className: styles.spinner, "aria-hidden": "true" }),
                 "Loading lists..."
               )
-            : props.listsError
+            : listBrowser.error
               ? React.createElement("div", { className: styles.statusError },
                   React.createElement("span", { "aria-hidden": "true" }, "\u26A0\uFE0F"),
-                  " " + props.listsError
+                  " " + listBrowser.error
                 )
               : React.createElement("select", {
                   className: styles.listSelect,
-                  value: props.selectedListName,
+                  value: state.listName,
                   onChange: handleListSelectChange,
                   "aria-label": "Select a SharePoint list",
                 }, optionElements)
@@ -220,25 +233,25 @@ const ListPickerStep: React.FC<IListPickerStepProps> = function (props) {
             type: "button",
             className: styles.createButton,
             onClick: handleCreateClick,
-            disabled: props.creating || createInputValue.length === 0,
-          }, props.creating ? "Creating..." : "Create List")
+            disabled: listBrowser.creating || createInputValue.length === 0,
+          }, listBrowser.creating ? "Creating..." : "Create List")
         ),
-        props.createStatus
+        createStatus
           ? React.createElement("div", { className: styles.statusSuccess },
               React.createElement("span", { "aria-hidden": "true" }, "\u2705"),
-              " " + props.createStatus
+              " " + createStatus
             )
           : undefined,
-        props.createError
+        createError
           ? React.createElement("div", { className: styles.statusError },
               React.createElement("span", { "aria-hidden": "true" }, "\u274C"),
-              " " + props.createError
+              " " + createError
             )
           : undefined
       ),
 
       // Field mapping preview
-      props.selectedListName.length > 0
+      state.listName.length > 0
         ? React.createElement("div", { className: styles.fieldMappingPreview },
             React.createElement("h4", { className: styles.fieldMappingTitle }, "Column Mapping"),
             React.createElement("p", { className: styles.fieldMappingHint },
@@ -251,21 +264,20 @@ const ListPickerStep: React.FC<IListPickerStepProps> = function (props) {
   }
 
   // ── Manual mode ──
-  // Find the selected preset config to show details
-  let selectedConfig: ILayoutPresetConfig | undefined = undefined;
+  var selectedConfig: ILayoutPresetConfig | undefined = undefined;
   LAYOUT_PRESETS.forEach(function (p) {
-    if (p.id === props.layoutPreset) selectedConfig = p;
+    if (p.id === state.layoutPreset) selectedConfig = p;
   });
 
-  const layoutPresetElements: React.ReactElement[] = [];
+  var layoutPresetElements: React.ReactElement[] = [];
   LAYOUT_PRESETS.forEach(function (preset) {
-    const isSelected = props.layoutPreset === preset.id;
-    const className = styles.layoutPreset + (isSelected ? " " + styles.layoutPresetSelected : "");
+    var isSelected = state.layoutPreset === preset.id;
+    var className = styles.layoutPreset + (isSelected ? " " + styles.layoutPresetSelected : "");
 
     // Build mini preview slides
-    const previewAreas = ["a", "b", "c", "d"];
-    const previewSlides: React.ReactElement[] = [];
-    for (let i = 0; i < preset.slideCount; i++) {
+    var previewAreas = ["a", "b", "c", "d"];
+    var previewSlides: React.ReactElement[] = [];
+    for (var i = 0; i < preset.slideCount; i++) {
       previewSlides.push(
         React.createElement("div", {
           key: previewAreas[i],
@@ -323,6 +335,24 @@ const ListPickerStep: React.FC<IListPickerStepProps> = function (props) {
     // Layout preset grid
     React.createElement("div", { className: styles.layoutPresets, role: "radiogroup", "aria-label": "Layout presets" },
       layoutPresetElements
+    ),
+
+    // Aspect ratio selector
+    React.createElement("div", { className: styles.sectionBox },
+      React.createElement("label", { className: styles.sectionLabel }, "Aspect Ratio"),
+      React.createElement("div", { className: styles.aspectRatioGroup, role: "radiogroup", "aria-label": "Aspect ratio" },
+        ["16:9", "4:3", "21:9", "custom"].map(function (ratio) {
+          var isActive = state.aspectRatio === ratio;
+          return React.createElement("button", {
+            key: ratio,
+            type: "button",
+            className: styles.aspectRatioBtn + (isActive ? " " + styles.aspectRatioBtnActive : ""),
+            onClick: handleAspectRatioClick(ratio),
+            role: "radio",
+            "aria-checked": String(isActive),
+          }, ratio === "custom" ? "Custom" : ratio);
+        })
+      )
     ),
 
     // Selected preset detail

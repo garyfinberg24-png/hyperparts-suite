@@ -80,6 +80,10 @@ export interface IHyperHeroWebPartProps extends IBaseHyperWebPartProps {
   abTesting: IHyperHeroABTestConfig;
   borderRadius: number;
   fullBleed: boolean;
+  /** Aspect ratio for the hero container */
+  aspectRatio: "16:9" | "4:3" | "21:9" | "custom";
+  /** Slider complexity mode: "simple" = 4 tabs, "hyper" = 7 tabs + extras */
+  sliderMode: "simple" | "hyper";
   /** Tracks whether the first-run setup wizard has been completed */
   wizardCompleted: boolean;
 }

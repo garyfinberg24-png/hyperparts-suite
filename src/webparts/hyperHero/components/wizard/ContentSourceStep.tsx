@@ -1,43 +1,43 @@
 import * as React from "react";
-import styles from "./ModeStep.module.scss";
+import type { IWizardStepProps } from "../../../../common/components/wizard/IHyperWizard";
+import type { IHeroWizardState } from "./heroWizardConfig";
+import styles from "./ContentSourceStep.module.scss";
 
-export type WizardMode = "manual" | "list";
+/**
+ * Content Source step — two large cards: "Manual Slides" vs "SharePoint List".
+ * Sets state.mode to "manual" or "list".
+ */
+var ContentSourceStep: React.FC<IWizardStepProps<IHeroWizardState>> = function (props) {
+  var state = props.state;
+  var onChange = props.onChange;
 
-export interface IModeStepProps {
-  selectedMode: WizardMode | undefined;
-  onModeSelect: (mode: WizardMode) => void;
-}
+  var handleManualClick = React.useCallback(function (): void {
+    onChange({ mode: "manual" });
+  }, [onChange]);
 
-const ModeStep: React.FC<IModeStepProps> = function (props) {
-  const handleManualClick = React.useCallback(function () {
-    props.onModeSelect("manual");
-  }, [props.onModeSelect]);
+  var handleListClick = React.useCallback(function (): void {
+    onChange({ mode: "list" });
+  }, [onChange]);
 
-  const handleListClick = React.useCallback(function () {
-    props.onModeSelect("list");
-  }, [props.onModeSelect]);
-
-  const handleKeyDown = React.useCallback(function (mode: WizardMode, e: React.KeyboardEvent<HTMLDivElement>) {
+  var handleKeyDown = React.useCallback(function (mode: "manual" | "list", e: React.KeyboardEvent<HTMLDivElement>): void {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      props.onModeSelect(mode);
+      onChange({ mode: mode });
     }
-  }, [props.onModeSelect]);
+  }, [onChange]);
 
-  // Manual card classes
-  const manualClasses = styles.modeCard +
-    (props.selectedMode === "manual" ? " " + styles.modeCardSelected : "");
+  var manualClasses = styles.modeCard +
+    (state.mode === "manual" ? " " + styles.modeCardSelected : "");
 
-  // List card classes
-  const listClasses = styles.modeCard +
-    (props.selectedMode === "list" ? " " + styles.modeCardSelected : "");
+  var listClasses = styles.modeCard +
+    (state.mode === "list" ? " " + styles.modeCardSelected : "");
 
   return React.createElement("div", { className: styles.modeStepContainer },
     // Step header
     React.createElement("div", { className: styles.stepHeader },
       React.createElement("div", { className: styles.stepHeaderIcon, "aria-hidden": "true" }, "\uD83D\uDD00"),
       React.createElement("div", { className: styles.stepHeaderContent },
-        React.createElement("h3", { className: styles.stepHeaderTitle }, "Choose Content Mode"),
+        React.createElement("h3", { className: styles.stepHeaderTitle }, "Choose Content Source"),
         React.createElement("p", { className: styles.stepHeaderDescription },
           "How do you want to manage your hero content? You can change this later in the property pane."
         )
@@ -48,9 +48,9 @@ const ModeStep: React.FC<IModeStepProps> = function (props) {
       React.createElement("div", {
         className: manualClasses,
         onClick: handleManualClick,
-        onKeyDown: function (e: React.KeyboardEvent<HTMLDivElement>) { handleKeyDown("manual", e); },
+        onKeyDown: function (e: React.KeyboardEvent<HTMLDivElement>): void { handleKeyDown("manual", e); },
         role: "radio",
-        "aria-checked": props.selectedMode === "manual" ? "true" : "false",
+        "aria-checked": state.mode === "manual" ? "true" : "false",
         tabIndex: 0,
       },
         React.createElement("span", { className: styles.modeCardIcon, "aria-hidden": "true" }, "\uD83C\uDFA8"),
@@ -63,9 +63,9 @@ const ModeStep: React.FC<IModeStepProps> = function (props) {
       React.createElement("div", {
         className: listClasses,
         onClick: handleListClick,
-        onKeyDown: function (e: React.KeyboardEvent<HTMLDivElement>) { handleKeyDown("list", e); },
+        onKeyDown: function (e: React.KeyboardEvent<HTMLDivElement>): void { handleKeyDown("list", e); },
         role: "radio",
-        "aria-checked": props.selectedMode === "list" ? "true" : "false",
+        "aria-checked": state.mode === "list" ? "true" : "false",
         tabIndex: 0,
       },
         React.createElement("span", { className: styles.modeCardIcon, "aria-hidden": "true" }, "\uD83D\uDCCB"),
@@ -78,4 +78,4 @@ const ModeStep: React.FC<IModeStepProps> = function (props) {
   );
 };
 
-export default ModeStep;
+export default ContentSourceStep;

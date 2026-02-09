@@ -311,43 +311,360 @@ body {
 }
 
 /* ══════════════════════════════════════════
-   PROGRESS STEPPER
+   PROGRESS STEPPER (legacy horizontal — kept for reference)
    ══════════════════════════════════════════ */
 .stepper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px 24px;
-  gap: 0;
-  background: var(--gray-10);
-  border-bottom: 1px solid var(--gray-30);
+  display: none; /* hidden — replaced by sidebar */
 }
-.step-item {
+
+/* ── Sidebar Wizard Layout ── */
+.wizard-shell {
+  display: flex;
+  height: calc(100vh - 48px);
+  max-height: 820px;
+  overflow: hidden;
+}
+.wizard-sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, #071428 0%, #0a1e36 30%, #0e2a47 60%, #0f3460 100%);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
-  min-width: 60px;
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
 }
-.step-circle {
+.wizard-sidebar-brand {
+  padding: 20px 18px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.wizard-sidebar-brand .brand-logo {
+  font-size: 18px; font-weight: 800; color: var(--white); letter-spacing: -0.5px;
+}
+.wizard-sidebar-brand .brand-logo .accent { color: var(--dwx-accent); }
+.wizard-sidebar-brand .brand-sub {
+  font-size: 10px; color: rgba(255,255,255,.4); margin-top: 2px; letter-spacing: 0.5px;
+}
+.wizard-sidebar-badge {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 10px; font-weight: 700; color: var(--dwx-accent);
+  border: 1px solid rgba(79,195,247,.25);
+  border-radius: 10px; padding: 2px 10px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.wizard-sidebar-steps {
+  flex: 1;
+  padding: 16px 0;
+  overflow-y: auto;
+}
+.wizard-step-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  cursor: pointer;
+  transition: background .15s;
+  position: relative;
+}
+.wizard-step-item:hover { background: rgba(255,255,255,.05); }
+.wizard-step-item.active { background: rgba(79,195,247,.12); }
+.wizard-step-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--dwx-accent);
+  border-radius: 0 2px 2px 0;
+}
+.wizard-step-num {
   width: 28px; height: 28px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-size: 12px; font-weight: 700;
-  background: var(--gray-30); color: var(--gray-80);
+  background: rgba(255,255,255,.1); color: rgba(255,255,255,.4);
+  flex-shrink: 0;
   transition: all .2s;
 }
-.step-circle.active { background: var(--blue-primary); color: var(--white); }
-.step-circle.complete { background: var(--green-primary); color: var(--white); }
-.step-label { font-size: 10px; color: var(--gray-60); font-weight: 600; text-transform: uppercase; }
-.step-label.active { color: var(--blue-primary); }
-.step-label.complete { color: var(--green-primary); }
-.step-connector {
-  width: 32px; height: 2px; background: var(--gray-30);
-  margin: 0 4px; flex-shrink: 0;
-  margin-bottom: 18px;
+.wizard-step-item.active .wizard-step-num {
+  background: var(--dwx-accent); color: var(--dwx-navy);
 }
-.step-connector.active { background: var(--green-primary); }
+.wizard-step-item.complete .wizard-step-num {
+  background: var(--green-primary); color: var(--white);
+}
+.wizard-step-text {
+  font-size: 13px; font-weight: 500;
+  color: rgba(255,255,255,.4);
+  transition: color .15s;
+  line-height: 1.3;
+}
+.wizard-step-item.active .wizard-step-text { color: var(--white); font-weight: 600; }
+.wizard-step-item.complete .wizard-step-text { color: rgba(255,255,255,.7); }
+.wizard-sidebar-footer {
+  padding: 12px 18px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  font-size: 10px; color: rgba(255,255,255,.25);
+  text-align: center;
+}
+.wizard-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--white);
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+.wizard-main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--gray-30);
+  background: var(--white);
+  flex-shrink: 0;
+}
+.wizard-main-header .wiz-title {
+  font-size: 18px; font-weight: 700; color: var(--gray-100);
+}
+.wizard-main-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+.wizard-main-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  border-top: 1px solid var(--gray-30);
+  background: var(--white);
+  flex-shrink: 0;
+  border-radius: 0 0 var(--radius-lg) 0;
+}
+.wizard-main-footer .step-counter {
+  font-size: 12px; color: var(--gray-60); font-weight: 500;
+}
+
+/* ── Wizard Splash (Step 0 — matches DwxSplash pattern) ── */
+.wiz-splash-wrap {
+  margin: -24px -24px 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+/* Brand strip */
+.wiz-splash-brand-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: linear-gradient(90deg, #0a1e36 0%, #0e2a47 100%);
+  border-bottom: 2px solid #2b88d8;
+}
+.wiz-splash-brand-left {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.wiz-splash-brand-dwx {
+  font-size: 18px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+.wiz-splash-brand-dwx .accent { color: #4fc3f7; }
+.wiz-splash-brand-sub {
+  font-size: 10px;
+  color: rgba(255,255,255,.5);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+}
+.wiz-splash-brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  background: rgba(79,195,247,.15);
+  border: 1px solid rgba(79,195,247,.25);
+  border-radius: 12px;
+  font-size: 10px;
+  color: #4fc3f7;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+/* Hero banner */
+.wiz-splash-hero {
+  background: linear-gradient(135deg, #0e2a47 0%, #143d6b 35%, #1e6cb5 70%, #2b88d8 100%);
+  padding: 32px 48px 28px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.wiz-splash-hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size: 20px 20px;
+  pointer-events: none;
+}
+.wiz-splash-hero > * { position: relative; z-index: 1; }
+.wiz-splash-logo-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.wiz-splash-bolt {
+  font-size: 22px;
+  filter: drop-shadow(0 0 8px rgba(80,181,255,.6));
+}
+.wiz-splash-hyper-text {
+  font-size: 38px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -1px;
+}
+.wiz-splash-part-text {
+  font-size: 38px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #7ec8e3, #c8e6f5);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -1px;
+}
+.wiz-splash-tagline {
+  font-size: 15px;
+  color: rgba(255,255,255,.85);
+  font-weight: 400;
+  line-height: 1.6;
+  max-width: 420px;
+  margin: 0 auto;
+}
+.wiz-splash-tagline strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+/* White body with cards */
+.wiz-splash-body {
+  flex: 1;
+  padding: 24px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  background: #ffffff;
+}
+.wiz-splash-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  width: 100%;
+}
+.wiz-splash-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 10px 14px;
+  border-radius: 10px;
+  background: #f7f9fc;
+  border: 1px solid #e1e8ef;
+  transition: border-color .2s, transform .15s, box-shadow .2s;
+}
+.wiz-splash-card:hover {
+  border-color: #2b88d8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(43,136,216,.12);
+}
+.wiz-splash-card-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #0e2a47, #1e6cb5);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 2px 8px rgba(14,42,71,.2);
+}
+.wiz-splash-card-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0e2a47;
+  text-align: center;
+}
+.wiz-splash-card-desc {
+  font-size: 11px;
+  color: #8a96a8;
+  text-align: center;
+  line-height: 1.35;
+}
+.wiz-splash-cta {
+  padding: 12px 44px;
+  background: linear-gradient(135deg, #143d6b, #2b88d8);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(20,61,107,.3);
+  transition: transform .15s, box-shadow .15s;
+  letter-spacing: 0.3px;
+}
+.wiz-splash-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(43,136,216,.4);
+}
+.wiz-splash-cta:active { transform: translateY(0); }
+.wiz-splash-cta:focus-visible {
+  outline: 2px solid #4fc3f7;
+  outline-offset: 2px;
+}
+.wiz-splash-hint {
+  font-size: 12px;
+  color: #a19f9d;
+}
+
+/* ── Number spinners (precise controls) ── */
+.spinner-input {
+  width: 80px;
+  padding: 5px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  border: 1px solid var(--gray-40);
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  background: var(--white);
+  transition: border-color .15s;
+}
+.spinner-input:focus { border-color: var(--blue-primary); outline: none; box-shadow: 0 0 0 2px rgba(0,120,212,.15); }
+.spinner-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.spinner-unit {
+  font-size: 12px;
+  color: var(--gray-60);
+  font-weight: 500;
+}
+.font-size-dropdown {
+  padding: 5px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--gray-40);
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  background: var(--white);
+  cursor: pointer;
+  min-width: 90px;
+}
+.font-size-dropdown:focus { border-color: var(--blue-primary); outline: none; box-shadow: 0 0 0 2px rgba(0,120,212,.15); }
 
 /* ══════════════════════════════════════════
    HELP BANNER
@@ -544,7 +861,7 @@ body {
 .prop-panel {
   border: 1px solid var(--gray-30);
   border-radius: var(--radius-md);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   overflow: hidden;
   background: var(--white);
   transition: box-shadow .15s;
@@ -590,7 +907,7 @@ body {
 }
 .prop-panel.expanded .prop-panel-body {
   max-height: 800px;
-  padding: 12px 14px 14px;
+  padding: 10px 14px 12px;
 }
 .prop-panel-hint {
   font-size: 11px; color: var(--gray-60); margin-bottom: 10px;
@@ -605,7 +922,7 @@ body {
 .prop-panel.expanded .prop-panel-badge { display: none; }
 
 /* ── Form Fields ── */
-.field-row { margin-bottom: 12px; }
+.field-row { margin-bottom: 8px; }
 .field-row:last-child { margin-bottom: 0; }
 .field-label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 4px; color: var(--gray-80); text-transform: uppercase; letter-spacing: .3px; }
 .field-hint { font-size: 11px; color: var(--gray-60); margin-top: 3px; line-height: 1.3; }
@@ -619,8 +936,8 @@ body {
 .text-input:focus { outline: none; border-color: var(--blue-primary); box-shadow: 0 0 0 2px rgba(0,120,212,.15); }
 .text-input::placeholder { color: var(--gray-60); }
 /* Multi-column field grids */
-.field-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
-.field-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px 14px; }
+.field-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; }
+.field-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px 12px; }
 .field-grid-2 .field-row, .field-grid-3 .field-row { margin-bottom: 0; }
 .field-span-2 { grid-column: span 2; }
 .field-span-3 { grid-column: span 3; }
@@ -1442,45 +1759,7 @@ body {
 <!-- ═══════════════════════════════════════════
      SPLASH SCREEN (First Run Only)
      ═══════════════════════════════════════════ -->
-<div class="modal-backdrop" id="splashBackdrop">
-  <div class="modal modal-md" style="overflow:hidden">
-    <div class="splash-hero">
-      <div class="splash-logo">
-        <span class="splash-logo-mark">DW<span class="accent">x</span></span>
-        HyperParts Suite
-      </div>
-      <div class="splash-version">v1.0 &bull; HyperHero</div>
-      <h1 class="splash-title">HyperHero</h1>
-      <p class="splash-tagline">The most powerful hero banner for SharePoint. Rotating slides, animations, video backgrounds, parallax, and more.</p>
-    </div>
-    <div class="splash-features">
-      <div class="splash-feature-card">
-        <div class="splash-feature-icon">🎬</div>
-        <div class="splash-feature-title">Rich Backgrounds</div>
-        <div class="splash-feature-desc">Images, videos, gradients, Lottie animations, and parallax scrolling</div>
-      </div>
-      <div class="splash-feature-card">
-        <div class="splash-feature-icon">🎨</div>
-        <div class="splash-feature-title">Visual Designer</div>
-        <div class="splash-feature-desc">Click-to-edit canvas, drag elements, and real-time live preview</div>
-      </div>
-      <div class="splash-feature-card">
-        <div class="splash-feature-icon">⚡</div>
-        <div class="splash-feature-title">Smart Automation</div>
-        <div class="splash-feature-desc">Auto-rotation, scheduling, audience targeting, and A/B testing</div>
-      </div>
-      <div class="splash-feature-card">
-        <div class="splash-feature-icon">♿</div>
-        <div class="splash-feature-title">Fully Accessible</div>
-        <div class="splash-feature-desc">WCAG 2.1 AA, keyboard navigation, reduced-motion support</div>
-      </div>
-    </div>
-    <div class="splash-cta">
-      <button class="splash-cta-btn" onclick="splashGetStarted()">Get Started <span style="font-size:18px">→</span></button>
-      <button class="splash-skip" onclick="splashSkip()">Skip — I've used HyperHero before</button>
-    </div>
-  </div>
-</div>
+<!-- Splash screen is now integrated into wizard Step 0 -->
 
 <!-- ═══════════════════════════════════════════
      SLIDER MANAGER MODAL (Cross-Page Library)
@@ -1508,33 +1787,34 @@ body {
 </div>
 
 <!-- ═══════════════════════════════════════════
-     WIZARD MODAL
+     WIZARD MODAL (Sidebar Stepper Layout)
      ═══════════════════════════════════════════ -->
 <div class="modal-backdrop" id="wizardBackdrop">
-  <div class="modal modal-lg">
-    <!-- DWx Brand Strip -->
-    <div class="dwx-strip">
-      <div style="display:flex;align-items:center;">
-        <span class="dwx-logo">DW<span class="accent">x</span></span>
-        <span class="dwx-sub">Digital Workplace Excellence</span>
+  <div class="modal modal-xl" style="overflow:hidden">
+    <div class="wizard-shell">
+      <!-- Left Sidebar -->
+      <div class="wizard-sidebar">
+        <div class="wizard-sidebar-brand">
+          <div class="brand-logo">DW<span class="accent">x</span></div>
+          <div class="brand-sub">Digital Workplace Excellence</div>
+          <div class="wizard-sidebar-badge">HyperHero Setup</div>
+        </div>
+        <div class="wizard-sidebar-steps" id="wizardStepper"></div>
+        <div class="wizard-sidebar-footer">HyperParts Suite v1.0</div>
       </div>
-      <span class="dwx-badge">⚡ HyperHero Setup</span>
+      <!-- Main Content -->
+      <div class="wizard-main">
+        <div class="wizard-main-header">
+          <span class="wiz-title" id="wizardStepTitle">Welcome</span>
+          <button class="modal-close" onclick="closeWizard()">&times;</button>
+        </div>
+        <div class="wizard-main-body" id="wizardContent"></div>
+        <div class="wizard-main-footer" id="wizardNav">
+          <span class="step-counter" id="wizardStepCounter"></span>
+          <div></div>
+        </div>
+      </div>
     </div>
-
-    <!-- Stepper -->
-    <div class="stepper" id="wizardStepper"></div>
-
-    <!-- Help Banner -->
-    <div class="help-banner" id="wizardHelp" style="display:none">
-      <span class="help-icon">💡</span>
-      <span id="wizardHelpText"></span>
-    </div>
-
-    <!-- Step Content -->
-    <div class="modal-body" id="wizardContent" style="min-height: 300px;"></div>
-
-    <!-- Navigation -->
-    <div class="nav-buttons" id="wizardNav"></div>
   </div>
 </div>
 
@@ -1883,11 +2163,12 @@ function deleteSlide(idx) {
    WIZARD
    ══════════════════════════════════════════ */
 const WIZARD_STEPS = [
-  { key: 'mode', label: 'Mode', short: 'Mode' },
-  { key: 'start', label: 'Get Started', short: 'Start' },
-  { key: 'configure', label: 'Configure', short: 'Config' },
-  { key: 'settings', label: 'Settings', short: 'Settings' },
-  { key: 'summary', label: 'Review', short: 'Review' },
+  { key: 'welcome', label: 'Welcome', icon: '👋' },
+  { key: 'mode', label: 'Slider Mode', icon: '⚡' },
+  { key: 'start', label: 'Content Source', icon: '📋' },
+  { key: 'configure', label: 'Configure', icon: '📐' },
+  { key: 'settings', label: 'Settings', icon: '⚙' },
+  { key: 'summary', label: 'Review & Apply', icon: '✅' },
 ];
 
 function openWizard() {
@@ -1914,13 +2195,10 @@ function renderWizardStepper() {
   const el = document.getElementById('wizardStepper');
   let html = '';
   WIZARD_STEPS.forEach(function(s, i) {
-    if (i > 0) {
-      html += '<div class="step-connector ' + (i <= state.wizardStep ? 'active' : '') + '"></div>';
-    }
     const cls = i < state.wizardStep ? 'complete' : i === state.wizardStep ? 'active' : '';
-    html += '<div class="step-item" onclick="jumpToStep(' + i + ')">';
-    html += '<div class="step-circle ' + cls + '">' + (i < state.wizardStep ? '✓' : (i + 1)) + '</div>';
-    html += '<div class="step-label ' + cls + '">' + s.short + '</div>';
+    html += '<div class="wizard-step-item ' + cls + '" onclick="jumpToStep(' + i + ')">';
+    html += '<div class="wizard-step-num">' + (i < state.wizardStep ? '✓' : (i + 1)) + '</div>';
+    html += '<div class="wizard-step-text">' + s.label + '</div>';
     html += '</div>';
   });
   el.innerHTML = html;
@@ -1935,20 +2213,69 @@ function jumpToStep(idx) {
 
 function renderWizardContent() {
   const el = document.getElementById('wizardContent');
-  const help = document.getElementById('wizardHelp');
-  const helpText = document.getElementById('wizardHelpText');
+  const titleEl = document.getElementById('wizardStepTitle');
 
   switch (state.wizardStep) {
-    case 0: renderStep0_Mode(el); help.style.display = 'flex'; helpText.textContent = 'Choose your editing experience. Simple Slider is perfect for quick rotating banners. Hyper Slider unlocks the full creative toolkit.'; break;
-    case 1: renderStep1_Start(el); help.style.display = 'flex'; break;
-    case 2: renderStep2_Configure(el); help.style.display = 'flex'; break;
-    case 3: renderStep3_Settings(el); help.style.display = 'flex'; helpText.textContent = 'Fine-tune your hero appearance. All settings can be changed later in the property pane.'; break;
-    case 4: renderStep4_Summary(el); help.style.display = 'flex'; helpText.textContent = 'Review your configuration. Click Apply to set up your HyperHero.'; break;
+    case 0: renderStep0_Welcome(el); titleEl.textContent = 'Welcome'; break;
+    case 1: renderStep1_Mode(el); titleEl.textContent = 'Slider Mode'; break;
+    case 2: renderStep2_Start(el); titleEl.textContent = 'Content Source'; break;
+    case 3: renderStep3_Configure(el); titleEl.textContent = 'Configure'; break;
+    case 4: renderStep4_Settings(el); titleEl.textContent = 'Settings'; break;
+    case 5: renderStep5_Summary(el); titleEl.textContent = 'Review & Apply'; break;
   }
 }
 
-/* Step 0: Simple Slider vs Hyper Slider */
-function renderStep0_Mode(el) {
+/* Step 0: Welcome / Splash (integrated) */
+function renderStep0_Welcome(el) {
+  el.innerHTML =
+    '<div class="wiz-splash-wrap">' +
+
+      // ── Hero Banner ──
+      '<div class="wiz-splash-hero">' +
+        '<div class="wiz-splash-logo-row">' +
+          '<span class="wiz-splash-bolt" aria-hidden="true">⚡</span>' +
+          '<span class="wiz-splash-hyper-text">Hyper</span>' +
+          '<span class="wiz-splash-part-text">Hero</span>' +
+        '</div>' +
+        '<div class="wiz-splash-tagline">' +
+          'The most <strong>powerful hero banner</strong><br>' +
+          'for SharePoint with <strong>rotating slides & animations</strong>.' +
+        '</div>' +
+      '</div>' +
+
+      // ── White Body: Feature Cards + CTA ──
+      '<div class="wiz-splash-body">' +
+        '<div class="wiz-splash-cards">' +
+          '<div class="wiz-splash-card">' +
+            '<div class="wiz-splash-card-icon" aria-hidden="true">🎬</div>' +
+            '<div class="wiz-splash-card-title">Rich Backgrounds</div>' +
+            '<div class="wiz-splash-card-desc">Images, videos, gradients, Lottie & parallax</div>' +
+          '</div>' +
+          '<div class="wiz-splash-card">' +
+            '<div class="wiz-splash-card-icon" aria-hidden="true">🎨</div>' +
+            '<div class="wiz-splash-card-title">Visual Designer</div>' +
+            '<div class="wiz-splash-card-desc">Click-to-edit canvas, drag elements, live preview</div>' +
+          '</div>' +
+          '<div class="wiz-splash-card">' +
+            '<div class="wiz-splash-card-icon" aria-hidden="true">⚡</div>' +
+            '<div class="wiz-splash-card-title">Smart Automation</div>' +
+            '<div class="wiz-splash-card-desc">Auto-rotation, scheduling, audience targeting</div>' +
+          '</div>' +
+          '<div class="wiz-splash-card">' +
+            '<div class="wiz-splash-card-icon" aria-hidden="true">♿</div>' +
+            '<div class="wiz-splash-card-title">Fully Accessible</div>' +
+            '<div class="wiz-splash-card-desc">WCAG 2.1 AA, keyboard nav, reduced-motion</div>' +
+          '</div>' +
+        '</div>' +
+        '<button class="wiz-splash-cta" onclick="wizNext()">Get Started &#8594;</button>' +
+        '<span class="wiz-splash-hint">Set up your hero slides, layout, and animations in a few clicks</span>' +
+      '</div>' +
+
+    '</div>';
+}
+
+/* Step 1: Simple Slider vs Hyper Slider */
+function renderStep1_Mode(el) {
   el.innerHTML = `
     <div style="text-align:center;margin-bottom:20px">
       <h2 style="font-size:22px;font-weight:700">Choose Your Experience</h2>
@@ -2011,11 +2338,8 @@ function selectSliderMode(mode) {
   renderWizard();
 }
 
-/* Step 1: Get Started — Template or Scratch */
-function renderStep1_Start(el) {
-  const helpText = document.getElementById('wizardHelpText');
-  helpText.textContent = 'Start from a template for instant setup, or build your own from scratch.';
-
+/* Step 2: Get Started — Template or Scratch */
+function renderStep2_Start(el) {
   el.innerHTML = `
     <div style="text-align:center;margin-bottom:20px">
       <h2 style="font-size:22px;font-weight:700">How Would You Like to Start?</h2>
@@ -2142,12 +2466,9 @@ function customizeTemplate(name) {
   renderWizard();
 }
 
-/* Step 2: Configure — Slide Count/Layout or List Picker */
-function renderStep2_Configure(el) {
-  const helpText = document.getElementById('wizardHelpText');
-
+/* Step 3: Configure — Slide Count/Layout or List Picker */
+function renderStep3_Configure(el) {
   if (state.contentSource === 'list') {
-    helpText.textContent = 'Select a SharePoint list or create a new one. The wizard will auto-provision the required columns.';
     el.innerHTML = `
       <h2 style="font-size:20px;font-weight:700;margin-bottom:16px">📋 Connect to SharePoint List</h2>
       <div class="field-row">
@@ -2183,7 +2504,6 @@ function renderStep2_Configure(el) {
       </div>
     `;
   } else {
-    helpText.textContent = 'Choose how many slides and the grid layout. Each slide gets placeholder content ready for editing.';
     el.innerHTML = `
       <h2 style="font-size:20px;font-weight:700;margin-bottom:16px">📐 Slide Count & Layout</h2>
       <div class="field-row">
@@ -2255,8 +2575,8 @@ function renderLayoutPreview() {
   return html;
 }
 
-/* Step 3: General Settings */
-function renderStep3_Settings(el) {
+/* Step 4: General Settings */
+function renderStep4_Settings(el) {
   el.innerHTML = `
     <h2 style="font-size:20px;font-weight:700;margin-bottom:16px">⚙ General Settings</h2>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
@@ -2319,9 +2639,9 @@ function renderStep3_Settings(el) {
           </div>
           <div class="field-row" style="margin-top:12px">
             <label class="field-label">Rotation Interval</label>
-            <div class="slider-row">
-              <input type="range" class="slider-input" min="2000" max="15000" step="500" value="${state.rotationInterval}" oninput="state.rotationInterval=+this.value;this.nextElementSibling.textContent=(this.value/1000)+'s'">
-              <span class="slider-value">${state.rotationInterval / 1000}s</span>
+            <div class="spinner-row">
+              <input type="number" class="spinner-input" min="1" max="30" step="0.5" value="${state.rotationInterval / 1000}" oninput="state.rotationInterval=Math.round(this.value*1000)">
+              <span class="spinner-unit">seconds</span>
             </div>
           </div>
           <div class="field-row">
@@ -2407,8 +2727,8 @@ function renderStep3_Settings(el) {
   `;
 }
 
-/* Step 4: Summary */
-function renderStep4_Summary(el) {
+/* Step 5: Summary */
+function renderStep5_Summary(el) {
   const mode = state.sliderMode === 'simple' ? 'Simple Slider' : 'Hyper Slider';
   const source = state.contentSource === 'list' ? 'SharePoint List' : 'Manual Slides';
   const modeClass = state.sliderMode === 'simple' ? 'badge-blue' : 'badge-purple';
@@ -2494,22 +2814,29 @@ function renderWizardNav() {
 
   // Determine if Next should be disabled
   let nextDisabled = false;
-  if (state.wizardStep === 0 && !state.sliderMode) nextDisabled = true;
-  if (state.wizardStep === 1 && !state.wizardPath) nextDisabled = true;
-  if (state.wizardStep === 1 && state.wizardPath === 'template') nextDisabled = true; // Templates have their own buttons
-  if (state.wizardStep === 1 && state.wizardPath === 'scratch' && !state.contentSource) nextDisabled = true;
+  if (state.wizardStep === 1 && !state.sliderMode) nextDisabled = true;
+  if (state.wizardStep === 2 && !state.wizardPath) nextDisabled = true;
+  if (state.wizardStep === 2 && state.wizardPath === 'template') nextDisabled = true; // Templates have their own buttons
+  if (state.wizardStep === 2 && state.wizardPath === 'scratch' && !state.contentSource) nextDisabled = true;
 
-  let html = '';
-  html += '<button class="btn btn-secondary" onclick="' + (isFirst ? 'closeWizard()' : 'state.wizardStep--;renderWizard()') + '">' + (isFirst ? 'Cancel' : '← Back') + '</button>';
+  // Step counter
+  const counterEl = document.getElementById('wizardStepCounter');
+  if (counterEl) counterEl.textContent = 'Step ' + (state.wizardStep + 1) + ' of ' + WIZARD_STEPS.length;
+
+  let btns = '';
+  btns += '<button class="btn btn-secondary" onclick="' + (isFirst ? 'closeWizard()' : 'state.wizardStep--;renderWizard()') + '">' + (isFirst ? 'Cancel' : '← Back') + '</button>';
   if (isLast) {
-    html += '<div style="display:flex;gap:8px">';
-    html += '<button class="btn btn-secondary btn-lg" onclick="applyWizardAndClose()">Apply & Close</button>';
-    html += '<button class="btn btn-primary btn-lg" onclick="applyWizardAndEdit()">Apply & Start Editing →</button>';
-    html += '</div>';
+    btns += '<div style="display:flex;gap:8px">';
+    btns += '<button class="btn btn-secondary" onclick="applyWizardAndClose()">Apply & Close</button>';
+    btns += '<button class="btn btn-primary" onclick="applyWizardAndEdit()">Apply & Start Editing →</button>';
+    btns += '</div>';
   } else {
-    html += '<button class="btn btn-primary" ' + (nextDisabled ? 'disabled' : '') + ' onclick="state.wizardStep++;renderWizard()">Next →</button>';
+    btns += '<button class="btn btn-primary" ' + (nextDisabled ? 'disabled' : '') + ' onclick="state.wizardStep++;renderWizard()">Next →</button>';
   }
-  el.innerHTML = html;
+
+  // Build the footer: counter on left, buttons on right
+  el.innerHTML = '<span class="step-counter">' + 'Step ' + (state.wizardStep + 1) + ' of ' + WIZARD_STEPS.length + '</span>' +
+    '<div style="display:flex;gap:8px">' + btns + '</div>';
 }
 
 function applyWizardAndClose() {
@@ -3379,7 +3706,6 @@ function renderEditorTab() {
     case 'background':
       el.innerHTML =
         propPanel('bg-type', '🎨', 'Color & Gradient', true, '',
-          '<div class="prop-panel-hint">Choose a base color or build a custom gradient</div>' +
           '<div class="variant-grid" style="margin-bottom:10px">' +
             ['Solid Color', 'Gradient', 'Image', 'Video', 'Lottie'].map(function(t) {
               const sel = (t === 'Gradient') ? 'selected' : '';
@@ -3389,34 +3715,33 @@ function renderEditorTab() {
           '<div class="field-grid-2">' +
             '<div class="field-row">' +
               '<label class="field-label">Color</label>' +
-              '<div class="color-palette">' +
-                ['#0078d4','#106ebe','#50e6ff','#00b7c3','#107c10','#5c2d91','#ca5010','#d83b01','#a4262c','#323130','#1a1a1a','#ffffff'].map(function(c) {
-                  const sel = s.bg === c ? 'selected' : '';
-                  return '<div class="color-swatch ' + sel + '" style="background:' + c + ';border:' + (c === '#ffffff' ? '1px solid #ccc' : '2px solid transparent') + '" onclick="updateBg(\'' + c + '\')"></div>';
-                }).join('') +
-              '</div>' +
-              '<div class="color-picker-row" style="margin-top:6px">' +
-                '<div class="color-preview" style="background:' + s.bg + ';width:28px;height:28px"></div>' +
-                '<input type="color" value="' + s.bg + '" onchange="updateBg(this.value)" style="height:28px;width:28px">' +
-                '<input type="text" class="text-input" value="' + s.bg + '" style="width:80px;padding:4px 8px;font-size:12px" onchange="updateBg(this.value)">' +
+              '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
+                '<div class="color-palette" style="flex:1">' +
+                  ['#0078d4','#106ebe','#50e6ff','#00b7c3','#107c10','#5c2d91','#ca5010','#d83b01','#a4262c','#323130','#1a1a1a','#ffffff'].map(function(c) {
+                    const sel = s.bg === c ? 'selected' : '';
+                    return '<div class="color-swatch ' + sel + '" style="background:' + c + ';border:' + (c === '#ffffff' ? '1px solid #ccc' : '2px solid transparent') + '" onclick="updateBg(\'' + c + '\')"></div>';
+                  }).join('') +
+                '</div>' +
+                '<div style="display:flex;gap:4px;align-items:center">' +
+                  '<input type="color" value="' + s.bg + '" onchange="updateBg(this.value)" style="height:24px;width:24px;border:none;cursor:pointer">' +
+                  '<input type="text" class="text-input" value="' + s.bg + '" style="width:72px;padding:3px 6px;font-size:11px" onchange="updateBg(this.value)">' +
+                '</div>' +
               '</div>' +
             '</div>' +
             '<div class="field-row">' +
-              '<label class="field-label">Gradient Builder</label>' +
-              '<div class="gradient-preview-bar" id="gradientBar" style="background:' + s.gradient + ';height:24px;border-radius:4px;margin-bottom:6px"></div>' +
-              '<div style="display:flex;gap:8px;align-items:center">' +
-                '<div style="display:flex;gap:4px;align-items:center">' +
-                  '<input type="color" value="' + s.bg + '" onchange="updateGradient()" style="width:24px;height:24px;border:none;cursor:pointer" id="gradStop1">' +
-                  '<input type="color" value="#106ebe" onchange="updateGradient()" style="width:24px;height:24px;border:none;cursor:pointer" id="gradStop2">' +
-                '</div>' +
+              '<label class="field-label">Gradient</label>' +
+              '<div class="gradient-preview-bar" id="gradientBar" style="background:' + s.gradient + ';height:20px;border-radius:3px;margin-bottom:4px"></div>' +
+              '<div style="display:flex;gap:6px;align-items:center">' +
+                '<input type="color" value="' + s.bg + '" onchange="updateGradient()" style="width:22px;height:22px;border:none;cursor:pointer" id="gradStop1">' +
+                '<input type="color" value="#106ebe" onchange="updateGradient()" style="width:22px;height:22px;border:none;cursor:pointer" id="gradStop2">' +
                 '<div style="flex:1"><div class="slider-row">' +
                   '<input type="range" class="slider-input" min="0" max="360" step="15" value="135" id="gradAngle" oninput="updateGradient();this.nextElementSibling.textContent=this.value+\'°\'">' +
                   '<span class="slider-value">135°</span>' +
                 '</div></div>' +
               '</div>' +
-              '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:6px">' +
+              '<div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:4px">' +
                 [{n:'Ocean',g:'linear-gradient(135deg,#0078d4,#50e6ff)'},{n:'Sunset',g:'linear-gradient(135deg,#f12711,#f5af19)'},{n:'Forest',g:'linear-gradient(135deg,#11998e,#38ef7d)'},{n:'Berry',g:'linear-gradient(135deg,#5c2d91,#b4a0ff)'},{n:'Fire',g:'linear-gradient(135deg,#ff416c,#ff4b2b)'},{n:'Night',g:'linear-gradient(135deg,#0f0c29,#302b63)'},{n:'Peach',g:'linear-gradient(135deg,#ed6ea0,#ec8c69)'},{n:'Mint',g:'linear-gradient(135deg,#00b09b,#96c93d)'}].map(function(p) {
-                  return '<div style="width:36px;height:20px;border-radius:3px;cursor:pointer;background:'+p.g+';border:1px solid rgba(0,0,0,.1)" title="'+p.n+'" onclick="state.editingSlide.gradient=\''+p.g+'\';renderEditorPreview();renderEditorTab()"></div>';
+                  return '<div style="width:32px;height:18px;border-radius:3px;cursor:pointer;background:'+p.g+';border:1px solid rgba(0,0,0,.1)" title="'+p.n+'" onclick="state.editingSlide.gradient=\''+p.g+'\';renderEditorPreview();renderEditorTab()"></div>';
                 }).join('') +
               '</div>' +
             '</div>' +
@@ -3427,9 +3752,9 @@ function renderEditorTab() {
             '<div class="field-row">' +
               '<label class="field-label">Image URL</label>' +
               '<div style="display:flex;gap:4px">' +
-                '<input type="text" class="text-input" placeholder="https://..." style="flex:1">' +
-                '<button class="btn btn-secondary btn-sm" onclick="showToast(\'Browse...\')" style="padding:4px 8px;font-size:11px">📁</button>' +
-                '<button class="btn btn-secondary btn-sm" onclick="showToast(\'Stock...\')" style="padding:4px 8px;font-size:11px">🔍</button>' +
+                '<input type="text" class="text-input" placeholder="https://..." style="flex:1;padding:4px 8px">' +
+                '<button class="btn btn-secondary btn-sm" onclick="showToast(\'Browse...\')" style="padding:3px 6px;font-size:11px">📁</button>' +
+                '<button class="btn btn-secondary btn-sm" onclick="showToast(\'Stock...\')" style="padding:3px 6px;font-size:11px">🔍</button>' +
               '</div>' +
             '</div>' +
             '<div class="field-row">' +
@@ -3443,19 +3768,18 @@ function renderEditorTab() {
           '</div>'
         ) +
         propPanel('bg-focal', '🎯', 'Focal Point', false, '50/50',
-          '<div class="field-grid-2">' +
-            '<div class="field-row">' +
-              '<label class="field-label">Click to set focus</label>' +
-              '<div class="focal-point-container" id="focalPointBox" onclick="setFocalPoint(event)" style="background:' + s.gradient + ';height:80px">' +
+          '<div style="display:flex;gap:14px;align-items:flex-start">' +
+            '<div style="flex:1">' +
+              '<div class="focal-point-container" id="focalPointBox" onclick="setFocalPoint(event)" style="background:' + s.gradient + ';height:70px">' +
                 '<div class="focal-point-dot" id="focalDot" style="left:50%;top:50%"></div>' +
                 '<div class="focal-point-crosshair-h" id="focalH" style="top:50%"></div>' +
                 '<div class="focal-point-crosshair-v" id="focalV" style="left:50%"></div>' +
               '</div>' +
             '</div>' +
-            '<div class="field-row" style="display:flex;flex-direction:column;justify-content:center">' +
-              '<div style="font-size:12px;color:var(--gray-80);margin-bottom:4px"><strong>X:</strong> <span id="focalX">50</span>% &nbsp; <strong>Y:</strong> <span id="focalY">50</span>%</div>' +
+            '<div style="display:flex;flex-direction:column;gap:4px;min-width:120px">' +
+              '<div style="font-size:12px;color:var(--gray-80)"><strong>X:</strong> <span id="focalX">50</span>% &nbsp; <strong>Y:</strong> <span id="focalY">50</span>%</div>' +
               '<p class="field-hint">Which part stays visible when cropped</p>' +
-              '<button class="btn btn-ghost btn-sm" style="margin-top:4px;align-self:flex-start" onclick="resetFocalPoint()">Reset to Center</button>' +
+              '<button class="btn btn-ghost btn-sm" style="align-self:flex-start;font-size:11px" onclick="resetFocalPoint()">Reset to Center</button>' +
             '</div>' +
           '</div>'
         );
@@ -3466,15 +3790,13 @@ function renderEditorTab() {
         propPanel('ct-text', '✏', 'Text Content', true, '',
           '<div class="field-grid-2">' +
             '<div class="field-row"><label class="field-label">Heading</label>' +
-              '<input type="text" class="text-input" value="' + s.heading + '" oninput="state.editingSlide.heading=this.value;renderEditorPreview()"></div>' +
+              '<input type="text" class="text-input" value="' + s.heading + '" style="padding:4px 8px" oninput="state.editingSlide.heading=this.value;renderEditorPreview()"></div>' +
             '<div class="field-row"><label class="field-label">Subtitle</label>' +
-              '<input type="text" class="text-input" value="' + (s.subtitle || '') + '" oninput="state.editingSlide.subtitle=this.value;renderEditorPreview()"></div>' +
-            '<div class="field-row field-span-2"><label class="field-label">Description</label>' +
-              '<textarea class="text-input" rows="2" oninput="state.editingSlide.desc=this.value;renderEditorPreview()">' + (s.desc || '') + '</textarea></div>' +
-          '</div>'
-        ) +
-        propPanel('ct-pos', '📐', 'Positioning', false, s.textAlign + ' / ' + s.verticalAlign,
-          '<div class="field-grid-2">' +
+              '<input type="text" class="text-input" value="' + (s.subtitle || '') + '" style="padding:4px 8px" oninput="state.editingSlide.subtitle=this.value;renderEditorPreview()"></div>' +
+          '</div>' +
+          '<div class="field-row" style="margin-top:8px"><label class="field-label">Description</label>' +
+            '<textarea class="text-input" rows="2" style="padding:4px 8px" oninput="state.editingSlide.desc=this.value;renderEditorPreview()">' + (s.desc || '') + '</textarea></div>' +
+          '<div class="field-grid-2" style="margin-top:8px">' +
             '<div class="field-row"><label class="field-label">Text Alignment</label>' +
               '<div class="variant-grid">' +
                 ['left','center','right'].map(function(a) {
@@ -3502,18 +3824,18 @@ function renderEditorTab() {
               (i < s.ctas.length - 1 ? '<button class="btn btn-ghost btn-sm" onclick="moveCta(' + i + ',1)">⬇</button>' : '') +
               '<button class="btn btn-ghost btn-sm" style="color:var(--red-primary)" onclick="removeCta(' + i + ')">✕</button>' +
             '</div></div>' +
-            '<div class="field-grid-2">' +
+            '<div class="field-grid-3">' +
               '<div class="field-row"><label class="field-label">Label</label>' +
-                '<input type="text" class="text-input" value="' + c.label + '" oninput="state.editingSlide.ctas[' + i + '].label=this.value;renderEditorPreview()"></div>' +
+                '<input type="text" class="text-input" value="' + c.label + '" style="padding:4px 8px" oninput="state.editingSlide.ctas[' + i + '].label=this.value;renderEditorPreview()"></div>' +
               '<div class="field-row"><label class="field-label">URL</label>' +
-                '<input type="text" class="text-input" value="' + c.url + '" oninput="state.editingSlide.ctas[' + i + '].url=this.value"></div>' +
+                '<input type="text" class="text-input" value="' + c.url + '" style="padding:4px 8px" oninput="state.editingSlide.ctas[' + i + '].url=this.value"></div>' +
+              '<div class="field-row"><label class="field-label">Style</label>' +
+                '<select class="select-input" onchange="state.editingSlide.ctas[' + i + '].variant=this.value;renderEditorPreview();renderEditorTab()">' +
+                  ['primary','secondary','ghost','pill','gradient','outline'].map(function(v) {
+                    return '<option value="' + v + '"' + (c.variant === v ? ' selected' : '') + '>' + v.charAt(0).toUpperCase() + v.slice(1) + '</option>';
+                  }).join('') +
+                '</select></div>' +
             '</div>' +
-            '<div class="field-row" style="margin-top:8px"><label class="field-label">Style</label>' +
-              '<div class="variant-grid">' +
-                ['primary','secondary','ghost','pill','gradient','outline'].map(function(v) {
-                  return '<button class="variant-btn ' + (c.variant === v ? 'selected' : '') + '" onclick="state.editingSlide.ctas[' + i + '].variant=\'' + v + '\';renderEditorPreview();renderEditorTab()">' + v + '</button>';
-                }).join('') +
-              '</div></div>' +
           '</div>';
         });
       } else {
@@ -3541,12 +3863,12 @@ function renderEditorTab() {
           '</div>'
         ) +
         propPanel('adv-sched', '📅', 'Scheduling & Targeting', false, 'Everyone',
-          '<div class="field-grid-2">' +
-            '<div class="field-row"><label class="field-label">Publish Date</label><input type="datetime-local" class="text-input"></div>' +
-            '<div class="field-row"><label class="field-label">Unpublish Date</label><input type="datetime-local" class="text-input"></div>' +
+          '<div class="field-grid-3">' +
+            '<div class="field-row"><label class="field-label">Publish Date</label><input type="datetime-local" class="text-input" style="padding:4px 6px;font-size:12px"></div>' +
+            '<div class="field-row"><label class="field-label">Unpublish Date</label><input type="datetime-local" class="text-input" style="padding:4px 6px;font-size:12px"></div>' +
             '<div class="field-row"><label class="field-label">Audience</label><select class="select-input"><option value="everyone">Everyone</option><option value="group">Security Group</option><option value="audience">Microsoft 365 Audience</option></select></div>' +
-            '<div class="field-row" style="display:flex;align-items:flex-end"><p class="field-hint">Leave dates blank for immediate publish / no expiry</p></div>' +
-          '</div>'
+          '</div>' +
+          '<p class="field-hint" style="margin-top:4px">Leave dates blank for immediate publish / no expiry</p>'
         ) +
         propPanel('adv-notes', '📝', 'Internal Notes', false, '',
           '<textarea class="notes-area" placeholder="Add notes for other editors (not shown to viewers)..." style="min-height:60px"></textarea>'
@@ -3592,9 +3914,9 @@ function renderEditorTab() {
             '<div class="field-row"><label class="field-label">Effect</label>' +
             '<select class="select-input"><option>None</option><option selected>Fade Up</option><option>Fade In</option><option>Slide Left</option><option>Slide Right</option><option>Scale Up</option><option>Bounce In</option><option>Blur In</option><option>Flip Up</option><option>Swoop In</option><option>Typewriter</option></select></div>' +
             '<div class="field-row"><label class="field-label">Delay</label>' +
-            '<div class="slider-row"><input type="range" class="slider-input" min="0" max="2000" step="50" value="' + t.delay + '" oninput="this.nextElementSibling.textContent=this.value+\'ms\';updateTimelineBar(' + idx + ',\'delay\',this.value)"><span class="slider-value">' + t.delay + 'ms</span></div></div>' +
+            '<div class="spinner-row"><input type="number" class="spinner-input" min="0" max="5000" step="50" value="' + t.delay + '" oninput="updateTimelineBar(' + idx + ',\'delay\',this.value)"><span class="spinner-unit">ms</span></div></div>' +
             '<div class="field-row"><label class="field-label">Duration</label>' +
-            '<div class="slider-row"><input type="range" class="slider-input" min="200" max="2000" step="50" value="' + t.duration + '" oninput="this.nextElementSibling.textContent=this.value+\'ms\';updateTimelineBar(' + idx + ',\'duration\',this.value)"><span class="slider-value">' + t.duration + 'ms</span></div></div>' +
+            '<div class="spinner-row"><input type="number" class="spinner-input" min="100" max="5000" step="50" value="' + t.duration + '" oninput="updateTimelineBar(' + idx + ',\'duration\',this.value)"><span class="spinner-unit">ms</span></div></div>' +
           '</div>'
         );
       }).join('');
@@ -3609,7 +3931,7 @@ function renderEditorTab() {
           '</div></div>' +
         '<div class="field-grid-2">' +
           '<div class="field-row"><label class="field-label">Duration</label>' +
-            '<div class="slider-row"><input type="range" class="slider-input" min="200" max="2000" step="100" value="500" oninput="this.nextElementSibling.textContent=this.value+\'ms\'"><span class="slider-value">500ms</span></div></div>' +
+            '<div class="spinner-row"><input type="number" class="spinner-input" min="100" max="3000" step="100" value="500"><span class="spinner-unit">ms</span></div></div>' +
           '<div class="field-row"><label class="field-label">Easing</label>' +
             '<select class="select-input"><option>Ease Out (Recommended)</option><option>Ease In</option><option>Ease In Out</option><option>Linear</option><option>Bounce</option><option>Elastic</option></select></div>' +
         '</div>';
@@ -3624,33 +3946,38 @@ function renderEditorTab() {
     case 'typography':
       const typoIcons = { 'Heading': 'H', 'Subtitle': 'S', 'Description': 'P' };
       const typoDefaults = { 'Heading': { size: 32, weight: 'Bold', lh: '1.2' }, 'Subtitle': { size: 18, weight: 'Semibold', lh: '1.4' }, 'Description': { size: 14, weight: 'Regular', lh: '1.6' } };
+      const fontSizeOptions = [8,9,10,11,12,13,14,16,18,20,22,24,28,32,36,40,48,56,64,72,80];
       el.innerHTML =
         ['Heading', 'Subtitle', 'Description'].map(function(label, idx) {
           const defs = typoDefaults[label];
           const panelIcon = '<span style="font-weight:800;font-size:13px;font-family:Georgia,serif">' + typoIcons[label] + '</span>';
           return propPanel('typo-' + label.toLowerCase(), panelIcon, label, idx === 0, defs.size + 'px ' + defs.weight,
-            '<div class="field-grid-2">' +
+            '<div style="display:grid;grid-template-columns:1fr auto auto auto auto;gap:6px 10px;align-items:end">' +
               '<div class="field-row"><label class="field-label">Font Family</label>' +
-                '<select class="select-input"><option>Segoe UI</option><option>Arial</option><option>Georgia</option><option>Verdana</option><option>Impact</option><option>Courier New</option><option>Trebuchet MS</option><option>Palatino</option></select></div>' +
+                '<select class="select-input" style="padding:4px 6px"><option>Segoe UI</option><option>Arial</option><option>Georgia</option><option>Verdana</option><option>Impact</option><option>Courier New</option><option>Trebuchet MS</option><option>Palatino</option></select></div>' +
               '<div class="field-row"><label class="field-label">Font Size</label>' +
-                '<div class="slider-row"><input type="range" class="slider-input" min="8" max="80" value="' + defs.size + '" oninput="this.nextElementSibling.textContent=this.value+\'px\'"><span class="slider-value">' + defs.size + 'px</span></div></div>' +
-              '<div class="field-row"><label class="field-label">Weight</label>' +
-                '<div class="variant-grid">' +
-                  ['Light','Regular','Semibold','Bold','Extra Bold'].map(function(w) {
-                    return '<button class="variant-btn' + (w === defs.weight ? ' selected' : '') + '" onclick="selectVariantBtn(this)">' + w + '</button>';
+                '<select class="font-size-dropdown" onchange="showToast(\'Font size: \'+this.value+\'px\')">' +
+                  fontSizeOptions.map(function(sz) {
+                    return '<option value="' + sz + '"' + (sz === defs.size ? ' selected' : '') + '>' + sz + 'px</option>';
                   }).join('') +
-                '</div></div>' +
-              '<div class="field-row"><label class="field-label">Color</label>' +
-                '<div style="display:flex;gap:6px;align-items:center">' +
-                  '<input type="color" value="#ffffff" style="width:28px;height:28px;border:none;cursor:pointer">' +
-                  '<input type="text" class="text-input" value="#ffffff" style="width:80px;padding:4px 8px;font-size:12px">' +
-                  '<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 6px" onclick="showToast(\'Reset to default\')">Reset</button>' +
-                '</div></div>' +
+                '</select></div>' +
               '<div class="field-row"><label class="field-label">Letter Spacing</label>' +
-                '<div class="slider-row"><input type="range" class="slider-input" min="-2" max="10" step="0.5" value="0" oninput="this.nextElementSibling.textContent=this.value==0?\'Normal\':this.value+\'px\'"><span class="slider-value">Normal</span></div></div>' +
+                '<div class="spinner-row"><input type="number" class="spinner-input" min="-2" max="10" step="0.5" value="0"><span class="spinner-unit">px</span></div></div>' +
+              '<div class="field-row"><label class="field-label">Color</label>' +
+                '<div style="display:flex;gap:4px;align-items:center">' +
+                  '<input type="color" value="#ffffff" style="width:24px;height:24px;border:none;cursor:pointer">' +
+                  '<input type="text" class="text-input" value="#ffffff" style="width:72px;padding:3px 6px;font-size:11px">' +
+                  '<button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 5px" onclick="showToast(\'Reset to default\')">Reset</button>' +
+                '</div></div>' +
               '<div class="field-row"><label class="field-label">Line Height</label>' +
-                '<div class="slider-row"><input type="range" class="slider-input" min="0.8" max="2.5" step="0.1" value="' + defs.lh + '" oninput="this.nextElementSibling.textContent=this.value"><span class="slider-value">' + defs.lh + '</span></div></div>' +
-            '</div>'
+                '<div class="spinner-row"><input type="number" class="spinner-input" min="0.8" max="3" step="0.1" value="' + defs.lh + '"><span class="spinner-unit">&times;</span></div></div>' +
+            '</div>' +
+            '<div class="field-row" style="margin-top:6px"><label class="field-label">Weight</label>' +
+              '<div class="variant-grid">' +
+                ['Light','Regular','Semibold','Bold','Extra Bold'].map(function(w) {
+                  return '<button class="variant-btn' + (w === defs.weight ? ' selected' : '') + '" onclick="selectVariantBtn(this)">' + w + '</button>';
+                }).join('') +
+              '</div></div>'
           );
         }).join('');
       break;
@@ -3995,22 +4322,11 @@ function showKeyboardShortcuts() {
 }
 
 /* ══════════════════════════════════════════
-   SPLASH SCREEN
+   SPLASH / WELCOME (integrated into wizard Step 0)
    ══════════════════════════════════════════ */
-function showSplash() {
-  document.getElementById('splashBackdrop').classList.add('active');
-}
-function closeSplash() {
-  document.getElementById('splashBackdrop').classList.remove('active');
-}
-function splashGetStarted() {
+function wizardSkip() {
   state.firstRun = false;
-  closeSplash();
-  openWizard();
-}
-function splashSkip() {
-  state.firstRun = false;
-  closeSplash();
+  closeWizard();
   renderHeroGrid();
 }
 
@@ -4117,7 +4433,7 @@ function deleteSliderConfig(id) {
    INIT
    ══════════════════════════════════════════ */
 if (state.firstRun) {
-  showSplash();
+  openWizard(); // Step 0 = Welcome splash (integrated)
 } else {
   renderHeroGrid();
 }

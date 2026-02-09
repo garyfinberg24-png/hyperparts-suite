@@ -53,6 +53,31 @@
   }
 }
 
+.duplicateBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #ffffff;
+  border: 1px solid #605e5c;
+  color: #323130;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background: #f3f2f1;
+    border-color: #0078d4;
+    color: #0078d4;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
+}
+
 .deleteBtn {
   display: flex;
   align-items: center;

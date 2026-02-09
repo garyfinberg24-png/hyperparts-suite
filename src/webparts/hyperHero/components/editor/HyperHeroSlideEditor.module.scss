@@ -126,7 +126,7 @@
 .tabBar {
   display: flex;
   border-bottom: 2px solid #edebe9;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 .tab {
@@ -168,7 +168,7 @@
 .fieldGroup {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
 }
 
 .fieldLabel {
@@ -322,7 +322,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 0;
+  padding: 8px 0;
   border-bottom: 1px solid #edebe9;
 }
 
@@ -395,7 +395,7 @@
   overflow: hidden;
 
   & + .accordion {
-    margin-top: 8px;
+    margin-top: 6px;
   }
 }
 
@@ -462,10 +462,10 @@
 }
 
 .accordionContent {
-  padding: 14px;
+  padding: 10px 14px 12px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 6px;
   border-top: 1px solid #edebe9;
 }
 
@@ -563,7 +563,7 @@
 .ctaFields {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 6px 12px;
 }
 
 .addCtaBtn {
@@ -605,11 +605,99 @@
   margin: 0;
 }
 
+// ── Quick Styles Bar ──
+.quickStylesBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #faf9f8;
+  border: 1px solid #edebe9;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  overflow-x: auto;
+}
+
+.quickStylesLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: #605e5c;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.quickStylesGrid {
+  display: flex;
+  gap: 6px;
+}
+
+.quickStyleBtn {
+  padding: 5px 12px;
+  border: 1px solid #c8c6c4;
+  border-radius: 14px;
+  background: #ffffff;
+  font-size: 11px;
+  font-weight: 500;
+  color: #605e5c;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s, background 0.15s;
+
+  &:hover {
+    border-color: #0078d4;
+    background: #f3f9ff;
+    color: #0078d4;
+  }
+}
+
 // ── Footer ──
 .footerRow {
   display: flex;
   gap: 8px;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footerLeft {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.footerRight {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.footerBtnSecondary {
+  padding: 6px 12px;
+  border: 1px solid #c8c6c4;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #605e5c;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    background: #f3f2f1;
+    border-color: #8a8886;
+    color: #323130;
+  }
+}
+
+.footerBtnDisabled {
+  opacity: 0.4;
+  cursor: default;
+
+  &:hover {
+    background: #ffffff;
+    border-color: #c8c6c4;
+    color: #605e5c;
+  }
 }
 
 .footerBtnCancel {
@@ -627,6 +715,21 @@
   }
 }
 
+.footerBtnSaveContinue {
+  padding: 8px 16px;
+  border: 1px solid #0078d4;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #0078d4;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background: #f3f9ff;
+  }
+}
+
 .footerBtnSave {
   padding: 8px 20px;
   background: #0078d4;
@@ -639,5 +742,506 @@
 
   &:hover {
     background: #106ebe;
+  }
+}
+
+// ── Accessibility Tab ──
+.a11yScoreCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: #faf9f8;
+  border: 1px solid #edebe9;
+  border-radius: 8px;
+}
+
+.a11yScoreCircle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 4px solid #107c10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.a11yScoreValue {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.a11yScoreLabel {
+  font-size: 10px;
+  color: #a19f9d;
+  line-height: 1;
+}
+
+.a11yScoreText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.a11yScoreTitle {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.a11yScoreHint {
+  font-size: 12px;
+  color: #a19f9d;
+}
+
+.a11yCheckList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.a11yCheckItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 4px;
+  transition: background 0.1s;
+
+  &:hover {
+    background: #faf9f8;
+  }
+}
+
+.a11yCheckIcon {
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.a11yCheckContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.a11yCheckLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323130;
+}
+
+.a11yCheckMessage {
+  font-size: 12px;
+  color: #605e5c;
+}
+
+// ── Content Tab 2-Column Layout ──
+.contentTwoCol {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 12px;
+}
+
+// ── Buttons Tab 3-Column Row ──
+.ctaRow3Col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 140px;
+  gap: 6px 8px;
+  align-items: end;
+}
+
+// ── Typography Tab Inline Row ──
+.fontInlineRow {
+  display: grid;
+  grid-template-columns: 1fr 80px 80px 100px 80px;
+  gap: 6px 8px;
+  align-items: end;
+}
+
+.fontWeightRow {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.fontWeightBtn {
+  padding: 4px 10px;
+  border: 1px solid #c8c6c4;
+  border-radius: 4px;
+  background: #ffffff;
+  font-size: 12px;
+  font-weight: 500;
+  color: #605e5c;
+  cursor: pointer;
+
+  &:hover {
+    border-color: #0078d4;
+  }
+}
+
+.fontWeightBtnSelected {
+  border-color: #0078d4;
+  background: #f3f9ff;
+  color: #0078d4;
+  font-weight: 600;
+}
+
+// ── Animation Timeline ──
+.timelineContainer {
+  position: relative;
+  padding: 8px 0;
+}
+
+.timelineRuler {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 4px;
+  margin-bottom: 8px;
+}
+
+.timelineRulerMark {
+  font-size: 10px;
+  color: #a19f9d;
+}
+
+.timelineTrack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.timelineRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+}
+
+.timelineLabel {
+  width: 80px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #605e5c;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.timelineBarTrack {
+  flex: 1;
+  height: 20px;
+  background: #f3f2f1;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.timelineBar {
+  position: absolute;
+  top: 2px;
+  height: 16px;
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #ffffff;
+  font-weight: 600;
+  min-width: 20px;
+  transition: opacity 0.15s;
+
+  &:hover {
+    opacity: 0.85;
+  }
+}
+
+.timelineBarHeading {
+  background: #0078d4;
+}
+
+.timelineBarSubheading {
+  background: #107c10;
+}
+
+.timelineBarDescription {
+  background: #5c2d91;
+}
+
+.timelineBarCtas {
+  background: #ca5010;
+}
+
+// ── Animation 3-Col Row ──
+.animRow3Col {
+  display: grid;
+  grid-template-columns: 1fr 100px 100px;
+  gap: 6px 8px;
+  align-items: end;
+}
+
+.numberInput {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid #8a8886;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #323130;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: #0078d4;
+    outline: none;
+    box-shadow: 0 0 0 1px #0078d4;
+  }
+}
+
+// ── Background Tab: 2-Col Gradient Panel ──
+.bgTwoCol {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.gradientPreviewBar {
+  height: 24px;
+  border-radius: 4px;
+  border: 1px solid #c8c6c4;
+  margin-bottom: 8px;
+}
+
+.gradientStopRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gradientStopLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: #605e5c;
+  min-width: 52px;
+}
+
+.gradientPresetSwatches {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.gradientPresetSwatch {
+  height: 28px;
+  border-radius: 4px;
+  border: 1px solid #c8c6c4;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.1s;
+
+  &:hover {
+    transform: scale(1.08);
+  }
+}
+
+.gradientPresetSwatchSelected {
+  outline: 2px solid #0078d4;
+  outline-offset: 1px;
+}
+
+// ── Background Tab: Focal Point ──
+.focalPointContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.focalPointBox {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #f3f2f1;
+  border: 1px solid #c8c6c4;
+  border-radius: 6px;
+  cursor: crosshair;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+}
+
+.focalPointDot {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  background: #0078d4;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.focalPointReadout {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.focalPointCoord {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.focalPointCoordLabel {
+  font-weight: 600;
+  color: #323130;
+  min-width: 16px;
+}
+
+.focalPointCoordValue {
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 13px;
+  color: #0078d4;
+  background: #f3f9ff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  min-width: 48px;
+  text-align: center;
+}
+
+.focalPointResetBtn {
+  padding: 6px 14px;
+  border: 1px solid #8a8886;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #605e5c;
+  font-size: 12px;
+  cursor: pointer;
+  align-self: flex-start;
+  margin-top: 4px;
+
+  &:hover {
+    border-color: #a4262c;
+    color: #a4262c;
+    background: #fde7e9;
+  }
+}
+
+// ── Advanced Tab: Hover Effect Grid ──
+.hoverEffectGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.hoverEffectCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 6px;
+  border: 2px solid #edebe9;
+  border-radius: 6px;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: #605e5c;
+  transition: border-color 0.15s, background 0.15s;
+
+  &:hover {
+    border-color: #0078d4;
+    background: #f3f9ff;
+  }
+}
+
+.hoverEffectCardSelected {
+  border-color: #0078d4;
+  background: #f3f9ff;
+  color: #0078d4;
+  font-weight: 600;
+}
+
+.hoverEffectIcon {
+  font-size: 18px;
+}
+
+// ── Advanced Tab: 3-Col Scheduling ──
+.schedulingRow3Col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px 12px;
+  align-items: end;
+}
+
+// ── Animations Tab: Slide Transition Panel ──
+.transitionGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.transitionCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 6px;
+  border: 2px solid #edebe9;
+  border-radius: 6px;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: #605e5c;
+  transition: border-color 0.15s, background 0.15s;
+
+  &:hover {
+    border-color: #0078d4;
+    background: #f3f9ff;
+  }
+}
+
+.transitionCardSelected {
+  border-color: #0078d4;
+  background: #f3f9ff;
+  color: #0078d4;
+  font-weight: 600;
+}
+
+.transitionIcon {
+  font-size: 18px;
+}
+
+.transitionSubRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 12px;
+  align-items: end;
+}
+
+// ── Accessibility Tab: Inline Alt Text Input ──
+.a11yAltTextInput {
+  margin-top: 6px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.a11yAltTextField {
+  flex: 1;
+  padding: 5px 8px;
+  border: 1px solid #8a8886;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #323130;
+
+  &:focus {
+    border-color: #0078d4;
+    outline: none;
+    box-shadow: 0 0 0 1px #0078d4;
   }
 }

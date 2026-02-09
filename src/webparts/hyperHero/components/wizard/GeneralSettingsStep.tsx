@@ -1,40 +1,10 @@
 import * as React from "react";
+import type { IWizardStepProps } from "../../../../common/components/wizard/IHyperWizard";
+import type { IHeroWizardState } from "./heroWizardConfig";
 import type { TransitionEffect } from "../../models";
 import styles from "./GeneralSettingsStep.module.scss";
 
-export interface IGeneralSettings {
-  title: string;
-  heroHeight: number;
-  borderRadius: number;
-  fullBleed: boolean;
-  rotationEnabled: boolean;
-  rotationInterval: number;
-  rotationEffect: TransitionEffect;
-  pauseOnHover: boolean;
-  showDots: boolean;
-  showArrows: boolean;
-}
-
-export const DEFAULT_GENERAL_SETTINGS: IGeneralSettings = {
-  title: "",
-  heroHeight: 400,
-  borderRadius: 0,
-  fullBleed: false,
-  rotationEnabled: false,
-  rotationInterval: 5000,
-  rotationEffect: "fade",
-  pauseOnHover: true,
-  showDots: true,
-  showArrows: true,
-};
-
-export interface IGeneralSettingsStepProps {
-  settings: IGeneralSettings;
-  onSettingsChange: (settings: IGeneralSettings) => void;
-  mode: "manual" | "list" | undefined;
-}
-
-const TRANSITION_OPTIONS: Array<{ value: TransitionEffect; label: string }> = [
+var TRANSITION_OPTIONS: Array<{ value: TransitionEffect; label: string }> = [
   { value: "fade", label: "Fade" },
   { value: "slide", label: "Slide" },
   { value: "zoom", label: "Zoom" },
@@ -42,17 +12,18 @@ const TRANSITION_OPTIONS: Array<{ value: TransitionEffect; label: string }> = [
   { value: "none", label: "None (instant)" },
 ];
 
-const GeneralSettingsStep: React.FC<IGeneralSettingsStepProps> = function (props) {
-  const { settings, onSettingsChange, mode } = props;
+var GeneralSettingsStep: React.FC<IWizardStepProps<IHeroWizardState>> = function (props) {
+  var state = props.state;
+  var onChange = props.onChange;
 
-  const updateField = React.useCallback(function (field: string, value: unknown): void {
-    const updated = { ...settings };
-    (updated as unknown as Record<string, unknown>)[field] = value;
-    onSettingsChange(updated as IGeneralSettings);
-  }, [settings, onSettingsChange]);
+  var updateField = React.useCallback(function (field: string, value: unknown): void {
+    var partial: Record<string, unknown> = {};
+    partial[field] = value;
+    onChange(partial as Partial<IHeroWizardState>);
+  }, [onChange]);
 
   // Determine preview height (scaled down: actual / 4, min 40, max 120)
-  const previewHeight = Math.max(40, Math.min(120, Math.round(settings.heroHeight / 4)));
+  var previewHeight = Math.max(40, Math.min(120, Math.round(state.heroHeight / 4)));
 
   return React.createElement("div", { className: styles.settingsContainer },
 
@@ -74,7 +45,7 @@ const GeneralSettingsStep: React.FC<IGeneralSettingsStepProps> = function (props
       React.createElement("input", {
         type: "text",
         className: styles.textInput,
-        value: settings.title,
+        value: state.title,
         placeholder: "e.g. Welcome to Contoso",
         onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
           updateField("title", e.target.value);
@@ -95,12 +66,33 @@ const GeneralSettingsStep: React.FC<IGeneralSettingsStepProps> = function (props
           min: 200,
           max: 800,
           step: 25,
-          value: settings.heroHeight,
+          value: state.heroHeight,
           onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
             updateField("heroHeight", parseInt(e.target.value, 10));
           },
         }),
-        React.createElement("span", { className: styles.sliderValue }, settings.heroHeight + "px")
+        React.createElement("span", { className: styles.sliderValue }, state.heroHeight + "px")
+      )
+    ),
+
+    // ── Aspect Ratio ──
+    React.createElement("div", { className: styles.fieldGroup },
+      React.createElement("label", { className: styles.fieldLabel }, "Aspect Ratio"),
+      React.createElement("span", { className: styles.fieldHint }, "Constrains the hero to a specific aspect ratio"),
+      React.createElement("div", { className: styles.aspectRatioGroup, role: "radiogroup", "aria-label": "Aspect ratio" },
+        ["16:9", "4:3", "21:9", "custom"].map(function (ratio) {
+          var isActive = state.aspectRatio === ratio;
+          return React.createElement("button", {
+            key: ratio,
+            type: "button",
+            className: styles.aspectRatioBtn + (isActive ? " " + styles.aspectRatioBtnActive : ""),
+            onClick: function (): void {
+              updateField("aspectRatio", ratio);
+            },
+            role: "radio",
+            "aria-checked": String(isActive),
+          }, ratio === "custom" ? "Custom" : ratio);
+        })
       )
     ),
 
@@ -115,13 +107,13 @@ const GeneralSettingsStep: React.FC<IGeneralSettingsStepProps> = function (props
           min: 0,
           max: 32,
           step: 2,
-          value: settings.borderRadius,
+          value: state.borderRadius,
           onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
             updateField("borderRadius", parseInt(e.target.value, 10));
           },
         }),
         React.createElement("span", { className: styles.sliderValue },
-          settings.borderRadius === 0 ? "None" : settings.borderRadius + "px"
+          state.borderRadius === 0 ? "None" : state.borderRadius + "px"
         )
       )
     ),
@@ -132,17 +124,18 @@ const GeneralSettingsStep: React.FC<IGeneralSettingsStepProps> = function (props
         className: styles.previewHero,
         style: {
           height: previewHeight + "px",
-          borderRadius: settings.borderRadius > 0 ? settings.borderRadius + "px" : undefined,
+          borderRadius: state.borderRadius > 0 ? state.borderRadius + "px" : undefined,
         },
       },
         React.createElement("span", { className: styles.previewHeading },
-          settings.title || "Your Hero"
+          state.title || "Your Hero"
         )
       ),
       React.createElement("div", { className: styles.previewLabel },
-        React.createElement("span", undefined, settings.heroHeight + "px tall"),
-        React.createElement("span", undefined, settings.borderRadius > 0 ? settings.borderRadius + "px radius" : "Sharp corners"),
-        settings.fullBleed ? React.createElement("span", undefined, "Full bleed") : undefined
+        React.createElement("span", undefined, state.heroHeight + "px tall"),
+        React.createElement("span", undefined, state.aspectRatio),
+        React.createElement("span", undefined, state.borderRadius > 0 ? state.borderRadius + "px radius" : "Sharp corners"),
+        state.fullBleed ? React.createElement("span", undefined, "Full bleed") : undefined
       )
     ),
 
@@ -155,21 +148,21 @@ const GeneralSettingsStep: React.FC<IGeneralSettingsStepProps> = function (props
         React.createElement("span", { className: styles.toggleHint }, "Stretch the hero edge-to-edge, removing page padding")
       ),
       React.createElement("button", {
-        className: settings.fullBleed
+        className: state.fullBleed
           ? styles.toggleSwitch + " " + styles.toggleSwitchOn
           : styles.toggleSwitch,
         onClick: function (): void {
-          updateField("fullBleed", !settings.fullBleed);
+          updateField("fullBleed", !state.fullBleed);
         },
         type: "button",
         role: "switch",
-        "aria-checked": String(settings.fullBleed),
+        "aria-checked": String(state.fullBleed),
         "aria-label": "Full bleed toggle",
       })
     ),
 
-    // ── Auto-Rotation ──
-    mode !== "list"
+    // ── Auto-Rotation (only for manual mode, not list) ──
+    state.mode !== "list"
       ? React.createElement(React.Fragment, undefined,
           React.createElement("div", { className: styles.toggleRow },
             React.createElement("div", { className: styles.toggleInfo },
@@ -177,20 +170,20 @@ const GeneralSettingsStep: React.FC<IGeneralSettingsStepProps> = function (props
               React.createElement("span", { className: styles.toggleHint }, "Automatically cycle through slides with a transition effect")
             ),
             React.createElement("button", {
-              className: settings.rotationEnabled
+              className: state.rotationEnabled
                 ? styles.toggleSwitch + " " + styles.toggleSwitchOn
                 : styles.toggleSwitch,
               onClick: function (): void {
-                updateField("rotationEnabled", !settings.rotationEnabled);
+                updateField("rotationEnabled", !state.rotationEnabled);
               },
               type: "button",
               role: "switch",
-              "aria-checked": String(settings.rotationEnabled),
+              "aria-checked": String(state.rotationEnabled),
               "aria-label": "Auto-rotation toggle",
             })
           ),
 
-          settings.rotationEnabled
+          state.rotationEnabled
             ? React.createElement("div", { className: styles.subFields },
                 // Interval
                 React.createElement("div", { className: styles.fieldGroup },
@@ -202,13 +195,13 @@ const GeneralSettingsStep: React.FC<IGeneralSettingsStepProps> = function (props
                       min: 2000,
                       max: 15000,
                       step: 500,
-                      value: settings.rotationInterval,
+                      value: state.rotationInterval,
                       onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
                         updateField("rotationInterval", parseInt(e.target.value, 10));
                       },
                     }),
                     React.createElement("span", { className: styles.sliderValue },
-                      (settings.rotationInterval / 1000) + "s"
+                      (state.rotationInterval / 1000) + "s"
                     )
                   )
                 ),
@@ -218,7 +211,7 @@ const GeneralSettingsStep: React.FC<IGeneralSettingsStepProps> = function (props
                   React.createElement("label", { className: styles.fieldLabel }, "Transition Effect"),
                   React.createElement("select", {
                     className: styles.selectInput,
-                    value: settings.rotationEffect,
+                    value: state.rotationEffect,
                     onChange: function (e: React.ChangeEvent<HTMLSelectElement>): void {
                       updateField("rotationEffect", e.target.value);
                     },
@@ -236,15 +229,15 @@ const GeneralSettingsStep: React.FC<IGeneralSettingsStepProps> = function (props
                     React.createElement("span", { className: styles.toggleHint }, "Stop cycling when the user hovers over the hero")
                   ),
                   React.createElement("button", {
-                    className: settings.pauseOnHover
+                    className: state.pauseOnHover
                       ? styles.toggleSwitch + " " + styles.toggleSwitchOn
                       : styles.toggleSwitch,
                     onClick: function (): void {
-                      updateField("pauseOnHover", !settings.pauseOnHover);
+                      updateField("pauseOnHover", !state.pauseOnHover);
                     },
                     type: "button",
                     role: "switch",
-                    "aria-checked": String(settings.pauseOnHover),
+                    "aria-checked": String(state.pauseOnHover),
                     "aria-label": "Pause on hover toggle",
                   })
                 ),
@@ -256,15 +249,15 @@ const GeneralSettingsStep: React.FC<IGeneralSettingsStepProps> = function (props
                     React.createElement("span", { className: styles.toggleHint }, "Show dot indicators for each slide")
                   ),
                   React.createElement("button", {
-                    className: settings.showDots
+                    className: state.showDots
                       ? styles.toggleSwitch + " " + styles.toggleSwitchOn
                       : styles.toggleSwitch,
                     onClick: function (): void {
-                      updateField("showDots", !settings.showDots);
+                      updateField("showDots", !state.showDots);
                     },
                     type: "button",
                     role: "switch",
-                    "aria-checked": String(settings.showDots),
+                    "aria-checked": String(state.showDots),
                     "aria-label": "Navigation dots toggle",
                   })
                 ),
@@ -276,15 +269,15 @@ const GeneralSettingsStep: React.FC<IGeneralSettingsStepProps> = function (props
                     React.createElement("span", { className: styles.toggleHint }, "Show left/right arrow buttons")
                   ),
                   React.createElement("button", {
-                    className: settings.showArrows
+                    className: state.showArrows
                       ? styles.toggleSwitch + " " + styles.toggleSwitchOn
                       : styles.toggleSwitch,
                     onClick: function (): void {
-                      updateField("showArrows", !settings.showArrows);
+                      updateField("showArrows", !state.showArrows);
                     },
                     type: "button",
                     role: "switch",
-                    "aria-checked": String(settings.showArrows),
+                    "aria-checked": String(state.showArrows),
                     "aria-label": "Navigation arrows toggle",
                   })
                 )

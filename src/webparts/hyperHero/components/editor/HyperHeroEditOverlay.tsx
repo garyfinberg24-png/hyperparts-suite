@@ -5,12 +5,16 @@ export interface IHyperHeroEditOverlayProps {
   slideId: string;
   slideHeading: string;
   slideIndex: number;
+  slideCount: number;
   onEdit: (slideId: string) => void;
   onDelete: (slideId: string) => void;
+  onDuplicate?: (slideId: string) => void;
+  onMoveUp?: (slideId: string) => void;
+  onMoveDown?: (slideId: string) => void;
 }
 
 const HyperHeroEditOverlayInner: React.FC<IHyperHeroEditOverlayProps> = function (props) {
-  const { slideId, slideHeading, slideIndex, onEdit, onDelete } = props;
+  const { slideId, slideHeading, slideIndex, slideCount, onEdit, onDelete, onDuplicate, onMoveUp, onMoveDown } = props;
 
   const confirmState = React.useState(false);
   const showConfirm = confirmState[0];
@@ -19,6 +23,18 @@ const HyperHeroEditOverlayInner: React.FC<IHyperHeroEditOverlayProps> = function
   const handleEdit = React.useCallback(function (): void {
     onEdit(slideId);
   }, [slideId, onEdit]);
+
+  const handleDuplicate = React.useCallback(function (): void {
+    if (onDuplicate) onDuplicate(slideId);
+  }, [slideId, onDuplicate]);
+
+  const handleMoveUp = React.useCallback(function (): void {
+    if (onMoveUp) onMoveUp(slideId);
+  }, [slideId, onMoveUp]);
+
+  const handleMoveDown = React.useCallback(function (): void {
+    if (onMoveDown) onMoveDown(slideId);
+  }, [slideId, onMoveDown]);
 
   const handleDeleteRequest = React.useCallback(function (): void {
     setShowConfirm(true);
@@ -73,12 +89,36 @@ const HyperHeroEditOverlayInner: React.FC<IHyperHeroEditOverlayProps> = function
     }, String(slideIndex + 1)),
     // Center buttons
     React.createElement("div", { className: styles.overlayButtons },
+      onMoveUp && slideIndex > 0
+        ? React.createElement("button", {
+            className: styles.duplicateBtn,
+            onClick: handleMoveUp,
+            "aria-label": "Move " + slideHeading + " up",
+            type: "button",
+          }, "\u2191")
+        : undefined,
+      onMoveDown && slideIndex < slideCount - 1
+        ? React.createElement("button", {
+            className: styles.duplicateBtn,
+            onClick: handleMoveDown,
+            "aria-label": "Move " + slideHeading + " down",
+            type: "button",
+          }, "\u2193")
+        : undefined,
       React.createElement("button", {
         className: styles.editBtn,
         onClick: handleEdit,
         "aria-label": "Edit " + slideHeading,
         type: "button",
-      }, "\u270F\uFE0F Edit Slide"),
+      }, "\u270F\uFE0F Edit"),
+      onDuplicate
+        ? React.createElement("button", {
+            className: styles.duplicateBtn,
+            onClick: handleDuplicate,
+            "aria-label": "Duplicate " + slideHeading,
+            type: "button",
+          }, "\uD83D\uDCCB Duplicate")
+        : undefined,
       React.createElement("button", {
         className: styles.deleteBtn,
         onClick: handleDeleteRequest,
@@ -98,12 +138,17 @@ export const HyperHeroEditOverlay = React.memo(HyperHeroEditOverlayInner);
 // ── Edit toolbar component ──
 export interface IHyperHeroEditToolbarProps {
   onAddSlide: () => void;
+  onDuplicateSlide?: () => void;
   onRerunSetup: () => void;
+  onExportConfig?: () => void;
+  onImportConfig?: () => void;
+  onSaveAs?: () => void;
+  onPreviewTransitions?: () => void;
   slideCount: number;
 }
 
 const HyperHeroEditToolbarInner: React.FC<IHyperHeroEditToolbarProps> = function (props) {
-  const { onAddSlide, onRerunSetup, slideCount } = props;
+  const { onAddSlide, onDuplicateSlide, onRerunSetup, onExportConfig, onImportConfig, onSaveAs, onPreviewTransitions, slideCount } = props;
 
   return React.createElement("div", { className: styles.editToolbar },
     React.createElement("button", {
@@ -112,12 +157,69 @@ const HyperHeroEditToolbarInner: React.FC<IHyperHeroEditToolbarProps> = function
       "aria-label": "Add new slide",
       type: "button",
     }, "+ Add Slide"),
+    onDuplicateSlide
+      ? React.createElement("button", {
+          className: styles.toolbarBtn,
+          onClick: onDuplicateSlide,
+          "aria-label": "Duplicate last slide",
+          type: "button",
+        }, "\uD83D\uDCCB Duplicate")
+      : undefined,
+    // Preview Transitions
+    onPreviewTransitions
+      ? React.createElement("button", {
+          className: styles.toolbarBtn,
+          onClick: onPreviewTransitions,
+          "aria-label": "Preview slide transitions",
+          type: "button",
+        }, "\u25B6 Preview")
+      : undefined,
+    // Save As (named config)
+    onSaveAs
+      ? React.createElement("button", {
+          className: styles.toolbarBtn,
+          onClick: onSaveAs,
+          "aria-label": "Save configuration as",
+          type: "button",
+        }, "\uD83D\uDCBE Save As")
+      : undefined,
     React.createElement("button", {
       className: styles.toolbarBtn,
       onClick: onRerunSetup,
       "aria-label": "Re-run setup wizard",
       type: "button",
     }, "\uD83E\uDDD9 Re-run Setup"),
+    // Configuration Manager buttons
+    onExportConfig
+      ? React.createElement("button", {
+          className: styles.toolbarBtn,
+          onClick: onExportConfig,
+          "aria-label": "Export configuration",
+          type: "button",
+        }, "\uD83D\uDCE4 Export")
+      : undefined,
+    onImportConfig
+      ? React.createElement("button", {
+          className: styles.toolbarBtn,
+          onClick: onImportConfig,
+          "aria-label": "Import configuration",
+          type: "button",
+        }, "\uD83D\uDCE5 Import")
+      : undefined,
+    // My Sliders
+    React.createElement("button", {
+      className: styles.toolbarBtn,
+      onClick: function (): void { /* placeholder — My Sliders gallery */ },
+      "aria-label": "My saved slider configurations",
+      type: "button",
+    }, "\uD83D\uDDC2\uFE0F My Sliders"),
+    // Shortcuts
+    React.createElement("button", {
+      className: styles.toolbarBtn,
+      onClick: function (): void { /* placeholder — keyboard shortcuts modal */ },
+      "aria-label": "Keyboard shortcuts",
+      type: "button",
+    }, "\u2328\uFE0F Shortcuts"),
     React.createElement("span", {
       className: styles.slideCountLabel,
     }, slideCount === 1

@@ -1,4 +1,6 @@
 import * as React from "react";
+import type { IWizardStepProps } from "../../../../common/components/wizard/IHyperWizard";
+import type { IHeroWizardState } from "./heroWizardConfig";
 import type {
   IHyperHeroSlide,
   IHyperHeroGradient,
@@ -8,7 +10,6 @@ import type {
 } from "../../models";
 import { DEFAULT_GRADIENT } from "../../models";
 import type { LayoutPreset } from "./ListPickerStep";
-import type { IGeneralSettings } from "./GeneralSettingsStep";
 import styles from "./TemplateGalleryStep.module.scss";
 
 /** A hero template definition */
@@ -30,12 +31,11 @@ export interface IHeroTemplate {
   /** What this template produces */
   slides: IHyperHeroSlide[];
   layoutPreset: LayoutPreset;
-  generalSettings: Partial<IGeneralSettings>;
-}
-
-export interface ITemplateGalleryStepProps {
-  onUseTemplate: (template: IHeroTemplate) => void;
-  onCustomizeTemplate: (template: IHeroTemplate) => void;
+  generalSettings: {
+    heroHeight?: number;
+    borderRadius?: number;
+    fullBleed?: boolean;
+  };
 }
 
 // ── Helper: build an element animation ──
@@ -815,10 +815,10 @@ function renderMultiPreview(template: IHeroTemplate): React.ReactElement {
 // Main Component
 // ═══════════════════════════════════════════════════════════════
 
-const TemplateGalleryStep: React.FC<ITemplateGalleryStepProps> = function (props) {
-  const { onUseTemplate, onCustomizeTemplate } = props;
+var TemplateGalleryStep: React.FC<IWizardStepProps<IHeroWizardState>> = function (props) {
+  var onChange = props.onChange;
 
-  const [selectedCategory, setSelectedCategory] = React.useState<string>("all");
+  var [selectedCategory, setSelectedCategory] = React.useState<string>("all");
 
   // Filter templates by selected category
   const filteredTemplates: IHeroTemplate[] = [];
@@ -829,24 +829,46 @@ const TemplateGalleryStep: React.FC<ITemplateGalleryStepProps> = function (props
   });
 
   // ── Category button handler ──
-  const handleCategoryClick = React.useCallback(function (category: string): () => void {
+  var handleCategoryClick = React.useCallback(function (category: string): () => void {
     return function (): void {
       setSelectedCategory(category);
     };
   }, []);
 
   // ── Template action handlers ──
-  const handleUseTemplate = React.useCallback(function (template: IHeroTemplate): () => void {
+  var handleUseTemplate = React.useCallback(function (template: IHeroTemplate): () => void {
     return function (): void {
-      onUseTemplate(template);
+      // "Use Template" — store template data on wizard state for buildResult
+      var gs = template.generalSettings;
+      onChange({
+        contentPath: "template",
+        selectedTemplateId: template.id,
+        templateSlides: template.slides,
+        templateLayoutPreset: template.layoutPreset,
+        heroHeight: gs.heroHeight || 400,
+        borderRadius: gs.borderRadius || 0,
+        fullBleed: gs.fullBleed || false,
+      });
     };
-  }, [onUseTemplate]);
+  }, [onChange]);
 
-  const handleCustomizeTemplate = React.useCallback(function (template: IHeroTemplate): () => void {
+  var handleCustomizeTemplate = React.useCallback(function (template: IHeroTemplate): () => void {
     return function (): void {
-      onCustomizeTemplate(template);
+      // "Customize" — pre-fill wizard state with template defaults, go to scratch path
+      var gs = template.generalSettings;
+      onChange({
+        contentPath: "scratch",
+        selectedTemplateId: "",
+        templateSlides: undefined,
+        templateLayoutPreset: undefined,
+        mode: "manual",
+        layoutPreset: template.layoutPreset,
+        heroHeight: gs.heroHeight || 400,
+        borderRadius: gs.borderRadius || 0,
+        fullBleed: gs.fullBleed || false,
+      });
     };
-  }, [onCustomizeTemplate]);
+  }, [onChange]);
 
   // ── Build category filter buttons ──
   const categoryButtons: React.ReactElement[] = [];
