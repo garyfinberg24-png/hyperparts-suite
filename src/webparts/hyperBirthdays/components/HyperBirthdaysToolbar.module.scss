@@ -84,3 +84,28 @@
   min-width: 140px;
   text-align: center;
 }
+
+.configureButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid $ms-color-themePrimary;
+  border-radius: 4px;
+  background: $ms-color-white;
+  color: $ms-color-themePrimary;
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: $ms-color-themePrimary;
+    color: $ms-color-white;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+}

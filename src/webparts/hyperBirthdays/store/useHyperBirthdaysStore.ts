@@ -9,6 +9,7 @@ export interface IHyperBirthdaysStoreState {
   enabledTypes: CelebrationType[];
   isLoading: boolean;
   errorMessage: string;
+  isWizardOpen: boolean;
 }
 
 export interface IHyperBirthdaysStoreActions {
@@ -23,6 +24,8 @@ export interface IHyperBirthdaysStoreActions {
   setError: (error: string) => void;
   clearError: () => void;
   reset: () => void;
+  openWizard: () => void;
+  closeWizard: () => void;
 }
 
 export type IHyperBirthdaysStore = IHyperBirthdaysStoreState & IHyperBirthdaysStoreActions;
@@ -37,6 +40,7 @@ function getInitialState(): IHyperBirthdaysStoreState {
     enabledTypes: [],
     isLoading: false,
     errorMessage: "",
+    isWizardOpen: false,
   };
 }
 
@@ -97,6 +101,14 @@ export const useHyperBirthdaysStore = create<IHyperBirthdaysStore>(function (set
 
     reset: function (): void {
       set(getInitialState());
+    },
+
+    openWizard: function (): void {
+      set({ isWizardOpen: true });
+    },
+
+    closeWizard: function (): void {
+      set({ isWizardOpen: false });
     },
   };
 });

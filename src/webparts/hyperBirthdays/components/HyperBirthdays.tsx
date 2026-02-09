@@ -2,12 +2,14 @@ import * as React from "react";
 import * as strings from "HyperBirthdaysWebPartStrings";
 import type { IHyperBirthdaysWebPartProps, CelebrationType, BirthdaysViewMode } from "../models";
 import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton } from "../../../common/components";
+import { HyperWizard } from "../../../common/components/wizard/HyperWizard";
 import { useCelebrationData } from "../hooks/useCelebrationData";
 import { useCelebrationPhotos } from "../hooks/useCelebrationPhotos";
 import { usePrivacyOptOut } from "../hooks/usePrivacyOptOut";
 import { useHyperBirthdaysStore } from "../store/useHyperBirthdaysStore";
 import { isToday } from "../utils/dateHelpers";
 import { getUpcomingCelebrations } from "../utils/celebrationUtils";
+import { BIRTHDAYS_WIZARD_CONFIG, buildStateFromProps } from "./wizard/birthdaysWizardConfig";
 import HyperBirthdaysToolbar from "./HyperBirthdaysToolbar";
 import HyperBirthdaysUpcomingList from "./HyperBirthdaysUpcomingList";
 import HyperBirthdaysMonthCalendar from "./HyperBirthdaysMonthCalendar";
@@ -18,6 +20,7 @@ import styles from "./HyperBirthdays.module.scss";
 export interface IHyperBirthdaysComponentProps extends IHyperBirthdaysWebPartProps {
   instanceId: string;
   isEditMode?: boolean;
+  onWizardApply?: (result: Partial<IHyperBirthdaysWebPartProps>) => void;
 }
 
 const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (props) {
@@ -29,6 +32,42 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
   const currentYear = useHyperBirthdaysStore(function (s) { return s.currentYear; });
   const navigateMonth = useHyperBirthdaysStore(function (s) { return s.navigateMonth; });
   const selectCelebration = useHyperBirthdaysStore(function (s) { return s.selectCelebration; });
+  const isWizardOpen = useHyperBirthdaysStore(function (s) { return s.isWizardOpen; });
+  const openWizard = useHyperBirthdaysStore(function (s) { return s.openWizard; });
+  const closeWizard = useHyperBirthdaysStore(function (s) { return s.closeWizard; });
+
+  // Auto-open wizard on first load when not yet configured
+  React.useEffect(function () {
+    if (props.showWizardOnInit) {
+      openWizard();
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Build wizard state override from current props (for re-editing)
+  var wizardStateOverride = React.useMemo(function () {
+    return buildStateFromProps(props);
+  }, [
+    props.enableBirthdays, props.enableAnniversaries, props.enableWeddings,
+    props.enableChildBirth, props.enableGraduation, props.enableRetirement,
+    props.enablePromotion, props.enableCustom, props.enableEntraId,
+    props.enableSpList, props.spListName, props.viewMode, props.timeRange,
+    props.maxItems, props.photoSize, props.enableTeamsDeepLink,
+    props.enableAnimations, props.animationType, props.enableMilestoneBadges,
+    props.enablePrivacyOptOut, props.optOutListName, props.showWizardOnInit,
+  ]);
+
+  // Handle wizard apply
+  var handleWizardApply = React.useCallback(function (result: Partial<IHyperBirthdaysWebPartProps>): void {
+    if (props.onWizardApply) {
+      props.onWizardApply(result);
+    }
+    closeWizard();
+  }, [props.onWizardApply, closeWizard]);
+
+  // Handle configure button click
+  var handleConfigureClick = React.useCallback(function (): void {
+    openWizard();
+  }, [openWizard]);
 
   // Build enabled types from props on first render
   const hasInitRef = React.useRef<boolean>(false);
@@ -92,20 +131,52 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
 
   const isLoading = celebrationData.loading || privacyOptOut.loading;
 
+  // Wizard element — rendered in ALL code paths
+  var wizardElement = React.createElement(HyperWizard, {
+    config: BIRTHDAYS_WIZARD_CONFIG,
+    isOpen: isWizardOpen,
+    onClose: closeWizard,
+    onApply: handleWizardApply,
+    initialStateOverride: wizardStateOverride,
+  });
+
   if (isLoading) {
     return React.createElement(
       "div",
       { className: styles.birthdaysContainer },
-      React.createElement(HyperSkeleton, { count: 4, height: 64 })
+      React.createElement(HyperSkeleton, { count: 4, height: 64 }),
+      wizardElement
     );
   }
 
   if (visibleCelebrations.length === 0) {
-    return React.createElement(HyperEmptyState, {
-      iconName: "BirthdayCake",
-      title: strings.NoCelebrationsTitle,
-      description: strings.NoCelebrationsDescription,
-    });
+    return React.createElement(
+      "div",
+      { className: styles.birthdaysContainer },
+      React.createElement(HyperEmptyState, {
+        iconName: "BirthdayCake",
+        title: strings.NoCelebrationsTitle,
+        description: strings.NoCelebrationsDescription,
+      }),
+      props.isEditMode
+        ? React.createElement("div", { style: { textAlign: "center", marginTop: "12px" } },
+            React.createElement("button", {
+              onClick: handleConfigureClick,
+              style: {
+                padding: "8px 20px",
+                border: "1px solid #0078d4",
+                borderRadius: "4px",
+                background: "#0078d4",
+                color: "#ffffff",
+                fontSize: "13px",
+                fontWeight: "600" as "600",
+                cursor: "pointer",
+              },
+            }, "\u2699\uFE0F Configure")
+          )
+        : undefined,
+      wizardElement
+    );
   }
 
   // View mode handler
@@ -174,8 +245,11 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
       currentYear: currentYear,
       onNavigateMonth: navigateMonth,
       showMonthNav: viewMode === "monthlyCalendar",
+      isEditMode: props.isEditMode,
+      onConfigure: handleConfigureClick,
     }),
-    viewContent
+    viewContent,
+    wizardElement
   );
 };
 

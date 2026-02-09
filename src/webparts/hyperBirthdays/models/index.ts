@@ -30,3 +30,17 @@ export type { IMilestoneBadge } from "./IMilestoneBadge";
 export { MILESTONE_BADGES, calculateYears, getMilestoneBadge } from "./IMilestoneBadge";
 
 export type { IHyperBirthdaysWebPartProps } from "./IHyperBirthdaysWebPartProps";
+
+export type {
+  IBirthdaysWizardState,
+  IWizardCelebrationTypes,
+  IWizardDataSources,
+  IWizardLayout,
+  IWizardEngagement,
+} from "./IHyperBirthdaysWizardState";
+export {
+  DEFAULT_WIZARD_STATE,
+  getEnabledTypeNames,
+  countEnabledTypes,
+  getEnabledCelebrationTypes,
+} from "./IHyperBirthdaysWizardState";

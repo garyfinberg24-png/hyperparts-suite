@@ -17,11 +17,23 @@ import type { IHyperBirthdaysWebPartProps } from "./models";
 
 export default class HyperBirthdaysWebPart extends BaseHyperWebPart<IHyperBirthdaysWebPartProps> {
 
+  private _onWizardApply = (result: Partial<IHyperBirthdaysWebPartProps>): void => {
+    const self = this;
+    const keys = Object.keys(result);
+    keys.forEach(function (key: string) {
+      (self.properties as unknown as Record<string, unknown>)[key] = (result as unknown as Record<string, unknown>)[key];
+    });
+    self.properties.showWizardOnInit = false;
+    self.render();
+    self.context.propertyPane.refresh();
+  };
+
   public render(): void {
     const props: IHyperBirthdaysComponentProps = {
       ...this.properties,
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
+      onWizardApply: this._onWizardApply,
     };
     const element: React.ReactElement<IHyperBirthdaysComponentProps> =
       React.createElement(HyperBirthdays, props);
@@ -105,6 +117,9 @@ export default class HyperBirthdaysWebPart extends BaseHyperWebPart<IHyperBirthd
     }
     if (this.properties.photoSize === undefined) {
       this.properties.photoSize = 48;
+    }
+    if (this.properties.showWizardOnInit === undefined) {
+      this.properties.showWizardOnInit = true;
     }
   }
 

@@ -11,6 +11,8 @@ export interface IHyperBirthdaysToolbarProps {
   currentYear: number;
   onNavigateMonth: (direction: number) => void;
   showMonthNav: boolean;
+  isEditMode?: boolean;
+  onConfigure?: () => void;
 }
 
 const HyperBirthdaysToolbar: React.FC<IHyperBirthdaysToolbarProps> = function (props) {
@@ -64,6 +66,20 @@ const HyperBirthdaysToolbar: React.FC<IHyperBirthdaysToolbarProps> = function (p
       )
     : undefined;
 
+  var configureButton = props.isEditMode && props.onConfigure
+    ? React.createElement(
+        "button",
+        {
+          className: styles.configureButton,
+          onClick: props.onConfigure,
+          type: "button",
+          "aria-label": "Configure celebrations",
+        },
+        React.createElement("i", { className: "ms-Icon ms-Icon--Settings", "aria-hidden": "true" }),
+        " Configure"
+      )
+    : undefined;
+
   return React.createElement(
     "div",
     { className: styles.toolbar },
@@ -75,7 +91,8 @@ const HyperBirthdaysToolbar: React.FC<IHyperBirthdaysToolbarProps> = function (p
       makeViewButton("monthlyCalendar", "Calendar"),
       makeViewButton("cardCarousel", "Carousel")
     ),
-    monthNav
+    monthNav,
+    configureButton
   );
 };
 
