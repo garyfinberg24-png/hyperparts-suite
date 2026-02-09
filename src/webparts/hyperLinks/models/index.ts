@@ -17,3 +17,20 @@ export {
 } from "./IHyperLink";
 
 export type { IHyperLinksWebPartProps } from "./IHyperLinksWebPartProps";
+
+export type {
+  IWizardLayoutStyle,
+  IWizardIconsDisplay,
+  IWizardGroupingTargeting,
+  IWizardFeatures,
+  ILinksWizardState,
+} from "./IHyperLinksWizardState";
+
+export {
+  DEFAULT_LINKS_WIZARD_STATE,
+  getLayoutDisplayName,
+  getHoverEffectDisplayName,
+  getBorderRadiusDisplayName,
+  getIconSizeDisplayName,
+  countEnabledFeatures,
+} from "./IHyperLinksWizardState";

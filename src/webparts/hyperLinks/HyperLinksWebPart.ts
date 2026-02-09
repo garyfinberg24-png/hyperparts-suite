@@ -36,11 +36,23 @@ import {
 
 export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPartProps> {
 
+  private _onWizardApply = (result: Partial<IHyperLinksWebPartProps>): void => {
+    const self = this;
+    const keys = Object.keys(result);
+    keys.forEach(function (key: string) {
+      (self.properties as unknown as Record<string, unknown>)[key] = (result as unknown as Record<string, unknown>)[key];
+    });
+    self.properties.showWizardOnInit = false;
+    self.render();
+    self.context.propertyPane.refresh();
+  };
+
   public render(): void {
     const props: IHyperLinksComponentProps = {
       ...this.properties,
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
+      onWizardApply: this._onWizardApply,
     };
     const element: React.ReactElement<IHyperLinksComponentProps> =
       React.createElement(HyperLinks, props);
@@ -100,6 +112,18 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
     }
     if (this.properties.compactAlignment === undefined) {
       this.properties.compactAlignment = "left";
+    }
+    if (this.properties.showWizardOnInit === undefined) {
+      this.properties.showWizardOnInit = true;
+    }
+    if (this.properties.enableSearch === undefined) {
+      this.properties.enableSearch = false;
+    }
+    if (this.properties.enableHealthCheck === undefined) {
+      this.properties.enableHealthCheck = false;
+    }
+    if (this.properties.enablePopularBadges === undefined) {
+      this.properties.enablePopularBadges = false;
     }
   }
 
@@ -699,11 +723,20 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
                 PropertyPaneToggle("enableAudienceTargeting", {
                   label: strings.EnableAudienceTargetingLabel,
                 }),
+                PropertyPaneToggle("enableSearch", {
+                  label: strings.EnableSearchLabel,
+                }),
                 PropertyPaneToggle("enableAnalytics", {
                   label: strings.EnableAnalyticsLabel,
                 }),
                 PropertyPaneToggle("enableColorCustomization", {
                   label: strings.EnableColorCustomizationLabel,
+                }),
+                PropertyPaneToggle("enableHealthCheck", {
+                  label: strings.EnableHealthCheckLabel,
+                }),
+                PropertyPaneToggle("enablePopularBadges", {
+                  label: strings.EnablePopularBadgesLabel,
                 }),
               ],
             },

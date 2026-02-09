@@ -1,0 +1,79 @@
+// ============================================================
+// HyperLinks SearchBar
+// ============================================================
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.searchInputWrapper {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  padding: 6px 12px;
+  border: 1px solid #c8c6c4;
+  border-radius: 6px;
+  background: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:focus-within {
+    border-color: #0078d4;
+    box-shadow: 0 0 0 1px #0078d4;
+  }
+}
+
+.searchIcon {
+  font-size: 14px;
+  margin-right: 8px;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  color: #323130;
+  background: transparent;
+  min-width: 0;
+
+  &::placeholder {
+    color: #a19f9d;
+  }
+}
+
+.clearButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: #e1dfdd;
+  border-radius: 50%;
+  font-size: 10px;
+  color: #605e5c;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: #c8c6c4;
+  }
+
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: 1px;
+  }
+}
+
+.resultCount {
+  font-size: 12px;
+  color: #605e5c;
+  white-space: nowrap;
+  flex-shrink: 0;
+}

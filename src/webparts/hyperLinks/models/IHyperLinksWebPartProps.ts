@@ -26,4 +26,12 @@ export interface IHyperLinksWebPartProps extends IBaseHyperWebPartProps {
   hoverEffect: HyperLinksHoverEffect;
   borderRadius: HyperLinksBorderRadius;
   compactAlignment: HyperLinksAlignment;
+  /** Show wizard on first load */
+  showWizardOnInit: boolean;
+  /** Enable search bar within links */
+  enableSearch: boolean;
+  /** Enable link health monitoring in edit mode */
+  enableHealthCheck: boolean;
+  /** Enable popular link badges */
+  enablePopularBadges: boolean;
 }

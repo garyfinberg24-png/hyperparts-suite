@@ -19,6 +19,9 @@ declare interface IHyperLinksWebPartStrings {
   EnableAudienceTargetingLabel: string;
   EnableAnalyticsLabel: string;
   EnableColorCustomizationLabel: string;
+  EnableSearchLabel: string;
+  EnableHealthCheckLabel: string;
+  EnablePopularBadgesLabel: string;
   LinksPageDescription: string;
   AdvancedPageDescription: string;
   LinkHeaderPrefix: string;

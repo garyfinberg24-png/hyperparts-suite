@@ -4,6 +4,7 @@ export interface IHyperLinksStoreState {
   hoveredLinkId: string | undefined;
   expandedGroupIds: string[];
   filmstripScrollIndex: number;
+  isWizardOpen: boolean;
 }
 
 export interface IHyperLinksStoreActions {
@@ -12,6 +13,8 @@ export interface IHyperLinksStoreActions {
   expandAllGroups: (groupIds: string[]) => void;
   collapseAllGroups: () => void;
   setFilmstripScrollIndex: (index: number) => void;
+  openWizard: () => void;
+  closeWizard: () => void;
   reset: () => void;
 }
 
@@ -21,6 +24,7 @@ const initialState: IHyperLinksStoreState = {
   hoveredLinkId: undefined,
   expandedGroupIds: [],
   filmstripScrollIndex: 0,
+  isWizardOpen: false,
 };
 
 export const useHyperLinksStore = create<IHyperLinksStore>(function (set) {
@@ -58,6 +62,14 @@ export const useHyperLinksStore = create<IHyperLinksStore>(function (set) {
 
     setFilmstripScrollIndex: function (index: number): void {
       set({ filmstripScrollIndex: index });
+    },
+
+    openWizard: function (): void {
+      set({ isWizardOpen: true });
+    },
+
+    closeWizard: function (): void {
+      set({ isWizardOpen: false });
     },
 
     reset: function (): void {
