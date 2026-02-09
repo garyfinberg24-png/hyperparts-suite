@@ -9,6 +9,8 @@ export interface IHyperNewsStoreState {
   quickReadArticleId: number | undefined;
   /** Whether the quick-read modal is visible */
   isQuickReadOpen: boolean;
+  /** Whether the setup wizard modal is open */
+  isWizardOpen: boolean;
 }
 
 /** Actions to mutate HyperNews runtime state */
@@ -16,6 +18,8 @@ export interface IHyperNewsStoreActions {
   setLayout: (layout: LayoutType) => void;
   openQuickRead: (articleId: number) => void;
   closeQuickRead: () => void;
+  openWizard: () => void;
+  closeWizard: () => void;
   reset: () => void;
 }
 
@@ -25,6 +29,7 @@ const initialState: IHyperNewsStoreState = {
   selectedLayout: "cardGrid",
   quickReadArticleId: undefined,
   isQuickReadOpen: false,
+  isWizardOpen: false,
 };
 
 export const useHyperNewsStore = create<IHyperNewsStore>((set) => ({
@@ -40,6 +45,14 @@ export const useHyperNewsStore = create<IHyperNewsStore>((set) => ({
 
   closeQuickRead: (): void => {
     set({ quickReadArticleId: undefined, isQuickReadOpen: false });
+  },
+
+  openWizard: (): void => {
+    set({ isWizardOpen: true });
+  },
+
+  closeWizard: (): void => {
+    set({ isWizardOpen: false });
   },
 
   reset: (): void => {

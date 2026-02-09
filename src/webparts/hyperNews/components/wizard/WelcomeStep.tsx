@@ -5,7 +5,7 @@ export interface IWelcomeStepProps {
   onGetStarted: () => void;
 }
 
-const WelcomeStep: React.FC<IWelcomeStepProps> = function (props) {
+var WelcomeStep: React.FC<IWelcomeStepProps> = function (props) {
   return React.createElement("div", undefined,
 
     // ── DWx Brand Strip ──
@@ -34,12 +34,12 @@ const WelcomeStep: React.FC<IWelcomeStepProps> = function (props) {
           React.createElement("span", { className: styles.splashPartText }, "News")
         ),
         React.createElement("div", { className: styles.splashTagline },
-          "News that ",
-          React.createElement("span", { className: styles.splashTaglineStrong }, "engages"),
-          ", not just informs.",
+          "A ",
+          React.createElement("span", { className: styles.splashTaglineStrong }, "multi-source"),
+          " news aggregator",
           React.createElement("br"),
-          "12 layouts, reactions & ",
-          React.createElement("span", { className: styles.splashTaglineStrong }, "infinite scroll"),
+          "that far exceeds SharePoint's ",
+          React.createElement("span", { className: styles.splashTaglineStrong }, "built-in News"),
           "."
         )
       )
@@ -48,29 +48,29 @@ const WelcomeStep: React.FC<IWelcomeStepProps> = function (props) {
     // ── Body: Feature Cards + CTA ──
     React.createElement("div", { className: styles.splashBody },
       React.createElement("div", { className: styles.splashCards },
-        // Card 1: 12 Layouts
+        // Card 1: 6 Content Sources
         React.createElement("div", { className: styles.splashCard },
-          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDCC4"),
+          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDCF0"),
+          React.createElement("div", { className: styles.splashCardTitle }, "6 Content Sources"),
+          React.createElement("div", { className: styles.splashCardDesc }, "SP News, lists, external URLs, RSS, manual & Graph")
+        ),
+        // Card 2: 12 Layouts
+        React.createElement("div", { className: styles.splashCard },
+          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83C\uDFA8"),
           React.createElement("div", { className: styles.splashCardTitle }, "12 Layouts"),
-          React.createElement("div", { className: styles.splashCardDesc }, "Grid, magazine, timeline, carousel & more")
+          React.createElement("div", { className: styles.splashCardDesc }, "Grid, magazine, newspaper, carousel & more")
         ),
-        // Card 2: Emoji Reactions
+        // Card 3: Rich Interactions
         React.createElement("div", { className: styles.splashCard },
-          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDE4C"),
-          React.createElement("div", { className: styles.splashCardTitle }, "Emoji Reactions"),
-          React.createElement("div", { className: styles.splashCardDesc }, "5 reaction types for reader engagement")
+          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\u2728"),
+          React.createElement("div", { className: styles.splashCardTitle }, "Rich Interactions"),
+          React.createElement("div", { className: styles.splashCardDesc }, "Reactions, bookmarks, read tracking & quick read")
         ),
-        // Card 3: Smart Filters
+        // Card 4: Smart Filtering
         React.createElement("div", { className: styles.splashCard },
           React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDD0D"),
-          React.createElement("div", { className: styles.splashCardTitle }, "Smart Filters"),
-          React.createElement("div", { className: styles.splashCardDesc }, "Category, author, date & search")
-        ),
-        // Card 4: Infinite Scroll
-        React.createElement("div", { className: styles.splashCard },
-          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\u267E"),
-          React.createElement("div", { className: styles.splashCardTitle }, "Infinite Scroll"),
-          React.createElement("div", { className: styles.splashCardDesc }, "Smooth lazy-loading for large feeds")
+          React.createElement("div", { className: styles.splashCardTitle }, "Smart Filtering"),
+          React.createElement("div", { className: styles.splashCardDesc }, "Category, author, date range & infinite scroll")
         )
       ),
 
@@ -83,7 +83,7 @@ const WelcomeStep: React.FC<IWelcomeStepProps> = function (props) {
 
       // Hint
       React.createElement("span", { className: styles.splashHint },
-        "Connect to your news source in a few clicks"
+        "Set up your content sources, layout, and features in a few clicks"
       )
     )
   );

@@ -20,6 +20,16 @@ define([], function() {
     "ReactionListNameLabel": "Reactions List Name",
     "BookmarkListNameLabel": "Bookmarks List Name",
     "EnableFiltersLabel": "Enable Filters",
-    "DateRangeLabel": "Date Range"
+    "DateRangeLabel": "Date Range",
+    "WizardGroupName": "Setup Wizard",
+    "LaunchWizardLabel": "Launch Setup Wizard",
+    "LaunchWizardDesc": "Open the full-screen configuration wizard to set up content sources, layout, features, and filters.",
+    "SourcesSummaryLabel": "Sources Summary",
+    "DisplayGroupName": "Display Options",
+    "ShowImagesLabel": "Show Images",
+    "ShowDescriptionLabel": "Show Description",
+    "ShowAuthorLabel": "Show Author",
+    "ShowDateLabel": "Show Date",
+    "ShowReadTimeLabel": "Show Read Time"
   };
 });

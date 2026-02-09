@@ -1,0 +1,632 @@
+// ============================================================
+// HyperNews Wizard Steps — Shared Styles
+// ============================================================
+
+// ── Common step container ──
+.stepContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 4px 0;
+}
+
+.stepSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stepSectionLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323130;
+  margin-bottom: 4px;
+}
+
+.stepSectionHint {
+  font-size: 12px;
+  color: #605e5c;
+  margin-top: -4px;
+}
+
+// ── Toggle row ──
+.toggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border: 1px solid #edebe9;
+  border-radius: 6px;
+  background: #fafafa;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: #f3f2f1;
+  }
+}
+
+.toggleInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.toggleIcon {
+  font-size: 18px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.toggleLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323130;
+}
+
+.toggleDesc {
+  font-size: 12px;
+  color: #605e5c;
+}
+
+.toggleSwitch {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.toggleInput {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+
+  &:checked + .toggleTrack {
+    background: #0078d4;
+
+    .toggleThumb {
+      transform: translateX(18px);
+    }
+  }
+
+  &:focus + .toggleTrack {
+    box-shadow: 0 0 0 2px #0078d4;
+  }
+}
+
+.toggleTrack {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #c8c6c4;
+  border-radius: 11px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: #ffffff;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+// ── Slider control ──
+.sliderRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  border: 1px solid #edebe9;
+  border-radius: 6px;
+  background: #fafafa;
+}
+
+.sliderLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323130;
+  min-width: 120px;
+}
+
+.sliderInput {
+  flex: 1;
+  height: 4px;
+  accent-color: #0078d4;
+  cursor: pointer;
+}
+
+.sliderValue {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0078d4;
+  min-width: 30px;
+  text-align: right;
+}
+
+// ── Text input ──
+.inputRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 14px;
+  border: 1px solid #edebe9;
+  border-radius: 6px;
+  background: #fafafa;
+}
+
+.inputLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323130;
+}
+
+.inputHint {
+  font-size: 11px;
+  color: #a19f9d;
+}
+
+.textInput {
+  padding: 6px 10px;
+  border: 1px solid #c8c6c4;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #323130;
+  outline: none;
+  transition: border-color 0.15s ease;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: #0078d4;
+  }
+}
+
+// ── Dropdown ──
+.selectInput {
+  padding: 6px 10px;
+  border: 1px solid #c8c6c4;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #323130;
+  background: #ffffff;
+  outline: none;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: #0078d4;
+  }
+}
+
+// ── Layout picker grid ──
+.layoutGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.layoutCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 10px;
+  border: 2px solid #edebe9;
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  text-align: center;
+
+  &:hover {
+    border-color: #0078d4;
+    box-shadow: 0 2px 8px rgba(0, 120, 212, 0.1);
+  }
+}
+
+.layoutCardSelected {
+  composes: layoutCard;
+  border-color: #0078d4;
+  background: #f0f6ff;
+  box-shadow: 0 2px 8px rgba(0, 120, 212, 0.15);
+}
+
+.layoutCardIcon {
+  font-size: 28px;
+}
+
+.layoutCardName {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323130;
+}
+
+.layoutCardDesc {
+  font-size: 11px;
+  color: #605e5c;
+  line-height: 1.3;
+}
+
+.layoutSelectedInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #f0f6ff;
+  border: 1px solid #0078d4;
+  border-radius: 6px;
+  margin-top: 4px;
+}
+
+.layoutSelectedLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0078d4;
+}
+
+// ── Sources step ──
+.sourcesList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sourceCard {
+  border: 1px solid #edebe9;
+  border-radius: 8px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.sourceCardHeader {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  background: #fafafa;
+  border-bottom: 1px solid #edebe9;
+  gap: 8px;
+}
+
+.sourceCardIcon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.sourceCardType {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323130;
+  flex: 1;
+  min-width: 0;
+}
+
+.sourceCardActions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.sourceActionBtn {
+  padding: 4px 8px;
+  border: 1px solid #c8c6c4;
+  border-radius: 4px;
+  background: #ffffff;
+  font-size: 11px;
+  color: #323130;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: #f3f2f1;
+  }
+}
+
+.sourceRemoveBtn {
+  composes: sourceActionBtn;
+  color: #a4262c;
+  border-color: #a4262c;
+
+  &:hover {
+    background: #fde7e9;
+  }
+}
+
+.sourceCardBody {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sourceFieldRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sourceFieldLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #605e5c;
+}
+
+.sourceFieldInput {
+  composes: textInput;
+}
+
+.sourceFieldSelect {
+  composes: selectInput;
+}
+
+// Radio group (for SP News mode)
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.radioOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid #edebe9;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: #f3f2f1;
+  }
+}
+
+.radioOptionSelected {
+  composes: radioOption;
+  border-color: #0078d4;
+  background: #f0f6ff;
+}
+
+.radioInput {
+  accent-color: #0078d4;
+}
+
+.radioLabel {
+  font-size: 13px;
+  color: #323130;
+}
+
+// Add source button
+.addSourceArea {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.addSourceBtn {
+  padding: 8px 16px;
+  border: 2px dashed #c8c6c4;
+  border-radius: 8px;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0078d4;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  text-align: center;
+
+  &:hover {
+    border-color: #0078d4;
+    background: #f0f6ff;
+  }
+}
+
+.addSourceMenu {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid #edebe9;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.addSourceMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid #edebe9;
+  border-radius: 6px;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 13px;
+  color: #323130;
+  transition: background 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: #f0f6ff;
+    border-color: #0078d4;
+  }
+}
+
+.addSourceMenuIcon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+// Scrape button for external links
+.scrapeRow {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.scrapeBtn {
+  padding: 6px 14px;
+  border: 1px solid #0078d4;
+  border-radius: 4px;
+  background: #0078d4;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    background: #106ebe;
+  }
+
+  &:disabled {
+    background: #c8c6c4;
+    border-color: #c8c6c4;
+    cursor: not-allowed;
+  }
+}
+
+.scrapePreview {
+  display: flex;
+  gap: 12px;
+  padding: 10px;
+  border: 1px solid #edebe9;
+  border-radius: 6px;
+  background: #f3f2f1;
+}
+
+.scrapePreviewImage {
+  width: 60px;
+  height: 60px;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #edebe9;
+}
+
+.scrapePreviewInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.scrapePreviewTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323130;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scrapePreviewDesc {
+  font-size: 11px;
+  color: #605e5c;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scrapeStatus {
+  font-size: 11px;
+  color: #605e5c;
+  font-style: italic;
+}
+
+// Column mapping grid
+.columnMappingGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+// Empty sources
+.emptySources {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 32px 16px;
+  text-align: center;
+  color: #605e5c;
+}
+
+.emptySourcesIcon {
+  font-size: 36px;
+  opacity: 0.5;
+}
+
+.emptySourcesText {
+  font-size: 13px;
+}
+
+// Multiline text area
+.textArea {
+  padding: 6px 10px;
+  border: 1px solid #c8c6c4;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #323130;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  min-height: 60px;
+  font-family: inherit;
+
+  &:focus {
+    border-color: #0078d4;
+  }
+}
+
+// Article list in manual/external source
+.articleListItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid #edebe9;
+  border-radius: 4px;
+  background: #fafafa;
+}
+
+.articleListTitle {
+  flex: 1;
+  font-size: 12px;
+  color: #323130;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.articleListRemove {
+  font-size: 11px;
+  color: #a4262c;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 2px 6px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// Source enable toggle
+.sourceEnableToggle {
+  composes: toggleSwitch;
+}

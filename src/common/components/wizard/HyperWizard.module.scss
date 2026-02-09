@@ -495,3 +495,273 @@
   color: #605e5c;
   line-height: 1.4;
 }
+
+// ============================================================
+// Full-Screen Wizard Layout (2-Panel: sidebar + main)
+// ============================================================
+
+.wizardLayout {
+  display: flex;
+  min-height: 70vh;
+  max-height: 80vh;
+}
+
+// ── Left Sidebar (step list) ──
+.wizardSidebar {
+  width: 240px;
+  min-width: 240px;
+  background: linear-gradient(180deg, #0f1b2d 0%, #1a2744 100%);
+  color: #fff;
+  padding: 24px 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.wizardBrandStrip {
+  padding: 0 20px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 20px;
+}
+
+.wizardBrandName {
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.7;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.wizardStepList {
+  flex: 1;
+  padding: 0 16px;
+}
+
+.wizardStepItemBase {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px;
+  margin-bottom: 4px;
+  border-radius: 6px;
+  cursor: default;
+  transition: background-color 0.15s ease;
+}
+
+.wizardStepCircle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.5);
+  transition: all 0.2s ease;
+}
+
+.wizardStepLabelText {
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.2s ease;
+}
+
+.wizardStepActive {
+  composes: wizardStepItemBase;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.wizardStepActiveCircle {
+  border-color: #4fc3f7;
+  background: #4fc3f7;
+  color: #0f1b2d;
+}
+
+.wizardStepActiveLabel {
+  color: #fff;
+  font-weight: 600;
+}
+
+.wizardStepComplete {
+  composes: wizardStepItemBase;
+}
+
+.wizardStepCompleteCircle {
+  border-color: #66bb6a;
+  background: #66bb6a;
+  color: #fff;
+}
+
+.wizardStepCompleteLabel {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.wizardStepPending {
+  composes: wizardStepItemBase;
+}
+
+.wizardStepConnector {
+  width: 2px;
+  height: 12px;
+  margin-left: 29px;
+  margin-bottom: 4px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.wizardStepConnectorDone {
+  composes: wizardStepConnector;
+  background: #66bb6a;
+}
+
+// ── Right Main Content Area ──
+.wizardMain {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.wizardHeaderArea {
+  padding: 20px 32px 16px;
+  border-bottom: 1px solid #edebe9;
+}
+
+.wizardHeaderTitle {
+  font-size: 22px;
+  font-weight: 600;
+  color: #323130;
+  margin: 0 0 4px;
+}
+
+.wizardHeaderHelp {
+  font-size: 13px;
+  color: #605e5c;
+  margin: 0;
+}
+
+.wizardContentArea {
+  flex: 1;
+  padding: 24px 32px;
+  overflow-y: auto;
+}
+
+.wizardFooterArea {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 32px;
+  border-top: 1px solid #edebe9;
+  background: #faf9f8;
+}
+
+.wizardFooterLeft {
+  display: flex;
+  gap: 8px;
+}
+
+.wizardFooterRight {
+  display: flex;
+  gap: 8px;
+}
+
+.wizardBtnOutline {
+  padding: 8px 20px;
+  border: 1px solid #8a8886;
+  border-radius: 4px;
+  background: #fff;
+  color: #323130;
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: #f3f2f1;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.wizardBtnBlue {
+  padding: 8px 24px;
+  border: none;
+  border-radius: 4px;
+  background: #0078d4;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: #106ebe;
+  }
+
+  &:disabled {
+    background: #c8c6c4;
+    cursor: not-allowed;
+  }
+}
+
+.wizardBtnGreen {
+  padding: 8px 24px;
+  border: none;
+  border-radius: 4px;
+  background: #107c10;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: #0b6a0b;
+  }
+}
+
+// ── Responsive: collapse sidebar to top stepper ──
+@media (max-width: 768px) {
+  .wizardLayout {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .wizardSidebar {
+    width: 100%;
+    min-width: 100%;
+    flex-direction: row;
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+
+  .wizardBrandStrip {
+    display: none;
+  }
+
+  .wizardStepList {
+    display: flex;
+    gap: 8px;
+    padding: 0;
+  }
+
+  .wizardStepConnector,
+  .wizardStepConnectorDone {
+    display: none;
+  }
+
+  .wizardStepItemBase {
+    padding: 6px 10px;
+    margin-bottom: 0;
+  }
+
+  .wizardStepLabelText {
+    display: none;
+  }
+}

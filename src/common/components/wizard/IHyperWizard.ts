@@ -78,4 +78,6 @@ export interface IHyperWizardProps<TState, TResult> {
   isOpen: boolean;
   onClose: () => void;
   onApply: (result: TResult) => void;
+  /** Override initial state (e.g. hydrate from existing web part properties for re-editing) */
+  initialStateOverride?: TState;
 }

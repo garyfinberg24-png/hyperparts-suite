@@ -19,9 +19,28 @@ export {
 
 export type {
   SourceType,
+  SpNewsMode,
+  ISpNewsSource,
+  ISpListSource,
+  IExternalLinkSource,
+  IManualSource,
+  IRssFeedSource,
+  IGraphRecommendedSource,
   INewsSource,
+  IColumnMapping,
 } from "./IHyperNewsSource";
-export { DEFAULT_NEWS_SOURCE } from "./IHyperNewsSource";
+export {
+  DEFAULT_SP_NEWS_SOURCE,
+  DEFAULT_SP_LIST_SOURCE,
+  DEFAULT_RSS_SOURCE,
+  DEFAULT_GRAPH_SOURCE,
+  DEFAULT_COLUMN_MAPPING,
+  SOURCE_TYPE_LABELS,
+  SOURCE_TYPE_ICONS,
+  generateSourceId,
+  parseSources,
+  stringifySources,
+} from "./IHyperNewsSource";
 
 export type {
   DateRangeType,
@@ -42,3 +61,21 @@ export type { IScheduleConfig } from "./IHyperNewsSchedule";
 export { isArticlePublished } from "./IHyperNewsSchedule";
 
 export type { IHyperNewsWebPartProps } from "./IHyperNewsWebPartProps";
+
+export type {
+  IExternalArticle,
+} from "./IExternalArticle";
+export {
+  DEFAULT_EXTERNAL_ARTICLE,
+  generateArticleId,
+  parseArticles,
+  stringifyArticles,
+} from "./IExternalArticle";
+
+export type {
+  INewsWizardState,
+  IWizardFeatures,
+  IWizardDisplayOptions,
+  IWizardFilterPresets,
+} from "./IHyperNewsWizardState";
+export { DEFAULT_WIZARD_STATE } from "./IHyperNewsWizardState";

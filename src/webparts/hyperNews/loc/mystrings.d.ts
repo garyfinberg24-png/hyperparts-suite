@@ -20,6 +20,16 @@ declare interface IHyperNewsWebPartStrings {
   BookmarkListNameLabel: string;
   EnableFiltersLabel: string;
   DateRangeLabel: string;
+  WizardGroupName: string;
+  LaunchWizardLabel: string;
+  LaunchWizardDesc: string;
+  SourcesSummaryLabel: string;
+  DisplayGroupName: string;
+  ShowImagesLabel: string;
+  ShowDescriptionLabel: string;
+  ShowAuthorLabel: string;
+  ShowDateLabel: string;
+  ShowReadTimeLabel: string;
 }
 
 declare module "HyperNewsWebPartStrings" {
