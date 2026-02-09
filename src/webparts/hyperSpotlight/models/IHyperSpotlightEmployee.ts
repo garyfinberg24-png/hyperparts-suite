@@ -1,4 +1,5 @@
 import type { SpotlightCategory } from "./IHyperSpotlightEnums";
+import type { IWebsiteLink } from "./IHyperSpotlightPersonal";
 
 /** Basic user information (for managers, etc.) */
 export interface IBasicUser {
@@ -8,7 +9,7 @@ export interface IBasicUser {
   userPrincipalName?: string;
 }
 
-/** Complete employee profile from Microsoft Graph */
+/** Complete employee profile from Microsoft Graph + optional SP list personal data */
 export interface IHyperSpotlightEmployee {
   // Core identity
   id: string;
@@ -37,6 +38,18 @@ export interface IHyperSpotlightEmployee {
   skills?: string[];
   interests?: string[];
   schools?: string[];
+
+  // "Get to Know Me" personal fields (from SP list or manual entry)
+  /** Nickname / preferred name */
+  nickname?: string;
+  /** Personal quote or fun fact */
+  personalQuote?: string;
+  /** Parsed hobbies list */
+  hobbies?: string[];
+  /** Parsed skillset list */
+  skillset?: string[];
+  /** Parsed favorite website links */
+  favoriteWebsites?: IWebsiteLink[];
 
   // Relationships
   manager?: IBasicUser;

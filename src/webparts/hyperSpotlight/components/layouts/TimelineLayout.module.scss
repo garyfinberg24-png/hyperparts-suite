@@ -1,0 +1,291 @@
+/* TimelineLayout — Vertical connector with date markers + expand/collapse */
+
+.timelineContainer {
+  position: relative;
+  padding: 16px 0 16px 40px;
+}
+
+.withConnector {
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 18px;
+    width: 3px;
+    background: linear-gradient(180deg, #1565c0 0%, #42a5f5 100%);
+    border-radius: 2px;
+  }
+}
+
+.timelineItem {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.timelineItemCompact {
+  margin-bottom: 12px;
+}
+
+.timelineMarker {
+  position: absolute;
+  left: -32px;
+  top: 18px;
+  z-index: 1;
+}
+
+.timelineMarkerDot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #1565c0;
+  border: 3px solid #ffffff;
+  box-shadow: 0 0 0 2px #1565c0;
+}
+
+.timelineDateCol {
+  flex: 0 0 100px;
+  text-align: right;
+  padding-top: 12px;
+}
+
+.timelineDateText {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.timelineTimeAgo {
+  font-size: 11px;
+  color: #888888;
+  margin-top: 2px;
+}
+
+.timelineCard {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.timelineCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: #f5f5f5;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #1565c0;
+    outline-offset: -2px;
+    border-radius: 10px;
+  }
+}
+
+.timelinePhotoWrap {
+  flex: 0 0 48px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #e0e0e0;
+}
+
+.timelinePhoto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.timelinePhotoPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 600;
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.timelineInfo {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.timelineEmpName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #212121;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.timelineNickname {
+  font-size: 13px;
+  color: #757575;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.timelineEmpTitle {
+  font-size: 13px;
+  color: #555555;
+}
+
+.timelineEmpDept {
+  font-size: 12px;
+  color: #888888;
+}
+
+.timelineExpandBtn {
+  flex: 0 0 auto;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  color: #888888;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: #e0e0e0;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #1565c0;
+    outline-offset: 2px;
+  }
+}
+
+.timelineDetails {
+  padding: 0 16px 16px 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.timelineQuote {
+  padding: 12px 0;
+  font-size: 14px;
+  color: #555555;
+  font-style: italic;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+
+  p {
+    margin: 0;
+    flex: 1;
+  }
+}
+
+.timelineQuoteIcon {
+  font-size: 20px;
+  color: #bbbbbb;
+  line-height: 1;
+}
+
+.timelineSection {
+  margin-top: 12px;
+
+  strong {
+    display: block;
+    font-size: 12px;
+    color: #666666;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+.timelineHobbies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.timelineHobbyBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #e3f2fd;
+  color: #1565c0;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.timelineSkills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.timelineSkillBadge {
+  display: inline-block;
+  background: #f3e5f5;
+  color: #7b1fa2;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.timelineWebsites {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.timelineWebsiteBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  text-decoration: none;
+
+  &:hover {
+    background: #c8e6c9;
+    text-decoration: underline;
+  }
+}
+
+@media (max-width: 640px) {
+  .timelineContainer {
+    padding-left: 20px;
+  }
+
+  .withConnector {
+    &::before {
+      left: 8px;
+    }
+  }
+
+  .timelineMarker {
+    left: -18px;
+  }
+
+  .timelineDateCol {
+    display: none;
+  }
+}

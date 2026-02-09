@@ -42,6 +42,7 @@ export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotli
 
     // Set defaults for any properties not yet initialised
     const p = this.properties;
+    if (p.useSampleData === undefined) p.useSampleData = false;
     if (p.selectionMode === undefined) p.selectionMode = SelectionMode.Automatic;
     if (p.category === undefined) p.category = SpotlightCategory.Birthday;
     if (p.dateRange === undefined) p.dateRange = DateRange.ThisMonth;
@@ -103,6 +104,27 @@ export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotli
     if (p.imageQuality === undefined) p.imageQuality = ImageQuality.Medium;
     if (p.cacheEnabled === undefined) p.cacheEnabled = true;
     if (p.cacheDuration === undefined) p.cacheDuration = 60;
+
+    // V2: Personal fields + new layout settings + runtime controls
+    if (p.showNickname === undefined) p.showNickname = false;
+    if (p.showPersonalQuote === undefined) p.showPersonalQuote = true;
+    if (p.showHobbies === undefined) p.showHobbies = true;
+    if (p.showSkillset === undefined) p.showSkillset = true;
+    if (p.showFavoriteWebsites === undefined) p.showFavoriteWebsites = true;
+    if (p.showHireDate === undefined) p.showHireDate = true;
+    if (p.enableExpandableCards === undefined) p.enableExpandableCards = false;
+    if (p.showRuntimeViewSwitcher === undefined) p.showRuntimeViewSwitcher = false;
+    if (p.showRuntimeDepartmentFilter === undefined) p.showRuntimeDepartmentFilter = false;
+    if (p.spListTitle === undefined) p.spListTitle = "";
+    if (p.bannerSettings === undefined) {
+      p.bannerSettings = JSON.stringify({ showNavigationCounter: true, autoAdvance: true, autoAdvanceInterval: 5, pauseOnHover: true });
+    }
+    if (p.timelineSettings === undefined) {
+      p.timelineSettings = JSON.stringify({ showConnector: true, compactMode: false, expandAllDefault: false });
+    }
+    if (p.wallOfFameSettings === undefined) {
+      p.wallOfFameSettings = JSON.stringify({ columns: 3, showConfetti: true, cycleInterval: 10 });
+    }
   }
 
   public render(): void {
@@ -140,13 +162,19 @@ export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotli
             {
               groupName: strings.DataSourceGroupName,
               groupFields: [
-                PropertyPaneDropdown("selectionMode", { label: strings.SelectionModeLabel, options: SELECTION_MODE_OPTIONS }),
+                PropertyPaneToggle("useSampleData", { label: strings.UseSampleDataLabel, onText: "On", offText: "Off" }),
+                PropertyPaneDropdown("selectionMode", { label: strings.SelectionModeLabel, options: SELECTION_MODE_OPTIONS, disabled: this.properties.useSampleData }),
                 PropertyPaneTextField("manualEmployeeIdsText", {
                   label: strings.ManualEmployeeIdsLabel,
                   description: "Enter email addresses or IDs separated by commas",
                   multiline: true,
                   rows: 3,
                   disabled: this.properties.selectionMode !== SelectionMode.Manual,
+                }),
+                PropertyPaneTextField("spListTitle", {
+                  label: strings.SpListTitleLabel,
+                  description: "SharePoint list for personal fields (nickname, quote, hobbies)",
+                  disabled: this.properties.selectionMode !== SelectionMode.SpList,
                 }),
                 PropertyPaneDropdown("category", { label: strings.CategoryLabel, options: CATEGORY_OPTIONS, disabled: this.properties.selectionMode === SelectionMode.Manual }),
                 PropertyPaneDropdown("dateRange", { label: strings.DateRangeLabel, options: DATE_RANGE_OPTIONS, disabled: this.properties.selectionMode === SelectionMode.Manual }),
@@ -191,6 +219,19 @@ export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotli
               ],
             },
             {
+              groupName: strings.PersonalFieldsGroupName,
+              isCollapsed: true,
+              groupFields: [
+                PropertyPaneToggle("showNickname", { label: strings.ShowNicknameLabel, onText: "On", offText: "Off" }),
+                PropertyPaneToggle("showPersonalQuote", { label: strings.ShowPersonalQuoteLabel, onText: "On", offText: "Off" }),
+                PropertyPaneToggle("showHobbies", { label: strings.ShowHobbiesLabel, onText: "On", offText: "Off" }),
+                PropertyPaneToggle("showSkillset", { label: strings.ShowSkillsetLabel, onText: "On", offText: "Off" }),
+                PropertyPaneToggle("showFavoriteWebsites", { label: strings.ShowFavoriteWebsitesLabel, onText: "On", offText: "Off" }),
+                PropertyPaneToggle("showHireDate", { label: strings.ShowHireDateLabel, onText: "On", offText: "Off" }),
+                PropertyPaneToggle("enableExpandableCards", { label: strings.EnableExpandableCardsLabel, onText: "On", offText: "Off" }),
+              ],
+            },
+            {
               groupName: strings.ActionsGroupName,
               isCollapsed: true,
               groupFields: [
@@ -222,6 +263,14 @@ export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotli
                 PropertyPaneDropdown("imageQuality", { label: strings.ImageQualityLabel, options: IMAGE_QUALITY_OPTIONS }),
                 PropertyPaneToggle("cacheEnabled", { label: strings.CacheEnabledLabel, onText: "On", offText: "Off" }),
                 PropertyPaneSlider("cacheDuration", { label: strings.CacheDurationLabel, min: 5, max: 1440, step: 5, disabled: !this.properties.cacheEnabled }),
+              ],
+            },
+            {
+              groupName: strings.RuntimeFeaturesGroupName,
+              isCollapsed: false,
+              groupFields: [
+                PropertyPaneToggle("showRuntimeViewSwitcher", { label: strings.ShowRuntimeViewSwitcherLabel, onText: "On", offText: "Off" }),
+                PropertyPaneToggle("showRuntimeDepartmentFilter", { label: strings.ShowRuntimeDepartmentFilterLabel, onText: "On", offText: "Off" }),
               ],
             },
             {

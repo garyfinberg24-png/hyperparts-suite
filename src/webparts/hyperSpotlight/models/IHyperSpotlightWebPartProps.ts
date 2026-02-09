@@ -47,6 +47,9 @@ export interface IHyperSpotlightWebPartProps extends IBaseHyperWebPartProps {
   masonrySettings: string;
   listSettings: string;
   heroSettings: string;
+  bannerSettings: string;
+  timelineSettings: string;
+  wallOfFameSettings: string;
 
   // Content & Messaging
   customMessage: string;
@@ -58,6 +61,22 @@ export interface IHyperSpotlightWebPartProps extends IBaseHyperWebPartProps {
   showCategoryBadge: boolean;
   showCustomMessage: boolean;
   showActionButtons: boolean;
+
+  // "Get to Know Me" personal fields
+  showNickname: boolean;
+  showPersonalQuote: boolean;
+  showHobbies: boolean;
+  showSkillset: boolean;
+  showFavoriteWebsites: boolean;
+  showHireDate: boolean;
+  enableExpandableCards: boolean;
+
+  // Runtime controls
+  showRuntimeViewSwitcher: boolean;
+  showRuntimeDepartmentFilter: boolean;
+
+  // SP List data source
+  spListTitle: string;
 
   // Action Buttons
   enableEmailButton: boolean;
@@ -78,6 +97,9 @@ export interface IHyperSpotlightWebPartProps extends IBaseHyperWebPartProps {
   imageQuality: ImageQuality;
   cacheEnabled: boolean;
   cacheDuration: number;
+
+  // Sample / Demo Data
+  useSampleData: boolean;
 
   // Advanced
   debugMode?: boolean;

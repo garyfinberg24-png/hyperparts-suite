@@ -8,3 +8,6 @@ export { useGraphPhotos } from "./useGraphPhotos";
 export type { UseGraphPhotosResult } from "./useGraphPhotos";
 
 export { useAutoRefresh } from "./useAutoRefresh";
+
+export { useSpotlightListData } from "./useSpotlightListData";
+export type { UseSpotlightListDataOptions, UseSpotlightListDataResult } from "./useSpotlightListData";

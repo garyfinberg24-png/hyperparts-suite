@@ -2,6 +2,7 @@
 export enum SelectionMode {
   Automatic = "automatic",
   Manual = "manual",
+  SpList = "spList",
 }
 
 /** Celebration categories */
@@ -31,6 +32,9 @@ export enum LayoutMode {
   Masonry = "masonry",
   List = "list",
   FeaturedHero = "featuredHero",
+  Banner = "banner",
+  Timeline = "timeline",
+  WallOfFame = "wallOfFame",
 }
 
 /** Card visual styles */
@@ -84,6 +88,7 @@ import type { IPropertyPaneDropdownOption } from "@microsoft/sp-property-pane";
 export const SELECTION_MODE_OPTIONS: IPropertyPaneDropdownOption[] = [
   { key: SelectionMode.Automatic, text: "Automatic" },
   { key: SelectionMode.Manual, text: "Manual" },
+  { key: SelectionMode.SpList, text: "SharePoint List" },
 ];
 
 export const CATEGORY_OPTIONS: IPropertyPaneDropdownOption[] = [
@@ -110,6 +115,9 @@ export const LAYOUT_MODE_OPTIONS: IPropertyPaneDropdownOption[] = [
   { key: LayoutMode.Masonry, text: "Masonry" },
   { key: LayoutMode.List, text: "List View" },
   { key: LayoutMode.FeaturedHero, text: "Featured Hero" },
+  { key: LayoutMode.Banner, text: "Banner" },
+  { key: LayoutMode.Timeline, text: "Timeline" },
+  { key: LayoutMode.WallOfFame, text: "Wall of Fame" },
 ];
 
 export const CARD_STYLE_OPTIONS: IPropertyPaneDropdownOption[] = [

@@ -38,6 +38,19 @@ declare interface IHyperSpotlightWebPartStrings {
   ImageQualityLabel: string;
   CacheEnabledLabel: string;
   CacheDurationLabel: string;
+  PersonalFieldsGroupName: string;
+  ShowNicknameLabel: string;
+  ShowPersonalQuoteLabel: string;
+  ShowHobbiesLabel: string;
+  ShowSkillsetLabel: string;
+  ShowFavoriteWebsitesLabel: string;
+  ShowHireDateLabel: string;
+  EnableExpandableCardsLabel: string;
+  RuntimeFeaturesGroupName: string;
+  ShowRuntimeViewSwitcherLabel: string;
+  ShowRuntimeDepartmentFilterLabel: string;
+  SpListTitleLabel: string;
+  UseSampleDataLabel: string;
   DebugModeLabel: string;
 }
 

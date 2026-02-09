@@ -8,6 +8,10 @@ import {
   DEFAULT_TILED_SETTINGS,
   DEFAULT_MASONRY_SETTINGS,
   DEFAULT_HERO_SETTINGS,
+  DEFAULT_BANNER_SETTINGS,
+  DEFAULT_TIMELINE_SETTINGS,
+  DEFAULT_WALL_OF_FAME_SETTINGS,
+  generateMockEmployees,
 } from "../models";
 import type {
   IStyleSettings,
@@ -17,12 +21,20 @@ import type {
   ITiledSettings,
   IMasonrySettings,
   IHeroSettings,
+  IBannerSettings,
+  ITimelineSettings,
+  IWallOfFameSettings,
 } from "../models";
 import { HyperErrorBoundary, HyperEmptyState } from "../../../common/components";
 import { HyperSkeleton } from "../../../common/components";
 import { useSpotlightEmployees } from "../hooks";
-import type { UseSpotlightEmployeesOptions } from "../hooks";
-import { GridLayout, ListLayout, CarouselLayout, TiledLayout, MasonryLayout, FeaturedHeroLayout } from "./layouts";
+import type { UseSpotlightEmployeesOptions, UseSpotlightEmployeesResult } from "../hooks";
+import {
+  GridLayout, ListLayout, CarouselLayout, TiledLayout, MasonryLayout, FeaturedHeroLayout,
+  BannerLayout, TimelineLayout, WallOfFameLayout,
+} from "./layouts";
+import HyperSpotlightToolbar from "./HyperSpotlightToolbar";
+import { useHyperSpotlightStore } from "../store/useHyperSpotlightStore";
 import styles from "./HyperSpotlight.module.scss";
 
 export interface IHyperSpotlightComponentProps extends IHyperSpotlightWebPartProps {
@@ -55,6 +67,14 @@ function parseAttributeLabels(raw: string | undefined): Record<string, string> {
   }
 }
 
+/** Static mock result — reused across renders when sample data is enabled */
+const MOCK_RESULT: UseSpotlightEmployeesResult = {
+  employees: generateMockEmployees(),
+  loading: false,
+  error: undefined,
+  refresh: function () { /* noop for sample data */ },
+};
+
 const HyperSpotlightInner: React.FC<IHyperSpotlightComponentProps> = function (props) {
   const hookOptions: UseSpotlightEmployeesOptions = {
     selectionMode: props.selectionMode,
@@ -66,7 +86,7 @@ const HyperSpotlightInner: React.FC<IHyperSpotlightComponentProps> = function (p
     manualEmployeeCategories: props.manualEmployeeCategories,
     maxEmployees: props.maxEmployees,
     sortOrder: props.sortOrder,
-    autoRefreshEnabled: props.autoRefreshEnabled,
+    autoRefreshEnabled: props.useSampleData ? false : props.autoRefreshEnabled,
     autoRefreshInterval: props.autoRefreshInterval,
     departmentFilter: props.departmentFilter,
     locationFilter: props.locationFilter,
@@ -74,9 +94,19 @@ const HyperSpotlightInner: React.FC<IHyperSpotlightComponentProps> = function (p
     imageQuality: props.imageQuality,
     cacheEnabled: props.cacheEnabled,
     cacheDuration: props.cacheDuration,
+    spListTitle: props.spListTitle,
   };
 
-  const result = useSpotlightEmployees(hookOptions);
+  const liveResult = useSpotlightEmployees(hookOptions);
+
+  // Use mock data when sample data toggle is on
+  const result: UseSpotlightEmployeesResult = props.useSampleData ? MOCK_RESULT : liveResult;
+
+  // V2: Store for runtime state
+  const runtimeLayout = useHyperSpotlightStore(function (s) { return s.runtimeLayout; });
+  const runtimeDeptFilter = useHyperSpotlightStore(function (s) { return s.runtimeDepartmentFilter; });
+  const setRuntimeLayout = useHyperSpotlightStore(function (s) { return s.setRuntimeLayout; });
+  const setRuntimeDeptFilter = useHyperSpotlightStore(function (s) { return s.setRuntimeDepartmentFilter; });
 
   // Loading state
   if (result.loading && result.employees.length === 0) {
@@ -104,6 +134,14 @@ const HyperSpotlightInner: React.FC<IHyperSpotlightComponentProps> = function (p
   const attributeLabels = parseAttributeLabels(props.attributeLabels);
   const cardStyleSettings = parseJson<IStyleSettings | undefined>(props.styleSettings, undefined);
 
+  // V2: Apply runtime department filter
+  let employees = result.employees;
+  if (runtimeDeptFilter) {
+    employees = employees.filter(function (emp) {
+      return emp.department === runtimeDeptFilter;
+    });
+  }
+
   // Shared card props passed to every layout
   const sharedCardProps = {
     cardStyle: props.cardStyle,
@@ -127,46 +165,82 @@ const HyperSpotlightInner: React.FC<IHyperSpotlightComponentProps> = function (p
     useCategoryThemes: props.useCategoryThemes,
     styleSettings: cardStyleSettings,
     lazyLoadImages: props.lazyLoadImages,
+    // V2: personal fields
+    showNickname: props.showNickname,
+    showPersonalQuote: props.showPersonalQuote,
+    showHobbies: props.showHobbies,
+    showSkillset: props.showSkillset,
+    showFavoriteWebsites: props.showFavoriteWebsites,
+    showHireDate: props.showHireDate,
+    enableExpandableCards: props.enableExpandableCards,
   };
+
+  // V2: Determine effective layout (runtime override or prop)
+  const effectiveLayout: LayoutMode = (props.showRuntimeViewSwitcher && runtimeLayout)
+    ? runtimeLayout
+    : props.layoutMode;
 
   // Determine layout component
   let layoutElement: React.ReactElement;
 
-  if (props.layoutMode === LayoutMode.List) {
+  if (effectiveLayout === LayoutMode.List) {
     const listSettings = parseJson<IListSettings>(props.listSettings, DEFAULT_LIST_SETTINGS);
     layoutElement = React.createElement(ListLayout, {
-      employees: result.employees,
+      employees: employees,
       listSettings: listSettings,
       ...sharedCardProps,
     });
-  } else if (props.layoutMode === LayoutMode.Carousel) {
+  } else if (effectiveLayout === LayoutMode.Carousel) {
     const carouselSettings = parseJson<ICarouselSettings>(props.carouselSettings, DEFAULT_CAROUSEL_SETTINGS);
     layoutElement = React.createElement(CarouselLayout, {
-      employees: result.employees,
+      employees: employees,
       carouselSettings: carouselSettings,
       ...sharedCardProps,
     });
-  } else if (props.layoutMode === LayoutMode.Tiled) {
+  } else if (effectiveLayout === LayoutMode.Tiled) {
     const tiledSettings = parseJson<ITiledSettings>(props.tiledSettings, DEFAULT_TILED_SETTINGS);
     layoutElement = React.createElement(TiledLayout, {
-      employees: result.employees,
+      employees: employees,
       tiledSettings: tiledSettings,
       ...sharedCardProps,
     });
-  } else if (props.layoutMode === LayoutMode.Masonry) {
+  } else if (effectiveLayout === LayoutMode.Masonry) {
     const masonrySettings = parseJson<IMasonrySettings>(props.masonrySettings, DEFAULT_MASONRY_SETTINGS);
     layoutElement = React.createElement(MasonryLayout, {
-      employees: result.employees,
+      employees: employees,
       masonrySettings: masonrySettings,
       mobileColumns: props.mobileColumns || 1,
       tabletColumns: props.tabletColumns || 2,
       ...sharedCardProps,
     });
-  } else if (props.layoutMode === LayoutMode.FeaturedHero) {
+  } else if (effectiveLayout === LayoutMode.FeaturedHero) {
     const heroSettings = parseJson<IHeroSettings>(props.heroSettings, DEFAULT_HERO_SETTINGS);
     layoutElement = React.createElement(FeaturedHeroLayout, {
-      employees: result.employees,
+      employees: employees,
       heroSettings: heroSettings,
+      mobileColumns: props.mobileColumns || 1,
+      tabletColumns: props.tabletColumns || 2,
+      ...sharedCardProps,
+    });
+  } else if (effectiveLayout === LayoutMode.Banner) {
+    const bannerSettings = parseJson<IBannerSettings>(props.bannerSettings, DEFAULT_BANNER_SETTINGS);
+    layoutElement = React.createElement(BannerLayout, {
+      employees: employees,
+      bannerSettings: bannerSettings,
+      ...sharedCardProps,
+    });
+  } else if (effectiveLayout === LayoutMode.Timeline) {
+    const timelineSettings = parseJson<ITimelineSettings>(props.timelineSettings, DEFAULT_TIMELINE_SETTINGS);
+    layoutElement = React.createElement(TimelineLayout, {
+      employees: employees,
+      timelineSettings: timelineSettings,
+      ...sharedCardProps,
+    });
+  } else if (effectiveLayout === LayoutMode.WallOfFame) {
+    const wallSettings = parseJson<IWallOfFameSettings>(props.wallOfFameSettings, DEFAULT_WALL_OF_FAME_SETTINGS);
+    layoutElement = React.createElement(WallOfFameLayout, {
+      employees: employees,
+      wallOfFameSettings: wallSettings,
       mobileColumns: props.mobileColumns || 1,
       tabletColumns: props.tabletColumns || 2,
       ...sharedCardProps,
@@ -175,7 +249,7 @@ const HyperSpotlightInner: React.FC<IHyperSpotlightComponentProps> = function (p
     // Default: Grid
     const gridSettings = parseJson<IGridSettings>(props.gridSettings, DEFAULT_GRID_SETTINGS);
     layoutElement = React.createElement(GridLayout, {
-      employees: result.employees,
+      employees: employees,
       gridSettings: gridSettings,
       mobileColumns: props.mobileColumns || 1,
       tabletColumns: props.tabletColumns || 2,
@@ -183,10 +257,29 @@ const HyperSpotlightInner: React.FC<IHyperSpotlightComponentProps> = function (p
     });
   }
 
+  // V2: Build container children
+  const containerChildren: React.ReactNode[] = [];
+
+  // Toolbar (runtime view switcher + department filter)
+  if (props.showRuntimeViewSwitcher || props.showRuntimeDepartmentFilter) {
+    containerChildren.push(React.createElement(HyperSpotlightToolbar, {
+      key: "toolbar",
+      employees: result.employees, // use unfiltered for dept extraction
+      showViewSwitcher: props.showRuntimeViewSwitcher || false,
+      showDepartmentFilter: props.showRuntimeDepartmentFilter || false,
+      currentLayout: effectiveLayout,
+      onLayoutChange: function (layout: LayoutMode): void { setRuntimeLayout(layout); },
+      currentDepartment: runtimeDeptFilter,
+      onDepartmentChange: function (dept: string): void { setRuntimeDeptFilter(dept); },
+    }));
+  }
+
+  containerChildren.push(layoutElement);
+
   return React.createElement(
     "div",
     { className: styles.spotlightContainer, role: "region", "aria-label": "Employee Spotlight" },
-    layoutElement
+    containerChildren
   );
 };
 

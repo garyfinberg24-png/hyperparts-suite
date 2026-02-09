@@ -4,6 +4,7 @@ import {
   CardStyle,
   AnimationEntrance,
   MessagePosition,
+  getTimeSinceHire,
 } from "../models";
 import type { IStyleSettings } from "../models";
 import { generateStyles, getCategoryGradient } from "../models";
@@ -11,6 +12,7 @@ import HyperSpotlightCategoryBadge from "./HyperSpotlightCategoryBadge";
 import HyperSpotlightAttributeDisplay from "./HyperSpotlightAttributeDisplay";
 import HyperSpotlightActionButtons from "./HyperSpotlightActionButtons";
 import HyperSpotlightCustomMessage from "./HyperSpotlightCustomMessage";
+import HyperSpotlightExpandedDetail from "./HyperSpotlightExpandedDetail";
 import styles from "./HyperSpotlightCard.module.scss";
 
 export interface IHyperSpotlightCardProps {
@@ -36,6 +38,24 @@ export interface IHyperSpotlightCardProps {
   useCategoryThemes: boolean;
   styleSettings?: IStyleSettings;
   lazyLoadImages: boolean;
+  /** V2: show nickname below name */
+  showNickname?: boolean;
+  /** V2: show personal quote in expanded detail */
+  showPersonalQuote?: boolean;
+  /** V2: show hobbies in expanded detail */
+  showHobbies?: boolean;
+  /** V2: show skillset in expanded detail */
+  showSkillset?: boolean;
+  /** V2: show favorite websites in expanded detail */
+  showFavoriteWebsites?: boolean;
+  /** V2: show hire date badge */
+  showHireDate?: boolean;
+  /** V2: enable click-to-expand card detail */
+  enableExpandableCards?: boolean;
+  /** V2: is this card currently expanded */
+  isExpanded?: boolean;
+  /** V2: callback to toggle expand */
+  onToggleExpand?: (employeeId: string) => void;
 }
 
 /** Map MessagePosition enum to the string position used by CustomMessage */
@@ -137,13 +157,26 @@ const HyperSpotlightCard: React.FC<IHyperSpotlightCardProps> = function (props) 
   // Employee info block
   const infoChildren: React.ReactNode[] = [];
   if (props.showEmployeeName) {
-    infoChildren.push(React.createElement("h3", { key: "name", className: styles.employeeName }, emp.displayName));
+    const nameChildren: React.ReactNode[] = [emp.displayName];
+    // V2: Nickname
+    if (props.showNickname && emp.nickname) {
+      nameChildren.push(React.createElement("span", { key: "nick", className: styles.nickname }, " \"" + emp.nickname + "\""));
+    }
+    infoChildren.push(React.createElement("h3", { key: "name", className: styles.employeeName }, nameChildren));
   }
   if (props.showJobTitle && emp.jobTitle) {
     infoChildren.push(React.createElement("p", { key: "title", className: styles.jobTitle }, emp.jobTitle));
   }
   if (props.showDepartment && emp.department) {
     infoChildren.push(React.createElement("p", { key: "dept", className: styles.department }, emp.department));
+  }
+  // V2: Hire date badge
+  if (props.showHireDate && emp.hireDate) {
+    const timeSince = getTimeSinceHire(emp.hireDate);
+    infoChildren.push(React.createElement("div", { key: "hire", className: styles.hireDateBadge },
+      React.createElement("span", { "aria-hidden": "true" }, "\uD83D\uDCC5"),
+      " Joined " + timeSince
+    ));
   }
   if (props.selectedAttributes && props.selectedAttributes.length > 0) {
     infoChildren.push(React.createElement(HyperSpotlightAttributeDisplay, {
@@ -178,9 +211,54 @@ const HyperSpotlightCard: React.FC<IHyperSpotlightCardProps> = function (props) 
     }));
   }
 
+  // V2: Expandable card hint + detail
+  const isExpandable = props.enableExpandableCards && props.onToggleExpand;
+  if (isExpandable && !props.isExpanded) {
+    children.push(React.createElement("div", { key: "expand-hint", className: styles.expandHint }, "Click to learn more \u25BC"));
+  }
+  if (isExpandable && props.isExpanded) {
+    children.push(React.createElement(HyperSpotlightExpandedDetail, {
+      key: "expanded",
+      employee: emp,
+      showPersonalQuote: props.showPersonalQuote || false,
+      showHobbies: props.showHobbies || false,
+      showSkillset: props.showSkillset || false,
+      showFavoriteWebsites: props.showFavoriteWebsites || false,
+      showHireDate: false, // already shown as badge in card header
+    }));
+  }
+
+  // Card click handler for expandable cards
+  const cardExtraProps: Record<string, unknown> = {};
+  if (isExpandable) {
+    cardExtraProps.onClick = function (): void {
+      if (props.onToggleExpand) {
+        props.onToggleExpand(emp.id);
+      }
+    };
+    cardExtraProps.tabIndex = 0;
+    cardExtraProps.onKeyDown = function (e: React.KeyboardEvent): void {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        if (props.onToggleExpand) {
+          props.onToggleExpand(emp.id);
+        }
+      }
+    };
+    cardExtraProps["aria-expanded"] = props.isExpanded || false;
+  }
+
+  const expandedClass = props.isExpanded ? " " + styles.cardExpanded : "";
+
   return React.createElement(
     "article",
-    { className: cardClasses, style: customStyles, role: "article", "aria-label": ariaLabel },
+    {
+      className: cardClasses + expandedClass,
+      style: customStyles,
+      role: "article",
+      "aria-label": ariaLabel,
+      ...cardExtraProps,
+    },
     children
   );
 };

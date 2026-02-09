@@ -32,6 +32,7 @@ function mergeEmployee(
 import { useGraphProfiles, useGraphProfilesByIds } from "./useGraphProfiles";
 import { useGraphPhotos } from "./useGraphPhotos";
 import { useAutoRefresh } from "./useAutoRefresh";
+import { useSpotlightListData } from "./useSpotlightListData";
 import { filterEmployeesByDate, applyPropertyFilters, getDateRangeForEnum, calculateYearsOfService } from "../utils/dateFilter";
 import { sortEmployees } from "../utils/employeeSorter";
 
@@ -53,6 +54,8 @@ export interface UseSpotlightEmployeesOptions {
   imageQuality: ImageQuality;
   cacheEnabled: boolean;
   cacheDuration: number;
+  /** SP list title for SpList selection mode */
+  spListTitle?: string;
 }
 
 export interface UseSpotlightEmployeesResult {
@@ -71,16 +74,24 @@ export function useSpotlightEmployees(
   options: UseSpotlightEmployeesOptions
 ): UseSpotlightEmployeesResult {
   const isManual = options.selectionMode === SelectionMode.Manual;
+  const isSpList = options.selectionMode === SelectionMode.SpList;
   const cacheTtl = options.cacheEnabled ? options.cacheDuration * 60 * 1000 : 0;
 
   // Fetch all users (automatic mode) or specific users (manual mode)
-  const allProfiles = useGraphProfiles(isManual ? 0 : cacheTtl);
+  const allProfiles = useGraphProfiles(isManual || isSpList ? 0 : cacheTtl);
   const manualProfiles = useGraphProfilesByIds(
     isManual ? options.manualEmployeeIds : [],
     cacheTtl
   );
 
-  const sourceProfiles = isManual ? manualProfiles : allProfiles;
+  // Fetch from SP list (spList mode)
+  const listData = useSpotlightListData({
+    listTitle: isSpList ? (options.spListTitle || "") : "",
+    maxItems: options.maxEmployees || 50,
+    cacheTTL: cacheTtl,
+  });
+
+  const sourceProfiles = isSpList ? listData : (isManual ? manualProfiles : allProfiles);
 
   // Filter, enrich, and sort
   const processed = useMemo(function (): IHyperSpotlightEmployee[] {

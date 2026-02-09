@@ -53,6 +53,27 @@ define([], function () {
     CacheEnabledLabel: "Enable Caching",
     CacheDurationLabel: "Cache Duration (minutes)",
 
+    // Personal fields labels
+    PersonalFieldsGroupName: "Get to Know Me",
+    ShowNicknameLabel: "Show Nickname",
+    ShowPersonalQuoteLabel: "Show Personal Quote",
+    ShowHobbiesLabel: "Show Hobbies & Interests",
+    ShowSkillsetLabel: "Show Skills",
+    ShowFavoriteWebsitesLabel: "Show Favorite Websites",
+    ShowHireDateLabel: "Show Hire Date",
+    EnableExpandableCardsLabel: "Enable Expandable Cards",
+
+    // Runtime features labels
+    RuntimeFeaturesGroupName: "Runtime Features",
+    ShowRuntimeViewSwitcherLabel: "Show View Mode Switcher",
+    ShowRuntimeDepartmentFilterLabel: "Show Department Filter",
+
+    // SP list source
+    SpListTitleLabel: "SharePoint List Title",
+
+    // Sample data
+    UseSampleDataLabel: "Use Sample Data",
+
     // Advanced labels
     DebugModeLabel: "Debug Mode"
   };

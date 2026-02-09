@@ -15,3 +15,12 @@ export type { IMasonryLayoutProps } from "./MasonryLayout";
 
 export { default as FeaturedHeroLayout } from "./FeaturedHeroLayout";
 export type { IFeaturedHeroLayoutProps } from "./FeaturedHeroLayout";
+
+export { default as BannerLayout } from "./BannerLayout";
+export type { IBannerLayoutProps } from "./BannerLayout";
+
+export { default as TimelineLayout } from "./TimelineLayout";
+export type { ITimelineLayoutProps } from "./TimelineLayout";
+
+export { default as WallOfFameLayout } from "./WallOfFameLayout";
+export type { IWallOfFameLayoutProps } from "./WallOfFameLayout";

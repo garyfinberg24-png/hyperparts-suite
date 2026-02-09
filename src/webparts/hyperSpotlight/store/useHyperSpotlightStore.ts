@@ -14,6 +14,12 @@ export interface IHyperSpotlightStoreState {
   carouselIndex: number;
   /** Whether carousel auto-advance is paused */
   carouselPaused: boolean;
+  /** Runtime layout override from toolbar (undefined = use prop) */
+  runtimeLayout: LayoutMode | undefined;
+  /** Runtime department filter from toolbar */
+  runtimeDepartmentFilter: string;
+  /** ID of the currently expanded card (click-to-expand) */
+  expandedCardId: string | undefined;
 }
 
 /* ── Actions ── */
@@ -26,6 +32,9 @@ export interface IHyperSpotlightStoreActions {
   nextSlide: (total: number) => void;
   prevSlide: (total: number) => void;
   setCarouselPaused: (paused: boolean) => void;
+  setRuntimeLayout: (layout: LayoutMode | undefined) => void;
+  setRuntimeDepartmentFilter: (dept: string) => void;
+  setExpandedCardId: (id: string | undefined) => void;
   reset: () => void;
 }
 
@@ -37,6 +46,9 @@ const initialState: IHyperSpotlightStoreState = {
   selectedEmployeeId: undefined,
   carouselIndex: 0,
   carouselPaused: false,
+  runtimeLayout: undefined,
+  runtimeDepartmentFilter: "",
+  expandedCardId: undefined,
 };
 
 export const useHyperSpotlightStore = create<IHyperSpotlightStore>(function (set) {
@@ -73,6 +85,20 @@ export const useHyperSpotlightStore = create<IHyperSpotlightStore>(function (set
 
     setCarouselPaused: function (paused: boolean): void {
       set({ carouselPaused: paused });
+    },
+
+    setRuntimeLayout: function (layout: LayoutMode | undefined): void {
+      set({ runtimeLayout: layout });
+    },
+
+    setRuntimeDepartmentFilter: function (dept: string): void {
+      set({ runtimeDepartmentFilter: dept });
+    },
+
+    setExpandedCardId: function (id: string | undefined): void {
+      set(function (state) {
+        return { expandedCardId: state.expandedCardId === id ? undefined : id };
+      });
     },
 
     reset: function (): void {

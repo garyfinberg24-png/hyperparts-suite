@@ -5,9 +5,10 @@ import type { IHyperSpotlightEmployee } from "../models";
 
 const GRAPH_USER_SELECT =
   "id,userPrincipalName,displayName,givenName,surname,mail,jobTitle," +
-  "department,officeLocation,businessPhones,mobilePhone,birthday,hireDate";
+  "department,officeLocation,businessPhones,mobilePhone,birthday,hireDate," +
+  "aboutMe,interests,skills,schools";
 
-/** Fallback without birthday/hireDate (need User.Read.All admin consent) */
+/** Fallback without birthday/hireDate/extended (need User.Read.All admin consent) */
 const GRAPH_USER_SELECT_BASIC =
   "id,userPrincipalName,displayName,givenName,surname,mail,jobTitle," +
   "department,officeLocation,businessPhones,mobilePhone";
@@ -302,5 +303,12 @@ function mapGraphUser(u: Record<string, unknown>): IHyperSpotlightEmployee {
     mobilePhone: u.mobilePhone ? String(u.mobilePhone) : undefined,
     birthday: u.birthday ? String(u.birthday) : undefined,
     hireDate: u.hireDate ? String(u.hireDate) : undefined,
+    aboutMe: u.aboutMe ? String(u.aboutMe) : undefined,
+    // Map Graph "interests" → hobbies and "skills" → skillset
+    hobbies: Array.isArray(u.interests) ? u.interests as string[] : undefined,
+    skillset: Array.isArray(u.skills) ? u.skills as string[] : undefined,
+    interests: Array.isArray(u.interests) ? u.interests as string[] : undefined,
+    skills: Array.isArray(u.skills) ? u.skills as string[] : undefined,
+    schools: Array.isArray(u.schools) ? u.schools as string[] : undefined,
   };
 }

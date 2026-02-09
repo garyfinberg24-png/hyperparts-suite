@@ -42,6 +42,9 @@ export type {
   IMasonrySettings,
   IListSettings,
   IHeroSettings,
+  IBannerSettings,
+  ITimelineSettings,
+  IWallOfFameSettings,
 } from "./IHyperSpotlightLayout";
 export {
   DEFAULT_CAROUSEL_SETTINGS,
@@ -50,6 +53,9 @@ export {
   DEFAULT_MASONRY_SETTINGS,
   DEFAULT_LIST_SETTINGS,
   DEFAULT_HERO_SETTINGS,
+  DEFAULT_BANNER_SETTINGS,
+  DEFAULT_TIMELINE_SETTINGS,
+  DEFAULT_WALL_OF_FAME_SETTINGS,
 } from "./IHyperSpotlightLayout";
 
 /* ── Style settings ── */
@@ -65,5 +71,17 @@ export {
   rgbaColor,
 } from "./IHyperSpotlightStyle";
 
+/* ── Personal / "Get to Know Me" utilities ── */
+export type { IWebsiteLink } from "./IHyperSpotlightPersonal";
+export {
+  parseWebsites,
+  parseCommaSeparated,
+  getHobbyIcon,
+  getTimeSinceHire,
+} from "./IHyperSpotlightPersonal";
+
 /* ── Web part props ── */
 export type { IHyperSpotlightWebPartProps } from "./IHyperSpotlightWebPartProps";
+
+/* ── Mock / sample data ── */
+export { generateMockEmployees } from "../utils/mockEmployees";

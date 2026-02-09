@@ -47,6 +47,28 @@ export interface IHeroSettings {
   manualHeroEmployeeId?: string;
 }
 
+/** Banner layout settings (full-width, photo left + details right) */
+export interface IBannerSettings {
+  showNavigationCounter: boolean;
+  autoAdvance: boolean;
+  autoAdvanceInterval: number;
+  pauseOnHover: boolean;
+}
+
+/** Timeline layout settings (vertical connector + expand/collapse) */
+export interface ITimelineSettings {
+  showConnector: boolean;
+  compactMode: boolean;
+  expandAllDefault: boolean;
+}
+
+/** Wall of Fame layout settings (star employee + confetti) */
+export interface IWallOfFameSettings {
+  columns: number;
+  showConfetti: boolean;
+  cycleInterval: number;
+}
+
 /* ── Defaults ── */
 
 export const DEFAULT_CAROUSEL_SETTINGS: ICarouselSettings = {
@@ -89,4 +111,23 @@ export const DEFAULT_HERO_SETTINGS: IHeroSettings = {
   secondaryLayout: "grid",
   autoRotateHero: false,
   autoRotateInterval: 10,
+};
+
+export const DEFAULT_BANNER_SETTINGS: IBannerSettings = {
+  showNavigationCounter: true,
+  autoAdvance: true,
+  autoAdvanceInterval: 5,
+  pauseOnHover: true,
+};
+
+export const DEFAULT_TIMELINE_SETTINGS: ITimelineSettings = {
+  showConnector: true,
+  compactMode: false,
+  expandAllDefault: false,
+};
+
+export const DEFAULT_WALL_OF_FAME_SETTINGS: IWallOfFameSettings = {
+  columns: 3,
+  showConfetti: true,
+  cycleInterval: 10,
 };

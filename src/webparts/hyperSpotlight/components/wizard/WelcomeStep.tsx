@@ -37,33 +37,39 @@ const WelcomeStep: React.FC<IWelcomeStepProps> = function (props) {
           React.createElement("span", { className: styles.splashTaglineStrong }, "Celebrate"),
           " your people.",
           React.createElement("br"),
-          "6 layouts, 7 celebration categories & ",
-          React.createElement("span", { className: styles.splashTaglineStrong }, "custom messages"),
-          "."
+          "9 layouts, 7 celebration categories & ",
+          React.createElement("span", { className: styles.splashTaglineStrong }, "Get to Know Me"),
+          " sections."
         )
       )
     ),
 
     // ── Body: Feature Cards + CTA ──
     React.createElement("div", { className: styles.splashBody },
-      React.createElement("div", { className: styles.splashCards + " " + styles.splashCardsThreeCol },
-        // Card 1: 6 Layouts
+      React.createElement("div", { className: styles.splashCards },
+        // Card 1: 9 Layouts
         React.createElement("div", { className: styles.splashCard },
           React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83C\uDFA8"),
-          React.createElement("div", { className: styles.splashCardTitle }, "6 Layouts"),
-          React.createElement("div", { className: styles.splashCardDesc }, "Grid, carousel, masonry & featured hero")
+          React.createElement("div", { className: styles.splashCardTitle }, "9 Layouts"),
+          React.createElement("div", { className: styles.splashCardDesc }, "Grid, banner, timeline, wall of fame & more")
         ),
-        // Card 2: 7 Categories
+        // Card 2: Get to Know Me
+        React.createElement("div", { className: styles.splashCard },
+          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDC64"),
+          React.createElement("div", { className: styles.splashCardTitle }, "Get to Know Me"),
+          React.createElement("div", { className: styles.splashCardDesc }, "Hobbies, skills, quotes & expandable cards")
+        ),
+        // Card 3: 7 Categories
         React.createElement("div", { className: styles.splashCard },
           React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83C\uDF89"),
           React.createElement("div", { className: styles.splashCardTitle }, "7 Categories"),
           React.createElement("div", { className: styles.splashCardDesc }, "New hire, promotion, birthday & more")
         ),
-        // Card 3: Custom Messages
+        // Card 4: Runtime Controls
         React.createElement("div", { className: styles.splashCard },
-          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDCAC"),
-          React.createElement("div", { className: styles.splashCardTitle }, "Custom Messages"),
-          React.createElement("div", { className: styles.splashCardDesc }, "Token replacement for personalized notes")
+          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDD00"),
+          React.createElement("div", { className: styles.splashCardTitle }, "Runtime Controls"),
+          React.createElement("div", { className: styles.splashCardDesc }, "View switcher & department filter toolbar")
         )
       ),
 
