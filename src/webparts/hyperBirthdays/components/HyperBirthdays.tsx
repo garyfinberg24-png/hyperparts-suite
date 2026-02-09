@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as strings from "HyperBirthdaysWebPartStrings";
-import type { IHyperBirthdaysWebPartProps, CelebrationType, BirthdaysViewMode } from "../models";
+import type { IHyperBirthdaysWebPartProps, CelebrationType, BirthdaysViewMode, ICelebration } from "../models";
 import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton } from "../../../common/components";
 import { HyperWizard } from "../../../common/components/wizard/HyperWizard";
 import { useCelebrationData } from "../hooks/useCelebrationData";
@@ -20,6 +20,10 @@ import HyperBirthdaysMasonryWall from "./HyperBirthdaysMasonryWall";
 import HyperBirthdaysCompactStrip from "./HyperBirthdaysCompactStrip";
 import HyperBirthdaysCardGrid from "./HyperBirthdaysCardGrid";
 import HyperBirthdaysAnimation from "./HyperBirthdaysAnimation";
+import HyperBirthdaysGreetingCard from "./HyperBirthdaysGreetingCard";
+import HyperBirthdaysSelfService from "./HyperBirthdaysSelfService";
+import { getShiftedDate } from "../utils/weekendShift";
+import { getNextOccurrence } from "../utils/dateHelpers";
 import styles from "./HyperBirthdays.module.scss";
 
 export interface IHyperBirthdaysComponentProps extends IHyperBirthdaysWebPartProps {
@@ -40,6 +44,13 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
   const isWizardOpen = useHyperBirthdaysStore(function (s) { return s.isWizardOpen; });
   const openWizard = useHyperBirthdaysStore(function (s) { return s.openWizard; });
   const closeWizard = useHyperBirthdaysStore(function (s) { return s.closeWizard; });
+  const isGreetingCardOpen = useHyperBirthdaysStore(function (s) { return s.isGreetingCardOpen; });
+  const greetingCardCelebrationId = useHyperBirthdaysStore(function (s) { return s.greetingCardCelebrationId; });
+  const openGreetingCard = useHyperBirthdaysStore(function (s) { return s.openGreetingCard; });
+  const closeGreetingCard = useHyperBirthdaysStore(function (s) { return s.closeGreetingCard; });
+  const isSelfServiceOpen = useHyperBirthdaysStore(function (s) { return s.isSelfServiceOpen; });
+  const openSelfService = useHyperBirthdaysStore(function (s) { return s.openSelfService; });
+  const closeSelfService = useHyperBirthdaysStore(function (s) { return s.closeSelfService; });
 
   // Auto-open wizard on first load when not yet configured
   React.useEffect(function () {
@@ -115,24 +126,44 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
     ? privacyOptOut.filterOptedOut(celebrationData.celebrations)
     : celebrationData.celebrations;
 
+  // Weekend shift: adjust dates for celebrations on weekends
+  const displayCelebrations = React.useMemo(function () {
+    if (!props.enableWeekendShift) return visibleCelebrations;
+    return visibleCelebrations.map(function (c) {
+      var nextDate = getNextOccurrence(c.celebrationDate);
+      if (!nextDate) return c;
+      var shifted = getShiftedDate(nextDate);
+      if (shifted.getTime() === nextDate.getTime()) return c;
+      // Create a copy with the shifted MM-DD
+      var shiftedMm = String(shifted.getMonth() + 1);
+      if (shiftedMm.length === 1) shiftedMm = "0" + shiftedMm;
+      var shiftedDd = String(shifted.getDate());
+      if (shiftedDd.length === 1) shiftedDd = "0" + shiftedDd;
+      return Object.assign({}, c, {
+        celebrationDate: shiftedMm + "-" + shiftedDd,
+        weekendShifted: true,
+      });
+    });
+  }, [visibleCelebrations, props.enableWeekendShift]);
+
   // Photos
-  const photoMap = useCelebrationPhotos(visibleCelebrations, props.photoSize || 48);
+  const photoMap = useCelebrationPhotos(displayCelebrations, props.photoSize || 48);
 
   // Check if any celebrations are today (for animation)
   const hasTodayCelebrations = React.useMemo(function () {
     let found = false;
-    visibleCelebrations.forEach(function (c) {
+    displayCelebrations.forEach(function (c) {
       if (isToday(c.celebrationDate)) {
         found = true;
       }
     });
     return found;
-  }, [visibleCelebrations]);
+  }, [displayCelebrations]);
 
   // Filter by time range for list/carousel views
   const upcomingCelebrations = React.useMemo(function () {
-    return getUpcomingCelebrations(visibleCelebrations, props.timeRange || "thisMonth");
-  }, [visibleCelebrations, props.timeRange]);
+    return getUpcomingCelebrations(displayCelebrations, props.timeRange || "thisMonth");
+  }, [displayCelebrations, props.timeRange]);
 
   const isLoading = celebrationData.loading || privacyOptOut.loading;
 
@@ -154,7 +185,7 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
     );
   }
 
-  if (visibleCelebrations.length === 0) {
+  if (displayCelebrations.length === 0) {
     return React.createElement(
       "div",
       { className: styles.birthdaysContainer },
@@ -189,6 +220,26 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
     setViewMode(mode);
   };
 
+  // Handler: select celebration — opens greeting card if enabled, otherwise just selects
+  var handleSelectCelebration = React.useCallback(function (id: string): void {
+    selectCelebration(id);
+    if (props.enableGreetingCard) {
+      openGreetingCard(id);
+    }
+  }, [selectCelebration, openGreetingCard, props.enableGreetingCard]);
+
+  // Find the celebration for the greeting card modal
+  var greetingCardCelebration = React.useMemo(function () {
+    if (!greetingCardCelebrationId) return undefined;
+    var found: ICelebration | undefined;
+    displayCelebrations.forEach(function (c) {
+      if (c.id === greetingCardCelebrationId) {
+        found = c;
+      }
+    });
+    return found;
+  }, [greetingCardCelebrationId, displayCelebrations]);
+
   // Shared props for all layout components
   var sharedLayoutProps = {
     photoMap: photoMap,
@@ -196,7 +247,7 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
     enableTeamsDeepLink: props.enableTeamsDeepLink,
     enableMilestoneBadges: props.enableMilestoneBadges,
     sendWishesLabel: strings.SendWishesLabel,
-    onSelectCelebration: selectCelebration,
+    onSelectCelebration: handleSelectCelebration,
   };
 
   // Render the active view
@@ -204,7 +255,7 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
 
   if (viewMode === "monthlyCalendar") {
     viewContent = React.createElement(HyperBirthdaysMonthCalendar, Object.assign({
-      celebrations: visibleCelebrations,
+      celebrations: displayCelebrations,
       year: currentYear,
       month: currentMonth,
     }, sharedLayoutProps));
@@ -250,6 +301,38 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
       })
     : undefined;
 
+  // Greeting card modal
+  var greetingCardModal = props.enableGreetingCard && greetingCardCelebration
+    ? React.createElement(HyperBirthdaysGreetingCard, {
+        celebration: greetingCardCelebration,
+        photoUrl: photoMap[greetingCardCelebration.id] || "",
+        isOpen: isGreetingCardOpen,
+        onClose: closeGreetingCard,
+        messageTemplates: props.messageTemplates || "{}",
+      })
+    : undefined;
+
+  // Self-service modal
+  var selfServiceModal = props.enableSelfService
+    ? React.createElement(HyperBirthdaysSelfService, {
+        isOpen: isSelfServiceOpen,
+        onClose: closeSelfService,
+        selfServiceListName: props.selfServiceListName || "",
+        currentUserEmail: "",  // Populated at runtime from context
+        currentUserName: "",   // Populated at runtime from context
+      })
+    : undefined;
+
+  // Self-service button (shown in toolbar area)
+  var selfServiceButton = props.enableSelfService
+    ? React.createElement("button", {
+        className: (styles as Record<string, string>).selfServiceButton,
+        onClick: function () { openSelfService(); },
+        type: "button",
+        "aria-label": strings.MyDatesLabel,
+      }, "\uD83D\uDCC5 " + strings.MyDatesLabel)
+    : undefined;
+
   return React.createElement(
     "div",
     { className: styles.birthdaysContainer },
@@ -265,7 +348,10 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
       isEditMode: props.isEditMode,
       onConfigure: handleConfigureClick,
     }),
+    selfServiceButton,
     viewContent,
+    greetingCardModal,
+    selfServiceModal,
     wizardElement
   );
 };

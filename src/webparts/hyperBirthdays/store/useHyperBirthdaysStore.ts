@@ -10,6 +10,9 @@ export interface IHyperBirthdaysStoreState {
   isLoading: boolean;
   errorMessage: string;
   isWizardOpen: boolean;
+  isGreetingCardOpen: boolean;
+  greetingCardCelebrationId: string;
+  isSelfServiceOpen: boolean;
 }
 
 export interface IHyperBirthdaysStoreActions {
@@ -26,6 +29,10 @@ export interface IHyperBirthdaysStoreActions {
   reset: () => void;
   openWizard: () => void;
   closeWizard: () => void;
+  openGreetingCard: (celebrationId: string) => void;
+  closeGreetingCard: () => void;
+  openSelfService: () => void;
+  closeSelfService: () => void;
 }
 
 export type IHyperBirthdaysStore = IHyperBirthdaysStoreState & IHyperBirthdaysStoreActions;
@@ -41,6 +48,9 @@ function getInitialState(): IHyperBirthdaysStoreState {
     isLoading: false,
     errorMessage: "",
     isWizardOpen: false,
+    isGreetingCardOpen: false,
+    greetingCardCelebrationId: "",
+    isSelfServiceOpen: false,
   };
 }
 
@@ -109,6 +119,22 @@ export const useHyperBirthdaysStore = create<IHyperBirthdaysStore>(function (set
 
     closeWizard: function (): void {
       set({ isWizardOpen: false });
+    },
+
+    openGreetingCard: function (celebrationId: string): void {
+      set({ isGreetingCardOpen: true, greetingCardCelebrationId: celebrationId });
+    },
+
+    closeGreetingCard: function (): void {
+      set({ isGreetingCardOpen: false, greetingCardCelebrationId: "" });
+    },
+
+    openSelfService: function (): void {
+      set({ isSelfServiceOpen: true });
+    },
+
+    closeSelfService: function (): void {
+      set({ isSelfServiceOpen: false });
     },
   };
 });

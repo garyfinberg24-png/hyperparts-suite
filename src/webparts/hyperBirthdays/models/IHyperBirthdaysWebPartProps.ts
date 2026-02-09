@@ -31,6 +31,21 @@ export interface IHyperBirthdaysWebPartProps extends IBaseHyperWebPartProps {
   optOutListName: string;
   enableManagerNotify: boolean;
 
+  // Greeting Card
+  enableGreetingCard: boolean;
+
+  // Teams Channel Post
+  enableChannelPost: boolean;
+  teamsChannelId: string;
+  teamsTeamId: string;
+
+  // Weekend/Holiday Shift
+  enableWeekendShift: boolean;
+
+  // Self-Service Profile
+  enableSelfService: boolean;
+  selfServiceListName: string;
+
   // Display
   maxItems: number;
   cacheDuration: number;

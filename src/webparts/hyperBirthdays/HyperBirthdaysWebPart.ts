@@ -109,6 +109,27 @@ export default class HyperBirthdaysWebPart extends BaseHyperWebPart<IHyperBirthd
     if (this.properties.enableManagerNotify === undefined) {
       this.properties.enableManagerNotify = false;
     }
+    if (this.properties.enableGreetingCard === undefined) {
+      this.properties.enableGreetingCard = true;
+    }
+    if (this.properties.enableChannelPost === undefined) {
+      this.properties.enableChannelPost = false;
+    }
+    if (this.properties.teamsTeamId === undefined) {
+      this.properties.teamsTeamId = "";
+    }
+    if (this.properties.teamsChannelId === undefined) {
+      this.properties.teamsChannelId = "";
+    }
+    if (this.properties.enableWeekendShift === undefined) {
+      this.properties.enableWeekendShift = false;
+    }
+    if (this.properties.enableSelfService === undefined) {
+      this.properties.enableSelfService = false;
+    }
+    if (this.properties.selfServiceListName === undefined) {
+      this.properties.selfServiceListName = "";
+    }
     if (this.properties.maxItems === undefined) {
       this.properties.maxItems = 50;
     }
@@ -250,6 +271,27 @@ export default class HyperBirthdaysWebPart extends BaseHyperWebPart<IHyperBirthd
                 }),
                 PropertyPaneToggle("enableManagerNotify", {
                   label: strings.EnableManagerNotifyFieldLabel,
+                }),
+                PropertyPaneToggle("enableGreetingCard", {
+                  label: strings.EnableGreetingCardFieldLabel,
+                }),
+                PropertyPaneToggle("enableChannelPost", {
+                  label: strings.EnableChannelPostFieldLabel,
+                }),
+                PropertyPaneTextField("teamsTeamId", {
+                  label: strings.TeamsTeamIdFieldLabel,
+                }),
+                PropertyPaneTextField("teamsChannelId", {
+                  label: strings.TeamsChannelIdFieldLabel,
+                }),
+                PropertyPaneToggle("enableWeekendShift", {
+                  label: strings.EnableWeekendShiftFieldLabel,
+                }),
+                PropertyPaneToggle("enableSelfService", {
+                  label: strings.EnableSelfServiceFieldLabel,
+                }),
+                PropertyPaneTextField("selfServiceListName", {
+                  label: strings.SelfServiceListNameFieldLabel,
                 }),
                 PropertyPaneSlider("maxItems", {
                   label: strings.MaxItemsFieldLabel,

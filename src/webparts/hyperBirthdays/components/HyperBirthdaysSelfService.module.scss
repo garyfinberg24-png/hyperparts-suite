@@ -1,0 +1,242 @@
+@import "~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss";
+
+.selfServiceContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 16px;
+  background: $ms-color-neutralLighterAlt;
+  border-radius: 8px;
+}
+
+.userName {
+  font-size: $ms-font-size-16;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+}
+
+.userEmail {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+}
+
+.description {
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralSecondary;
+  line-height: 1.5;
+}
+
+.entryList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.entryRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid $ms-color-neutralLight;
+  border-radius: 8px;
+  background: $ms-color-white;
+}
+
+.entryEmoji {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.entryFields {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.typeSelect {
+  padding: 6px 10px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  background: $ms-color-white;
+  font-size: 13px;
+  color: $ms-color-neutralPrimary;
+  min-width: 160px;
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -1px;
+  }
+}
+
+.dateInputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dateInput {
+  padding: 6px 10px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  font-size: 13px;
+  color: $ms-color-neutralPrimary;
+  width: 80px;
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -1px;
+  }
+}
+
+.dateInputError {
+  border-color: #d13438;
+}
+
+.errorHint {
+  font-size: $ms-font-size-10;
+  color: #d13438;
+}
+
+.yearInput {
+  padding: 6px 10px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  font-size: 13px;
+  color: $ms-color-neutralPrimary;
+  width: 100px;
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -1px;
+  }
+}
+
+.customLabelInput {
+  padding: 6px 10px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  font-size: 13px;
+  color: $ms-color-neutralPrimary;
+  flex: 1;
+  min-width: 120px;
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -1px;
+  }
+}
+
+.removeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: $ms-color-neutralTertiary;
+  font-size: $ms-font-size-14;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    background: #fde7e9;
+    color: #d13438;
+  }
+}
+
+.noEntries {
+  padding: 24px;
+  text-align: center;
+  color: $ms-color-neutralTertiary;
+  font-size: $ms-font-size-14;
+  background: $ms-color-neutralLighterAlt;
+  border-radius: 8px;
+}
+
+.addButton {
+  padding: 10px 20px;
+  border: 2px dashed $ms-color-neutralTertiaryAlt;
+  border-radius: 8px;
+  background: transparent;
+  color: $ms-color-themePrimary;
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: $ms-color-themePrimary;
+    background: $ms-color-themeLighterAlt;
+  }
+}
+
+.saveSection {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+  border-top: 1px solid $ms-color-neutralLight;
+}
+
+.saveButton {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 6px;
+  background: $ms-color-themePrimary;
+  color: $ms-color-white;
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: $ms-color-themeDarkAlt;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.saveButtonSaved {
+  padding: 10px 24px;
+  border: 1px solid #4caf50;
+  border-radius: 6px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  cursor: default;
+}
+
+@media (max-width: 600px) {
+  .entryFields {
+    flex-direction: column;
+  }
+
+  .typeSelect,
+  .dateInput,
+  .yearInput,
+  .customLabelInput {
+    width: 100%;
+    min-width: unset;
+  }
+}

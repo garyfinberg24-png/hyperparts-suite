@@ -30,6 +30,13 @@ declare interface IHyperBirthdaysWebPartStrings {
   EnablePrivacyOptOutFieldLabel: string;
   OptOutListNameFieldLabel: string;
   EnableManagerNotifyFieldLabel: string;
+  EnableGreetingCardFieldLabel: string;
+  EnableChannelPostFieldLabel: string;
+  TeamsTeamIdFieldLabel: string;
+  TeamsChannelIdFieldLabel: string;
+  EnableWeekendShiftFieldLabel: string;
+  EnableSelfServiceFieldLabel: string;
+  SelfServiceListNameFieldLabel: string;
   MaxItemsFieldLabel: string;
   CacheDurationFieldLabel: string;
   PhotoSizeFieldLabel: string;
@@ -41,6 +48,7 @@ declare interface IHyperBirthdaysWebPartStrings {
   NoCelebrationsDescription: string;
   SendWishesLabel: string;
   YearsLabel: string;
+  MyDatesLabel: string;
 }
 
 declare module "HyperBirthdaysWebPartStrings" {

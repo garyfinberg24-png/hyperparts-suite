@@ -35,6 +35,13 @@ define([], function () {
     EnablePrivacyOptOutFieldLabel: "Enable Privacy Opt-Out",
     OptOutListNameFieldLabel: "Opt-Out List Name",
     EnableManagerNotifyFieldLabel: "Enable Manager Notifications",
+    EnableGreetingCardFieldLabel: "Enable Greeting Cards",
+    EnableChannelPostFieldLabel: "Enable Channel Announcements",
+    TeamsTeamIdFieldLabel: "Teams Team ID",
+    TeamsChannelIdFieldLabel: "Teams Channel ID",
+    EnableWeekendShiftFieldLabel: "Shift Weekend Celebrations",
+    EnableSelfServiceFieldLabel: "Enable Self-Service Dates",
+    SelfServiceListNameFieldLabel: "Self-Service List Name",
     MaxItemsFieldLabel: "Max Items",
     CacheDurationFieldLabel: "Cache Duration (seconds)",
     PhotoSizeFieldLabel: "Photo Size (px)",
@@ -47,5 +54,6 @@ define([], function () {
     NoCelebrationsDescription: "Enable data sources and celebration types in the property pane.",
     SendWishesLabel: "Send Wishes",
     YearsLabel: "years",
+    MyDatesLabel: "My Dates",
   };
 });
