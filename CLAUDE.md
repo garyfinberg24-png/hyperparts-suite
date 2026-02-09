@@ -282,17 +282,38 @@ HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 30+ web parts fo
 - No new npm dependencies (reuses existing lottie-web)
 - 78 files changed, `gulp build` passes clean (0 errors, 0 warnings)
 
+### HyperExplorer EX1 Scaffold
+
+- Core scaffold only — models, hooks, store, utils, web part class, manifest
+- Components not yet built — needs EX2+ implementation (layouts, file browser, preview panel)
+- No WelcomeStep splash screen yet
+
+### DWx Branded Splash Screens — ALL 18 WEB PARTS COMPLETE
+
+- Shared SCSS: `src/common/components/wizard/DwxSplash.module.scss`
+- Shared interfaces: `src/common/components/wizard/IHyperWizard.ts`
+- Each web part: `components/wizard/WelcomeStep.tsx` + `WelcomeStep.module.scss`
+- DWx brand strip (navy gradient, badge), Hyper{Name} hero banner, 4 feature cards, "Get Started" CTA
+- HyperHero's original inline SCSS replaced with `@import` of shared styles
+
+### Production Package Built
+
+- `gulp bundle --ship && gulp package-solution --ship` completed
+- Package: `sharepoint/solution/hyperparts-suite.sppkg`
+- 19 web parts (18 complete + 1 scaffold) in single solution
+
 ### Next Up
 
-- Check MASTER_CONTEXT.md for next web part to build (remaining Phase 3 web parts)
+- Complete HyperExplorer components (EX2+)
+- Build remaining Phase 3 web parts (see roadmap below)
 
 ### Full Roadmap (from MASTER_CONTEXT.md Addendum B)
 
-| Phase | Web Parts                                                                                                                                                                                                                                                                       |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | **HyperHero**, **HyperNews**, **HyperTabs**, **HyperRollup**, **HyperSpotlight**, **HyperProfile**, **HyperDirectory** — ALL COMPLETE                                                                                                                                           |
-| 2     | **HyperNav**, **HyperEvents**, **HyperPoll**, **HyperSearch**, **HyperLinks**, **HyperCharts**, **HyperLert** — ALL COMPLETE                                                                                                                                                    |
-| 3     | **HyperTicker** — COMPLETE, **HyperFAQ** — COMPLETE, **HyperBirthdays** — COMPLETE, **HyperSlider** — COMPLETE, HyperAction, HyperRecognition, HyperExplorer, HyperExternal, HyperTimeline, HyperBreadcrumb, HyperFeedback, HyperLocal, HyperLayout, HyperForms, HyperBanner    |
+| Phase | Web Parts |
+| ----- | --------- |
+| 1 | **HyperHero**, **HyperNews**, **HyperTabs**, **HyperRollup**, **HyperSpotlight**, **HyperProfile**, **HyperDirectory** — ALL COMPLETE |
+| 2 | **HyperNav**, **HyperEvents**, **HyperPoll**, **HyperSearch**, **HyperLinks**, **HyperCharts**, **HyperLert** — ALL COMPLETE |
+| 3 | **HyperTicker**, **HyperFAQ**, **HyperBirthdays**, **HyperSlider** — COMPLETE. **HyperExplorer** — SCAFFOLD. Remaining: HyperAction, HyperRecognition, HyperExternal, HyperTimeline, HyperBreadcrumb, HyperFeedback, HyperLocal, HyperLayout, HyperForms, HyperBanner |
 
 ---
 

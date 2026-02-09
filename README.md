@@ -60,7 +60,8 @@ src/
     ├── hyperTicker/               # News ticker & emergency banner (4 display modes, 3 severities)
     ├── hyperFaq/                  # Searchable FAQ accordion (4 styles, voting, deep linking)
     ├── hyperBirthdays/            # Celebrations hub (8 types, 3 views, animations)
-    └── hyperSlider/               # Slider Revolution-class slider (8 layer types, 14 transitions, 48 animations)
+    ├── hyperSlider/               # Slider Revolution-class slider (8 layer types, 14 transitions, 48 animations)
+    └── hyperExplorer/             # File/document explorer (EX1 scaffold — components TBD)
 ```
 
 ## Prerequisites
@@ -134,7 +135,9 @@ gulp package-solution --ship  # Create .sppkg
 - [x] HyperTicker — News ticker with 4 display modes (scroll/fade/static/stacked), 3 severity levels, RSS/SP list/manual
 - [x] HyperFAQ — Searchable FAQ with 4 accordion styles, weighted search, voting, "Ask Guru", deep linking
 - [x] HyperBirthdays — 8 celebration types, 3 views (list/calendar/carousel), milestone badges, Teams wishes, CSS animations
-- [ ] HyperAction, HyperRecognition, HyperExplorer, HyperExternal
+- [x] HyperExplorer — EX1 scaffold (models, hooks, store, utils, web part class — components TBD)
+- [x] DWx Branded Splash Screens — all 18 web parts have WelcomeStep with DWx brand strip + feature cards
+- [ ] HyperAction, HyperRecognition, HyperExternal
 - [ ] HyperTimeline, HyperBreadcrumb, HyperFeedback
 - [ ] HyperLocal, HyperLayout, HyperForms, HyperBanner
 
@@ -146,24 +149,26 @@ gulp package-solution --ship  # Create .sppkg
 
 ## Version History
 
-| Version | Date              | Comments                                                             |
-| ------- | ----------------- | -------------------------------------------------------------------- |
-| 0.0.1   | February 7, 2026  | Phase 1, Step 1: Solution scaffold + shared service layer            |
-| 0.0.2   | February 7, 2026  | Phase 1, Step 2: HyperHero web part (all 12 features)                |
-| 0.0.3   | February 7, 2026  | Phase 1, Step 3: HyperNews web part (all 14 features)                |
-| 0.0.4   | February 8, 2026  | Phase 1, Steps 4-5: HyperSpotlight + HyperProfile (Hyperized ports)  |
-| 0.0.5   | February 8, 2026  | Phase 1, Step 6: HyperTabs web part (all 12 features)                |
-| 0.0.6   | February 8, 2026  | Phase 1, Step 7: HyperDirectory web part (all 14 features)           |
-| 0.0.7   | February 8, 2026  | Phase 1, Step 8: HyperRollup web part (all 15 features)              |
-| 0.0.8   | February 8, 2026  | Phase 2, Step 1: HyperNav web part (all 13 features, 8 layouts)      |
-| 0.0.9   | February 8, 2026  | Phase 2, Step 2: HyperEvents web part (all 13 features, 6 views)     |
-| 0.0.10  | February 8, 2026  | Phase 2, Step 3: HyperPoll web part (all 12 features, 3 charts)      |
-| 0.0.11  | February 8, 2026  | Phase 2, Step 4: HyperSearch web part (8 features, federated search) |
-| 0.0.12  | February 8, 2026  | Phase 2, Step 5: HyperLinks web part (12 features, 8 layouts)        |
-| 0.0.13  | February 8, 2026  | Phase 2, Step 6: HyperCharts web part (15 features, 6 chart types)   |
-| 0.0.14  | February 8, 2026  | Phase 2, Step 7: HyperLert web part (12 features, rule builder)      |
-| 0.0.15  | February 8, 2026  | Phase 3: HyperTicker + HyperFAQ + HyperBirthdays (3 web parts)       |
-| 0.0.16  | February 8, 2026  | Phase 3, Step 4: HyperSlider (layer-based slider, 78 files)          |
+| Version | Date             | Comments                                                                |
+| ------- | ---------------- | ----------------------------------------------------------------------- |
+| 0.0.1   | February 7, 2026 | Phase 1, Step 1: Solution scaffold + shared service layer               |
+| 0.0.2   | February 7, 2026 | Phase 1, Step 2: HyperHero web part (all 12 features)                   |
+| 0.0.3   | February 7, 2026 | Phase 1, Step 3: HyperNews web part (all 14 features)                   |
+| 0.0.4   | February 8, 2026 | Phase 1, Steps 4-5: HyperSpotlight + HyperProfile (Hyperized ports)     |
+| 0.0.5   | February 8, 2026 | Phase 1, Step 6: HyperTabs web part (all 12 features)                   |
+| 0.0.6   | February 8, 2026 | Phase 1, Step 7: HyperDirectory web part (all 14 features)              |
+| 0.0.7   | February 8, 2026 | Phase 1, Step 8: HyperRollup web part (all 15 features)                 |
+| 0.0.8   | February 8, 2026 | Phase 2, Step 1: HyperNav web part (all 13 features, 8 layouts)         |
+| 0.0.9   | February 8, 2026 | Phase 2, Step 2: HyperEvents web part (all 13 features, 6 views)        |
+| 0.0.10  | February 8, 2026 | Phase 2, Step 3: HyperPoll web part (all 12 features, 3 charts)         |
+| 0.0.11  | February 8, 2026 | Phase 2, Step 4: HyperSearch web part (8 features, federated search)    |
+| 0.0.12  | February 8, 2026 | Phase 2, Step 5: HyperLinks web part (12 features, 8 layouts)           |
+| 0.0.13  | February 8, 2026 | Phase 2, Step 6: HyperCharts web part (15 features, 6 chart types)      |
+| 0.0.14  | February 8, 2026 | Phase 2, Step 7: HyperLert web part (12 features, rule builder)         |
+| 0.0.15  | February 8, 2026 | Phase 3: HyperTicker + HyperFAQ + HyperBirthdays (3 web parts)          |
+| 0.0.16  | February 8, 2026 | Phase 3, Step 4: HyperSlider (layer-based slider, 78 files)             |
+| 0.0.17  | February 9, 2026 | HyperExplorer EX1 scaffold + HyperHero V2 editor + DWx splash screens  |
+| 0.0.18  | February 9, 2026 | Production .sppkg build (19 web parts)                                  |
 
 ## References
 
