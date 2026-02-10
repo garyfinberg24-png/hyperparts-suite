@@ -9,6 +9,29 @@
   border-bottom: 1px solid "[theme:neutralLight, default:#edebe9]";
 }
 
+.demoToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 1px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
+  border-radius: 4px;
+  background: "[theme:neutralLighter, default:#f3f2f1]";
+  cursor: pointer;
+  font-size: 11px;
+
+  input[type="checkbox"] {
+    cursor: pointer;
+  }
+}
+
+.demoToggleLabel {
+  font-weight: 600;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 .searchInput {
   flex: 1;
   min-width: 200px;
@@ -79,6 +102,33 @@
   &:hover {
     background: "[theme:neutralLight, default:#edebe9]";
   }
+}
+
+/* Feature toggle buttons group */
+.featureGroup {
+  display: flex;
+  gap: 4px;
+}
+
+.featureButton {
+  padding: 4px 10px;
+  border: 1px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
+  border-radius: 4px;
+  background: "[theme:white, default:#ffffff]";
+  cursor: pointer;
+  font-size: 12px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  transition: background 0.15s, border-color 0.15s;
+
+  &:hover {
+    background: "[theme:neutralLighter, default:#f3f2f1]";
+  }
+}
+
+.featureButtonActive {
+  background: "[theme:themeLighterAlt, default:#eff6fc]";
+  border-color: "[theme:themePrimary, default:#0078d4]";
+  color: "[theme:themePrimary, default:#0078d4]";
 }
 
 .actionGroup {

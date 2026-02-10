@@ -105,5 +105,20 @@ define([], function () {
     WizardDescriptorsStepTitle: "File Plan Descriptors",
     WizardRulesStepTitle: "Auto-Classification Rules",
     PurviewPermissionHint: "Ensure the RecordsManagement.Read.All permission is granted.",
+
+    /* Metadata Profiles & Naming */
+    MetadataProfilesGroupName: "Metadata Profiles & Naming",
+    EnableMetadataProfilesFieldLabel: "Enable Metadata Upload Profiles",
+    EnableNamingConventionFieldLabel: "Enable File Naming Convention",
+    EnableZipDownloadFieldLabel: "Enable ZIP Download Collection",
+    MetadataUploadTitle: "Upload with Metadata Profile",
+    NamingConventionTitle: "File Naming & Numbering Convention",
+    KeyboardShortcutsTitle: "Keyboard Shortcuts",
+    DemoModeLabel: "Demo Mode",
+    SampleDataBannerText: "Sample data is active. Connect a document library in the property pane to use real files.",
+    ProfiledUploadLabel: "Profiled Upload",
+    NamingLabel: "Naming",
+    UploadWithProfileAction: "Upload with Profile",
+    AddToZipAction: "Add to ZIP Download",
   };
 });

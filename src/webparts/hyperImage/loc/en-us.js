@@ -11,6 +11,11 @@ define([], function () {
     PerformanceGroupName: "Performance",
     AdvancedGroupName: "Advanced",
 
+    /* ── Demo Mode ── */
+    DemoModeGroupName: "Demo Mode",
+    DemoModeLabel: "Enable Demo Mode",
+    DemoModeDescription: "Shows an interactive toolbar to preview layouts, shapes, filters, and hover effects in real time.",
+
     /* ── Image Source ── */
     UseSampleDataLabel: "Use Sample Image",
     ImageUrlLabel: "Image URL",

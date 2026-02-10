@@ -12,6 +12,7 @@
     "TeamsPersonalApp"
   ],
   "supportsFullBleed": true,
+  "supportsThemeVariants": true,
   "preconfiguredEntries": [
     {
       "groupId": "cf066440-35c3-4b18-afea-1498cf92be3b",

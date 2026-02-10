@@ -18,6 +18,8 @@ export interface IHyperExplorerContextMenuProps {
   enableCompare: boolean;
   enableUpload: boolean;
   enableFilePlan: boolean;
+  enableMetadataProfiles: boolean;
+  enableZipDownload: boolean;
   onAction: (actionKey: string, file: IExplorerFile) => void;
   onClose: () => void;
 }
@@ -44,8 +46,16 @@ var HyperExplorerContextMenu: React.FC<IHyperExplorerContextMenuProps> = functio
     actions.push({ key: "applyLabel", label: "Apply Retention Label", icon: "\uD83C\uDFF7\uFE0F" });
   }
 
+  if (props.enableMetadataProfiles && !props.file.isFolder) {
+    actions.push({ key: "uploadWithProfile", label: "Upload with Profile", icon: "\uD83D\uDCCB" });
+  }
+
   if (props.enableCompare && !props.file.isFolder) {
     actions.push({ key: "compare", label: "Compare", icon: "\u2194\uFE0F" });
+  }
+
+  if (props.enableZipDownload && !props.file.isFolder) {
+    actions.push({ key: "addToZip", label: "Add to ZIP Download", icon: "\uD83D\uDCE6", dividerAfter: true });
   }
 
   actions.push({ key: "rename", label: "Rename", icon: "\u270F\uFE0F" });

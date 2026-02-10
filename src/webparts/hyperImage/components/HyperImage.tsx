@@ -9,14 +9,18 @@ import {
   ImageLayout,
   TextPlacement,
 } from "../models";
+import type { ShapeMask } from "../models/IHyperImageShape";
+import type { FilterPreset } from "../models/IHyperImageFilter";
+import type { HoverEffect } from "../models/IHyperImageHover";
 import type { IFilterConfig, ITextOverlay, IBorderConfig, IImageLayoutConfig, IHyperImageItem } from "../models";
 import { HyperErrorBoundary, HyperEmptyState } from "../../../common/components";
 import { HyperModal } from "../../../common/components";
 import { useHyperImageStyles } from "../hooks/useHyperImageStyles";
 import { useViewportTrigger } from "../hooks/useViewportTrigger";
 import { useHyperImageStore } from "../store/useHyperImageStore";
-import { getSampleImageUrl } from "../utils/sampleImage";
+import { getSampleImageUrl, getSampleAdditionalImages } from "../utils/sampleImage";
 import HyperImageTextOverlay from "./HyperImageTextOverlay";
+import HyperImageDemoBar from "./HyperImageDemoBar";
 import { HyperImageEditorModal } from "./editor";
 import type { IEditorChanges } from "./editor";
 import styles from "./HyperImage.module.scss";
@@ -48,10 +52,28 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
   var layoutConfig = parseJson<IImageLayoutConfig>(props.layoutConfigJson, DEFAULT_LAYOUT_CONFIG);
   var additionalImages = parseJson<IHyperImageItem[]>(props.additionalImagesJson, []);
 
+  // ── Demo mode overrides from store ──
+  var demoShape = useHyperImageStore(function (s) { return s.demoShape; });
+  var demoLayout = useHyperImageStore(function (s) { return s.demoLayout; });
+  var demoFilter = useHyperImageStore(function (s) { return s.demoFilter; });
+  var demoHover = useHyperImageStore(function (s) { return s.demoHover; });
+
+  // Apply demo overrides (undefined means "use prop value")
+  var effectiveShape: ShapeMask = props.demoMode && demoShape !== undefined ? demoShape : props.shape;
+  var effectiveLayout: ImageLayout = props.demoMode && demoLayout !== undefined ? demoLayout : props.imageLayout;
+  var effectiveFilterPreset: FilterPreset = props.demoMode && demoFilter !== undefined ? demoFilter : props.filterPreset;
+  var effectiveHover: HoverEffect = props.demoMode && demoHover !== undefined ? demoHover : props.hoverEffect;
+
+  // When demo mode changes layout to multi, provide sample additional images
+  var effectiveAdditional = additionalImages;
+  if (props.demoMode && demoLayout !== undefined && demoLayout !== ImageLayout.Single && effectiveAdditional.length === 0) {
+    effectiveAdditional = getSampleAdditionalImages();
+  }
+
   // Filter config: if preset is set, use preset values; otherwise use custom JSON
   var filterConfig: IFilterConfig;
-  if (props.filterPreset && props.filterPreset !== "none" && FILTER_PRESETS[props.filterPreset]) {
-    filterConfig = FILTER_PRESETS[props.filterPreset] as IFilterConfig;
+  if (effectiveFilterPreset && effectiveFilterPreset !== "none" && FILTER_PRESETS[effectiveFilterPreset]) {
+    filterConfig = FILTER_PRESETS[effectiveFilterPreset] as IFilterConfig;
   } else {
     filterConfig = parseJson<IFilterConfig>(props.filterConfigJson, DEFAULT_FILTER_CONFIG);
   }
@@ -69,7 +91,7 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
 
   // ── Computed styles ──
   var computedStyles = useHyperImageStyles({
-    shape: props.shape,
+    shape: effectiveShape,
     customClipPath: props.customClipPath,
     filterConfig: filterConfig,
     borderConfig: borderConfig,
@@ -90,8 +112,8 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
 
   // ── Hover effect class ──
   var hoverClass = "";
-  if (props.hoverEffect && props.hoverEffect !== "none") {
-    hoverClass = (styles as Record<string, string>)["hover" + capitalize(props.hoverEffect)] || "";
+  if (effectiveHover && effectiveHover !== "none") {
+    hoverClass = (styles as Record<string, string>)["hover" + capitalize(effectiveHover)] || "";
   }
 
   // ── Entrance animation class ──
@@ -160,12 +182,19 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
   // ── Build container children ──
   var containerChildren: React.ReactNode[] = [];
 
+  // Demo bar (rendered above the image when demo mode is on)
+  if (props.demoMode) {
+    containerChildren.push(
+      React.createElement(HyperImageDemoBar, { key: "demobar" })
+    );
+  }
+
   // Sample data banner
-  if (props.useSampleData) {
+  if (props.useSampleData && !props.demoMode) {
     containerChildren.push(React.createElement("div", {
       key: "banner",
       className: styles.sampleBanner,
-    }, "Sample Image — Turn off \"Use Sample Image\" in the property pane and add your own image."));
+    }, "Sample Image \u2014 Turn off \"Use Sample Image\" in the property pane and add your own image."));
   }
 
   containerChildren.push(wrappedFigure);
@@ -178,11 +207,11 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
   }
 
   // ── Multi-image layout support ──
-  var isMulti = props.imageLayout && props.imageLayout !== ImageLayout.Single && additionalImages.length > 0;
+  var isMulti = effectiveLayout && effectiveLayout !== ImageLayout.Single && effectiveAdditional.length > 0;
 
   if (isMulti) {
     return _renderMultiImageLayout(
-      props, imageUrl, alt, additionalImages, layoutConfig,
+      props, effectiveLayout, imageUrl, alt, effectiveAdditional, layoutConfig,
       computedStyles, hoverClass, entranceClass, containerRef, containerChildren
     );
   }
@@ -204,6 +233,7 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
 /** Render multi-image layouts (row, grid, collage, filmstrip) */
 function _renderMultiImageLayout(
   props: IHyperImageComponentProps,
+  layout: ImageLayout,
   primaryUrl: string,
   primaryAlt: string,
   images: IHyperImageItem[],
@@ -212,7 +242,7 @@ function _renderMultiImageLayout(
   _hoverClass: string,
   entranceClass: string,
   containerRef: React.RefObject<HTMLDivElement>,
-  singleChildren: React.ReactNode[],
+  headerChildren: React.ReactNode[],
 ): React.ReactElement {
   // Build array of all images: primary + additional
   var allImages: Array<{ url: string; alt: string; title: string; subtitle: string }> = [
@@ -228,32 +258,32 @@ function _renderMultiImageLayout(
   var layoutClass = "";
   var layoutStyle: React.CSSProperties = {};
 
-  if (props.imageLayout === ImageLayout.Row) {
+  if (layout === ImageLayout.Row) {
     layoutClass = styles.layoutRow;
     layoutStyle = { gap: gap + "px" };
-  } else if (props.imageLayout === ImageLayout.Grid) {
+  } else if (layout === ImageLayout.Grid) {
     layoutClass = styles.layoutGrid;
     layoutStyle = {
       gridTemplateColumns: "repeat(" + config.columns + ", 1fr)",
       gridTemplateRows: "repeat(" + config.rows + ", 1fr)",
       gap: gap + "px",
     };
-  } else if (props.imageLayout === ImageLayout.Collage) {
+  } else if (layout === ImageLayout.Collage) {
     layoutClass = styles.layoutCollage;
     layoutStyle = { gap: gap + "px" };
-  } else if (props.imageLayout === ImageLayout.Filmstrip) {
+  } else if (layout === ImageLayout.Filmstrip) {
     layoutClass = styles.layoutFilmstrip;
     layoutStyle = { gap: gap + "px" };
   }
 
   var itemElements = allImages.map(function (img, idx) {
-    var isCollageMain = props.imageLayout === ImageLayout.Collage && idx === 0;
+    var isCollageMain = layout === ImageLayout.Collage && idx === 0;
     var itemClass = styles.layoutItem + (isCollageMain ? " " + styles.layoutCollageMain : "");
     var itemStyle: React.CSSProperties = {};
 
-    if (props.imageLayout === ImageLayout.Row) {
+    if (layout === ImageLayout.Row) {
       itemStyle = { flex: "1 1 " + (100 / config.columns) + "%", maxWidth: (100 / config.columns) + "%" };
-    } else if (props.imageLayout === ImageLayout.Filmstrip) {
+    } else if (layout === ImageLayout.Filmstrip) {
       itemStyle = { width: (100 / config.columns) + "%", minWidth: "200px" };
     }
 
@@ -294,10 +324,8 @@ function _renderMultiImageLayout(
       role: "region",
       "aria-label": "HyperImage Gallery",
     },
-    // Sample banner
-    singleChildren.length > 0 && props.useSampleData
-      ? React.createElement("div", { key: "banner", className: styles.sampleBanner }, "Sample Image — Configure in property pane.")
-      : undefined,
+    // Demo bar + sample banner (from headerChildren)
+    headerChildren,
     React.createElement("div", {
       className: layoutClass,
       style: layoutStyle,

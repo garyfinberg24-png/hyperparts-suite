@@ -1,5 +1,5 @@
 import * as React from "react";
-import type { IHyperExplorerWebPartProps, IExplorerFile, IFilePlanDescriptor, ViewMode, SortMode } from "../models";
+import type { IHyperExplorerWebPartProps, IExplorerFile, IFilePlanDescriptor, ViewMode, SortMode, INamingConvention } from "../models";
 import { useHyperExplorerStore } from "../store/useHyperExplorerStore";
 import { useKeyboardNav } from "../hooks/useKeyboardNav";
 import { useRetentionLabels } from "../hooks";
@@ -16,6 +16,9 @@ import HyperExplorerWatermark from "./HyperExplorerWatermark";
 import HyperExplorerCompare from "./HyperExplorerCompare";
 import HyperExplorerRecentFiles from "./HyperExplorerRecentFiles";
 import HyperExplorerActivityTimeline from "./HyperExplorerActivityTimeline";
+import HyperExplorerKeyboardShortcuts from "./HyperExplorerKeyboardShortcuts";
+import HyperExplorerMetadataUpload from "./HyperExplorerMetadataUpload";
+import HyperExplorerNamingConvention from "./HyperExplorerNamingConvention";
 import FilePlanDashboard from "./filePlan/FilePlanDashboard";
 import RetentionLabelPicker from "./filePlan/RetentionLabelPicker";
 import { HyperWizard } from "../../../common/components/wizard/HyperWizard";
@@ -77,11 +80,6 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
       }, 0);
     }
   }, [useSample]);
-
-  // Upload zone visibility
-  var uploadZoneState = React.useState<boolean>(false);
-  var showUploadZone = uploadZoneState[0];
-  var setShowUploadZone = uploadZoneState[1];
 
   // Keyboard navigation
   useKeyboardNav({
@@ -166,6 +164,12 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
       case "applyLabel":
         store.openLabelPicker(file.id);
         break;
+      case "uploadWithProfile":
+        store.openMetadataUpload();
+        break;
+      case "addToZip":
+        store.addToZipSelection(file.id);
+        break;
       case "properties":
         store.setPreviewFile(file);
         break;
@@ -189,10 +193,10 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
     });
   }, [store.filteredFiles, store.selectedFileIds]);
 
-  // Upload click — toggle the upload zone
+  // Upload click — toggle the upload zone via store
   var handleUploadClick = React.useCallback(function (): void {
-    setShowUploadZone(!showUploadZone);
-  }, [showUploadZone]);
+    store.toggleUploadZone();
+  }, []);
 
   // Sort change from list layout
   var handleSortFromList = React.useCallback(function (mode: SortMode): void {
@@ -335,6 +339,33 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
     store.closeFilePlanWizard();
   }, []);
 
+  // ── Metadata Upload handler ──
+  var handleMetadataUpload = React.useCallback(function (_profileKey: string, _values: Record<string, string>): void {
+    // In production, upload the file with metadata via PnP
+    store.closeMetadataUpload();
+  }, []);
+
+  // ── Naming Convention save handler ──
+  var handleNamingConventionSave = React.useCallback(function (_convention: INamingConvention): void {
+    // Convention is already saved to store via the component
+  }, []);
+
+  // ── Keyboard shortcut handler (? key) ──
+  React.useEffect(function () {
+    var handleKeyDown = function (e: KeyboardEvent): void {
+      // Only fire if not inside an input/textarea/select
+      var tag = (e.target as HTMLElement).tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      if (e.key === "?") {
+        store.toggleKeyboardShortcuts();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return function () {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   // ── Render wizard if active ──
   if (showWizard) {
     return React.createElement(WelcomeStep, {
@@ -403,11 +434,19 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
     );
   }
 
-  // Sample data banner
-  if (useSample) {
+  // Sample data banner (dismissible)
+  if (useSample && store.demoMode && !store.bannerDismissed) {
     children.push(
       React.createElement("div", { key: "sample-banner", className: styles.sampleBanner },
-        "\u26A0\uFE0F Sample data is active. Connect a document library in the property pane to use real files."
+        React.createElement("span", {},
+          "\u26A0\uFE0F Sample data is active. Connect a document library in the property pane to use real files."
+        ),
+        React.createElement("button", {
+          className: styles.bannerDismiss,
+          onClick: store.dismissBanner,
+          "aria-label": "Dismiss banner",
+          type: "button",
+        }, "\u2715")
       )
     );
   }
@@ -421,7 +460,7 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
     );
   }
 
-  // Toolbar
+  // Toolbar (enhanced with all new props)
   children.push(
     React.createElement(HyperExplorerToolbar, {
       key: "toolbar",
@@ -432,6 +471,20 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
       selectedCount: store.selectedFileIds.length,
       enableUpload: props.enableUpload === true,
       enableFilePlan: props.enableFilePlan === true,
+      enableRecentFiles: props.enableRecentFiles === true,
+      enableCompare: props.enableCompare === true,
+      enableWatermark: props.enableWatermark === true,
+      enableVideoPlaylist: props.enableVideoPlaylist === true,
+      enableFolderTree: props.enableFolderTree !== false,
+      enableMetadataProfiles: props.enableMetadataProfiles === true,
+      enableNamingConvention: props.enableNamingConvention === true,
+      showRecentPanel: store.recentPanelOpen,
+      showActivityPanel: store.activityPanelOpen,
+      showVideoPlayer: store.showVideoPlayer,
+      showWatermark: store.showWatermark,
+      showCompareView: store.showCompareView,
+      sidebarCollapsed: store.sidebarCollapsed,
+      demoMode: store.demoMode,
       onSearchChange: function (q: string) {
         store.setSearchQuery(q);
         store.applyFiltersAndSort();
@@ -448,11 +501,21 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
       onDownloadSelected: handleDownloadSelected,
       onUploadClick: handleUploadClick,
       onFilePlanClick: handleFilePlanClick,
+      onToggleRecent: store.toggleRecentPanel,
+      onToggleActivity: store.toggleActivityPanel,
+      onToggleVideo: store.toggleVideoPlayer,
+      onToggleWatermark: store.toggleWatermark,
+      onToggleCompare: store.toggleCompareView,
+      onToggleSidebar: store.toggleSidebar,
+      onToggleDemoMode: store.toggleDemoMode,
+      onOpenMetadataUpload: store.openMetadataUpload,
+      onOpenNamingConvention: store.openNamingConvention,
+      onToggleKeyboardShortcuts: store.toggleKeyboardShortcuts,
     })
   );
 
-  // Upload zone (shown when toggled)
-  if (showUploadZone && props.enableUpload === true) {
+  // Upload zone (shown when toggled via store)
+  if (store.showUploadZone && props.enableUpload === true) {
     children.push(
       React.createElement(HyperExplorerUploadZone, {
         key: "upload-zone",
@@ -477,8 +540,8 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
   // Content area (sidebar + main + preview)
   var contentChildren: React.ReactNode[] = [];
 
-  // Folder tree sidebar
-  if (props.enableFolderTree !== false && store.folders.length > 0) {
+  // Folder tree sidebar (hidden when collapsed)
+  if (props.enableFolderTree !== false && store.folders.length > 0 && !store.sidebarCollapsed) {
     contentChildren.push(
       React.createElement(HyperExplorerFolderTree, {
         key: "folder-tree",
@@ -545,8 +608,8 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
     )
   );
 
-  // Compare panel
-  if (props.enableCompare === true && (store.compareFiles[0] || store.compareFiles[1])) {
+  // Compare panel (shown when toggled via store or when files are set)
+  if (props.enableCompare === true && (store.showCompareView || store.compareFiles[0] || store.compareFiles[1])) {
     children.push(
       React.createElement(HyperExplorerCompare, {
         key: "compare",
@@ -558,8 +621,8 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
     );
   }
 
-  // Recent files panel
-  if (props.enableRecentFiles === true) {
+  // Recent files panel (toggled via toolbar)
+  if (props.enableRecentFiles === true && store.recentPanelOpen) {
     children.push(
       React.createElement(HyperExplorerRecentFiles, {
         key: "recent-files",
@@ -572,8 +635,8 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
     );
   }
 
-  // Activity timeline (shown when a file is selected for activity)
-  if (activityFileId) {
+  // Activity timeline (shown when toggled via toolbar and a file is selected)
+  if (store.activityPanelOpen && activityFileId) {
     children.push(
       React.createElement(HyperExplorerActivityTimeline, {
         key: "activity",
@@ -597,14 +660,16 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
         enableCompare: props.enableCompare === true,
         enableUpload: props.enableUpload === true,
         enableFilePlan: props.enableFilePlan === true,
+        enableMetadataProfiles: props.enableMetadataProfiles === true,
+        enableZipDownload: props.enableZipDownload === true,
         onAction: handleContextMenuAction,
         onClose: store.closeContextMenu,
       })
     );
   }
 
-  // Video player (when playlist has items)
-  if (props.enableVideoPlaylist === true && store.playlist.length > 0) {
+  // Video player (toggled via toolbar)
+  if (props.enableVideoPlaylist === true && store.showVideoPlayer && store.playlist.length > 0) {
     children.push(
       React.createElement(HyperExplorerVideoPlayer, {
         key: "video-player",
@@ -615,12 +680,12 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
     );
   }
 
-  // Watermark overlay
-  if (props.enableWatermark === true && props.watermarkText) {
+  // Watermark overlay (toggled via toolbar)
+  if (props.enableWatermark === true && store.showWatermark && (store.watermarkText || props.watermarkText)) {
     children.push(
       React.createElement(HyperExplorerWatermark, {
         key: "watermark",
-        text: props.watermarkText,
+        text: store.watermarkText || props.watermarkText,
         tiled: true,
       })
     );
@@ -676,6 +741,35 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
     );
   }
 
+  // Metadata Upload modal
+  children.push(
+    React.createElement(HyperExplorerMetadataUpload, {
+      key: "metadata-upload",
+      isOpen: store.metadataUploadOpen,
+      onClose: store.closeMetadataUpload,
+      onUpload: handleMetadataUpload,
+    })
+  );
+
+  // Naming Convention modal
+  children.push(
+    React.createElement(HyperExplorerNamingConvention, {
+      key: "naming-convention",
+      isOpen: store.namingConventionOpen,
+      onClose: store.closeNamingConvention,
+      onSave: handleNamingConventionSave,
+    })
+  );
+
+  // Keyboard Shortcuts panel
+  children.push(
+    React.createElement(HyperExplorerKeyboardShortcuts, {
+      key: "keyboard-shortcuts",
+      isOpen: store.keyboardShortcutsOpen,
+      onClose: store.toggleKeyboardShortcuts,
+    })
+  );
+
   // Lightbox (fullscreen overlay — rendered last to be on top)
   if (props.enableLightbox !== false) {
     children.push(
@@ -688,7 +782,7 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
 
   return React.createElement("div", {
     className: styles.hyperExplorer,
-    style: props.enableWatermark === true ? { position: "relative" as const } : undefined,
+    style: (props.enableWatermark === true && store.showWatermark) ? { position: "relative" as const } : undefined,
     "data-instance-id": props.instanceId,
   }, children);
 };

@@ -125,6 +125,15 @@ export default class HyperExplorerWebPart extends BaseHyperWebPart<IHyperExplore
     if (this.properties.requireRetentionLabel === undefined) {
       this.properties.requireRetentionLabel = false;
     }
+    if (this.properties.enableMetadataProfiles === undefined) {
+      this.properties.enableMetadataProfiles = false;
+    }
+    if (this.properties.enableNamingConvention === undefined) {
+      this.properties.enableNamingConvention = false;
+    }
+    if (this.properties.enableZipDownload === undefined) {
+      this.properties.enableZipDownload = false;
+    }
     if (this.properties.useSampleData === undefined) {
       this.properties.useSampleData = true;
     }
@@ -290,6 +299,20 @@ export default class HyperExplorerWebPart extends BaseHyperWebPart<IHyperExplore
                 }),
                 PropertyPaneToggle("requireRetentionLabel", {
                   label: strings.RequireRetentionLabelFieldLabel,
+                }),
+              ],
+            },
+            {
+              groupName: strings.MetadataProfilesGroupName,
+              groupFields: [
+                PropertyPaneToggle("enableMetadataProfiles", {
+                  label: strings.EnableMetadataProfilesFieldLabel,
+                }),
+                PropertyPaneToggle("enableNamingConvention", {
+                  label: strings.EnableNamingConventionFieldLabel,
+                }),
+                PropertyPaneToggle("enableZipDownload", {
+                  label: strings.EnableZipDownloadFieldLabel,
                 }),
               ],
             },

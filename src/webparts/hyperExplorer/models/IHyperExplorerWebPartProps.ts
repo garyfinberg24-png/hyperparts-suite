@@ -42,6 +42,11 @@ export interface IHyperExplorerWebPartProps extends IBaseHyperWebPartProps {
   showComplianceBadges: boolean;
   requireRetentionLabel: boolean;
 
+  /** Metadata Profiles & Naming */
+  enableMetadataProfiles: boolean;
+  enableNamingConvention: boolean;
+  enableZipDownload: boolean;
+
   /** Sample data & wizard */
   useSampleData: boolean;
   showWizardOnInit: boolean;
@@ -80,6 +85,9 @@ export const DEFAULT_EXPLORER_PROPS: Partial<IHyperExplorerWebPartProps> = {
   filePlanConfig: "{}",
   showComplianceBadges: false,
   requireRetentionLabel: false,
+  enableMetadataProfiles: false,
+  enableNamingConvention: false,
+  enableZipDownload: false,
   useSampleData: true,
   showWizardOnInit: true,
 };

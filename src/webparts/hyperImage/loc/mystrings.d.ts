@@ -10,6 +10,11 @@ declare interface IHyperImageWebPartStrings {
   PerformanceGroupName: string;
   AdvancedGroupName: string;
 
+  /* ── Demo Mode ── */
+  DemoModeGroupName: string;
+  DemoModeLabel: string;
+  DemoModeDescription: string;
+
   /* ── Image Source ── */
   UseSampleDataLabel: string;
   ImageUrlLabel: string;

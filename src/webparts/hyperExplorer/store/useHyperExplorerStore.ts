@@ -6,11 +6,14 @@ import type {
   IVideoPlaylistItem,
   IRetentionLabel,
   IComplianceStatus,
+  INamingConvention,
+  IMetadataUploadState,
   ViewMode,
   SortMode,
   SortDirection,
   UploadStatus,
 } from "../models";
+import { DEFAULT_NAMING_CONVENTION, DEFAULT_METADATA_UPLOAD_STATE } from "../models";
 
 export interface IExplorerUploadEntry {
   id: string;
@@ -74,6 +77,32 @@ export interface IHyperExplorerState {
   complianceStatuses: Record<string, IComplianceStatus>;
   labelPickerFileId: string | undefined;
 
+  /** Naming Convention */
+  namingConventionOpen: boolean;
+  namingConvention: INamingConvention;
+
+  /** Metadata Profile Upload */
+  metadataUploadOpen: boolean;
+  metadataUploadState: IMetadataUploadState;
+
+  /** UI Panels */
+  keyboardShortcutsOpen: boolean;
+  demoMode: boolean;
+  bannerDismissed: boolean;
+  showUploadZone: boolean;
+  showVideoPlayer: boolean;
+  showWatermark: boolean;
+  showCompareView: boolean;
+  sidebarCollapsed: boolean;
+  recentPanelOpen: boolean;
+  activityPanelOpen: boolean;
+  /** Watermark controls */
+  watermarkText: string;
+  watermarkOpacity: number;
+  watermarkSize: number;
+  /** ZIP selection IDs */
+  zipSelectionIds: string[];
+
   /** Actions */
   setCurrentFolder: (path: string) => void;
   setBreadcrumbs: (crumbs: IExplorerBreadcrumb[]) => void;
@@ -118,6 +147,31 @@ export interface IHyperExplorerState {
   setComplianceStatuses: (statuses: Record<string, IComplianceStatus>) => void;
   openLabelPicker: (fileId: string) => void;
   closeLabelPicker: () => void;
+  /** Naming Convention */
+  openNamingConvention: () => void;
+  closeNamingConvention: () => void;
+  setNamingConvention: (convention: INamingConvention) => void;
+  /** Metadata Profile Upload */
+  openMetadataUpload: () => void;
+  closeMetadataUpload: () => void;
+  setMetadataUploadState: (state: IMetadataUploadState) => void;
+  resetMetadataUpload: () => void;
+  /** UI Panels */
+  toggleKeyboardShortcuts: () => void;
+  toggleDemoMode: () => void;
+  dismissBanner: () => void;
+  toggleUploadZone: () => void;
+  toggleVideoPlayer: () => void;
+  toggleWatermark: () => void;
+  toggleCompareView: () => void;
+  toggleSidebar: () => void;
+  toggleRecentPanel: () => void;
+  toggleActivityPanel: () => void;
+  setWatermarkText: (text: string) => void;
+  setWatermarkOpacity: (opacity: number) => void;
+  setWatermarkSize: (size: number) => void;
+  addToZipSelection: (id: string) => void;
+  clearZipSelection: () => void;
   reset: () => void;
 }
 
@@ -262,6 +316,24 @@ const INITIAL_STATE = {
   retentionLabels: [] as IRetentionLabel[],
   complianceStatuses: {} as Record<string, IComplianceStatus>,
   labelPickerFileId: undefined as string | undefined,
+  namingConventionOpen: false,
+  namingConvention: DEFAULT_NAMING_CONVENTION,
+  metadataUploadOpen: false,
+  metadataUploadState: DEFAULT_METADATA_UPLOAD_STATE,
+  keyboardShortcutsOpen: false,
+  demoMode: true,
+  bannerDismissed: false,
+  showUploadZone: false,
+  showVideoPlayer: false,
+  showWatermark: false,
+  showCompareView: false,
+  sidebarCollapsed: false,
+  recentPanelOpen: false,
+  activityPanelOpen: false,
+  watermarkText: "CONFIDENTIAL",
+  watermarkOpacity: 4,
+  watermarkSize: 72,
+  zipSelectionIds: [] as string[],
 };
 
 export const useHyperExplorerStore = create<IHyperExplorerState>(function (set, get) {
@@ -558,6 +630,97 @@ export const useHyperExplorerStore = create<IHyperExplorerState>(function (set, 
 
     closeLabelPicker: function (): void {
       set({ labelPickerFileId: undefined });
+    },
+
+    openNamingConvention: function (): void {
+      set({ namingConventionOpen: true });
+    },
+
+    closeNamingConvention: function (): void {
+      set({ namingConventionOpen: false });
+    },
+
+    setNamingConvention: function (convention: INamingConvention): void {
+      set({ namingConvention: convention });
+    },
+
+    openMetadataUpload: function (): void {
+      set({ metadataUploadOpen: true });
+    },
+
+    closeMetadataUpload: function (): void {
+      set({ metadataUploadOpen: false });
+    },
+
+    setMetadataUploadState: function (state: IMetadataUploadState): void {
+      set({ metadataUploadState: state });
+    },
+
+    resetMetadataUpload: function (): void {
+      set({ metadataUploadState: DEFAULT_METADATA_UPLOAD_STATE, metadataUploadOpen: false });
+    },
+
+    toggleKeyboardShortcuts: function (): void {
+      set(function (s: IHyperExplorerState) { return { keyboardShortcutsOpen: !s.keyboardShortcutsOpen }; });
+    },
+
+    toggleDemoMode: function (): void {
+      set(function (s: IHyperExplorerState) { return { demoMode: !s.demoMode }; });
+    },
+
+    dismissBanner: function (): void {
+      set({ bannerDismissed: true });
+    },
+
+    toggleUploadZone: function (): void {
+      set(function (s: IHyperExplorerState) { return { showUploadZone: !s.showUploadZone }; });
+    },
+
+    toggleVideoPlayer: function (): void {
+      set(function (s: IHyperExplorerState) { return { showVideoPlayer: !s.showVideoPlayer }; });
+    },
+
+    toggleWatermark: function (): void {
+      set(function (s: IHyperExplorerState) { return { showWatermark: !s.showWatermark }; });
+    },
+
+    toggleCompareView: function (): void {
+      set(function (s: IHyperExplorerState) { return { showCompareView: !s.showCompareView }; });
+    },
+
+    toggleSidebar: function (): void {
+      set(function (s: IHyperExplorerState) { return { sidebarCollapsed: !s.sidebarCollapsed }; });
+    },
+
+    toggleRecentPanel: function (): void {
+      set(function (s: IHyperExplorerState) { return { recentPanelOpen: !s.recentPanelOpen }; });
+    },
+
+    toggleActivityPanel: function (): void {
+      set(function (s: IHyperExplorerState) { return { activityPanelOpen: !s.activityPanelOpen }; });
+    },
+
+    setWatermarkText: function (text: string): void {
+      set({ watermarkText: text });
+    },
+
+    setWatermarkOpacity: function (opacity: number): void {
+      set({ watermarkOpacity: opacity });
+    },
+
+    setWatermarkSize: function (size: number): void {
+      set({ watermarkSize: size });
+    },
+
+    addToZipSelection: function (id: string): void {
+      set(function (s: IHyperExplorerState) {
+        if (s.zipSelectionIds.indexOf(id) !== -1) return {};
+        return { zipSelectionIds: s.zipSelectionIds.concat([id]) };
+      });
+    },
+
+    clearZipSelection: function (): void {
+      set({ zipSelectionIds: [] });
     },
 
     reset: function (): void {

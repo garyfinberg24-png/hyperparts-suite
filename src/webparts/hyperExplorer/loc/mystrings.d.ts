@@ -104,6 +104,21 @@ declare interface IHyperExplorerWebPartStrings {
   WizardDescriptorsStepTitle: string;
   WizardRulesStepTitle: string;
   PurviewPermissionHint: string;
+
+  /* Metadata Profiles & Naming */
+  MetadataProfilesGroupName: string;
+  EnableMetadataProfilesFieldLabel: string;
+  EnableNamingConventionFieldLabel: string;
+  EnableZipDownloadFieldLabel: string;
+  MetadataUploadTitle: string;
+  NamingConventionTitle: string;
+  KeyboardShortcutsTitle: string;
+  DemoModeLabel: string;
+  SampleDataBannerText: string;
+  ProfiledUploadLabel: string;
+  NamingLabel: string;
+  UploadWithProfileAction: string;
+  AddToZipAction: string;
 }
 
 declare module "HyperExplorerWebPartStrings" {

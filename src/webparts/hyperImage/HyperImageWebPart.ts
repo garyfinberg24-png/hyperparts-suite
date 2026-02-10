@@ -52,6 +52,9 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
     // Sample data — on by default so the web part renders immediately
     if (p.useSampleData === undefined) p.useSampleData = true;
 
+    // Demo mode
+    if (p.demoMode === undefined) p.demoMode = false;
+
     // Image source
     if (p.imageUrl === undefined) p.imageUrl = "";
     if (p.altText === undefined) p.altText = "";
@@ -110,10 +113,12 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
   }
 
   public render(): void {
-    var element = React.createElement(HyperImage, {
+    var props: IHyperImageComponentProps = {
       ...this.properties,
       instanceId: this.instanceId,
-    } as IHyperImageComponentProps);
+    };
+    var element: React.ReactElement<IHyperImageComponentProps> =
+      React.createElement(HyperImage, props);
 
     ReactDom.render(element, this.domElement);
   }
@@ -165,6 +170,16 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
                   disabled: this.properties.isDecorative,
                 }),
                 PropertyPaneToggle("isDecorative", { label: strings.IsDecorativeLabel, onText: "Yes", offText: "No" }),
+              ],
+            },
+            {
+              groupName: strings.DemoModeGroupName,
+              groupFields: [
+                PropertyPaneToggle("demoMode", {
+                  label: strings.DemoModeLabel,
+                  onText: "On",
+                  offText: "Off",
+                }),
               ],
             },
             {

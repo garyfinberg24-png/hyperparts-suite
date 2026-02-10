@@ -13,6 +13,9 @@ export interface IHyperImageWebPartProps extends IBaseHyperWebPartProps {
   /* ── Sample Data ── */
   useSampleData: boolean;
 
+  /* ── Demo Mode ── */
+  demoMode: boolean;
+
   /* ── Image Source ── */
   imageUrl: string;
   altText: string;

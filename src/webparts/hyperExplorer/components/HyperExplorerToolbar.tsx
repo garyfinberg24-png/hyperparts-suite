@@ -11,6 +11,20 @@ export interface IHyperExplorerToolbarProps {
   selectedCount: number;
   enableUpload: boolean;
   enableFilePlan: boolean;
+  enableRecentFiles: boolean;
+  enableCompare: boolean;
+  enableWatermark: boolean;
+  enableVideoPlaylist: boolean;
+  enableFolderTree: boolean;
+  enableMetadataProfiles: boolean;
+  enableNamingConvention: boolean;
+  showRecentPanel: boolean;
+  showActivityPanel: boolean;
+  showVideoPlayer: boolean;
+  showWatermark: boolean;
+  showCompareView: boolean;
+  sidebarCollapsed: boolean;
+  demoMode: boolean;
   onSearchChange: (query: string) => void;
   onViewModeChange: (mode: ViewMode) => void;
   onSortModeChange: (mode: SortMode) => void;
@@ -20,6 +34,16 @@ export interface IHyperExplorerToolbarProps {
   onDownloadSelected: () => void;
   onUploadClick: () => void;
   onFilePlanClick: () => void;
+  onToggleRecent: () => void;
+  onToggleActivity: () => void;
+  onToggleVideo: () => void;
+  onToggleWatermark: () => void;
+  onToggleCompare: () => void;
+  onToggleSidebar: () => void;
+  onToggleDemoMode: () => void;
+  onOpenMetadataUpload: () => void;
+  onOpenNamingConvention: () => void;
+  onToggleKeyboardShortcuts: () => void;
 }
 
 var VIEW_MODE_ICONS: Record<string, string> = {
@@ -68,6 +92,22 @@ var HyperExplorerToolbar: React.FC<IHyperExplorerToolbarProps> = function (props
 
   var children: React.ReactNode[] = [];
 
+  // Demo mode toggle (leftmost)
+  children.push(
+    React.createElement("label", {
+      key: "demo-toggle",
+      className: styles.demoToggle,
+      title: "Toggle demo mode",
+    },
+      React.createElement("input", {
+        type: "checkbox",
+        checked: props.demoMode,
+        onChange: props.onToggleDemoMode,
+      }),
+      React.createElement("span", { className: styles.demoToggleLabel }, "Demo")
+    )
+  );
+
   // Search input
   children.push(
     React.createElement("input", {
@@ -79,6 +119,7 @@ var HyperExplorerToolbar: React.FC<IHyperExplorerToolbarProps> = function (props
       defaultValue: props.searchQuery,
       onChange: handleSearchInput,
       "aria-label": "Search files",
+      "data-explorer-search": "true",
     })
   );
 
@@ -113,7 +154,97 @@ var HyperExplorerToolbar: React.FC<IHyperExplorerToolbarProps> = function (props
     )
   );
 
-  // Action group
+  // Feature toggle buttons
+  var featureButtons: React.ReactNode[] = [];
+
+  // Folder tree toggle
+  if (props.enableFolderTree) {
+    featureButtons.push(
+      React.createElement("button", {
+        key: "tree",
+        className: props.sidebarCollapsed ? styles.featureButton : styles.featureButton + " " + styles.featureButtonActive,
+        onClick: props.onToggleSidebar,
+        title: props.sidebarCollapsed ? "Show folder tree" : "Hide folder tree",
+        type: "button",
+      }, "\uD83C\uDF33 Tree")
+    );
+  }
+
+  // Recent files toggle
+  if (props.enableRecentFiles) {
+    featureButtons.push(
+      React.createElement("button", {
+        key: "recent",
+        className: props.showRecentPanel ? styles.featureButton + " " + styles.featureButtonActive : styles.featureButton,
+        onClick: props.onToggleRecent,
+        title: "Recent files",
+        type: "button",
+      }, "\uD83D\uDD52 Recent")
+    );
+  }
+
+  // Activity toggle
+  featureButtons.push(
+    React.createElement("button", {
+      key: "activity",
+      className: props.showActivityPanel ? styles.featureButton + " " + styles.featureButtonActive : styles.featureButton,
+      onClick: props.onToggleActivity,
+      title: "Activity timeline",
+      type: "button",
+    }, "\uD83D\uDCCA Activity")
+  );
+
+  // Video player toggle
+  if (props.enableVideoPlaylist) {
+    featureButtons.push(
+      React.createElement("button", {
+        key: "video",
+        className: props.showVideoPlayer ? styles.featureButton + " " + styles.featureButtonActive : styles.featureButton,
+        onClick: props.onToggleVideo,
+        title: "Video player",
+        type: "button",
+      }, "\uD83C\uDFAC Video")
+    );
+  }
+
+  // Watermark toggle
+  if (props.enableWatermark) {
+    featureButtons.push(
+      React.createElement("button", {
+        key: "watermark",
+        className: props.showWatermark ? styles.featureButton + " " + styles.featureButtonActive : styles.featureButton,
+        onClick: props.onToggleWatermark,
+        title: "Toggle watermark",
+        type: "button",
+      }, "\uD83D\uDCAE Watermark")
+    );
+  }
+
+  // Compare toggle
+  if (props.enableCompare) {
+    featureButtons.push(
+      React.createElement("button", {
+        key: "compare",
+        className: props.showCompareView ? styles.featureButton + " " + styles.featureButtonActive : styles.featureButton,
+        onClick: props.onToggleCompare,
+        title: "Compare files",
+        type: "button",
+      }, "\u2194\uFE0F Compare")
+    );
+  }
+
+  if (featureButtons.length > 0) {
+    children.push(
+      React.createElement("div", {
+        key: "features",
+        className: styles.featureGroup,
+        role: "group",
+        "aria-label": "Feature toggles",
+      }, featureButtons)
+    );
+  }
+
+  // Action group (right-aligned)
   var actionButtons: React.ReactNode[] = [];
 
   if (props.selectedCount > 0) {
@@ -155,6 +286,30 @@ var HyperExplorerToolbar: React.FC<IHyperExplorerToolbarProps> = function (props
     );
   }
 
+  if (props.enableMetadataProfiles) {
+    actionButtons.push(
+      React.createElement("button", {
+        key: "metadata-upload",
+        className: styles.actionButton,
+        onClick: props.onOpenMetadataUpload,
+        title: "Upload with metadata profile",
+        type: "button",
+      }, "\uD83D\uDCCB Profiled Upload")
+    );
+  }
+
+  if (props.enableNamingConvention) {
+    actionButtons.push(
+      React.createElement("button", {
+        key: "naming",
+        className: styles.actionButton,
+        onClick: props.onOpenNamingConvention,
+        title: "File naming convention",
+        type: "button",
+      }, "\u2699\uFE0F Naming")
+    );
+  }
+
   if (props.enableFilePlan) {
     actionButtons.push(
       React.createElement("button", {
@@ -166,6 +321,17 @@ var HyperExplorerToolbar: React.FC<IHyperExplorerToolbarProps> = function (props
       }, "\uD83D\uDCCB File Plan")
     );
   }
+
+  // Keyboard shortcuts button (always visible)
+  actionButtons.push(
+    React.createElement("button", {
+      key: "shortcuts",
+      className: styles.actionButton,
+      onClick: props.onToggleKeyboardShortcuts,
+      title: "Keyboard shortcuts (?)",
+      type: "button",
+    }, "\u2328 ?")
+  );
 
   if (actionButtons.length > 0) {
     children.push(

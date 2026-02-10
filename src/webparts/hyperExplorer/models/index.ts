@@ -80,3 +80,35 @@ export {
   formatRetentionAction,
   formatRetentionBehavior,
 } from "./IFilePlan";
+
+export type {
+  MetadataFieldType,
+  IMetadataField,
+  IMetadataProfile,
+  IMetadataUploadState,
+} from "./IMetadataProfile";
+
+export {
+  DEFAULT_METADATA_UPLOAD_STATE,
+  METADATA_PROFILES,
+  getMetadataProfile,
+  getRequiredFieldCount,
+  validateMetadataValues,
+} from "./IMetadataProfile";
+
+export type {
+  NamingToken,
+  NamingSeparator,
+  YearFormat,
+  INamingConvention,
+  NamingPattern,
+  INamingPatternOption,
+} from "./INamingConvention";
+
+export {
+  DEPARTMENT_CODES,
+  NAMING_PATTERNS,
+  DEFAULT_NAMING_CONVENTION,
+  generatePreviewName,
+  generateSequencePrefix,
+} from "./INamingConvention";

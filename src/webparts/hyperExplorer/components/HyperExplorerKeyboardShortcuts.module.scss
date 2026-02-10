@@ -1,0 +1,90 @@
+@import '~@fluentui/react/dist/sass/References';
+
+.kbPanel {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  width: 320px;
+  max-height: 480px;
+  overflow-y: auto;
+  background: "[theme:white, default:#ffffff]";
+  border: 1px solid "[theme:neutralLight, default:#edebe9]";
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.08);
+  z-index: 9000;
+  animation: kbSlideIn 0.2s ease-out;
+}
+
+@keyframes kbSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.kbHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid "[theme:neutralLighter, default:#f3f2f1]";
+  font-weight: 600;
+  font-size: 14px;
+  color: "[theme:neutralPrimary, default:#323130]";
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  padding: 4px 8px;
+  border-radius: 4px;
+
+  &:hover {
+    background: "[theme:neutralLighter, default:#f3f2f1]";
+  }
+}
+
+.kbList {
+  padding: 8px 0;
+}
+
+.kbSection {
+  padding: 8px 16px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: "[theme:neutralTertiary, default:#a19f9d]";
+  letter-spacing: 0.5px;
+}
+
+.kbRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 16px;
+}
+
+.kbKey {
+  display: inline-block;
+  padding: 2px 8px;
+  background: "[theme:neutralLighter, default:#f3f2f1]";
+  border: 1px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: "Cascadia Code", "Consolas", monospace;
+  color: "[theme:neutralPrimary, default:#323130]";
+  min-width: 24px;
+  text-align: center;
+}
+
+.kbDesc {
+  font-size: 13px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+}
