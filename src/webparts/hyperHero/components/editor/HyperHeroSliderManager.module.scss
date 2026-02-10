@@ -1,0 +1,197 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.managerToolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.toolbarBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid #d2d0ce;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #323130;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+
+  &:hover {
+    background: #f3f2f1;
+    border-color: #8a8886;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #0078d4;
+    outline-offset: 1px;
+  }
+}
+
+.toolbarBtnPrimary {
+  composes: toolbarBtn;
+  background: #0078d4;
+  color: #ffffff;
+  border-color: #0078d4;
+
+  &:hover {
+    background: #106ebe;
+    border-color: #106ebe;
+  }
+}
+
+.sliderGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.sliderCard {
+  position: relative;
+  border: 1px solid #edebe9;
+  border-radius: 8px;
+  background: #ffffff;
+  overflow: hidden;
+  transition: box-shadow 0.15s, border-color 0.15s;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-color: #c8c6c4;
+  }
+}
+
+.cardThumbnail {
+  height: 80px;
+  background: linear-gradient(135deg, #0078d4 0%, #106ebe 50%, #005a9e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardThumbnailText {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.cardBody {
+  padding: 10px 12px;
+}
+
+.cardName {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #323130;
+  margin: 0 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardNameInput {
+  width: 100%;
+  font-size: 14px;
+  font-weight: 600;
+  color: #323130;
+  border: 1px solid #0078d4;
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin: 0 0 2px;
+  outline: none;
+}
+
+.cardMeta {
+  font-size: 11px;
+  color: #605e5c;
+}
+
+.cardActions {
+  display: flex;
+  gap: 4px;
+  padding: 6px 12px 10px;
+  flex-wrap: wrap;
+}
+
+.cardActionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 1px solid #d2d0ce;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #323130;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.12s;
+
+  &:hover {
+    background: #f3f2f1;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #0078d4;
+    outline-offset: 1px;
+  }
+}
+
+.cardActionBtnLoad {
+  composes: cardActionBtn;
+  background: #0078d4;
+  color: #ffffff;
+  border-color: #0078d4;
+
+  &:hover {
+    background: #106ebe;
+  }
+}
+
+.cardActionBtnDanger {
+  composes: cardActionBtn;
+  color: #a4262c;
+  border-color: #f3d6d8;
+
+  &:hover {
+    background: #fdf3f4;
+  }
+}
+
+.confirmRow {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.confirmLabel {
+  font-size: 11px;
+  color: #a4262c;
+  font-weight: 600;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.emptyIcon {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.emptyTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #323130;
+  margin: 0 0 6px;
+}
+
+.emptyHint {
+  font-size: 13px;
+  color: #605e5c;
+  margin: 0 0 16px;
+}

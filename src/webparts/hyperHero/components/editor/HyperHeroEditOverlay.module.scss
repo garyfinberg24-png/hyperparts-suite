@@ -53,31 +53,6 @@
   }
 }
 
-.duplicateBtn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  background: #ffffff;
-  border: 1px solid #605e5c;
-  color: #323130;
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-
-  &:hover {
-    background: #f3f2f1;
-    border-color: #0078d4;
-    color: #0078d4;
-  }
-
-  &:focus-visible {
-    outline: 2px solid #ffffff;
-    outline-offset: 2px;
-  }
-}
-
 .deleteBtn {
   display: flex;
   align-items: center;
@@ -199,30 +174,43 @@
   }
 }
 
-// ── Edit Toolbar Above Hero ──
+// ── Floating Edit Buttons — centered on hero ──
 .editToolbar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 110;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 0;
-  margin-bottom: 8px;
+  gap: 10px;
+  pointer-events: auto;
 }
 
 .toolbarBtn {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
-  background: #f3f2f1;
-  border: 1px solid #8a8886;
-  border-radius: 4px;
-  font-size: 13px;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #8a8886;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
   color: #323130;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  transition: background 0.15s, border-color 0.15s, transform 0.12s;
 
   &:hover {
-    background: #edebe9;
+    background: #ffffff;
     border-color: #605e5c;
+    transform: scale(1.04);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #0078d4;
+    outline-offset: 2px;
   }
 }
 
@@ -234,11 +222,15 @@
 
   &:hover {
     background: #106ebe;
+    border-color: #106ebe;
   }
 }
 
 .slideCountLabel {
-  margin-left: auto;
-  font-size: 13px;
-  color: #605e5c;
+  background: rgba(0, 0, 0, 0.55);
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
 }

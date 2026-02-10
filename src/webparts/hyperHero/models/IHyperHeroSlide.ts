@@ -195,6 +195,8 @@ export interface IHyperHeroSlide {
   textBackdropEnabled?: boolean;
   /** Vignette darkening around edges */
   vignetteEnabled?: boolean;
+  /** Locked slides cannot be edited, deleted, or reordered */
+  locked?: boolean;
   /** Internal notes (not displayed, editor-only) */
   internalNotes?: string;
   publishDate?: string;

@@ -26,6 +26,9 @@ import { HERO_WIZARD_CONFIG, buildStateFromProps } from "./wizard/heroWizardConf
 import type { IHeroWizardResult } from "./wizard/heroWizardConfig";
 import { HyperHeroSlideEditor } from "./editor";
 import { HyperHeroEditOverlay, HyperHeroEditToolbar } from "./editor";
+import { HyperHeroSlidesManager } from "./editor/HyperHeroSlidesManager";
+import { HyperHeroSliderManager } from "./editor/HyperHeroSliderManager";
+import type { IStoredSliderConfig } from "../utils/sliderStorage";
 import styles from "./HyperHero.module.scss";
 
 export interface IHyperHeroComponentProps extends IHyperHeroWebPartProps {
@@ -168,6 +171,8 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
   // ── Edit state ──
   const [showWizard, setShowWizard] = React.useState(false);
   const [editingSlideId, setEditingSlideId] = React.useState<string | undefined>(undefined);
+  const [showSlidesManager, setShowSlidesManager] = React.useState(false);
+  const [showSliderManager, setShowSliderManager] = React.useState(false);
 
   // Auto-open wizard on first use in edit mode
   React.useEffect(function () {
@@ -326,30 +331,6 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
     setEditingSlideId(cloned.id);
   }, [slides, onSlidesChange]);
 
-  const handleMoveSlideUp = React.useCallback(function (slideId: string) {
-    if (!onSlidesChange || !slides) return;
-    var idx = -1;
-    slides.forEach(function (s, i) { if (s.id === slideId) idx = i; });
-    if (idx <= 0) return;
-    var updated = slides.slice();
-    var temp = updated[idx - 1];
-    updated[idx - 1] = updated[idx];
-    updated[idx] = temp;
-    onSlidesChange(updated);
-  }, [slides, onSlidesChange]);
-
-  const handleMoveSlideDown = React.useCallback(function (slideId: string) {
-    if (!onSlidesChange || !slides) return;
-    var idx = -1;
-    slides.forEach(function (s, i) { if (s.id === slideId) idx = i; });
-    if (idx < 0 || idx >= slides.length - 1) return;
-    var updated = slides.slice();
-    var temp = updated[idx + 1];
-    updated[idx + 1] = updated[idx];
-    updated[idx] = temp;
-    onSlidesChange(updated);
-  }, [slides, onSlidesChange]);
-
   // Save & Continue: save current slide, advance to next
   const handleEditorSaveAndContinue = React.useCallback(function (updatedSlide: IHyperHeroSlide) {
     if (!onSlidesChange || !slides) return;
@@ -370,121 +351,43 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
     }
   }, [slides, onSlidesChange]);
 
-  // Configuration Manager: Export
-  const handleExportConfig = React.useCallback(function () {
-    if (!slides) return;
-    var config = {
-      slides: slides,
-      layouts: layouts,
-      heroHeight: props.heroHeight,
-      borderRadius: borderRadius,
-      fullBleed: fullBleed,
-      rotation: rotation,
-      sliderMode: props.sliderMode || "hyper",
-    };
-    var json = JSON.stringify(config, undefined, 2);
-    var blob = new Blob([json], { type: "application/json" });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement("a");
-    a.href = url;
-    a.download = "hyperhero-config.json";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }, [slides, layouts, props.heroHeight, borderRadius, fullBleed, rotation, props.sliderMode]);
-
-  // Configuration Manager: Import
-  const handleImportConfig = React.useCallback(function () {
-    var input = document.createElement("input");
-    input.type = "file";
-    input.accept = ".json";
-    input.onchange = function () {
-      var files = input.files;
-      if (!files || files.length === 0) return;
-      var reader = new FileReader();
-      reader.onload = function () {
-        try {
-          var config = JSON.parse(reader.result as string);
-          if (config.slides && onSlidesChange) {
-            onSlidesChange(config.slides);
-          }
-          if (config.layouts && onSettingsChange) {
-            var partial: Partial<IHyperHeroWebPartProps> = {};
-            if (config.layouts) partial.layouts = config.layouts;
-            if (config.heroHeight) partial.heroHeight = config.heroHeight;
-            if (config.borderRadius !== undefined) partial.borderRadius = config.borderRadius;
-            if (config.fullBleed !== undefined) partial.fullBleed = config.fullBleed;
-            if (config.rotation) partial.rotation = config.rotation;
-            onSettingsChange(partial);
-          }
-        } catch (_e) {
-          // Invalid JSON — silently ignore
-        }
-      };
-      reader.readAsText(files[0]);
-    };
-    input.click();
-  }, [onSlidesChange, onSettingsChange]);
-
-  // Configuration Manager: Save As (named export)
-  const handleSaveAs = React.useCallback(function () {
-    if (!slides) return;
-    var configName = "HyperHero Config " + new Date().toISOString().substring(0, 10);
-    var config = {
-      name: configName,
-      savedAt: new Date().toISOString(),
-      slides: slides,
-      layouts: layouts,
-      heroHeight: props.heroHeight,
-      borderRadius: borderRadius,
-      fullBleed: fullBleed,
-      rotation: rotation,
-      sliderMode: props.sliderMode || "hyper",
-    };
-    var json = JSON.stringify(config, undefined, 2);
-    var blob = new Blob([json], { type: "application/json" });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement("a");
-    a.href = url;
-    a.download = configName.replace(/\s+/g, "-").toLowerCase() + ".json";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }, [slides, layouts, props.heroHeight, borderRadius, fullBleed, rotation, props.sliderMode]);
-
-  // Preview Transitions: temporarily enable auto-rotation for 15s
-  const handlePreviewTransitions = React.useCallback(function () {
-    // Signal the auto-rotation hook to play — reuse onSettingsChange
-    // This is a lightweight approach: we temporarily enable rotation
-    if (onSettingsChange) {
-      onSettingsChange({
-        rotation: {
-          enabled: true,
-          intervalMs: 2000,
-          effect: rotation ? rotation.effect : "fade",
-          transitionDurationMs: rotation ? rotation.transitionDurationMs : 500,
-          pauseOnHover: true,
-          showDots: true,
-          showArrows: true,
-        },
-      });
-      // Auto-revert after 15 seconds
-      setTimeout(function () {
-        if (onSettingsChange && rotation) {
-          onSettingsChange({ rotation: rotation });
-        }
-      }, 15000);
-    }
-  }, [rotation, onSettingsChange]);
-
   const handleRerunSetup = React.useCallback(function () {
     if (onSettingsChange) {
       onSettingsChange({ wizardCompleted: false });
     }
     setShowWizard(true);
   }, [onSettingsChange]);
+
+  // ── Slides Manager + Slider Manager ──
+  const handleOpenSlidesManager = React.useCallback(function () {
+    setShowSlidesManager(true);
+  }, []);
+
+  const handleCloseSlidesManager = React.useCallback(function () {
+    setShowSlidesManager(false);
+  }, []);
+
+  const handleOpenSliderManager = React.useCallback(function () {
+    setShowSliderManager(true);
+  }, []);
+
+  const handleCloseSliderManager = React.useCallback(function () {
+    setShowSliderManager(false);
+  }, []);
+
+  const handleLoadSliderConfig = React.useCallback(function (config: IStoredSliderConfig) {
+    if (!onSlidesChange || !onSettingsChange) return;
+    if (config.slides) {
+      onSlidesChange(config.slides);
+    }
+    var partial: Partial<IHyperHeroWebPartProps> = {};
+    if (config.layouts) partial.layouts = config.layouts;
+    if (config.heroHeight !== undefined) partial.heroHeight = config.heroHeight;
+    if (config.borderRadius !== undefined) partial.borderRadius = config.borderRadius;
+    if (config.fullBleed !== undefined) partial.fullBleed = config.fullBleed;
+    if (config.rotation) partial.rotation = config.rotation;
+    onSettingsChange(partial);
+  }, [onSlidesChange, onSettingsChange]);
 
   // Select layout for current breakpoint
   const layout: IHyperHeroGridLayout = layouts[breakpoint] || layouts.desktop;
@@ -550,6 +453,44 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
         onSaveAndContinue: handleEditorSaveAndContinue,
       })
     );
+
+    // Slides Manager panel
+    editModals.push(
+      React.createElement(HyperHeroSlidesManager, {
+        key: "slides-manager",
+        isOpen: showSlidesManager,
+        onClose: handleCloseSlidesManager,
+        slides: slides || [],
+        onEditSlide: function (slideId: string) {
+          handleCloseSlidesManager();
+          handleEditSlide(slideId);
+        },
+        onSlidesChange: onSlidesChange || function () { /* no-op */ },
+        onAddSlide: handleAddSlide,
+        onDuplicateSlide: handleDuplicateSlide,
+        onDeleteSlide: handleDeleteSlide,
+        onOpenSliderLibrary: handleOpenSliderManager,
+      })
+    );
+
+    // Slider Library modal
+    editModals.push(
+      React.createElement(HyperHeroSliderManager, {
+        key: "slider-manager",
+        isOpen: showSliderManager,
+        onClose: handleCloseSliderManager,
+        onLoad: handleLoadSliderConfig,
+        currentSlides: slides || [],
+        currentLayouts: layouts,
+        currentSettings: {
+          heroHeight: props.heroHeight,
+          borderRadius: borderRadius,
+          fullBleed: fullBleed,
+          rotation: rotation,
+          sliderMode: props.sliderMode,
+        },
+      })
+    );
   }
 
   // Show skeleton while dynamic content is loading
@@ -613,9 +554,6 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
             slideCount: scheduledSlides.length,
             onEdit: handleEditSlide,
             onDelete: handleDeleteSlide,
-            onDuplicate: handleDuplicateSlide,
-            onMoveUp: handleMoveSlideUp,
-            onMoveDown: handleMoveSlideDown,
           })
         );
       }
@@ -640,25 +578,20 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
   return React.createElement(
     "div",
     { ref: containerRef, className: containerClasses },
-    // Edit toolbar (edit mode only)
-    isEditMode
-      ? React.createElement(HyperHeroEditToolbar, {
-          onAddSlide: handleAddSlide,
-          onDuplicateSlide: function () { handleDuplicateSlide(); },
-          onRerunSetup: handleRerunSetup,
-          onExportConfig: handleExportConfig,
-          onImportConfig: handleImportConfig,
-          onSaveAs: handleSaveAs,
-          onPreviewTransitions: handlePreviewTransitions,
-          slideCount: scheduledSlides.length,
-        })
-      : undefined,
     // Title
     title
       ? React.createElement("h2", { className: styles.heroTitle }, title)
       : undefined,
     // Grid content
     gridContent,
+    // Edit action buttons — centered on the hero (edit mode only)
+    isEditMode
+      ? React.createElement(HyperHeroEditToolbar, {
+          onOpenWizard: handleRerunSetup,
+          onEditSlider: handleOpenSlidesManager,
+          slideCount: scheduledSlides.length,
+        })
+      : undefined,
     // Edit mode modals
     editModals
   );
