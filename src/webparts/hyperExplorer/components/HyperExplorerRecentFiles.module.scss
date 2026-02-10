@@ -1,0 +1,117 @@
+@import '~@fluentui/react/dist/sass/References';
+
+/* Recent files compact list */
+.recentFiles {
+  border: 1px solid "[theme:neutralLight, default:#edebe9]";
+  border-radius: 8px;
+  background: "[theme:white, default:#ffffff]";
+  overflow: hidden;
+}
+
+.recentHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid "[theme:neutralLight, default:#edebe9]";
+  background: "[theme:neutralLighterAlt, default:#faf9f8]";
+}
+
+.recentTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: "[theme:neutralPrimary, default:#323130]";
+}
+
+.recentRefreshButton {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: "[theme:neutralLighter, default:#f3f2f1]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default:#0078d4]";
+  }
+}
+
+.recentList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.recentItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  transition: background 0.1s;
+
+  &:hover {
+    background: "[theme:neutralLighterAlt, default:#faf9f8]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default:#0078d4]";
+    outline-offset: -2px;
+  }
+}
+
+.recentItemIcon {
+  font-size: 20px;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.recentItemMeta {
+  flex: 1;
+  min-width: 0;
+}
+
+.recentItemName {
+  font-size: 13px;
+  font-weight: 500;
+  color: "[theme:neutralPrimary, default:#323130]";
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.recentItemDate {
+  font-size: 11px;
+  color: "[theme:neutralTertiary, default:#a19f9d]";
+}
+
+.recentEmpty {
+  padding: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+}
+
+.recentLoading {
+  padding: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: "[theme:neutralTertiary, default:#a19f9d]";
+}

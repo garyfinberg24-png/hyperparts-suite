@@ -12,6 +12,8 @@ define([], function () {
     SortDirectionFieldLabel: "Sort Direction",
     ItemsPerPageFieldLabel: "Items Per Page",
     ShowFoldersFieldLabel: "Show Folders",
+    UseSampleDataFieldLabel: "Use Sample Data (demo mode)",
+    ShowWizardOnInitFieldLabel: "Show Welcome Wizard",
 
     /* Page 2 — Preview & Display */
     PreviewDisplayPageDescription: "Configure preview and display options.",
@@ -38,6 +40,12 @@ define([], function () {
     EnableFolderTreeFieldLabel: "Show Folder Tree",
     EnableBreadcrumbsFieldLabel: "Show Breadcrumbs",
     CacheEnabledFieldLabel: "Enable Caching",
+
+    /* Page 3 — File Plan & Compliance */
+    FilePlanGroupName: "File Plan & Compliance",
+    EnableFilePlanFieldLabel: "Enable File Plan (MS Purview)",
+    ShowComplianceBadgesFieldLabel: "Show Compliance Badges on Files",
+    RequireRetentionLabelFieldLabel: "Require Retention Label on Upload",
 
     /* Component strings */
     NoFilesTitle: "No Files Found",
@@ -68,5 +76,34 @@ define([], function () {
     RecentFilesLabel: "Recent Files",
     LoadMoreLabel: "Load More",
     EditModeLabel: "Configure HyperExplorer in the property pane.",
+
+    /* File Plan component strings */
+    FilePlanDashboardTitle: "File Plan Dashboard",
+    FilePlanWizardTitle: "File Plan Setup Wizard",
+    ApplyRetentionLabelTitle: "Apply Retention Label",
+    ApplyRetentionLabelAction: "Apply Retention Label",
+    RetentionLabelLabel: "Retention Label",
+    FilePlanDescriptorsLabel: "File Plan Descriptors",
+    LabeledLabel: "Labeled",
+    UnlabeledLabel: "Unlabeled",
+    CoverageLabel: "Coverage",
+    LabelsInUseLabel: "Labels in Use",
+    RecentActivityLabel: "Recent Activity",
+    ConfigureFilePlanLabel: "Configure File Plan",
+    NoLabelsAppliedLabel: "No retention labels have been applied yet.",
+    SelectRetentionLabelLabel: "Select a retention label",
+    ApplyLabelButton: "Apply Label",
+    CancelButton: "Cancel",
+    FilePlanButton: "File Plan",
+    ComplianceBadgeNoLabel: "No Label",
+    ComplianceBadgeExpired: "Expired",
+    ComplianceBadgeLocked: "Locked",
+    ComplianceBadgeRecord: "Record",
+    ComplianceBadgeLabeled: "Labeled",
+    WizardScopeStepTitle: "Scope",
+    WizardLabelsStepTitle: "Retention Labels",
+    WizardDescriptorsStepTitle: "File Plan Descriptors",
+    WizardRulesStepTitle: "Auto-Classification Rules",
+    PurviewPermissionHint: "Ensure the RecordsManagement.Read.All permission is granted.",
   };
 });

@@ -1,0 +1,188 @@
+@import '~@fluentui/react/dist/sass/References';
+
+.dashboardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Summary cards grid */
+.summaryGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+.summaryCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 12px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.summaryCardLabeled {
+  background: #e8f5e9;
+  border: 1px solid #c8e6c9;
+}
+
+.summaryCardUnlabeled {
+  background: #fff3e0;
+  border: 1px solid #ffe0b2;
+}
+
+.summaryCardCoverage {
+  background: #e3f2fd;
+  border: 1px solid #bbdefb;
+}
+
+.summaryValue {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.summaryValueGreen {
+  color: #2e7d32;
+}
+
+.summaryValueOrange {
+  color: #e65100;
+}
+
+.summaryValueBlue {
+  color: #1565c0;
+}
+
+.summaryLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Per-label breakdown */
+.breakdownSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sectionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: "[theme:neutralPrimary, default:#323130]";
+  padding-bottom: 4px;
+  border-bottom: 1px solid "[theme:neutralLight, default:#edebe9]";
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+}
+
+.labelRowInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.labelRowIcon {
+  font-size: 16px;
+}
+
+.labelRowName {
+  font-size: 13px;
+  font-weight: 600;
+  color: "[theme:neutralPrimary, default:#323130]";
+}
+
+.labelRowDuration {
+  font-size: 11px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+}
+
+.labelRowCount {
+  font-size: 13px;
+  font-weight: 600;
+  color: "[theme:themeDarkAlt, default:#106ebe]";
+  padding: 2px 8px;
+  background: "[theme:themeLighter, default:#deecf9]";
+  border-radius: 10px;
+}
+
+/* Recent actions */
+.actionsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.actionItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: "[theme:neutralPrimary, default:#323130]";
+  border-left: 3px solid "[theme:themePrimary, default:#0078d4]";
+  background: "[theme:neutralLighterAlt, default:#faf9f8]";
+  border-radius: 0 4px 4px 0;
+}
+
+.actionTime {
+  font-size: 11px;
+  color: "[theme:neutralTertiary, default:#a19f9d]";
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.actionText {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Empty state */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px;
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: 40px;
+  opacity: 0.6;
+}
+
+.emptyText {
+  font-size: 14px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+}
+
+/* Wizard button */
+.wizardButton {
+  align-self: center;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background: "[theme:themePrimary, default:#0078d4]";
+  color: "[theme:white, default:#ffffff]";
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background: "[theme:themeDarkAlt, default:#106ebe]";
+  }
+}

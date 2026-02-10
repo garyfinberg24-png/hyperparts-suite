@@ -1,0 +1,227 @@
+@import '~@fluentui/react/dist/sass/References';
+
+.fileCard {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid "[theme:neutralLight, default:#edebe9]";
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  background: "[theme:white, default:#ffffff]";
+  position: relative;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    border-color: "[theme:themePrimary, default:#0078d4]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default:#0078d4]";
+    outline-offset: -2px;
+  }
+}
+
+.fileCardSelected {
+  border-color: "[theme:themePrimary, default:#0078d4]";
+  background: "[theme:themeLighterAlt, default:#eff6fc]";
+}
+
+.fileCardFolder {
+  border-style: dashed;
+}
+
+/* Checkbox overlay */
+.checkboxOverlay {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+
+  .fileCard:hover &,
+  .fileCardSelected & {
+    opacity: 1;
+  }
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 2px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
+  border-radius: 3px;
+  background: "[theme:white, default:#ffffff]";
+  font-size: 12px;
+  font-weight: 700;
+  color: "[theme:white, default:#ffffff]";
+}
+
+.checkboxChecked {
+  background: "[theme:themePrimary, default:#0078d4]";
+  border-color: "[theme:themePrimary, default:#0078d4]";
+}
+
+/* Thumbnail area */
+.thumbnailArea {
+  position: relative;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: "[theme:neutralLighterAlt, default:#faf9f8]";
+  overflow: hidden;
+}
+
+.thumbnailImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fileTypeIcon {
+  font-size: 48px;
+  line-height: 1;
+  opacity: 0.8;
+}
+
+.folderLargeIcon {
+  font-size: 56px;
+  line-height: 1;
+}
+
+.versionBadge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  background: "[theme:themeDarkAlt, default:#106ebe]";
+  color: "[theme:white, default:#ffffff]";
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* File info */
+.fileInfo {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fileName {
+  font-size: 13px;
+  font-weight: 600;
+  color: "[theme:neutralPrimary, default:#323130]";
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Category badges */
+.categoryBadge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.categoryDocument {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.categoryImage {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.categoryVideo {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.categoryAudio {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.categoryArchive {
+  background: #fce4ec;
+  color: #c62828;
+}
+
+.categoryFolder {
+  background: #fff8e1;
+  color: #f57f17;
+}
+
+.categoryOther {
+  background: "[theme:neutralLighter, default:#f3f2f1]";
+  color: "[theme:neutralSecondary, default:#605e5c]";
+}
+
+/* Meta row */
+.metaRow {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+}
+
+.metaItem {
+  white-space: nowrap;
+}
+
+.authorRow {
+  font-size: 11px;
+  color: "[theme:neutralTertiary, default:#a19f9d]";
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* List view variant — applied via parent container override */
+:global(.hyperExplorerListView) .fileCard {
+  flex-direction: row;
+  align-items: center;
+
+  .thumbnailArea {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    flex-shrink: 0;
+  }
+
+  .fileTypeIcon {
+    font-size: 24px;
+  }
+
+  .folderLargeIcon {
+    font-size: 28px;
+  }
+
+  .fileInfo {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .fileName {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .versionBadge {
+    position: static;
+  }
+}

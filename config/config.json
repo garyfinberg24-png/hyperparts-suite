@@ -153,6 +153,14 @@
           "manifest": "./src/webparts/hyperExplorer/HyperExplorerWebPart.manifest.json"
         }
       ]
+    },
+    "hyper-image-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hyperImage/HyperImageWebPart.js",
+          "manifest": "./src/webparts/hyperImage/HyperImageWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -175,6 +183,7 @@
     "HyperFaqWebPartStrings": "lib/webparts/hyperFaq/loc/{locale}.js",
     "HyperBirthdaysWebPartStrings": "lib/webparts/hyperBirthdays/loc/{locale}.js",
     "HyperSliderWebPartStrings": "lib/webparts/hyperSlider/loc/{locale}.js",
-    "HyperExplorerWebPartStrings": "lib/webparts/hyperExplorer/loc/{locale}.js"
+    "HyperExplorerWebPartStrings": "lib/webparts/hyperExplorer/loc/{locale}.js",
+    "HyperImageWebPartStrings": "lib/webparts/hyperImage/loc/{locale}.js"
   }
 }

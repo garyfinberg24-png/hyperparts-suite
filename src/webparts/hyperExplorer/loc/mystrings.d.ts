@@ -11,6 +11,8 @@ declare interface IHyperExplorerWebPartStrings {
   SortDirectionFieldLabel: string;
   ItemsPerPageFieldLabel: string;
   ShowFoldersFieldLabel: string;
+  UseSampleDataFieldLabel: string;
+  ShowWizardOnInitFieldLabel: string;
 
   /* Page 2 — Preview & Display */
   PreviewDisplayPageDescription: string;
@@ -37,6 +39,12 @@ declare interface IHyperExplorerWebPartStrings {
   EnableFolderTreeFieldLabel: string;
   EnableBreadcrumbsFieldLabel: string;
   CacheEnabledFieldLabel: string;
+
+  /* Page 3 — File Plan & Compliance */
+  FilePlanGroupName: string;
+  EnableFilePlanFieldLabel: string;
+  ShowComplianceBadgesFieldLabel: string;
+  RequireRetentionLabelFieldLabel: string;
 
   /* Component strings */
   NoFilesTitle: string;
@@ -67,6 +75,35 @@ declare interface IHyperExplorerWebPartStrings {
   RecentFilesLabel: string;
   LoadMoreLabel: string;
   EditModeLabel: string;
+
+  /* File Plan component strings */
+  FilePlanDashboardTitle: string;
+  FilePlanWizardTitle: string;
+  ApplyRetentionLabelTitle: string;
+  ApplyRetentionLabelAction: string;
+  RetentionLabelLabel: string;
+  FilePlanDescriptorsLabel: string;
+  LabeledLabel: string;
+  UnlabeledLabel: string;
+  CoverageLabel: string;
+  LabelsInUseLabel: string;
+  RecentActivityLabel: string;
+  ConfigureFilePlanLabel: string;
+  NoLabelsAppliedLabel: string;
+  SelectRetentionLabelLabel: string;
+  ApplyLabelButton: string;
+  CancelButton: string;
+  FilePlanButton: string;
+  ComplianceBadgeNoLabel: string;
+  ComplianceBadgeExpired: string;
+  ComplianceBadgeLocked: string;
+  ComplianceBadgeRecord: string;
+  ComplianceBadgeLabeled: string;
+  WizardScopeStepTitle: string;
+  WizardLabelsStepTitle: string;
+  WizardDescriptorsStepTitle: string;
+  WizardRulesStepTitle: string;
+  PurviewPermissionHint: string;
 }
 
 declare module "HyperExplorerWebPartStrings" {

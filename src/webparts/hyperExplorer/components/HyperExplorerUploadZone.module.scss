@@ -1,0 +1,161 @@
+@import '~@fluentui/react/dist/sass/References';
+
+/* Upload drop zone overlay */
+.uploadZone {
+  position: relative;
+  border: 2px dashed "[theme:neutralTertiaryAlt, default:#c8c6c4]";
+  border-radius: 8px;
+  padding: 32px 24px;
+  text-align: center;
+  transition: border-color 0.15s, background 0.15s;
+  cursor: pointer;
+}
+
+.uploadZoneActive {
+  border-color: "[theme:themePrimary, default:#0078d4]";
+  background: "[theme:themeLighterAlt, default:#eff6fc]";
+}
+
+.uploadZoneIcon {
+  font-size: 40px;
+  margin-bottom: 8px;
+  opacity: 0.6;
+  display: block;
+}
+
+.uploadZoneText {
+  font-size: 14px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  margin: 0 0 4px 0;
+}
+
+.uploadZoneHint {
+  font-size: 12px;
+  color: "[theme:neutralTertiary, default:#a19f9d]";
+  margin: 0;
+}
+
+.uploadBrowseButton {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 6px 20px;
+  border: 1px solid "[theme:themePrimary, default:#0078d4]";
+  background: transparent;
+  color: "[theme:themePrimary, default:#0078d4]";
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+
+  &:hover {
+    background: "[theme:themeLighter, default:#deecf9]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default:#0078d4]";
+    outline-offset: 2px;
+  }
+}
+
+/* Hidden file input */
+.uploadInput {
+  display: none;
+}
+
+/* Progress list */
+.uploadProgress {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.uploadEntry {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  background: "[theme:neutralLighterAlt, default:#faf9f8]";
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.uploadEntryName {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: "[theme:neutralPrimary, default:#323130]";
+}
+
+.uploadProgressBar {
+  width: 120px;
+  height: 4px;
+  background: "[theme:neutralLight, default:#edebe9]";
+  border-radius: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.uploadProgressFill {
+  height: 100%;
+  background: "[theme:themePrimary, default:#0078d4]";
+  border-radius: 2px;
+  transition: width 0.2s ease;
+}
+
+.uploadStatusSuccess {
+  color: #107c10;
+  font-weight: 600;
+}
+
+.uploadStatusError {
+  color: #c62828;
+  font-weight: 600;
+}
+
+.uploadRemoveButton {
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: "[theme:neutralTertiary, default:#a19f9d]";
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  &:hover {
+    background: "[theme:neutralLighter, default:#f3f2f1]";
+    color: "[theme:neutralPrimary, default:#323130]";
+  }
+}
+
+/* Drag overlay when dragging files onto the explorer */
+.dragOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 120, 212, 0.08);
+  border: 3px dashed "[theme:themePrimary, default:#0078d4]";
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.dragOverlayText {
+  font-size: 18px;
+  font-weight: 600;
+  color: "[theme:themePrimary, default:#0078d4]";
+  background: rgba(255, 255, 255, 0.9);
+  padding: 12px 28px;
+  border-radius: 8px;
+}

@@ -1,0 +1,158 @@
+@import '~@fluentui/react/dist/sass/References';
+
+.listTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  th, td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid "[theme:neutralLight, default:#edebe9]";
+  }
+
+  th {
+    font-weight: 600;
+    color: "[theme:neutralSecondary, default:#605e5c]";
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: sticky;
+    top: 0;
+    background: "[theme:white, default:#ffffff]";
+    z-index: 1;
+  }
+}
+
+.headerSortable {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+
+  &:hover {
+    color: "[theme:themePrimary, default:#0078d4]";
+  }
+}
+
+.headerCheckbox {
+  width: 32px;
+  min-width: 32px;
+}
+
+.headerIcon {
+  width: 32px;
+  min-width: 32px;
+}
+
+.headerMedium {
+  width: 140px;
+  min-width: 100px;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.headerSmall {
+  width: 80px;
+  min-width: 60px;
+
+  @media (max-width: 600px) {
+    display: none;
+  }
+}
+
+/* Rows */
+.row {
+  cursor: pointer;
+  transition: background 0.1s ease;
+
+  &:hover {
+    background: "[theme:neutralLighterAlt, default:#faf9f8]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default:#0078d4]";
+    outline-offset: -2px;
+  }
+}
+
+.rowSelected {
+  background: "[theme:themeLighterAlt, default:#eff6fc]";
+}
+
+/* Cells */
+.cellCheckbox {
+  width: 32px;
+  text-align: center;
+}
+
+.listCheckbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: 2px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  color: "[theme:white, default:#ffffff]";
+}
+
+.listCheckboxChecked {
+  background: "[theme:themePrimary, default:#0078d4]";
+  border-color: "[theme:themePrimary, default:#0078d4]";
+}
+
+.cellIcon {
+  width: 32px;
+  text-align: center;
+  font-size: 18px;
+}
+
+.cellName {
+  font-weight: 600;
+  color: "[theme:neutralPrimary, default:#323130]";
+  max-width: 300px;
+}
+
+.nameText {
+  display: inline-block;
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+.listVersionBadge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 5px;
+  border-radius: 8px;
+  background: "[theme:themeLighter, default:#deecf9]";
+  color: "[theme:themeDarkAlt, default:#106ebe]";
+  font-size: 10px;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+.cellMeta {
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  white-space: nowrap;
+
+  @media (max-width: 768px) {
+    &:nth-child(n+4) {
+      display: none;
+    }
+  }
+}
+
+.emptyList {
+  padding: 32px;
+  text-align: center;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  font-size: 14px;
+}

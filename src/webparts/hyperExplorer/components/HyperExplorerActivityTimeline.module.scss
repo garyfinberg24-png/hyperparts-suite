@@ -1,0 +1,150 @@
+@import '~@fluentui/react/dist/sass/References';
+
+/* Activity timeline panel */
+.timelinePanel {
+  border: 1px solid "[theme:neutralLight, default:#edebe9]";
+  border-radius: 8px;
+  background: "[theme:white, default:#ffffff]";
+  overflow: hidden;
+}
+
+.timelineHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid "[theme:neutralLight, default:#edebe9]";
+  background: "[theme:neutralLighterAlt, default:#faf9f8]";
+}
+
+.timelineTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: "[theme:neutralPrimary, default:#323130]";
+}
+
+.timelineCloseButton {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: "[theme:neutralLighter, default:#f3f2f1]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default:#0078d4]";
+  }
+}
+
+/* Timeline items */
+.timelineList {
+  padding: 8px 0;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.timelineItem {
+  display: flex;
+  gap: 12px;
+  padding: 10px 14px;
+  position: relative;
+}
+
+/* Vertical connector line */
+.timelineItem::before {
+  content: '';
+  position: absolute;
+  left: 28px;
+  top: 34px;
+  bottom: -10px;
+  width: 2px;
+  background: "[theme:neutralLighter, default:#f3f2f1]";
+}
+
+.timelineItem:last-child::before {
+  display: none;
+}
+
+/* Action dot */
+.timelineDot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+  background: "[theme:neutralLighterAlt, default:#faf9f8]";
+  border: 2px solid "[theme:neutralLight, default:#edebe9]";
+  z-index: 1;
+}
+
+/* Content */
+.timelineContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.timelineAction {
+  font-size: 13px;
+  color: "[theme:neutralPrimary, default:#323130]";
+  line-height: 1.4;
+}
+
+.timelineActionType {
+  font-weight: 600;
+}
+
+.timelineActor {
+  font-weight: 600;
+  color: "[theme:themeDarkAlt, default:#106ebe]";
+}
+
+.timelineDescription {
+  font-size: 12px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  margin-top: 2px;
+  font-style: italic;
+}
+
+.timelineTimestamp {
+  font-size: 11px;
+  color: "[theme:neutralTertiary, default:#a19f9d]";
+  margin-top: 4px;
+}
+
+.timelineVersion {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: "[theme:themeLighter, default:#deecf9]";
+  color: "[theme:themeDarkAlt, default:#106ebe]";
+  margin-left: 6px;
+}
+
+/* Loading & empty */
+.timelineLoading {
+  padding: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: "[theme:neutralTertiary, default:#a19f9d]";
+}
+
+.timelineEmpty {
+  padding: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+}

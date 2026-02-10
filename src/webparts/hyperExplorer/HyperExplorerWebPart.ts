@@ -113,6 +113,24 @@ export default class HyperExplorerWebPart extends BaseHyperWebPart<IHyperExplore
     if (this.properties.cacheDuration === undefined) {
       this.properties.cacheDuration = 300;
     }
+    if (this.properties.enableFilePlan === undefined) {
+      this.properties.enableFilePlan = false;
+    }
+    if (!this.properties.filePlanConfig) {
+      this.properties.filePlanConfig = "{}";
+    }
+    if (this.properties.showComplianceBadges === undefined) {
+      this.properties.showComplianceBadges = false;
+    }
+    if (this.properties.requireRetentionLabel === undefined) {
+      this.properties.requireRetentionLabel = false;
+    }
+    if (this.properties.useSampleData === undefined) {
+      this.properties.useSampleData = true;
+    }
+    if (this.properties.showWizardOnInit === undefined) {
+      this.properties.showWizardOnInit = true;
+    }
   }
 
   protected onDispose(): void {
@@ -167,6 +185,12 @@ export default class HyperExplorerWebPart extends BaseHyperWebPart<IHyperExplore
                 }),
                 PropertyPaneToggle("showFolders", {
                   label: strings.ShowFoldersFieldLabel,
+                }),
+                PropertyPaneToggle("useSampleData", {
+                  label: strings.UseSampleDataFieldLabel,
+                }),
+                PropertyPaneToggle("showWizardOnInit", {
+                  label: strings.ShowWizardOnInitFieldLabel,
                 }),
               ],
             },
@@ -252,6 +276,20 @@ export default class HyperExplorerWebPart extends BaseHyperWebPart<IHyperExplore
                 }),
                 PropertyPaneToggle("cacheEnabled", {
                   label: strings.CacheEnabledFieldLabel,
+                }),
+              ],
+            },
+            {
+              groupName: strings.FilePlanGroupName,
+              groupFields: [
+                PropertyPaneToggle("enableFilePlan", {
+                  label: strings.EnableFilePlanFieldLabel,
+                }),
+                PropertyPaneToggle("showComplianceBadges", {
+                  label: strings.ShowComplianceBadgesFieldLabel,
+                }),
+                PropertyPaneToggle("requireRetentionLabel", {
+                  label: strings.RequireRetentionLabelFieldLabel,
                 }),
               ],
             },

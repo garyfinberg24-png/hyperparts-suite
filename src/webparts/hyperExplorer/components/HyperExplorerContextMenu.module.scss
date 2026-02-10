@@ -1,0 +1,93 @@
+@import '~@fluentui/react/dist/sass/References';
+
+.contextMenu {
+  min-width: 200px;
+  max-width: 280px;
+  background: "[theme:white, default:#ffffff]";
+  border: 1px solid "[theme:neutralLight, default:#edebe9]";
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 4px 0;
+  animation: menuFadeIn 0.12s ease-out;
+}
+
+@keyframes menuFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.menuHeader {
+  padding: 8px 12px;
+  border-bottom: 1px solid "[theme:neutralLighter, default:#f3f2f1]";
+}
+
+.menuHeaderName {
+  font-size: 12px;
+  font-weight: 600;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 13px;
+  color: "[theme:neutralPrimary, default:#323130]";
+  text-align: left;
+  transition: background 0.1s;
+
+  &:hover {
+    background: "[theme:neutralLighterAlt, default:#faf9f8]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default:#0078d4]";
+    outline-offset: -2px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.menuItemDanger {
+  color: #c62828;
+
+  &:hover {
+    background: #fce4ec;
+  }
+}
+
+.menuItemIcon {
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.menuItemLabel {
+  flex: 1;
+  white-space: nowrap;
+}
+
+.menuDivider {
+  height: 1px;
+  background: "[theme:neutralLighter, default:#f3f2f1]";
+  margin: 4px 0;
+}

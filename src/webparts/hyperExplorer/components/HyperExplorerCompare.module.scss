@@ -1,0 +1,198 @@
+@import '~@fluentui/react/dist/sass/References';
+
+/* Compare container */
+.compareContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid "[theme:neutralLight, default:#edebe9]";
+  border-radius: 8px;
+  padding: 16px;
+  background: "[theme:white, default:#ffffff]";
+}
+
+.compareHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.compareTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: "[theme:neutralPrimary, default:#323130]";
+}
+
+.compareCloseButton {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: "[theme:neutralLighter, default:#f3f2f1]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default:#0078d4]";
+  }
+}
+
+/* Side-by-side panels */
+.comparePanels {
+  display: flex;
+  gap: 16px;
+}
+
+.comparePanel {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid "[theme:neutralLight, default:#edebe9]";
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.comparePanelHeader {
+  padding: 8px 12px;
+  background: "[theme:neutralLighterAlt, default:#faf9f8]";
+  border-bottom: 1px solid "[theme:neutralLight, default:#edebe9]";
+  font-size: 13px;
+  font-weight: 600;
+  color: "[theme:neutralPrimary, default:#323130]";
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.comparePanelContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  padding: 12px;
+}
+
+.compareImage {
+  max-width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+}
+
+/* Metadata diff */
+.compareDiffTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.compareDiffRow {
+  border-bottom: 1px solid "[theme:neutralLighter, default:#f3f2f1]";
+}
+
+.compareDiffLabel {
+  padding: 6px 12px;
+  font-weight: 600;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  width: 100px;
+  white-space: nowrap;
+}
+
+.compareDiffValueLeft,
+.compareDiffValueRight {
+  padding: 6px 12px;
+  color: "[theme:neutralPrimary, default:#323130]";
+}
+
+.compareDiffChanged {
+  background: #fff3cd;
+}
+
+/* Before/After slider */
+.beforeAfterContainer {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 4px;
+  cursor: col-resize;
+  user-select: none;
+}
+
+.beforeAfterBefore {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.beforeAfterAfter {
+  width: 100%;
+  display: block;
+}
+
+.beforeAfterBeforeImage,
+.beforeAfterAfterImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+.beforeAfterSlider {
+  position: absolute;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  cursor: col-resize;
+}
+
+.beforeAfterHandle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 36px;
+  height: 36px;
+  background: #ffffff;
+  border: 2px solid "[theme:themePrimary, default:#0078d4]";
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: "[theme:themePrimary, default:#0078d4]";
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.beforeAfterLabels {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 12px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+}
+
+/* Empty compare state */
+.compareEmpty {
+  text-align: center;
+  padding: 32px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  font-size: 14px;
+}
+
+.compareEmptyIcon {
+  font-size: 48px;
+  opacity: 0.5;
+  display: block;
+  margin-bottom: 12px;
+}

@@ -1,0 +1,444 @@
+// ============================================================
+// HyperExplorer File Plan Wizard Steps — Shared Styles
+// ============================================================
+
+// ── Common step container ──
+.stepContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 4px 0;
+}
+
+.stepSection {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stepSectionLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323130;
+  margin-bottom: 4px;
+}
+
+.stepSectionHint {
+  font-size: 12px;
+  color: #605e5c;
+  margin-top: -2px;
+}
+
+// ── Radio choice cards ──
+.radioCard {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  border: 2px solid #edebe9;
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  gap: 12px;
+
+  &:hover {
+    border-color: #c8c6c4;
+    background: #faf9f8;
+  }
+
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: 2px;
+  }
+}
+
+.radioCardSelected {
+  composes: radioCard;
+  border-color: #0078d4;
+  background: #f0f6ff;
+}
+
+.radioIcon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.radioInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.radioLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323130;
+}
+
+.radioDesc {
+  font-size: 12px;
+  color: #605e5c;
+}
+
+// ── Text input ──
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.inputLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #605e5c;
+}
+
+.textInput {
+  padding: 7px 10px;
+  border: 1px solid #c8c6c4;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #323130;
+  background: #ffffff;
+  transition: border-color 0.15s ease;
+
+  &:focus {
+    border-color: #0078d4;
+    outline: none;
+    box-shadow: 0 0 0 1px #0078d4;
+  }
+}
+
+.textInputHint {
+  font-size: 11px;
+  color: #a19f9d;
+}
+
+// ── Checkbox label card ──
+.labelCard {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border: 2px solid #edebe9;
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  gap: 10px;
+
+  &:hover {
+    border-color: #c8c6c4;
+    background: #faf9f8;
+  }
+}
+
+.labelCardSelected {
+  composes: labelCard;
+  border-color: #0078d4;
+  background: #f0f6ff;
+}
+
+.labelCheckbox {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  accent-color: #0078d4;
+  cursor: pointer;
+}
+
+.labelInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.labelName {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323130;
+}
+
+.labelDescription {
+  font-size: 12px;
+  color: #605e5c;
+}
+
+.labelMeta {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.labelBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.badgeBlue {
+  composes: labelBadge;
+  background: #deecf9;
+  color: #106ebe;
+}
+
+.badgeGreen {
+  composes: labelBadge;
+  background: #e6f4ea;
+  color: #137333;
+}
+
+.badgeOrange {
+  composes: labelBadge;
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.badgeRed {
+  composes: labelBadge;
+  background: #fce4ec;
+  color: #c62828;
+}
+
+// ── Toggle row (reuse from HyperDirectory) ──
+.toggleRow {
+  display: flex;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid #edebe9;
+  border-radius: 6px;
+  background: #fafafa;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: #f3f2f1;
+  }
+}
+
+.toggleInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.toggleIcon {
+  font-size: 20px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.toggleLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323130;
+}
+
+.toggleDesc {
+  font-size: 12px;
+  color: #605e5c;
+}
+
+.toggleSwitch {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.toggleInput {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+
+  &:checked + .toggleTrack {
+    background: #0078d4;
+
+    .toggleThumb {
+      transform: translateX(18px);
+    }
+  }
+
+  &:focus + .toggleTrack {
+    box-shadow: 0 0 0 2px #0078d4;
+  }
+}
+
+.toggleTrack {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #c8c6c4;
+  border-radius: 11px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: #ffffff;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+// ── Dropdown select ──
+.selectInput {
+  padding: 7px 10px;
+  border: 1px solid #c8c6c4;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #323130;
+  background: #ffffff;
+  cursor: pointer;
+
+  &:focus {
+    border-color: #0078d4;
+    outline: none;
+    box-shadow: 0 0 0 1px #0078d4;
+  }
+}
+
+// ── Descriptor form grid ──
+.descriptorGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+// ── Rule card ──
+.ruleCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid #edebe9;
+  border-radius: 8px;
+  background: #faf9f8;
+}
+
+.ruleHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ruleConditionRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ruleConditionSelect {
+  composes: selectInput;
+  min-width: 120px;
+}
+
+.ruleConditionValue {
+  composes: textInput;
+  flex: 1;
+  min-width: 100px;
+}
+
+.addButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px dashed #c8c6c4;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 13px;
+  color: #0078d4;
+  font-weight: 600;
+  transition: background 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: #f0f6ff;
+    border-color: #0078d4;
+  }
+
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: 2px;
+  }
+}
+
+.removeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  color: #a19f9d;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: #fce4ec;
+    color: #c62828;
+  }
+}
+
+// ── Hint box ──
+.hintBox {
+  padding: 8px 14px;
+  background: #f0f6ff;
+  border: 1px solid #c7e0f4;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #323130;
+  line-height: 1.5;
+}
+
+// ── Empty state ──
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px;
+  text-align: center;
+  color: #a19f9d;
+  font-size: 13px;
+}
+
+.emptyStateIcon {
+  font-size: 32px;
+  opacity: 0.5;
+}
+
+// ── Responsive ──
+@media (max-width: 600px) {
+  .descriptorGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .ruleConditionRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

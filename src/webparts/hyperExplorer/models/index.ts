@@ -40,9 +40,43 @@ export {
 } from "./IExplorerQuickAction";
 
 export type {
+  IFileActivityEntry,
+  FileActivityAction,
+  IFileActivityActionConfig,
+} from "./IFileActivity";
+
+export {
+  FILE_ACTIVITY_CONFIG,
+} from "./IFileActivity";
+
+export type {
   IHyperExplorerWebPartProps,
 } from "./IHyperExplorerWebPartProps";
 
 export {
   DEFAULT_EXPLORER_PROPS,
 } from "./IHyperExplorerWebPartProps";
+
+export type {
+  IRetentionLabel,
+  RetentionAction,
+  RetentionBehavior,
+  RecordBehavior,
+  IFilePlanDescriptor,
+  IFilePlanRule,
+  IFilePlanCondition,
+  FilePlanConditionField,
+  FilePlanConditionOperator,
+  IComplianceStatus,
+  IRetentionLabelAssignment,
+  IFilePlanWizardScope,
+  IFilePlanWizardLabels,
+  IFilePlanWizardState,
+} from "./IFilePlan";
+
+export {
+  DEFAULT_FILE_PLAN_WIZARD_STATE,
+  formatRetentionDuration,
+  formatRetentionAction,
+  formatRetentionBehavior,
+} from "./IFilePlan";

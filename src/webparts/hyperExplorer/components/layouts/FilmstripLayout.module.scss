@@ -1,0 +1,75 @@
+@import '~@fluentui/react/dist/sass/References';
+
+.filmstripWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.filmstripTrack {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 4px 0;
+  -webkit-overflow-scrolling: touch;
+
+  /* Hide scrollbar */
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.filmstripCard {
+  flex-shrink: 0;
+  width: 220px;
+  scroll-snap-align: start;
+}
+
+.filmstripArrow {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border: 1px solid "[theme:neutralLight, default:#edebe9]";
+  border-radius: 50%;
+  background: "[theme:white, default:#ffffff]";
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  transition: background 0.15s, border-color 0.15s;
+  z-index: 2;
+
+  &:hover {
+    background: "[theme:neutralLighterAlt, default:#faf9f8]";
+    border-color: "[theme:themePrimary, default:#0078d4]";
+    color: "[theme:themePrimary, default:#0078d4]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default:#0078d4]";
+    outline-offset: 1px;
+  }
+}
+
+.filmstripArrowLeft {
+  margin-right: 4px;
+}
+
+.filmstripArrowRight {
+  margin-left: 4px;
+}
+
+.emptyFilmstrip {
+  padding: 32px;
+  text-align: center;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  font-size: 14px;
+}

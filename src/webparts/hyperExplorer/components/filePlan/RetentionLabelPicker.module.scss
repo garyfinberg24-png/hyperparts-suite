@@ -1,0 +1,186 @@
+@import '~@fluentui/react/dist/sass/References';
+
+.pickerBody {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Label selection */
+.labelSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sectionLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: "[theme:neutralPrimary, default:#323130]";
+}
+
+.sectionHint {
+  font-size: 12px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  margin-bottom: 4px;
+}
+
+.labelSelect {
+  padding: 8px 12px;
+  border: 1px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
+  border-radius: 4px;
+  font-size: 14px;
+  background: "[theme:white, default:#ffffff]";
+  color: "[theme:neutralPrimary, default:#323130]";
+
+  &:focus {
+    border-color: "[theme:themePrimary, default:#0078d4]";
+    outline: none;
+  }
+}
+
+/* Selected label info */
+.labelInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: "[theme:themeLighterAlt, default:#eff6fc]";
+  border: 1px solid "[theme:themeLighter, default:#deecf9]";
+  border-radius: 6px;
+  flex-wrap: wrap;
+}
+
+.labelInfoName {
+  font-size: 13px;
+  font-weight: 600;
+  color: "[theme:themeDarkAlt, default:#106ebe]";
+}
+
+.labelInfoBadge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.badgeBlue {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.badgeOrange {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.badgeGreen {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+/* Descriptors grid */
+.descriptorsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.descriptorsToggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: "[theme:themePrimary, default:#0078d4]";
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.descriptorsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.fieldLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+}
+
+.fieldInput {
+  padding: 6px 10px;
+  border: 1px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
+  border-radius: 4px;
+  font-size: 13px;
+  color: "[theme:neutralPrimary, default:#323130]";
+
+  &:focus {
+    border-color: "[theme:themePrimary, default:#0078d4]";
+    outline: none;
+  }
+}
+
+/* Footer buttons */
+.footerRow {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.cancelButton {
+  padding: 8px 16px;
+  border: 1px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
+  border-radius: 4px;
+  background: "[theme:white, default:#ffffff]";
+  cursor: pointer;
+  font-size: 13px;
+  color: "[theme:neutralPrimary, default:#323130]";
+
+  &:hover {
+    background: "[theme:neutralLighter, default:#f3f2f1]";
+  }
+}
+
+.applyButton {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background: "[theme:themePrimary, default:#0078d4]";
+  color: "[theme:white, default:#ffffff]";
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background: "[theme:themeDarkAlt, default:#106ebe]";
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* Loading state */
+.loadingState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  font-size: 14px;
+}

@@ -4,6 +4,8 @@ import type {
   IExplorerFolder,
   IExplorerBreadcrumb,
   IVideoPlaylistItem,
+  IRetentionLabel,
+  IComplianceStatus,
   ViewMode,
   SortMode,
   SortDirection,
@@ -65,6 +67,13 @@ export interface IHyperExplorerState {
   contextMenuX: number;
   contextMenuY: number;
 
+  /** File Plan & Compliance */
+  filePlanWizardOpen: boolean;
+  filePlanDashboardOpen: boolean;
+  retentionLabels: IRetentionLabel[];
+  complianceStatuses: Record<string, IComplianceStatus>;
+  labelPickerFileId: string | undefined;
+
   /** Actions */
   setCurrentFolder: (path: string) => void;
   setBreadcrumbs: (crumbs: IExplorerBreadcrumb[]) => void;
@@ -100,6 +109,15 @@ export interface IHyperExplorerState {
   setFileTypeFilter: (types: string[]) => void;
   openContextMenu: (file: IExplorerFile, x: number, y: number) => void;
   closeContextMenu: () => void;
+  openFilePlanWizard: () => void;
+  closeFilePlanWizard: () => void;
+  openFilePlanDashboard: () => void;
+  closeFilePlanDashboard: () => void;
+  setRetentionLabels: (labels: IRetentionLabel[]) => void;
+  setFileComplianceStatus: (fileId: string, status: IComplianceStatus) => void;
+  setComplianceStatuses: (statuses: Record<string, IComplianceStatus>) => void;
+  openLabelPicker: (fileId: string) => void;
+  closeLabelPicker: () => void;
   reset: () => void;
 }
 
@@ -239,6 +257,11 @@ const INITIAL_STATE = {
   contextMenuFile: undefined as IExplorerFile | undefined,
   contextMenuX: 0,
   contextMenuY: 0,
+  filePlanWizardOpen: false,
+  filePlanDashboardOpen: false,
+  retentionLabels: [] as IRetentionLabel[],
+  complianceStatuses: {} as Record<string, IComplianceStatus>,
+  labelPickerFileId: undefined as string | undefined,
 };
 
 export const useHyperExplorerStore = create<IHyperExplorerState>(function (set, get) {
@@ -492,6 +515,49 @@ export const useHyperExplorerStore = create<IHyperExplorerState>(function (set, 
 
     closeContextMenu: function (): void {
       set({ contextMenuFile: undefined, contextMenuX: 0, contextMenuY: 0 });
+    },
+
+    openFilePlanWizard: function (): void {
+      set({ filePlanWizardOpen: true });
+    },
+
+    closeFilePlanWizard: function (): void {
+      set({ filePlanWizardOpen: false });
+    },
+
+    openFilePlanDashboard: function (): void {
+      set({ filePlanDashboardOpen: true });
+    },
+
+    closeFilePlanDashboard: function (): void {
+      set({ filePlanDashboardOpen: false });
+    },
+
+    setRetentionLabels: function (labels: IRetentionLabel[]): void {
+      set({ retentionLabels: labels });
+    },
+
+    setFileComplianceStatus: function (fileId: string, status: IComplianceStatus): void {
+      set(function (state: IHyperExplorerState) {
+        var next: Record<string, IComplianceStatus> = {};
+        Object.keys(state.complianceStatuses).forEach(function (key) {
+          next[key] = state.complianceStatuses[key];
+        });
+        next[fileId] = status;
+        return { complianceStatuses: next };
+      });
+    },
+
+    setComplianceStatuses: function (statuses: Record<string, IComplianceStatus>): void {
+      set({ complianceStatuses: statuses });
+    },
+
+    openLabelPicker: function (fileId: string): void {
+      set({ labelPickerFileId: fileId });
+    },
+
+    closeLabelPicker: function (): void {
+      set({ labelPickerFileId: undefined });
     },
 
     reset: function (): void {

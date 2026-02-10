@@ -35,6 +35,16 @@ export interface IHyperExplorerWebPartProps extends IBaseHyperWebPartProps {
   enableBreadcrumbs: boolean;
   cacheEnabled: boolean;
   cacheDuration: number;
+
+  /** File Plan & Compliance */
+  enableFilePlan: boolean;
+  filePlanConfig: string;
+  showComplianceBadges: boolean;
+  requireRetentionLabel: boolean;
+
+  /** Sample data & wizard */
+  useSampleData: boolean;
+  showWizardOnInit: boolean;
 }
 
 /** Default property values */
@@ -66,4 +76,10 @@ export const DEFAULT_EXPLORER_PROPS: Partial<IHyperExplorerWebPartProps> = {
   enableBreadcrumbs: true,
   cacheEnabled: true,
   cacheDuration: 300000,
+  enableFilePlan: false,
+  filePlanConfig: "{}",
+  showComplianceBadges: false,
+  requireRetentionLabel: false,
+  useSampleData: true,
+  showWizardOnInit: true,
 };

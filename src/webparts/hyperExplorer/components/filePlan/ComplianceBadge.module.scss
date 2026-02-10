@@ -1,0 +1,61 @@
+// ============================================================
+// HyperExplorer — Compliance Badge Styles
+// ============================================================
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.badgeCompact {
+  composes: badge;
+  padding: 2px 4px;
+  max-width: none;
+}
+
+// ── Color variants ──
+.badgeUnlabeled {
+  background: #f3f2f1;
+  color: #a19f9d;
+}
+
+.badgeRetain {
+  background: #deecf9;
+  color: #106ebe;
+}
+
+.badgeRecord {
+  background: #e6f4ea;
+  color: #137333;
+}
+
+.badgeRegulatory {
+  background: #fce4ec;
+  color: #c62828;
+}
+
+.badgeExpiring {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+// ── Icon ──
+.badgeIcon {
+  font-size: 10px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.badgeLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
