@@ -46,6 +46,12 @@ declare interface IHyperChartsWebPartStrings {
   FilterLabel: string;
   ManualLabelsLabel: string;
   ManualValuesLabel: string;
+
+  // Wizard & Demo
+  ShowWizardOnInitLabel: string;
+  UseSampleDataLabel: string;
+  DemoModeLabel: string;
+  SetupGroupName: string;
 }
 
 declare module "HyperChartsWebPartStrings" {

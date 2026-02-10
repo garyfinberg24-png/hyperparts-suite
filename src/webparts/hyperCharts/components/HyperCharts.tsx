@@ -2,6 +2,8 @@ import * as React from "react";
 import type { IHyperChartsWebPartProps, IHyperChart } from "../models";
 import { parseCharts, parseDataSource, parseThresholds, evaluateThreshold } from "../models";
 import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton } from "../../../common/components";
+import { HyperWizard } from "../../../common/components/wizard/HyperWizard";
+import { CHARTS_WIZARD_CONFIG, buildStateFromProps } from "./wizard/chartsWizardConfig";
 import { useChartData } from "../hooks/useChartData";
 import { useExcelData } from "../hooks/useExcelData";
 import { useAutoRefresh } from "../hooks/useAutoRefresh";
@@ -10,6 +12,7 @@ import { useHyperChartsStore } from "../store/useHyperChartsStore";
 import { applyConditionalColors, computeTrend } from "../utils/conditionalColors";
 import { exportChartDataAsCsv, exportChartAsPng } from "../utils/exportUtils";
 import { generateChartAltText } from "../utils/accessibilityUtils";
+import { getSampleCharts } from "../utils/sampleCharts";
 import type { ICanvasDataset } from "./HyperChartsCanvas";
 import HyperChartsCanvas from "./HyperChartsCanvas";
 import HyperChartsKpiCard from "./HyperChartsKpiCard";
@@ -19,11 +22,14 @@ import HyperChartsToolbar from "./HyperChartsToolbar";
 import HyperChartsGrid from "./HyperChartsGrid";
 import HyperChartsComparison from "./HyperChartsComparison";
 import HyperChartsAccessibilityTable from "./HyperChartsAccessibilityTable";
+import HyperChartsDemoBar from "./HyperChartsDemoBar";
 import styles from "./HyperCharts.module.scss";
 
 export interface IHyperChartsComponentProps extends IHyperChartsWebPartProps {
   instanceId: string;
   isEditMode?: boolean;
+  /** Callback from web part class to persist wizard result */
+  onWizardApply?: (result: Partial<IHyperChartsWebPartProps>) => void;
 }
 
 /** Convert IChartDatasetResult[] to ICanvasDataset[] */
@@ -289,45 +295,134 @@ const HyperChartsMetricRenderer: React.FC<IMetricRendererProps> = function (rend
 };
 
 const HyperChartsInner: React.FC<IHyperChartsComponentProps> = function (props) {
-  const charts = parseCharts(props.charts);
-  const refreshTick = useHyperChartsStore(function (s) { return s.refreshTick; });
-  const incrementRefreshTick = useHyperChartsStore(function (s) { return s.incrementRefreshTick; });
-  const isDrillDownOpen = useHyperChartsStore(function (s) { return s.isDrillDownOpen; });
-  const selectedChartId = useHyperChartsStore(function (s) { return s.selectedChartId; });
-  const drillDownSegmentIndex = useHyperChartsStore(function (s) { return s.drillDownSegmentIndex; });
-  const closeDrillDown = useHyperChartsStore(function (s) { return s.closeDrillDown; });
+  const store = useHyperChartsStore();
+
+  // Auto-open wizard on first load when showWizardOnInit and no charts configured
+  React.useEffect(function () {
+    if (props.showWizardOnInit && (!props.charts || props.charts === "" || props.charts === "[]") && !props.useSampleData) {
+      store.openWizard();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ── Sample data ──
+  var sampleCharts = React.useMemo(function (): IHyperChart[] {
+    if (props.useSampleData) {
+      return getSampleCharts();
+    }
+    return [];
+  }, [props.useSampleData]);
+
+  // Build wizard state override from current props (for re-editing)
+  var wizardStateOverride = React.useMemo(function () {
+    return buildStateFromProps(props);
+  }, [props.charts, props.gridColumns, props.gridGap, props.title, props.enableDrillDown,
+      props.enableExport, props.enableConditionalColors, props.enableComparison,
+      props.enableAccessibilityTables, props.refreshInterval, props.showWizardOnInit]);
+  // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Handle wizard apply
+  var handleWizardApply = React.useCallback(function (result: Partial<IHyperChartsWebPartProps>): void {
+    if (props.onWizardApply) {
+      props.onWizardApply(result);
+    }
+    store.closeWizard();
+  }, [props.onWizardApply, store]);
+
+  // Parse configured charts
+  var configuredCharts = parseCharts(props.charts);
+
+  // Merge sample data in front of configured charts
+  var allCharts = React.useMemo(function (): IHyperChart[] {
+    if (sampleCharts.length > 0) {
+      return sampleCharts.concat(configuredCharts);
+    }
+    return configuredCharts;
+  }, [sampleCharts, configuredCharts]);
+
+  // Demo mode overrides
+  var effectiveGridColumns = props.demoMode && store.demoGridColumns !== undefined ? store.demoGridColumns : (props.gridColumns || 2);
 
   // Auto-refresh
   useAutoRefresh({
     interval: props.refreshInterval || 0,
-    onRefresh: incrementRefreshTick,
+    onRefresh: store.incrementRefreshTick,
   });
 
-  if (charts.length === 0) {
-    return React.createElement(HyperEmptyState, {
-      iconName: "BarChartVertical",
-      title: "No Charts Configured",
-      description: "Add charts using the property pane to get started.",
-    });
+  // Build content children array
+  var contentChildren: React.ReactNode[] = [];
+
+  // ── Wizard element (always rendered, controlled by store) ──
+  contentChildren.push(
+    React.createElement(HyperWizard, {
+      key: "wizard",
+      config: CHARTS_WIZARD_CONFIG,
+      isOpen: store.isWizardOpen,
+      onClose: store.closeWizard,
+      onApply: handleWizardApply,
+      initialStateOverride: wizardStateOverride,
+    })
+  );
+
+  // Demo bar (rendered above everything when demo mode is on)
+  if (props.demoMode) {
+    contentChildren.push(
+      React.createElement(HyperChartsDemoBar, { key: "demobar" })
+    );
+  }
+
+  // Sample data banner
+  if (props.useSampleData && !props.demoMode) {
+    contentChildren.push(
+      React.createElement("div", {
+        key: "sampleBanner",
+        style: {
+          background: "linear-gradient(90deg, #fff7ed, #fef3c7)",
+          border: "1px solid #fbbf24",
+          borderRadius: "6px",
+          padding: "8px 16px",
+          marginBottom: "12px",
+          fontSize: "13px",
+          color: "#92400e",
+        },
+      }, "Sample Data \u2014 Turn off \"Use Sample Data\" in the property pane and configure your dashboard via the wizard.")
+    );
+  }
+
+  if (allCharts.length === 0) {
+    contentChildren.push(
+      React.createElement(HyperEmptyState, {
+        key: "empty",
+        iconName: "BarChartVertical",
+        title: "No Charts Configured",
+        description: "Add charts using the setup wizard or property pane to get started.",
+      })
+    );
+
+    return React.createElement(
+      "div",
+      { className: styles.chartsContainer },
+      contentChildren
+    );
   }
 
   // Find drill-down chart for modal
   let drillDownChart: IHyperChart | undefined;
-  if (selectedChartId) {
-    charts.forEach(function (c) {
-      if (c.id === selectedChartId) drillDownChart = c;
+  if (store.selectedChartId) {
+    allCharts.forEach(function (c) {
+      if (c.id === store.selectedChartId) drillDownChart = c;
     });
   }
 
   // Manual refresh handler for toolbar
-  const handleManualRefresh = React.useCallback(function () {
-    incrementRefreshTick();
-  }, [incrementRefreshTick]);
+  var handleManualRefresh = React.useCallback(function () {
+    store.incrementRefreshTick();
+  }, [store]);
 
   // Build chart elements with grid span styles
-  const chartElements: React.ReactElement[] = [];
-  charts.forEach(function (chart) {
-    const cardStyle: React.CSSProperties = {
+  var chartElements: React.ReactElement[] = [];
+  allCharts.forEach(function (chart) {
+    var cardStyle: React.CSSProperties = {
       gridColumn: "span " + chart.colSpan,
       gridRow: "span " + chart.rowSpan,
     };
@@ -337,7 +432,7 @@ const HyperChartsInner: React.FC<IHyperChartsComponentProps> = function (props) 
         { key: chart.id, style: cardStyle },
         React.createElement(HyperChartsMetricRenderer, {
           chart: chart,
-          refreshTick: refreshTick,
+          refreshTick: store.refreshTick,
           cacheDuration: props.cacheDuration || 300,
           enableDrillDown: props.enableDrillDown,
           enableConditionalColors: props.enableConditionalColors,
@@ -350,6 +445,44 @@ const HyperChartsInner: React.FC<IHyperChartsComponentProps> = function (props) 
     );
   });
 
+  // Toolbar (title, export-all, refresh)
+  contentChildren.push(
+    React.createElement(HyperChartsToolbar, {
+      key: "toolbar",
+      title: props.title || "",
+      enableExport: props.enableExport,
+      refreshInterval: props.refreshInterval || 0,
+      onRefresh: handleManualRefresh,
+    })
+  );
+
+  // Responsive grid layout
+  contentChildren.push(
+    React.createElement(
+      HyperChartsGrid,
+      {
+        key: "grid",
+        gridColumns: effectiveGridColumns,
+        gridGap: props.gridGap || 16,
+      },
+      chartElements
+    )
+  );
+
+  // Drill-down modal
+  contentChildren.push(
+    React.createElement(HyperChartsDrillDown, {
+      key: "drilldown",
+      isOpen: store.isDrillDownOpen,
+      onClose: store.closeDrillDown,
+      chartTitle: drillDownChart ? drillDownChart.title : "",
+      segmentLabel: drillDownChart && store.drillDownSegmentIndex !== undefined ? "Segment " + (store.drillDownSegmentIndex + 1) : "",
+      segmentValue: 0,
+      items: [],
+      columns: [],
+    })
+  );
+
   return React.createElement(
     "div",
     {
@@ -357,32 +490,7 @@ const HyperChartsInner: React.FC<IHyperChartsComponentProps> = function (props) 
       role: "region",
       "aria-label": props.title || "Charts Dashboard",
     },
-    // Toolbar (title, export-all, refresh)
-    React.createElement(HyperChartsToolbar, {
-      title: props.title || "",
-      enableExport: props.enableExport,
-      refreshInterval: props.refreshInterval || 0,
-      onRefresh: handleManualRefresh,
-    }),
-    // Responsive grid layout
-    React.createElement(
-      HyperChartsGrid,
-      {
-        gridColumns: props.gridColumns || 2,
-        gridGap: props.gridGap || 16,
-      },
-      chartElements
-    ),
-    // Drill-down modal
-    React.createElement(HyperChartsDrillDown, {
-      isOpen: isDrillDownOpen,
-      onClose: closeDrillDown,
-      chartTitle: drillDownChart ? drillDownChart.title : "",
-      segmentLabel: drillDownChart && drillDownSegmentIndex !== undefined ? "Segment " + (drillDownSegmentIndex + 1) : "",
-      segmentValue: 0,
-      items: [],
-      columns: [],
-    })
+    contentChildren
   );
 };
 

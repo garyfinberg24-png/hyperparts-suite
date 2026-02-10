@@ -24,10 +24,20 @@ import { parseCharts, stringifyCharts, generateChartId, DEFAULT_CHART } from "./
 export default class HyperChartsWebPart extends BaseHyperWebPart<IHyperChartsWebPartProps> {
 
   public render(): void {
+    var self = this;
     const props: IHyperChartsComponentProps = {
       ...this.properties,
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
+      onWizardApply: function (result: Partial<IHyperChartsWebPartProps>): void {
+        var keys = Object.keys(result);
+        keys.forEach(function (key) {
+          (self.properties as unknown as Record<string, unknown>)[key] =
+            (result as unknown as Record<string, unknown>)[key];
+        });
+        self.render();
+        self.context.propertyPane.refresh();
+      },
     };
     const element: React.ReactElement<IHyperChartsComponentProps> =
       React.createElement(HyperCharts, props);
@@ -72,6 +82,15 @@ export default class HyperChartsWebPart extends BaseHyperWebPart<IHyperChartsWeb
     }
     if (this.properties.powerBiEmbedUrl === undefined) {
       this.properties.powerBiEmbedUrl = "";
+    }
+    if (this.properties.showWizardOnInit === undefined) {
+      this.properties.showWizardOnInit = true;
+    }
+    if (this.properties.useSampleData === undefined) {
+      this.properties.useSampleData = true;
+    }
+    if (this.properties.demoMode === undefined) {
+      this.properties.demoMode = false;
     }
   }
 
@@ -529,6 +548,20 @@ export default class HyperChartsWebPart extends BaseHyperWebPart<IHyperChartsWeb
                   min: 8,
                   max: 32,
                   step: 4,
+                }),
+              ],
+            },
+            {
+              groupName: strings.SetupGroupName,
+              groupFields: [
+                PropertyPaneToggle("showWizardOnInit", {
+                  label: strings.ShowWizardOnInitLabel,
+                }),
+                PropertyPaneToggle("useSampleData", {
+                  label: strings.UseSampleDataLabel,
+                }),
+                PropertyPaneToggle("demoMode", {
+                  label: strings.DemoModeLabel,
                 }),
               ],
             },

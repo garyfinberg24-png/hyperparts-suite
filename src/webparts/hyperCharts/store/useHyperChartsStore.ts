@@ -15,6 +15,12 @@ export interface IHyperChartsStoreState {
   chartErrors: Record<string, string>;
   /** Auto-refresh tick counter (incremented by timer) */
   refreshTick: number;
+  /** Whether the setup wizard is open */
+  isWizardOpen: boolean;
+  /** Demo mode: override grid columns */
+  demoGridColumns: number | undefined;
+  /** Demo mode: show data labels */
+  demoShowDataLabels: boolean;
 }
 
 export interface IHyperChartsStoreActions {
@@ -25,6 +31,10 @@ export interface IHyperChartsStoreActions {
   setChartError: (chartId: string, message: string) => void;
   clearChartError: (chartId: string) => void;
   incrementRefreshTick: () => void;
+  openWizard: () => void;
+  closeWizard: () => void;
+  setDemoGridColumns: (cols: number) => void;
+  setDemoShowDataLabels: (show: boolean) => void;
   reset: () => void;
 }
 
@@ -38,6 +48,9 @@ const initialState: IHyperChartsStoreState = {
   chartLoading: {},
   chartErrors: {},
   refreshTick: 0,
+  isWizardOpen: false,
+  demoGridColumns: undefined,
+  demoShowDataLabels: false,
 };
 
 export const useHyperChartsStore = create<IHyperChartsStore>(function (set) {
@@ -88,6 +101,22 @@ export const useHyperChartsStore = create<IHyperChartsStore>(function (set) {
       set(function (state) {
         return { refreshTick: state.refreshTick + 1 };
       });
+    },
+
+    openWizard: function (): void {
+      set({ isWizardOpen: true });
+    },
+
+    closeWizard: function (): void {
+      set({ isWizardOpen: false });
+    },
+
+    setDemoGridColumns: function (cols: number): void {
+      set({ demoGridColumns: cols });
+    },
+
+    setDemoShowDataLabels: function (show: boolean): void {
+      set({ demoShowDataLabels: show });
     },
 
     reset: function (): void {

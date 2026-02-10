@@ -47,5 +47,11 @@ define([], function () {
     FilterLabel: "OData Filter",
     ManualLabelsLabel: "Labels (comma-separated)",
     ManualValuesLabel: "Values (comma-separated)",
+
+    // Wizard & Demo
+    ShowWizardOnInitLabel: "Show Setup Wizard on First Add",
+    UseSampleDataLabel: "Use Sample Data",
+    DemoModeLabel: "Demo Mode (show demo bar)",
+    SetupGroupName: "Setup & Demo",
   };
 });

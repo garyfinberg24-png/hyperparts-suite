@@ -38,4 +38,12 @@ export interface IHyperChartsWebPartProps extends IBaseHyperWebPartProps {
   // ─── Power BI (DEFERRED -- stub only) ───
   /** Power BI embed URL (empty = disabled) */
   powerBiEmbedUrl: string;
+
+  // ─── Wizard & Demo ───
+  /** Show setup wizard on first add */
+  showWizardOnInit: boolean;
+  /** Use sample data (pre-built 2x2 dashboard) */
+  useSampleData: boolean;
+  /** Show demo bar with interactive controls */
+  demoMode: boolean;
 }

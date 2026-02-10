@@ -26,3 +26,20 @@ export type { IHyperChart } from "./IHyperChart";
 export { DEFAULT_CHART, generateChartId, parseCharts, stringifyCharts } from "./IHyperChart";
 
 export type { IHyperChartsWebPartProps } from "./IHyperChartsWebPartProps";
+
+export type {
+  DashboardGridLayout,
+  IWizardDataSource,
+  IWizardChartTile,
+  IChartsWizardState,
+} from "./IHyperChartsWizardState";
+export {
+  generateWizardTileId,
+  getGridColumns,
+  getTileCount,
+  getKpiRowCount,
+  hasKpiRow,
+  DEFAULT_WIZARD_DATA_SOURCE,
+  createDefaultTile,
+  DEFAULT_CHARTS_WIZARD_STATE,
+} from "./IHyperChartsWizardState";
