@@ -1,0 +1,103 @@
+@import "~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss";
+
+.hyperStyle {
+  position: relative;
+}
+
+.editBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: $ms-color-themeLighterAlt;
+  border: 1px dashed $ms-color-themeTertiary;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.editBarLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.editBarIcon {
+  font-size: 20px;
+}
+
+.editBarTitle {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+}
+
+.editBarSub {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+}
+
+.editBarActions {
+  display: flex;
+  gap: 8px;
+}
+
+.editBarBtn {
+  padding: 6px 14px;
+  border: 1px solid $ms-color-themePrimary;
+  border-radius: 4px;
+  background: $ms-color-themePrimary;
+  color: $ms-color-white;
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  &:hover {
+    background: $ms-color-themeDark;
+  }
+}
+
+.editBarBtnSecondary {
+  padding: 6px 14px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  background: $ms-color-white;
+  color: $ms-color-neutralPrimary;
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  &:hover {
+    border-color: $ms-color-themePrimary;
+    color: $ms-color-themePrimary;
+  }
+}
+
+.templateBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: $ms-font-size-10;
+  font-weight: $ms-font-weight-semibold;
+  text-transform: uppercase;
+  background: $ms-color-themeLighter;
+  color: $ms-color-themeDark;
+}
+
+.activeIndicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(16, 124, 16, 0.08);
+  border: 1px solid rgba(16, 124, 16, 0.3);
+  border-radius: 6px;
+  font-size: $ms-font-size-12;
+  color: #107c10;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #107c10;
+}

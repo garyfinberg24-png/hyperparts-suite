@@ -161,6 +161,14 @@
           "manifest": "./src/webparts/hyperImage/HyperImageWebPart.manifest.json"
         }
       ]
+    },
+    "hyper-style-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hyperStyle/HyperStyleWebPart.js",
+          "manifest": "./src/webparts/hyperStyle/HyperStyleWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -184,6 +192,7 @@
     "HyperBirthdaysWebPartStrings": "lib/webparts/hyperBirthdays/loc/{locale}.js",
     "HyperSliderWebPartStrings": "lib/webparts/hyperSlider/loc/{locale}.js",
     "HyperExplorerWebPartStrings": "lib/webparts/hyperExplorer/loc/{locale}.js",
-    "HyperImageWebPartStrings": "lib/webparts/hyperImage/loc/{locale}.js"
+    "HyperImageWebPartStrings": "lib/webparts/hyperImage/loc/{locale}.js",
+    "HyperStyleWebPartStrings": "lib/webparts/hyperStyle/loc/{locale}.js"
   }
 }
