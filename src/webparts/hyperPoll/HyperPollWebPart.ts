@@ -75,10 +75,20 @@ const TEMPLATE_OPTIONS = [
 export default class HyperPollWebPart extends BaseHyperWebPart<IHyperPollWebPartProps> {
 
   public render(): void {
+    var self = this;
     const componentProps: IHyperPollComponentProps = {
       ...this.properties,
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
+      onWizardApply: function (result: Partial<IHyperPollWebPartProps>): void {
+        var keys = Object.keys(result);
+        keys.forEach(function (key) {
+          (self.properties as unknown as Record<string, unknown>)[key] =
+            (result as unknown as Record<string, unknown>)[key];
+        });
+        self.render();
+        self.context.propertyPane.refresh();
+      },
     };
     const element: React.ReactElement<IHyperPollComponentProps> =
       React.createElement(HyperPoll, componentProps);
@@ -114,6 +124,15 @@ export default class HyperPollWebPart extends BaseHyperWebPart<IHyperPollWebPart
     }
     if (this.properties.cacheDuration === undefined) {
       this.properties.cacheDuration = 300;
+    }
+    if (this.properties.showWizardOnInit === undefined) {
+      this.properties.showWizardOnInit = true;
+    }
+    if (this.properties.useSampleData === undefined) {
+      this.properties.useSampleData = true;
+    }
+    if (this.properties.enableDemoMode === undefined) {
+      this.properties.enableDemoMode = false;
     }
   }
 
@@ -731,6 +750,20 @@ export default class HyperPollWebPart extends BaseHyperWebPart<IHyperPollWebPart
                 }),
                 PropertyPaneTextField("responseListName", {
                   label: strings.ResponseListNameLabel,
+                }),
+              ],
+            },
+            {
+              groupName: strings.WizardGroupName,
+              groupFields: [
+                PropertyPaneToggle("showWizardOnInit", {
+                  label: strings.ShowWizardOnInitLabel,
+                }),
+                PropertyPaneToggle("useSampleData", {
+                  label: strings.UseSampleDataLabel,
+                }),
+                PropertyPaneToggle("enableDemoMode", {
+                  label: strings.EnableDemoModeLabel,
                 }),
               ],
             },

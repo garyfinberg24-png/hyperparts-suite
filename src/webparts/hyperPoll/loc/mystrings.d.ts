@@ -67,6 +67,11 @@ declare interface IHyperPollWebPartStrings {
   TemplateNpsSurvey: string;
   TemplateEventFeedback: string;
   TemplateQuickPulse: string;
+  // Wizard & Demo
+  WizardGroupName: string;
+  ShowWizardOnInitLabel: string;
+  UseSampleDataLabel: string;
+  EnableDemoModeLabel: string;
 }
 
 declare module "HyperPollWebPartStrings" {

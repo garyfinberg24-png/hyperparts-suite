@@ -18,6 +18,8 @@ export interface IHyperPollStoreState {
   isLoading: boolean;
   /** Error message */
   errorMessage: string;
+  /** Whether the wizard is currently open */
+  isWizardOpen: boolean;
 }
 
 export interface IHyperPollStoreActions {
@@ -34,6 +36,8 @@ export interface IHyperPollStoreActions {
   setError: (message: string) => void;
   clearError: () => void;
   reset: () => void;
+  openWizard: () => void;
+  closeWizard: () => void;
 }
 
 export type IHyperPollStore = IHyperPollStoreState & IHyperPollStoreActions;
@@ -47,6 +51,7 @@ const initialState: IHyperPollStoreState = {
   isExporting: false,
   isLoading: false,
   errorMessage: "",
+  isWizardOpen: false,
 };
 
 export const useHyperPollStore = create<IHyperPollStore>(function (set) {
@@ -117,6 +122,14 @@ export const useHyperPollStore = create<IHyperPollStore>(function (set) {
 
     reset: function (): void {
       set({ ...initialState });
+    },
+
+    openWizard: function (): void {
+      set({ isWizardOpen: true });
+    },
+
+    closeWizard: function (): void {
+      set({ isWizardOpen: false });
     },
   };
 });

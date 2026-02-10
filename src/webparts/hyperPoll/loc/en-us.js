@@ -67,6 +67,11 @@ define([], function () {
     // Template names
     TemplateNpsSurvey: "NPS Survey",
     TemplateEventFeedback: "Event Feedback",
-    TemplateQuickPulse: "Quick Pulse"
+    TemplateQuickPulse: "Quick Pulse",
+    // Wizard & Demo
+    WizardGroupName: "Wizard & Demo",
+    ShowWizardOnInitLabel: "Show Setup Wizard on First Load",
+    UseSampleDataLabel: "Use Sample Data (Preview Mode)",
+    EnableDemoModeLabel: "Enable Demo Control Bar"
   };
 });

@@ -22,4 +22,10 @@ export interface IHyperPollWebPartProps extends IBaseHyperWebPartProps {
   refreshInterval: number;
   /** Cache duration in seconds */
   cacheDuration: number;
+  /** Show wizard on first load when no polls configured */
+  showWizardOnInit: boolean;
+  /** Use sample data for preview */
+  useSampleData: boolean;
+  /** Enable demo control bar when published */
+  enableDemoMode: boolean;
 }
