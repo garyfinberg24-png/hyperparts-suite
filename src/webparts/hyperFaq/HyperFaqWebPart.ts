@@ -18,12 +18,49 @@ import type { IHyperFaqWebPartProps } from "./models";
 export default class HyperFaqWebPart extends BaseHyperWebPart<IHyperFaqWebPartProps> {
 
   public render(): void {
-    const props: IHyperFaqComponentProps = {
-      ...this.properties,
+    var self = this;
+    var props: IHyperFaqComponentProps = {
+      title: this.properties.title,
+      listName: this.properties.listName,
+      reviewQueueListName: this.properties.reviewQueueListName,
+      accordionStyle: this.properties.accordionStyle,
+      sortMode: this.properties.sortMode,
+      enableSearch: this.properties.enableSearch,
+      enableVoting: this.properties.enableVoting,
+      enableSubmission: this.properties.enableSubmission,
+      enableRelated: this.properties.enableRelated,
+      enableCategories: this.properties.enableCategories,
+      maxItems: this.properties.maxItems,
+      cacheDuration: this.properties.cacheDuration,
+      showViewCount: this.properties.showViewCount,
+      enableDeepLink: this.properties.enableDeepLink,
+      layout: this.properties.layout,
+      selectedTemplate: this.properties.selectedTemplate,
+      wizardCompleted: this.properties.wizardCompleted,
+      showWizardOnInit: this.properties.showWizardOnInit,
+      useSampleData: this.properties.useSampleData,
+      enableExpandAll: this.properties.enableExpandAll,
+      enableCopyLink: this.properties.enableCopyLink,
+      enableContactExpert: this.properties.enableContactExpert,
+      enableFeedbackOnDownvote: this.properties.enableFeedbackOnDownvote,
+      enableSearchHighlight: this.properties.enableSearchHighlight,
+      enablePinnedFaqs: this.properties.enablePinnedFaqs,
+      pinnedFaqIds: this.properties.pinnedFaqIds,
+      categoryIcons: this.properties.categoryIcons,
+      showCategoryCards: this.properties.showCategoryCards,
+      showHeroFaq: this.properties.showHeroFaq,
+      heroFaqId: this.properties.heroFaqId,
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
+      onWizardApply: function (result: Partial<IHyperFaqWebPartProps>): void {
+        Object.keys(result).forEach(function (key) {
+          (self.properties as unknown as Record<string, unknown>)[key] = (result as unknown as Record<string, unknown>)[key];
+        });
+        self.render();
+        self.context.propertyPane.refresh();
+      },
     };
-    const element: React.ReactElement<IHyperFaqComponentProps> =
+    var element: React.ReactElement<IHyperFaqComponentProps> =
       React.createElement(HyperFaq, props);
     ReactDom.render(element, this.domElement);
   }
@@ -31,6 +68,7 @@ export default class HyperFaqWebPart extends BaseHyperWebPart<IHyperFaqWebPartPr
   protected async onInit(): Promise<void> {
     await super.onInit();
 
+    // V1 defaults
     if (this.properties.title === undefined) {
       this.properties.title = "FAQ";
     }
@@ -73,6 +111,56 @@ export default class HyperFaqWebPart extends BaseHyperWebPart<IHyperFaqWebPartPr
     if (this.properties.enableDeepLink === undefined) {
       this.properties.enableDeepLink = true;
     }
+
+    // V2 defaults
+    if (this.properties.layout === undefined) {
+      this.properties.layout = "accordion";
+    }
+    if (this.properties.selectedTemplate === undefined) {
+      this.properties.selectedTemplate = "corporate-clean";
+    }
+    if (this.properties.wizardCompleted === undefined) {
+      this.properties.wizardCompleted = false;
+    }
+    if (this.properties.showWizardOnInit === undefined) {
+      this.properties.showWizardOnInit = true;
+    }
+    if (this.properties.useSampleData === undefined) {
+      this.properties.useSampleData = true;
+    }
+    if (this.properties.enableExpandAll === undefined) {
+      this.properties.enableExpandAll = true;
+    }
+    if (this.properties.enableCopyLink === undefined) {
+      this.properties.enableCopyLink = true;
+    }
+    if (this.properties.enableContactExpert === undefined) {
+      this.properties.enableContactExpert = false;
+    }
+    if (this.properties.enableFeedbackOnDownvote === undefined) {
+      this.properties.enableFeedbackOnDownvote = false;
+    }
+    if (this.properties.enableSearchHighlight === undefined) {
+      this.properties.enableSearchHighlight = true;
+    }
+    if (this.properties.enablePinnedFaqs === undefined) {
+      this.properties.enablePinnedFaqs = false;
+    }
+    if (this.properties.pinnedFaqIds === undefined) {
+      this.properties.pinnedFaqIds = "";
+    }
+    if (this.properties.categoryIcons === undefined) {
+      this.properties.categoryIcons = "{}";
+    }
+    if (this.properties.showCategoryCards === undefined) {
+      this.properties.showCategoryCards = false;
+    }
+    if (this.properties.showHeroFaq === undefined) {
+      this.properties.showHeroFaq = false;
+    }
+    if (this.properties.heroFaqId === undefined) {
+      this.properties.heroFaqId = 0;
+    }
   }
 
   protected onDispose(): void {
@@ -80,13 +168,13 @@ export default class HyperFaqWebPart extends BaseHyperWebPart<IHyperFaqWebPartPr
   }
 
   protected get dataVersion(): Version {
-    return Version.parse("1.0");
+    return Version.parse("2.0");
   }
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     return {
       pages: [
-        // Page 1: Content
+        // Page 1: Content & Layout
         {
           header: { description: strings.PropertyPaneDescription },
           groups: [
@@ -98,6 +186,9 @@ export default class HyperFaqWebPart extends BaseHyperWebPart<IHyperFaqWebPartPr
                 }),
                 PropertyPaneTextField("listName", {
                   label: strings.ListNameFieldLabel,
+                }),
+                PropertyPaneToggle("useSampleData", {
+                  label: "Use Sample Data",
                 }),
                 PropertyPaneSlider("maxItems", {
                   label: strings.MaxItemsFieldLabel,
@@ -112,6 +203,24 @@ export default class HyperFaqWebPart extends BaseHyperWebPart<IHyperFaqWebPartPr
                     { key: "popular", text: "Most Popular" },
                     { key: "recent", text: "Most Recent" },
                     { key: "category", text: "By Category" },
+                  ],
+                }),
+              ],
+            },
+            {
+              groupName: "Layout",
+              groupFields: [
+                PropertyPaneDropdown("layout", {
+                  label: "Display Layout",
+                  options: [
+                    { key: "accordion", text: "Accordion" },
+                    { key: "cardGrid", text: "Card Grid" },
+                    { key: "magazine", text: "Magazine" },
+                    { key: "tabs", text: "Tabs" },
+                    { key: "timeline", text: "Timeline" },
+                    { key: "masonry", text: "Masonry" },
+                    { key: "compact", text: "Compact" },
+                    { key: "knowledgeBase", text: "Knowledge Base" },
                   ],
                 }),
                 PropertyPaneToggle("enableCategories", {
@@ -137,6 +246,15 @@ export default class HyperFaqWebPart extends BaseHyperWebPart<IHyperFaqWebPartPr
                 PropertyPaneToggle("showViewCount", {
                   label: strings.ShowViewCountFieldLabel,
                 }),
+                PropertyPaneToggle("enableExpandAll", {
+                  label: "Enable Expand All",
+                }),
+                PropertyPaneToggle("enableCopyLink", {
+                  label: "Enable Copy Link",
+                }),
+                PropertyPaneToggle("enableSearchHighlight", {
+                  label: "Enable Search Highlighting",
+                }),
                 PropertyPaneToggle("enableSubmission", {
                   label: strings.EnableSubmissionFieldLabel,
                 }),
@@ -148,6 +266,15 @@ export default class HyperFaqWebPart extends BaseHyperWebPart<IHyperFaqWebPartPr
                 }),
                 PropertyPaneToggle("enableDeepLink", {
                   label: strings.EnableDeepLinkFieldLabel,
+                }),
+                PropertyPaneToggle("enableContactExpert", {
+                  label: "Enable Contact Expert",
+                }),
+                PropertyPaneToggle("enableFeedbackOnDownvote", {
+                  label: "Feedback on Downvote",
+                }),
+                PropertyPaneToggle("enablePinnedFaqs", {
+                  label: "Enable Pinned FAQs",
                 }),
               ],
             },
@@ -167,13 +294,34 @@ export default class HyperFaqWebPart extends BaseHyperWebPart<IHyperFaqWebPartPr
                     { key: "boxed", text: "Boxed" },
                     { key: "bordered", text: "Bordered" },
                     { key: "minimal", text: "Minimal" },
+                    { key: "card", text: "Card" },
+                    { key: "gradient", text: "Gradient" },
+                    { key: "numbered", text: "Numbered" },
+                    { key: "iconAccent", text: "Icon Accent" },
                   ],
+                }),
+                PropertyPaneToggle("showCategoryCards", {
+                  label: "Show Category Cards",
+                }),
+                PropertyPaneToggle("showHeroFaq", {
+                  label: "Show Hero FAQ",
                 }),
                 PropertyPaneSlider("cacheDuration", {
                   label: strings.CacheDurationFieldLabel,
                   min: 0,
                   max: 600,
                   step: 30,
+                }),
+              ],
+            },
+            {
+              groupName: "Wizard",
+              groupFields: [
+                PropertyPaneToggle("wizardCompleted", {
+                  label: "Wizard Completed",
+                }),
+                PropertyPaneToggle("showWizardOnInit", {
+                  label: "Show Wizard on Add",
                 }),
               ],
             },

@@ -1,0 +1,218 @@
+@import "~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss";
+
+.timelineLayout {
+  position: relative;
+  padding: 20px 0;
+  min-height: 200px;
+}
+
+// -- Center line
+.timelineLine {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: $ms-color-neutralLight;
+  transform: translateX(-50%);
+
+  @media (max-width: 767px) {
+    left: 20px;
+  }
+}
+
+// -- Month header
+.monthHeader {
+  position: relative;
+  text-align: center;
+  margin: 24px 0 16px;
+  z-index: 1;
+
+  @media (max-width: 767px) {
+    text-align: left;
+    margin-left: 44px;
+  }
+}
+
+.monthLabel {
+  display: inline-block;
+  padding: 4px 16px;
+  background: $ms-color-themePrimary;
+  color: $ms-color-white;
+  border-radius: 14px;
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-bold;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+// -- Timeline node
+.timelineNode {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  width: 50%;
+
+  @media (max-width: 767px) {
+    width: calc(100% - 44px);
+    margin-left: 44px;
+    padding-right: 0;
+  }
+}
+
+.timelineNodeLeft {
+  padding-right: 32px;
+  justify-content: flex-end;
+  margin-left: 0;
+
+  @media (max-width: 767px) {
+    padding-right: 0;
+    padding-left: 0;
+    justify-content: flex-start;
+  }
+}
+
+.timelineNodeRight {
+  padding-left: 32px;
+  margin-left: 50%;
+
+  @media (max-width: 767px) {
+    margin-left: 44px;
+    padding-left: 0;
+  }
+}
+
+// -- Dot
+.timelineDot {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: $ms-color-themePrimary;
+  border: 3px solid $ms-color-white;
+  box-shadow: 0 0 0 2px $ms-color-themePrimary;
+  z-index: 2;
+  top: 16px;
+
+  .timelineNodeLeft & {
+    right: -7px;
+
+    @media (max-width: 767px) {
+      left: -31px;
+      right: auto;
+    }
+  }
+
+  .timelineNodeRight & {
+    left: -7px;
+
+    @media (max-width: 767px) {
+      left: -31px;
+    }
+  }
+}
+
+// -- Card
+.timelineCard {
+  background: $ms-color-white;
+  border: 1px solid $ms-color-neutralLight;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  max-width: 420px;
+  width: 100%;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 767px) {
+    max-width: 100%;
+  }
+}
+
+.timelineCardExpanded {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: none;
+  max-width: 100%;
+
+  &:hover {
+    transform: none;
+  }
+}
+
+.timelineCardButton {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: $ms-font-family-fallbacks;
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.timelineDate {
+  display: inline-block;
+  padding: 2px 10px;
+  margin: 0 16px 8px;
+  font-size: $ms-font-size-10;
+  color: $ms-color-neutralSecondary;
+  background: $ms-color-neutralLighterAlt;
+  border-radius: 3px;
+  font-weight: $ms-font-weight-semibold;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.timelineQuestion {
+  margin: 0 0 8px;
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  line-height: 1.4;
+}
+
+.timelinePreview {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: $ms-color-neutralSecondary;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.timelineMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.timelineBadge {
+  display: inline-flex;
+  padding: 2px 8px;
+  background: $ms-color-themeLighter;
+  border-radius: 10px;
+  font-size: $ms-font-size-10;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-themePrimary;
+}
+
+.timelineViews {
+  font-size: $ms-font-size-10;
+  color: $ms-color-neutralTertiary;
+}
+
+.expandedWrapper {
+  padding: 0 16px 16px;
+}

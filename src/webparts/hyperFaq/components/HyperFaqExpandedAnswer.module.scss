@@ -1,0 +1,223 @@
+@import "~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss";
+
+.expandedAnswer {
+  padding: 4px 0;
+}
+
+.answerContent {
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralPrimary;
+  line-height: 1.6;
+  margin-bottom: 12px;
+
+  p { margin: 0 0 8px; }
+  a { color: $ms-color-themePrimary; }
+  ul, ol { padding-left: 20px; margin: 0 0 8px; }
+  img { max-width: 100%; height: auto; }
+}
+
+// -- Voting bar
+.votingBar {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  gap: 8px;
+  border-top: 1px solid $ms-color-neutralLighter;
+  margin-top: 8px;
+}
+
+.votingLabel {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  margin-right: 4px;
+}
+
+.voteBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 16px;
+  background: $ms-color-white;
+  cursor: pointer;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  font-family: $ms-font-family-fallbacks;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    border-color: $ms-color-themePrimary;
+    color: $ms-color-themePrimary;
+    background-color: $ms-color-themeLighter;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.7;
+  }
+}
+
+.voteBtnActive {
+  border-color: $ms-color-themePrimary;
+  background-color: $ms-color-themeLighter;
+  color: $ms-color-themePrimary;
+  font-weight: $ms-font-weight-semibold;
+}
+
+.voteBtnNo {
+  &.voteBtnActive {
+    border-color: $ms-color-red;
+    background-color: #f1707b;
+    color: $ms-color-redDark;
+  }
+}
+
+.voteCount {
+  font-size: $ms-font-size-10;
+  color: $ms-color-neutralTertiary;
+  margin-left: 2px;
+}
+
+// -- Feedback section
+.feedbackSection {
+  padding: 8px 0;
+  border-top: 1px solid $ms-color-neutralLighter;
+}
+
+.feedbackLabel {
+  display: block;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  margin-bottom: 6px;
+  font-weight: $ms-font-weight-semibold;
+}
+
+.feedbackTextarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  font-size: $ms-font-size-14;
+  font-family: $ms-font-family-fallbacks;
+  resize: vertical;
+  min-height: 60px;
+
+  &:focus {
+    outline: none;
+    border-color: $ms-color-themePrimary;
+    box-shadow: 0 0 0 1px $ms-color-themePrimary;
+  }
+}
+
+.feedbackSubmit {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 8px;
+  padding: 6px 16px;
+  background-color: $ms-color-themePrimary;
+  color: $ms-color-white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: $ms-font-size-12;
+  font-family: $ms-font-family-fallbacks;
+  font-weight: $ms-font-weight-semibold;
+
+  &:hover {
+    background-color: $ms-color-themeDarkAlt;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themeDark;
+    outline-offset: 2px;
+  }
+}
+
+// -- Action bar
+.actionBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-top: 1px solid $ms-color-neutralLighter;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  background: $ms-color-white;
+  cursor: pointer;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  font-family: $ms-font-family-fallbacks;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: $ms-color-themePrimary;
+    color: $ms-color-themePrimary;
+    background-color: $ms-color-themeLighter;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+}
+
+// -- Related section
+.relatedSection {
+  padding: 8px 0;
+  border-top: 1px solid $ms-color-neutralLighter;
+  margin-top: 4px;
+}
+
+.relatedTitle {
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralSecondary;
+  margin-bottom: 6px;
+}
+
+.relatedList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.relatedItem {
+  margin-bottom: 4px;
+}
+
+.relatedLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: $ms-font-size-14;
+  color: $ms-color-themePrimary;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 2px 0;
+  font-family: $ms-font-family-fallbacks;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+}

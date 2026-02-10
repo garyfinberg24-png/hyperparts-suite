@@ -1,0 +1,617 @@
+// ============================================================
+// HyperFAQ V2 Wizard Steps — Shared Styles
+// ============================================================
+
+@import '~@fluentui/react/dist/sass/References';
+
+// ── Common step container ──
+
+.stepContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 4px 0;
+}
+
+.stepSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stepSectionLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: $ms-color-neutralPrimary;
+  margin-bottom: 4px;
+}
+
+.stepSectionHint {
+  font-size: 12px;
+  color: $ms-color-neutralSecondary;
+  margin-top: -4px;
+}
+
+// ── Template gallery (3-column grid) ──
+
+.templateIntro {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.templateIntroTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: $ms-color-neutralPrimary;
+  margin: 0 0 6px;
+}
+
+.templateIntroDesc {
+  font-size: 13px;
+  color: $ms-color-neutralSecondary;
+  margin: 0;
+}
+
+.templateGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.templateCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0;
+  border: 2px solid $ms-color-neutralLight;
+  border-radius: 10px;
+  background: #faf9f8;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  overflow: hidden;
+  position: relative;
+
+  &:hover {
+    border-color: #c7e0f4;
+    background: #f3f9ff;
+    box-shadow: 0 2px 8px rgba(0, 120, 212, 0.1);
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+}
+
+.templateCardActive {
+  border-color: $ms-color-themePrimary;
+  background: #f0f6ff;
+  box-shadow: 0 2px 12px rgba(0, 120, 212, 0.15);
+}
+
+.templateCardCustom {
+  border-style: dashed;
+  background: $ms-color-white;
+}
+
+.templateSwatchStrip {
+  width: 100%;
+  height: 6px;
+  border-radius: 8px 8px 0 0;
+  flex-shrink: 0;
+}
+
+.templateName {
+  font-size: 14px;
+  font-weight: 700;
+  color: $ms-color-neutralPrimary;
+  margin: 14px 12px 4px;
+}
+
+.templateDesc {
+  font-size: 12px;
+  color: $ms-color-neutralSecondary;
+  line-height: 1.4;
+  margin: 0 12px 14px;
+  min-height: 34px;
+}
+
+.templateCheck {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: $ms-color-themePrimary;
+  color: $ms-color-white;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+// ── Source cards (2-column) ──
+
+.sourceCards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.sourceCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 28px 20px;
+  border: 2px solid $ms-color-neutralLight;
+  border-radius: 10px;
+  background: $ms-color-white;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  text-align: center;
+
+  &:hover {
+    border-color: #c7e0f4;
+    background: #f3f9ff;
+    box-shadow: 0 2px 8px rgba(0, 120, 212, 0.1);
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+}
+
+.sourceCardActive {
+  border-color: $ms-color-themePrimary;
+  background: #f0f6ff;
+  box-shadow: 0 2px 12px rgba(0, 120, 212, 0.15);
+}
+
+.sourceIcon {
+  font-size: 36px;
+  line-height: 1;
+}
+
+.sourceTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: $ms-color-neutralPrimary;
+}
+
+.sourceDesc {
+  font-size: 12px;
+  color: $ms-color-neutralSecondary;
+  line-height: 1.4;
+}
+
+.sourceInputArea {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border: 1px solid $ms-color-neutralLight;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.sourceInputLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: $ms-color-neutralPrimary;
+}
+
+.sourceInputHint {
+  font-size: 11px;
+  color: $ms-color-neutralTertiary;
+}
+
+// ── Text input ──
+
+.textInput {
+  padding: 6px 10px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  font-size: 13px;
+  color: $ms-color-neutralPrimary;
+  outline: none;
+  transition: border-color 0.15s ease;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: $ms-color-themePrimary;
+  }
+}
+
+// ── Validation hint ──
+
+.validationHint {
+  font-size: 12px;
+  color: #a4262c;
+  padding: 4px 14px;
+}
+
+// ── Layout grid (4-col desktop, 2-col mobile) ──
+
+.layoutGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.layoutCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 10px;
+  border: 2px solid $ms-color-neutralLight;
+  border-radius: 8px;
+  background: $ms-color-white;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  text-align: center;
+
+  &:hover {
+    border-color: $ms-color-themePrimary;
+    box-shadow: 0 2px 8px rgba(0, 120, 212, 0.1);
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+}
+
+.layoutCardActive {
+  border-color: $ms-color-themePrimary;
+  background: #f0f6ff;
+  box-shadow: 0 2px 8px rgba(0, 120, 212, 0.15);
+}
+
+.layoutIcon {
+  font-size: 28px;
+}
+
+.layoutName {
+  font-size: 13px;
+  font-weight: 600;
+  color: $ms-color-neutralPrimary;
+}
+
+// ── Chip group (accordion styles) ──
+
+.chipGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  padding: 6px 16px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 20px;
+  background: $ms-color-white;
+  font-size: 13px;
+  font-weight: 600;
+  color: $ms-color-neutralSecondary;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+
+  &:hover {
+    border-color: $ms-color-themePrimary;
+    color: $ms-color-themePrimary;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+}
+
+.chipActive {
+  border-color: $ms-color-themePrimary;
+  background: $ms-color-themePrimary;
+  color: $ms-color-white;
+
+  &:hover {
+    background: $ms-color-themeDark;
+    border-color: $ms-color-themeDark;
+    color: $ms-color-white;
+  }
+}
+
+// ── Toggle row ──
+
+.toggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border: 1px solid $ms-color-neutralLight;
+  border-radius: 6px;
+  background: #fafafa;
+  transition: background 0.15s ease;
+  cursor: pointer;
+
+  &:hover {
+    background: $ms-color-neutralLighter;
+  }
+}
+
+.toggleInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.toggleLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: $ms-color-neutralPrimary;
+}
+
+.toggleDesc {
+  font-size: 12px;
+  color: $ms-color-neutralSecondary;
+}
+
+.toggleSwitch {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.toggleInput {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+
+  &:checked + .toggleTrack {
+    background: $ms-color-themePrimary;
+
+    .toggleThumb {
+      transform: translateX(18px);
+    }
+  }
+
+  &:focus + .toggleTrack {
+    box-shadow: 0 0 0 2px $ms-color-themePrimary;
+  }
+}
+
+.toggleTrack {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: $ms-color-neutralTertiaryAlt;
+  border-radius: 11px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: $ms-color-white;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+// ── Feature columns (2-col) ──
+
+.featureColumns {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.featureColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.featureSectionTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: $ms-color-neutralPrimary;
+  padding-bottom: 4px;
+  border-bottom: 2px solid $ms-color-neutralLight;
+  margin-bottom: 4px;
+}
+
+// ── Select (dropdown) row ──
+
+.selectRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 14px;
+  border: 1px solid $ms-color-neutralLight;
+  border-radius: 6px;
+  background: #fafafa;
+}
+
+.selectLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: $ms-color-neutralPrimary;
+}
+
+.select {
+  padding: 6px 10px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 4px;
+  font-size: 13px;
+  color: $ms-color-neutralPrimary;
+  background: $ms-color-white;
+  outline: none;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: $ms-color-themePrimary;
+  }
+}
+
+// ── Sections (Appearance step) ──
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sectionTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: $ms-color-neutralPrimary;
+  margin: 0;
+}
+
+// ── Color swatches ──
+
+.colorSwatchRow {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.colorSwatchItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.colorSwatchLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: $ms-color-neutralSecondary;
+}
+
+.colorSwatchValue {
+  font-size: 10px;
+  color: $ms-color-neutralTertiary;
+  font-family: "Consolas", "Courier New", monospace;
+}
+
+// ── Preview hints ──
+
+.previewHints {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
+  border: 1px solid $ms-color-neutralLight;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.previewHintItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.previewHintLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: $ms-color-neutralSecondary;
+  min-width: 60px;
+}
+
+.previewHintValue {
+  font-size: 12px;
+  color: $ms-color-neutralPrimary;
+  text-transform: capitalize;
+}
+
+// ── Demo bar ──
+
+.demoBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 20px;
+  background: $ms-color-neutralPrimary;
+  color: $ms-color-white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  z-index: 1000;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.demoBarText {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.demoBarBtn {
+  padding: 6px 16px;
+  border: 1px solid $ms-color-white;
+  border-radius: 4px;
+  background: transparent;
+  color: $ms-color-white;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+}
+
+// ── Responsive breakpoints ──
+
+@media (max-width: 768px) {
+  .templateGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .layoutGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .featureColumns {
+    grid-template-columns: 1fr;
+  }
+
+  .sourceCards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .templateGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .layoutGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

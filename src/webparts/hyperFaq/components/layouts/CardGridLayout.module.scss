@@ -1,0 +1,177 @@
+@import "~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss";
+
+.cardGridLayout {
+  padding: 0;
+}
+
+// -- Category cards row
+.categoryCardsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+
+  @media (max-width: 767px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 479px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.categoryCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: $ms-color-white;
+  border: 1px solid $ms-color-neutralLight;
+  border-left: 4px solid $ms-color-themePrimary;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  font-family: $ms-font-family-fallbacks;
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+}
+
+.categoryCardActive {
+  background-color: $ms-color-themeLighter;
+  border-color: $ms-color-themePrimary;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.categoryIcon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.categoryName {
+  flex: 1;
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+}
+
+.categoryCount {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  background: $ms-color-neutralLighter;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: $ms-font-weight-semibold;
+}
+
+// -- FAQ cards grid
+.faqCardsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+
+  @media (max-width: 767px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.faqCard {
+  background: $ms-color-white;
+  border: 1px solid $ms-color-neutralLight;
+  border-top: 3px solid $ms-color-themePrimary;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+}
+
+.faqCardExpanded {
+  grid-column: 1 / -1;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: none;
+
+  &:hover {
+    transform: none;
+  }
+}
+
+.faqCardHeader {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: $ms-font-family-fallbacks;
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.faqCardQuestion {
+  margin: 0 0 8px;
+  font-size: $ms-font-size-16;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  line-height: 1.4;
+}
+
+.faqCardPreview {
+  margin: 0 0 10px;
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralSecondary;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.faqCardMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.categoryBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  border: 1px solid;
+  line-height: 1.6;
+}
+
+.faqCardViews {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralTertiary;
+}
+
+.faqCardVotes {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralTertiary;
+}

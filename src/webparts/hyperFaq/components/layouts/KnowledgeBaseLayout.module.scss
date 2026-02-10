@@ -1,0 +1,351 @@
+@import "~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss";
+
+.kbLayout {
+  display: flex;
+  gap: 20px;
+  min-height: 400px;
+
+  @media (max-width: 991px) {
+    flex-direction: column;
+  }
+}
+
+// ── Left sidebar ──
+.kbSidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: $ms-color-neutralLighterAlt;
+  border-radius: 8px;
+  padding: 16px;
+  align-self: flex-start;
+
+  @media (max-width: 991px) {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+}
+
+.kbSidebarTitle {
+  margin: 0 0 12px;
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-bold;
+  color: $ms-color-neutralSecondary;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  @media (max-width: 991px) {
+    margin: 0 8px 0 0;
+    width: auto;
+  }
+}
+
+.kbSidebarItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  font-family: $ms-font-family-fallbacks;
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralPrimary;
+  transition: all 0.15s ease;
+  margin-bottom: 2px;
+
+  &:hover {
+    background-color: $ms-color-neutralLighter;
+    color: $ms-color-themePrimary;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 1px;
+  }
+
+  @media (max-width: 991px) {
+    width: auto;
+    padding: 6px 12px;
+    border: 1px solid $ms-color-neutralLight;
+    border-radius: 16px;
+    margin-bottom: 0;
+  }
+}
+
+.kbSidebarItemActive {
+  background-color: $ms-color-themeLighter;
+  color: $ms-color-themePrimary;
+  font-weight: $ms-font-weight-semibold;
+
+  &:hover {
+    background-color: $ms-color-themeLighter;
+  }
+}
+
+.kbSidebarIcon {
+  font-size: 16px;
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.kbSidebarName {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kbSidebarCount {
+  font-size: $ms-font-size-10;
+  color: $ms-color-neutralTertiary;
+  background: $ms-color-neutralLighter;
+  padding: 1px 6px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  font-weight: $ms-font-weight-semibold;
+}
+
+.kbSidebarItemActive .kbSidebarCount {
+  background: $ms-color-themePrimary;
+  color: $ms-color-white;
+}
+
+// ── Main content ──
+.kbMain {
+  flex: 1;
+  min-width: 0;
+}
+
+.kbBreadcrumb {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: $ms-font-size-14;
+}
+
+.kbBreadcrumbLink {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: $ms-font-family-fallbacks;
+  font-size: $ms-font-size-14;
+  color: $ms-color-themePrimary;
+  padding: 0;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 2px;
+  }
+}
+
+.kbBreadcrumbSep {
+  color: $ms-color-neutralTertiary;
+  margin: 0 4px;
+}
+
+.kbBreadcrumbCurrent {
+  color: $ms-color-neutralPrimary;
+  font-weight: $ms-font-weight-semibold;
+}
+
+.kbItemCount {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralTertiary;
+  margin-bottom: 12px;
+}
+
+.kbEmpty {
+  padding: 32px;
+  text-align: center;
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralTertiary;
+}
+
+// ── Right sidebar ──
+.kbRightSidebar {
+  width: 240px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-self: flex-start;
+
+  @media (max-width: 991px) {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+// Support card
+.kbSupportCard {
+  background: $ms-color-neutralLighterAlt;
+  border: 1px solid $ms-color-neutralLight;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+
+  @media (max-width: 991px) {
+    flex: 1;
+    min-width: 200px;
+  }
+}
+
+.kbSupportIcon {
+  font-size: 28px;
+  color: $ms-color-themePrimary;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.kbSupportTitle {
+  margin: 0 0 6px;
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+}
+
+.kbSupportText {
+  margin: 0 0 12px;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  line-height: 1.5;
+}
+
+.kbSupportButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 20px;
+  background: $ms-color-themePrimary;
+  color: $ms-color-white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: $ms-font-size-12;
+  font-family: $ms-font-family-fallbacks;
+  font-weight: $ms-font-weight-semibold;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: $ms-color-themeDarkAlt;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themeDark;
+    outline-offset: 2px;
+  }
+}
+
+// Submit card
+.kbSubmitCard {
+  background: $ms-color-white;
+  border: 1px solid $ms-color-neutralLight;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+
+  @media (max-width: 991px) {
+    flex: 1;
+    min-width: 200px;
+  }
+}
+
+.kbSubmitIcon {
+  font-size: 28px;
+  color: $ms-color-themePrimary;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.kbSubmitTitle {
+  margin: 0 0 6px;
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+}
+
+.kbSubmitText {
+  margin: 0 0 12px;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  line-height: 1.5;
+}
+
+.kbSubmitButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 20px;
+  background: $ms-color-white;
+  color: $ms-color-themePrimary;
+  border: 1px solid $ms-color-themePrimary;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: $ms-font-size-12;
+  font-family: $ms-font-family-fallbacks;
+  font-weight: $ms-font-weight-semibold;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: $ms-color-themeLighter;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themeDark;
+    outline-offset: 2px;
+  }
+}
+
+// Tag cloud
+.kbTagCloud {
+  background: $ms-color-neutralLighterAlt;
+  border-radius: 8px;
+  padding: 16px;
+
+  @media (max-width: 991px) {
+    flex: 1;
+    min-width: 200px;
+  }
+}
+
+.kbTagCloudTitle {
+  margin: 0 0 10px;
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+}
+
+.kbTagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.kbTag {
+  display: inline-flex;
+  padding: 3px 10px;
+  background: $ms-color-white;
+  border: 1px solid $ms-color-neutralLight;
+  border-radius: 12px;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  cursor: default;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: $ms-color-themePrimary;
+    color: $ms-color-themePrimary;
+    background: $ms-color-themeLighter;
+  }
+}

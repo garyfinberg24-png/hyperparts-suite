@@ -1,0 +1,119 @@
+@import "~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss";
+
+.compactLayout {
+  border: 1px solid $ms-color-neutralLight;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.compactRow {
+  border-bottom: 1px solid $ms-color-neutralLighter;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.compactRowAlt {
+  background-color: $ms-color-neutralLighterAlt;
+}
+
+.compactRowExpanded {
+  background-color: $ms-color-white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) inset;
+}
+
+.compactRowButton {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: $ms-font-family-fallbacks;
+  gap: 10px;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: $ms-color-neutralLighter;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.compactIcon {
+  font-size: 16px;
+  color: $ms-color-neutralSecondary;
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.compactQuestion {
+  flex: 1;
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralPrimary;
+  font-weight: $ms-font-weight-regular;
+  line-height: 1.4;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @media (max-width: 639px) {
+    white-space: normal;
+  }
+}
+
+.compactRowExpanded .compactQuestion {
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-themePrimary;
+}
+
+.compactViewCount {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralTertiary;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.compactVoteCount {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralTertiary;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.compactChevron {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralTertiary;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.compactChevronExpanded {
+  transform: rotate(90deg);
+  color: $ms-color-themePrimary;
+}
+
+// -- Expanded content
+.compactExpandedContent {
+  padding: 12px 16px 16px 46px;
+  background: $ms-color-white;
+  border-top: 1px solid $ms-color-neutralLighter;
+
+  @media (max-width: 479px) {
+    padding-left: 16px;
+  }
+}

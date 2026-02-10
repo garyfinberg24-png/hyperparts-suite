@@ -1,0 +1,310 @@
+@import "~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss";
+
+.magazineLayout {
+  padding: 0;
+}
+
+// -- Hero card
+.heroCard {
+  background: linear-gradient(135deg, $ms-color-themePrimary 0%, $ms-color-themeDark 100%);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 24px;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.heroCardExpanded {
+  background: $ms-color-white;
+  border: 1px solid $ms-color-neutralLight;
+}
+
+.heroCardButton {
+  display: block;
+  width: 100%;
+  padding: 32px 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: $ms-font-family-fallbacks;
+
+  &:focus {
+    outline: 2px solid $ms-color-white;
+    outline-offset: -4px;
+  }
+}
+
+.heroCardExpanded .heroCardButton {
+  padding: 24px 20px 12px;
+
+  &:focus {
+    outline-color: $ms-color-themePrimary;
+  }
+}
+
+.heroQuestion {
+  margin: 0 0 12px;
+  font-size: 26px;
+  font-weight: $ms-font-weight-bold;
+  color: $ms-color-white;
+  line-height: 1.3;
+}
+
+.heroCardExpanded .heroQuestion {
+  color: $ms-color-neutralPrimary;
+  font-size: 22px;
+}
+
+.heroPreview {
+  margin: 0 0 16px;
+  font-size: $ms-font-size-16;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.heroCardExpanded .heroPreview {
+  color: $ms-color-neutralSecondary;
+}
+
+.heroMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.heroBadge {
+  display: inline-flex;
+  padding: 3px 12px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-white;
+}
+
+.heroCardExpanded .heroBadge {
+  background: $ms-color-themeLighter;
+  color: $ms-color-themePrimary;
+}
+
+.heroViews {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: $ms-font-size-12;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.heroCardExpanded .heroViews {
+  color: $ms-color-neutralTertiary;
+}
+
+.heroDate {
+  font-size: $ms-font-size-12;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.heroCardExpanded .heroDate {
+  color: $ms-color-neutralTertiary;
+}
+
+.expandedWrapper {
+  padding: 0 20px 20px;
+}
+
+// -- Content area (2-column + sidebar)
+.contentArea {
+  display: flex;
+  gap: 24px;
+
+  @media (max-width: 899px) {
+    flex-direction: column;
+  }
+}
+
+.mainColumn {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  align-content: start;
+
+  @media (max-width: 639px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// -- Article cards
+.articleCard {
+  background: $ms-color-white;
+  border: 1px solid $ms-color-neutralLight;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+}
+
+.articleCardExpanded {
+  grid-column: 1 / -1;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transform: none;
+
+  &:hover {
+    transform: none;
+  }
+}
+
+.articleCardButton {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: $ms-font-family-fallbacks;
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.articleQuestion {
+  margin: 0 0 8px;
+  font-size: $ms-font-size-16;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  line-height: 1.4;
+}
+
+.articlePreview {
+  margin: 0 0 10px;
+  font-size: $ms-font-size-14;
+  color: $ms-color-neutralSecondary;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.articleBadge {
+  display: inline-flex;
+  padding: 2px 10px;
+  background: $ms-color-themeLighter;
+  border-radius: 12px;
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-themePrimary;
+}
+
+// -- Sidebar
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+
+  @media (max-width: 899px) {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 479px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sidebarSection {
+  background: $ms-color-neutralLighterAlt;
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.sidebarTitle {
+  margin: 0 0 12px;
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  padding-bottom: 8px;
+  border-bottom: 2px solid $ms-color-themePrimary;
+}
+
+.sidebarList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebarItem {
+  margin-bottom: 2px;
+}
+
+.sidebarLink {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: $ms-font-family-fallbacks;
+  font-size: 13px;
+  color: $ms-color-neutralPrimary;
+  border-radius: 4px;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: $ms-color-neutralLighter;
+    color: $ms-color-themePrimary;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: 1px;
+  }
+}
+
+.sidebarIndex {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: $ms-color-themePrimary;
+  color: $ms-color-white;
+  font-size: $ms-font-size-10;
+  font-weight: $ms-font-weight-bold;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.sidebarText {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.sidebarDate {
+  font-size: $ms-font-size-10;
+  color: $ms-color-neutralTertiary;
+  white-space: nowrap;
+  margin-top: 2px;
+}
