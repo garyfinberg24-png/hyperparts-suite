@@ -51,6 +51,13 @@ define([], function () {
     BackgroundImageUrlFieldLabel: "Background Image URL",
     BackgroundImageDarkenLabel: "Darken Background Image",
     TextColorFieldLabel: "Text Color Override",
-    IconColorFieldLabel: "Icon Color Override"
+    IconColorFieldLabel: "Icon Color Override",
+    DataDemoGroupName: "Data & Demo Mode",
+    UseSampleDataLabel: "Enable Demo Mode",
+    LinkDataSourceLabel: "Link Data Source",
+    LinkPresetIdLabel: "Preset Collection",
+    LinkListUrlLabel: "SharePoint List URL",
+    LinkListTitleColumnLabel: "Title Column Name",
+    LinkListUrlColumnLabel: "URL Column Name"
   };
 });

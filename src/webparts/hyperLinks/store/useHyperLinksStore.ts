@@ -5,6 +5,8 @@ export interface IHyperLinksStoreState {
   expandedGroupIds: string[];
   filmstripScrollIndex: number;
   isWizardOpen: boolean;
+  /** Demo mode: show sample data without entering edit mode */
+  isDemoMode: boolean;
 }
 
 export interface IHyperLinksStoreActions {
@@ -15,6 +17,7 @@ export interface IHyperLinksStoreActions {
   setFilmstripScrollIndex: (index: number) => void;
   openWizard: () => void;
   closeWizard: () => void;
+  toggleDemoMode: () => void;
   reset: () => void;
 }
 
@@ -25,6 +28,7 @@ const initialState: IHyperLinksStoreState = {
   expandedGroupIds: [],
   filmstripScrollIndex: 0,
   isWizardOpen: false,
+  isDemoMode: false,
 };
 
 export const useHyperLinksStore = create<IHyperLinksStore>(function (set) {
@@ -70,6 +74,12 @@ export const useHyperLinksStore = create<IHyperLinksStore>(function (set) {
 
     closeWizard: function (): void {
       set({ isWizardOpen: false });
+    },
+
+    toggleDemoMode: function (): void {
+      set(function (state) {
+        return { isDemoMode: !state.isDemoMode };
+      });
     },
 
     reset: function (): void {

@@ -51,6 +51,13 @@ declare interface IHyperLinksWebPartStrings {
   BackgroundImageDarkenLabel: string;
   TextColorFieldLabel: string;
   IconColorFieldLabel: string;
+  DataDemoGroupName: string;
+  UseSampleDataLabel: string;
+  LinkDataSourceLabel: string;
+  LinkPresetIdLabel: string;
+  LinkListUrlLabel: string;
+  LinkListTitleColumnLabel: string;
+  LinkListUrlColumnLabel: string;
 }
 
 declare module "HyperLinksWebPartStrings" {

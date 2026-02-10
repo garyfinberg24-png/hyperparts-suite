@@ -1,5 +1,6 @@
 import * as React from "react";
 import { HyperModal } from "../../../../common/components/HyperModal";
+import { HyperImageBrowser } from "../shared/HyperImageBrowser";
 import type { IHyperHeroLayer, IHyperHeroSlide, LayerType } from "../../models";
 import { createDefaultLayer } from "../../models";
 import { HyperHeroCanvasLayer } from "./HyperHeroCanvasLayer";
@@ -52,34 +53,59 @@ const VARIANT_OPTIONS = [
   "gradient", "shadow", "minimal", "rounded", "block",
 ];
 
+/** Default canvas height */
+var DEFAULT_CANVAS_HEIGHT = 200;
+var MIN_CANVAS_HEIGHT = 120;
+var MAX_CANVAS_HEIGHT = 400;
+
 const HyperHeroLayerEditorInner: React.FC<IHyperHeroLayerEditorProps> = function (props) {
-  const { isOpen, slide, onSave, onClose } = props;
+  var { isOpen, slide, onSave, onClose } = props;
 
   // Working copy of layers
-  const layersState = React.useState<IHyperHeroLayer[]>([]);
-  const layers = layersState[0];
-  const setLayers = layersState[1];
+  var layersState = React.useState<IHyperHeroLayer[]>([]);
+  var layers = layersState[0];
+  var setLayers = layersState[1];
 
-  const selectedIdState = React.useState<string | undefined>(undefined);
-  const selectedLayerId = selectedIdState[0];
-  const setSelectedLayerId = selectedIdState[1];
+  var selectedIdState = React.useState<string | undefined>(undefined);
+  var selectedLayerId = selectedIdState[0];
+  var setSelectedLayerId = selectedIdState[1];
 
-  const addDropdownState = React.useState(false);
-  const showAddDropdown = addDropdownState[0];
-  const setShowAddDropdown = addDropdownState[1];
+  var addDropdownState = React.useState(false);
+  var showAddDropdown = addDropdownState[0];
+  var setShowAddDropdown = addDropdownState[1];
 
-  // Drag state refs
+  // Canvas height (resizable via drag handle)
+  var canvasHeightState = React.useState(DEFAULT_CANVAS_HEIGHT);
+  var canvasHeight = canvasHeightState[0];
+  var setCanvasHeight = canvasHeightState[1];
+
+  // Drag state refs — layer drag/resize
   // eslint-disable-next-line @rushstack/no-new-null
-  const canvasRef = React.useRef<HTMLDivElement>(null);
-  const isDraggingRef = React.useRef<boolean>(false);
-  const dragLayerIdRef = React.useRef<string>("");
-  const dragHandleRef = React.useRef<string>("move");
-  const dragStartXRef = React.useRef<number>(0);
-  const dragStartYRef = React.useRef<number>(0);
-  const dragStartLayerXRef = React.useRef<number>(0);
-  const dragStartLayerYRef = React.useRef<number>(0);
-  const dragStartLayerWRef = React.useRef<number>(0);
-  const dragStartLayerHRef = React.useRef<number>(0);
+  var canvasRef = React.useRef<HTMLDivElement>(null);
+  var isDraggingRef = React.useRef<boolean>(false);
+  var dragLayerIdRef = React.useRef<string>("");
+  var dragHandleRef = React.useRef<string>("move");
+  var dragStartXRef = React.useRef<number>(0);
+  var dragStartYRef = React.useRef<number>(0);
+  var dragStartLayerXRef = React.useRef<number>(0);
+  var dragStartLayerYRef = React.useRef<number>(0);
+  var dragStartLayerWRef = React.useRef<number>(0);
+  var dragStartLayerHRef = React.useRef<number>(0);
+
+  // Canvas resize drag refs
+  var isResizingCanvasRef = React.useRef<boolean>(false);
+  var resizeStartYRef = React.useRef<number>(0);
+  var resizeStartHeightRef = React.useRef<number>(0);
+
+  // Image browser state — opens HyperImageBrowser in SP flyout panel
+  var imageBrowserState = React.useState(false);
+  var showImageBrowser = imageBrowserState[0];
+  var setShowImageBrowser = imageBrowserState[1];
+
+  // Which layer field should receive the selected image URL
+  var imageBrowserTargetRef = React.useRef<{ layerId: string; field: string }>({
+    layerId: "", field: "",
+  });
 
   // Reset layers when slide/isOpen changes
   React.useEffect(function () {
@@ -92,19 +118,19 @@ const HyperHeroLayerEditorInner: React.FC<IHyperHeroLayerEditorProps> = function
 
   // ── Layer CRUD ──
 
-  const handleAddLayer = React.useCallback(function (type: LayerType): void {
+  var handleAddLayer = React.useCallback(function (type: LayerType): void {
     setLayers(function (prev) {
-      const newLayer = createDefaultLayer(type, prev.length);
+      var newLayer = createDefaultLayer(type, prev.length);
       return prev.concat([newLayer]);
     });
     setShowAddDropdown(false);
   }, []);
 
-  const handleDeleteLayer = React.useCallback(function (): void {
+  var handleDeleteLayer = React.useCallback(function (): void {
     if (!selectedLayerId) return;
-    const deleteId = selectedLayerId;
+    var deleteId = selectedLayerId;
     setLayers(function (prev) {
-      const result: IHyperHeroLayer[] = [];
+      var result: IHyperHeroLayer[] = [];
       prev.forEach(function (l) {
         if (l.id !== deleteId) result.push(l);
       });
@@ -113,15 +139,15 @@ const HyperHeroLayerEditorInner: React.FC<IHyperHeroLayerEditorProps> = function
     setSelectedLayerId(undefined);
   }, [selectedLayerId]);
 
-  const handleDuplicateLayer = React.useCallback(function (): void {
+  var handleDuplicateLayer = React.useCallback(function (): void {
     if (!selectedLayerId) return;
     setLayers(function (prev) {
-      let source: IHyperHeroLayer | undefined;
+      var source: IHyperHeroLayer | undefined;
       prev.forEach(function (l) {
         if (l.id === selectedLayerId) source = l;
       });
       if (!source) return prev;
-      const copy: IHyperHeroLayer = {
+      var copy: IHyperHeroLayer = {
         ...source,
         id: "layer-" + Date.now() + "-" + Math.random().toString(36).substring(2, 6),
         name: source.name + " Copy",
@@ -133,34 +159,33 @@ const HyperHeroLayerEditorInner: React.FC<IHyperHeroLayerEditorProps> = function
     });
   }, [selectedLayerId]);
 
-  const handleMoveUp = React.useCallback(function (): void {
+  var handleMoveUp = React.useCallback(function (): void {
     if (!selectedLayerId) return;
     setLayers(function (prev) {
-      let idx = -1;
+      var idx = -1;
       prev.forEach(function (l, i) {
         if (l.id === selectedLayerId) idx = i;
       });
       if (idx <= 0) return prev;
-      const arr = prev.map(function (l) { return { ...l }; });
-      const temp = arr[idx];
+      var arr = prev.map(function (l) { return { ...l }; });
+      var temp = arr[idx];
       arr[idx] = arr[idx - 1];
       arr[idx - 1] = temp;
-      // Update zIndex to match position
       arr.forEach(function (l, i) { l.zIndex = i + 1; });
       return arr;
     });
   }, [selectedLayerId]);
 
-  const handleMoveDown = React.useCallback(function (): void {
+  var handleMoveDown = React.useCallback(function (): void {
     if (!selectedLayerId) return;
     setLayers(function (prev) {
-      let idx = -1;
+      var idx = -1;
       prev.forEach(function (l, i) {
         if (l.id === selectedLayerId) idx = i;
       });
       if (idx < 0 || idx >= prev.length - 1) return prev;
-      const arr = prev.map(function (l) { return { ...l }; });
-      const temp = arr[idx];
+      var arr = prev.map(function (l) { return { ...l }; });
+      var temp = arr[idx];
       arr[idx] = arr[idx + 1];
       arr[idx + 1] = temp;
       arr.forEach(function (l, i) { l.zIndex = i + 1; });
@@ -170,20 +195,35 @@ const HyperHeroLayerEditorInner: React.FC<IHyperHeroLayerEditorProps> = function
 
   // ── Generic field updater ──
 
-  const updateLayer = React.useCallback(function (layerId: string, field: string, value: unknown): void {
+  var updateLayer = React.useCallback(function (layerId: string, field: string, value: unknown): void {
     setLayers(function (prev) {
       return prev.map(function (l) {
         if (l.id !== layerId) return l;
-        const copy = { ...l };
+        var copy = { ...l };
         (copy as unknown as Record<string, unknown>)[field] = value;
         return copy;
       });
     });
   }, []);
 
-  // ── Drag handling ──
+  // ── Image browser handlers (after updateLayer) ──
 
-  const handleDragStart = React.useCallback(function (
+  var handleBrowseImage = React.useCallback(function (layerId: string, field: string): void {
+    imageBrowserTargetRef.current = { layerId: layerId, field: field };
+    setShowImageBrowser(true);
+  }, []);
+
+  var handleImageSelected = React.useCallback(function (imageUrl: string): void {
+    var target = imageBrowserTargetRef.current;
+    if (target.layerId && target.field) {
+      updateLayer(target.layerId, target.field, imageUrl);
+    }
+    setShowImageBrowser(false);
+  }, [updateLayer]);
+
+  // ── Layer drag handling ──
+
+  var handleDragStart = React.useCallback(function (
     e: React.MouseEvent,
     layerId: string,
     handle: string
@@ -210,7 +250,7 @@ const HyperHeroLayerEditorInner: React.FC<IHyperHeroLayerEditorProps> = function
     }
 
     // Find the layer's current position/size
-    let found: IHyperHeroLayer | undefined;
+    var found: IHyperHeroLayer | undefined;
     layers.forEach(function (l) {
       if (l.id === layerId) found = l;
     });
@@ -224,22 +264,41 @@ const HyperHeroLayerEditorInner: React.FC<IHyperHeroLayerEditorProps> = function
     setSelectedLayerId(layerId);
   }, [layers]);
 
-  // Mouse move/up on document
+  // ── Canvas resize drag handling ──
+
+  var handleCanvasResizeStart = React.useCallback(function (e: React.MouseEvent): void {
+    e.preventDefault();
+    isResizingCanvasRef.current = true;
+    resizeStartYRef.current = e.clientY;
+    resizeStartHeightRef.current = canvasHeight;
+    document.body.style.cursor = "ns-resize";
+  }, [canvasHeight]);
+
+  // Mouse move/up on document for both layer drag and canvas resize
   React.useEffect(function () {
-    const handleMouseMove = function (e: MouseEvent): void {
+    var handleMouseMove = function (e: MouseEvent): void {
+      // Canvas resize
+      if (isResizingCanvasRef.current) {
+        var deltaY = e.clientY - resizeStartYRef.current;
+        var newHeight = resizeStartHeightRef.current + deltaY;
+        newHeight = Math.max(MIN_CANVAS_HEIGHT, Math.min(MAX_CANVAS_HEIGHT, newHeight));
+        setCanvasHeight(newHeight);
+        return;
+      }
+
+      // Layer drag
       if (!isDraggingRef.current || !canvasRef.current) return;
-      const rect = canvasRef.current.getBoundingClientRect();
-      const deltaXPercent = ((e.clientX - dragStartXRef.current) / rect.width) * 100;
-      const deltaYPercent = ((e.clientY - dragStartYRef.current) / rect.height) * 100;
-      const handle = dragHandleRef.current;
-      const layerId = dragLayerIdRef.current;
+      var rect = canvasRef.current.getBoundingClientRect();
+      var deltaXPercent = ((e.clientX - dragStartXRef.current) / rect.width) * 100;
+      var deltaYPercent = ((e.clientY - dragStartYRef.current) / rect.height) * 100;
+      var handle = dragHandleRef.current;
+      var layerId = dragLayerIdRef.current;
 
       if (handle === "move") {
-        const newX = Math.max(0, Math.min(95, dragStartLayerXRef.current + deltaXPercent));
-        const newY = Math.max(0, Math.min(95, dragStartLayerYRef.current + deltaYPercent));
-        // Snap to 1% grid
-        const snapX = Math.round(newX);
-        const snapY = Math.round(newY);
+        var newX = Math.max(0, Math.min(95, dragStartLayerXRef.current + deltaXPercent));
+        var newY = Math.max(0, Math.min(95, dragStartLayerYRef.current + deltaYPercent));
+        var snapX = Math.round(newX);
+        var snapY = Math.round(newY);
         setLayers(function (prev) {
           return prev.map(function (l) {
             if (l.id !== layerId) return l;
@@ -247,8 +306,8 @@ const HyperHeroLayerEditorInner: React.FC<IHyperHeroLayerEditorProps> = function
           });
         });
       } else if (handle === "resize-se") {
-        const newW = Math.max(5, Math.min(100, dragStartLayerWRef.current + deltaXPercent));
-        const newH = Math.max(5, Math.min(100, dragStartLayerHRef.current + deltaYPercent));
+        var newW = Math.max(5, Math.min(100, dragStartLayerWRef.current + deltaXPercent));
+        var newH = Math.max(5, Math.min(100, dragStartLayerHRef.current + deltaYPercent));
         setLayers(function (prev) {
           return prev.map(function (l) {
             if (l.id !== layerId) return l;
@@ -256,41 +315,42 @@ const HyperHeroLayerEditorInner: React.FC<IHyperHeroLayerEditorProps> = function
           });
         });
       } else if (handle === "resize-ne") {
-        const newW = Math.max(5, Math.min(100, dragStartLayerWRef.current + deltaXPercent));
-        const newH = Math.max(5, Math.min(100, dragStartLayerHRef.current - deltaYPercent));
-        const newY = Math.max(0, dragStartLayerYRef.current + deltaYPercent);
+        var newWne = Math.max(5, Math.min(100, dragStartLayerWRef.current + deltaXPercent));
+        var newHne = Math.max(5, Math.min(100, dragStartLayerHRef.current - deltaYPercent));
+        var newYne = Math.max(0, dragStartLayerYRef.current + deltaYPercent);
         setLayers(function (prev) {
           return prev.map(function (l) {
             if (l.id !== layerId) return l;
-            return { ...l, width: Math.round(newW), height: Math.round(newH), y: Math.round(newY) };
+            return { ...l, width: Math.round(newWne), height: Math.round(newHne), y: Math.round(newYne) };
           });
         });
       } else if (handle === "resize-sw") {
-        const newW = Math.max(5, Math.min(100, dragStartLayerWRef.current - deltaXPercent));
-        const newX = Math.max(0, dragStartLayerXRef.current + deltaXPercent);
-        const newH = Math.max(5, Math.min(100, dragStartLayerHRef.current + deltaYPercent));
+        var newWsw = Math.max(5, Math.min(100, dragStartLayerWRef.current - deltaXPercent));
+        var newXsw = Math.max(0, dragStartLayerXRef.current + deltaXPercent);
+        var newHsw = Math.max(5, Math.min(100, dragStartLayerHRef.current + deltaYPercent));
         setLayers(function (prev) {
           return prev.map(function (l) {
             if (l.id !== layerId) return l;
-            return { ...l, width: Math.round(newW), height: Math.round(newH), x: Math.round(newX) };
+            return { ...l, width: Math.round(newWsw), height: Math.round(newHsw), x: Math.round(newXsw) };
           });
         });
       } else if (handle === "resize-nw") {
-        const newW = Math.max(5, Math.min(100, dragStartLayerWRef.current - deltaXPercent));
-        const newH = Math.max(5, Math.min(100, dragStartLayerHRef.current - deltaYPercent));
-        const newX = Math.max(0, dragStartLayerXRef.current + deltaXPercent);
-        const newY = Math.max(0, dragStartLayerYRef.current + deltaYPercent);
+        var newWnw = Math.max(5, Math.min(100, dragStartLayerWRef.current - deltaXPercent));
+        var newHnw = Math.max(5, Math.min(100, dragStartLayerHRef.current - deltaYPercent));
+        var newXnw = Math.max(0, dragStartLayerXRef.current + deltaXPercent);
+        var newYnw = Math.max(0, dragStartLayerYRef.current + deltaYPercent);
         setLayers(function (prev) {
           return prev.map(function (l) {
             if (l.id !== layerId) return l;
-            return { ...l, width: Math.round(newW), height: Math.round(newH), x: Math.round(newX), y: Math.round(newY) };
+            return { ...l, width: Math.round(newWnw), height: Math.round(newHnw), x: Math.round(newXnw), y: Math.round(newYnw) };
           });
         });
       }
     };
 
-    const handleMouseUp = function (): void {
+    var handleMouseUp = function (): void {
       isDraggingRef.current = false;
+      isResizingCanvasRef.current = false;
       document.body.style.cursor = "";
     };
 
@@ -303,7 +363,7 @@ const HyperHeroLayerEditorInner: React.FC<IHyperHeroLayerEditorProps> = function
   }, []);
 
   // Save handler
-  const handleSave = React.useCallback(function (): void {
+  var handleSave = React.useCallback(function (): void {
     onSave(layers);
   }, [layers, onSave]);
 
@@ -311,14 +371,14 @@ const HyperHeroLayerEditorInner: React.FC<IHyperHeroLayerEditorProps> = function
   if (!isOpen) return null;
 
   // Find selected layer
-  let selectedLayer: IHyperHeroLayer | undefined;
+  var selectedLayer: IHyperHeroLayer | undefined;
   layers.forEach(function (l) {
     if (l.id === selectedLayerId) selectedLayer = l;
   });
 
   // ── Build canvas background style ──
-  const canvasBgStyle: React.CSSProperties = {};
-  const bg = slide.background;
+  var canvasBgStyle: React.CSSProperties = {};
+  var bg = slide.background;
   if (bg.type === "solidColor" && bg.backgroundColor) {
     canvasBgStyle.backgroundColor = bg.backgroundColor;
   } else if (bg.type === "image" && bg.imageUrl) {
@@ -330,7 +390,7 @@ const HyperHeroLayerEditorInner: React.FC<IHyperHeroLayerEditorProps> = function
   }
 
   // ── Footer ──
-  const footer = React.createElement("div", { className: styles.footerRow },
+  var footer = React.createElement("div", { className: styles.footerRow },
     React.createElement("button", {
       onClick: onClose,
       className: styles.footerBtnCancel,
@@ -343,31 +403,25 @@ const HyperHeroLayerEditorInner: React.FC<IHyperHeroLayerEditorProps> = function
     }, "Save Layers")
   );
 
+  // ── Status bar info ──
+  var statusLayerName = selectedLayer ? selectedLayer.name : "None";
+  var statusPos = selectedLayer ? selectedLayer.x + "%, " + selectedLayer.y + "%" : "\u2014";
+  var statusSize = selectedLayer ? selectedLayer.width + "% \u00D7 " + selectedLayer.height + "%" : "\u2014";
+
   return React.createElement(HyperModal, {
     isOpen: isOpen,
     onClose: onClose,
-    title: "Hero Designer — " + (slide.heading || "Untitled"),
+    title: "Hero Designer \u2014 " + (slide.heading || "Untitled"),
     size: "xlarge",
     footer: footer,
   },
     React.createElement("div", { className: styles.editorLayout },
-      // ═══ Left Panel: Layer List ═══
-      renderLeftPanel(
-        layers,
-        selectedLayerId,
-        showAddDropdown,
-        setShowAddDropdown,
-        handleAddLayer,
-        setSelectedLayerId,
-        updateLayer,
-        handleMoveUp,
-        handleMoveDown,
-        handleDuplicateLayer,
-        handleDeleteLayer
-      ),
 
-      // ═══ Center Panel: Canvas ═══
-      React.createElement("div", { className: styles.centerPanel },
+      // ═══ Canvas Area (TOP) ═══
+      React.createElement("div", {
+        className: styles.canvasArea,
+        style: { height: canvasHeight + "px" },
+      },
         React.createElement("div", {
           className: styles.canvasContainer,
           style: canvasBgStyle,
@@ -387,8 +441,61 @@ const HyperHeroLayerEditorInner: React.FC<IHyperHeroLayerEditorProps> = function
         )
       ),
 
-      // ═══ Right Panel: Properties ═══
-      renderRightPanel(selectedLayer, updateLayer)
+      // ═══ Canvas Resize Handle (draggable bar) ═══
+      React.createElement("div", {
+        className: styles.canvasResizeHandle
+          + (isResizingCanvasRef.current ? " " + styles.canvasResizeHandleActive : ""),
+        onMouseDown: handleCanvasResizeStart,
+        title: "Drag to resize canvas",
+        role: "separator",
+        "aria-orientation": "horizontal",
+        "aria-label": "Resize canvas height",
+      }),
+
+      // ═══ Status Bar ═══
+      React.createElement("div", { className: styles.statusBar },
+        React.createElement("span", { className: styles.statusItem },
+          "Selected: ",
+          React.createElement("span", { className: styles.statusValue }, statusLayerName)
+        ),
+        React.createElement("span", { className: styles.statusItem },
+          "Pos: ",
+          React.createElement("span", { className: styles.statusValue }, statusPos)
+        ),
+        React.createElement("span", { className: styles.statusItem },
+          "Size: ",
+          React.createElement("span", { className: styles.statusValue }, statusSize)
+        ),
+        React.createElement("span", {
+          className: styles.statusItem + " " + styles.statusRight,
+        }, layers.length + " layer" + (layers.length === 1 ? "" : "s"))
+      ),
+
+      // ═══ Bottom Panels: Layers (left) + Properties (right) ═══
+      React.createElement("div", { className: styles.bottomPanels },
+        renderLeftPanel(
+          layers,
+          selectedLayerId,
+          showAddDropdown,
+          setShowAddDropdown,
+          handleAddLayer,
+          setSelectedLayerId,
+          updateLayer,
+          handleMoveUp,
+          handleMoveDown,
+          handleDuplicateLayer,
+          handleDeleteLayer
+        ),
+        renderRightPanel(selectedLayer, updateLayer, handleBrowseImage)
+      ),
+
+      // ═══ SharePoint Image Browser (SP Flyout Panel) ═══
+      React.createElement(HyperImageBrowser, {
+        isOpen: showImageBrowser,
+        onClose: function (): void { setShowImageBrowser(false); },
+        onSelect: handleImageSelected,
+        size: "panel",
+      })
     )
   );
 };
@@ -438,8 +545,8 @@ function renderLeftPanel(
     // Layer list
     React.createElement("div", { className: styles.layerList },
       layers.map(function (layer) {
-        const isSelected = layer.id === selectedLayerId;
-        const itemClasses = [styles.layerItem];
+        var isSelected = layer.id === selectedLayerId;
+        var itemClasses = [styles.layerItem];
         if (isSelected) itemClasses.push(styles.layerItemSelected);
         if (!layer.visible) itemClasses.push(styles.layerItemHidden);
 
@@ -448,13 +555,9 @@ function renderLeftPanel(
           className: itemClasses.join(" "),
           onClick: function (): void { setSelectedLayerId(layer.id); },
         },
-          // Type icon
           React.createElement("span", { className: styles.layerItemIcon }, LAYER_TYPE_ICONS[layer.type] || "?"),
-          // Name
           React.createElement("span", { className: styles.layerItemName }, layer.name),
-          // Actions
           React.createElement("div", { className: styles.layerItemActions },
-            // Visibility toggle
             React.createElement("button", {
               className: styles.layerItemBtn,
               onClick: function (e: React.MouseEvent): void {
@@ -464,7 +567,6 @@ function renderLeftPanel(
               type: "button",
               title: layer.visible ? "Hide" : "Show",
             }, layer.visible ? "\uD83D\uDC41" : "\uD83D\uDEAB"),
-            // Lock toggle
             React.createElement("button", {
               className: styles.layerItemBtn,
               onClick: function (e: React.MouseEvent): void {
@@ -515,7 +617,8 @@ function renderLeftPanel(
 
 function renderRightPanel(
   layer: IHyperHeroLayer | undefined,
-  updateLayer: (id: string, field: string, value: unknown) => void
+  updateLayer: (id: string, field: string, value: unknown) => void,
+  onBrowseImage: (layerId: string, field: string) => void
 ): React.ReactElement {
   if (!layer) {
     return React.createElement("div", { className: styles.rightPanel },
@@ -649,7 +752,7 @@ function renderRightPanel(
 
       // ── Divider + type-specific properties ──
       React.createElement("div", { className: styles.sectionDivider }),
-      renderTypeProperties(layer, updateLayer)
+      renderTypeProperties(layer, updateLayer, onBrowseImage)
     )
   );
 }
@@ -660,13 +763,14 @@ function renderRightPanel(
 
 function renderTypeProperties(
   layer: IHyperHeroLayer,
-  updateLayer: (id: string, field: string, value: unknown) => void
+  updateLayer: (id: string, field: string, value: unknown) => void,
+  onBrowseImage: (layerId: string, field: string) => void
 ): React.ReactElement {
   if (layer.type === "text") {
     return renderTextProperties(layer, updateLayer);
   }
   if (layer.type === "image") {
-    return renderImageProperties(layer, updateLayer);
+    return renderImageProperties(layer, updateLayer, onBrowseImage);
   }
   if (layer.type === "button") {
     return renderButtonProperties(layer, updateLayer);
@@ -684,9 +788,8 @@ function renderTextProperties(
   layer: IHyperHeroLayer,
   updateLayer: (id: string, field: string, value: unknown) => void
 ): React.ReactElement {
-  const fc = layer.fontConfig;
+  var fc = layer.fontConfig;
   return React.createElement(React.Fragment, undefined,
-    // Text content
     React.createElement("div", undefined,
       React.createElement("label", { className: styles.propertyLabel }, "Text Content"),
       React.createElement("textarea", {
@@ -697,14 +800,13 @@ function renderTextProperties(
         },
       })
     ),
-    // Font family
     React.createElement("div", undefined,
       React.createElement("label", { className: styles.propertyLabel }, "Font"),
       React.createElement("select", {
         className: styles.propertySelect,
         value: fc ? fc.fontFamily : "Segoe UI",
         onChange: function (e: React.ChangeEvent<HTMLSelectElement>): void {
-          const current = layer.fontConfig || {
+          var current = layer.fontConfig || {
             fontFamily: "Segoe UI", fontSize: 0, fontWeight: 0,
             color: "", letterSpacing: 0, lineHeight: 0,
             textTransform: "none", textShadow: "none",
@@ -717,7 +819,6 @@ function renderTextProperties(
         })
       )
     ),
-    // Font size
     React.createElement("div", undefined,
       React.createElement("label", { className: styles.propertyLabel }, "Size"),
       React.createElement("div", { className: styles.propertySliderRow },
@@ -728,7 +829,7 @@ function renderTextProperties(
           max: "80",
           value: fc ? fc.fontSize || 28 : 28,
           onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
-            const current = layer.fontConfig || {
+            var current = layer.fontConfig || {
               fontFamily: "Segoe UI", fontSize: 28, fontWeight: 0,
               color: "", letterSpacing: 0, lineHeight: 0,
               textTransform: "none", textShadow: "none",
@@ -741,14 +842,13 @@ function renderTextProperties(
         )
       )
     ),
-    // Font weight
     React.createElement("div", undefined,
       React.createElement("label", { className: styles.propertyLabel }, "Weight"),
       React.createElement("select", {
         className: styles.propertySelect,
         value: fc ? fc.fontWeight || 400 : 400,
         onChange: function (e: React.ChangeEvent<HTMLSelectElement>): void {
-          const current = layer.fontConfig || {
+          var current = layer.fontConfig || {
             fontFamily: "Segoe UI", fontSize: 28, fontWeight: 400,
             color: "", letterSpacing: 0, lineHeight: 0,
             textTransform: "none", textShadow: "none",
@@ -761,7 +861,6 @@ function renderTextProperties(
         })
       )
     ),
-    // Color
     React.createElement("div", undefined,
       React.createElement("label", { className: styles.propertyLabel }, "Color"),
       React.createElement("input", {
@@ -770,7 +869,7 @@ function renderTextProperties(
         value: fc ? fc.color || "#ffffff" : "#ffffff",
         placeholder: "#ffffff",
         onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
-          const current = layer.fontConfig || {
+          var current = layer.fontConfig || {
             fontFamily: "Segoe UI", fontSize: 28, fontWeight: 400,
             color: "#ffffff", letterSpacing: 0, lineHeight: 0,
             textTransform: "none", textShadow: "none",
@@ -784,20 +883,29 @@ function renderTextProperties(
 
 function renderImageProperties(
   layer: IHyperHeroLayer,
-  updateLayer: (id: string, field: string, value: unknown) => void
+  updateLayer: (id: string, field: string, value: unknown) => void,
+  onBrowseImage: (layerId: string, field: string) => void
 ): React.ReactElement {
   return React.createElement(React.Fragment, undefined,
     React.createElement("div", undefined,
       React.createElement("label", { className: styles.propertyLabel }, "Image URL"),
-      React.createElement("input", {
-        className: styles.propertyInput,
-        type: "text",
-        value: layer.imageUrl || "",
-        placeholder: "https://...",
-        onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
-          updateLayer(layer.id, "imageUrl", e.target.value);
-        },
-      })
+      React.createElement("div", { className: styles.propertyInputRow },
+        React.createElement("input", {
+          className: styles.propertyInput + " " + styles.propertyInputFlex,
+          type: "text",
+          value: layer.imageUrl || "",
+          placeholder: "https://...",
+          onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
+            updateLayer(layer.id, "imageUrl", e.target.value);
+          },
+        }),
+        React.createElement("button", {
+          className: styles.browseBtn,
+          onClick: function (): void { onBrowseImage(layer.id, "imageUrl"); },
+          type: "button",
+          title: "Browse SharePoint images",
+        }, "Browse")
+      )
     ),
     React.createElement("div", undefined,
       React.createElement("label", { className: styles.propertyLabel }, "Fit"),

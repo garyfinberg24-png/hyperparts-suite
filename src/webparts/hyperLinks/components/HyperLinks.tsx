@@ -1,5 +1,6 @@
 import * as React from "react";
 import type { IHyperLinksWebPartProps, HyperLinksLayoutMode, HyperLinksBackgroundMode, IHyperLink } from "../models";
+import { SAMPLE_LINKS } from "../models";
 import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton } from "../../../common/components";
 import { HyperWizard } from "../../../common/components/wizard/HyperWizard";
 import { useHyperLinks } from "../hooks/useHyperLinks";
@@ -7,6 +8,8 @@ import { useLinksAudienceFilter } from "../hooks/useLinksAudienceFilter";
 import { useLinksSearch } from "../hooks/useLinksSearch";
 import { useHyperLinksStore } from "../store/useHyperLinksStore";
 import { trackLinkClick } from "../utils/analyticsTracker";
+import { getPresetLinksById } from "../utils/linkPresets";
+import { stringifyLinks, stringifyGroups } from "../utils/linkParser";
 import { LINKS_WIZARD_CONFIG, buildStateFromProps } from "./wizard/linksWizardConfig";
 import HyperLinksSearchBar from "./HyperLinksSearchBar";
 import { HyperLinksGroupSection } from "./HyperLinksGroupSection";
@@ -74,7 +77,7 @@ function buildBackgroundStyle(
   color: string,
   gradient: string,
   imageUrl: string,
-  darken: boolean
+  _darken: boolean
 ): React.CSSProperties | undefined {
   if (!mode || mode === "none") return undefined;
 
@@ -94,24 +97,89 @@ function buildBackgroundStyle(
   return Object.keys(style).length > 0 ? style : undefined;
 }
 
+/** Resolve the effective links JSON based on demo mode + presets */
+function resolveLinksJson(
+  isDemoMode: boolean,
+  useSampleData: boolean,
+  linkPresetId: string,
+  rawLinksJson: string
+): string {
+  // Demo mode active: show preset links or default sample links
+  if (isDemoMode && useSampleData) {
+    if (linkPresetId) {
+      var preset = getPresetLinksById(linkPresetId);
+      if (preset) {
+        return stringifyLinks(preset.links);
+      }
+    }
+    // Fallback to default SAMPLE_LINKS
+    return stringifyLinks(SAMPLE_LINKS);
+  }
+  return rawLinksJson;
+}
+
+/** Resolve the effective groups JSON based on demo mode + presets */
+function resolveGroupsJson(
+  isDemoMode: boolean,
+  useSampleData: boolean,
+  linkPresetId: string,
+  rawGroupsJson: string
+): string {
+  if (isDemoMode && useSampleData) {
+    if (linkPresetId) {
+      var preset = getPresetLinksById(linkPresetId);
+      if (preset && preset.groups) {
+        return stringifyGroups(preset.groups);
+      }
+    }
+    return "[]";
+  }
+  return rawGroupsJson;
+}
+
 const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
-  const { links, groupedLinks } = useHyperLinks(props.links, props.groups, props.enableGrouping);
-
-  // Audience targeting filter
-  const { filteredLinks, loading } = useLinksAudienceFilter(
-    links,
-    props.enableAudienceTargeting
-  );
-
-  // Store for group expand/collapse + wizard
+  // Store for group expand/collapse + wizard + demo mode
+  const isDemoMode = useHyperLinksStore(function (s) { return s.isDemoMode; });
+  const toggleDemoMode = useHyperLinksStore(function (s) { return s.toggleDemoMode; });
   const expandedGroupIds = useHyperLinksStore(function (s) { return s.expandedGroupIds; });
   const toggleGroup = useHyperLinksStore(function (s) { return s.toggleGroup; });
   const isWizardOpen = useHyperLinksStore(function (s) { return s.isWizardOpen; });
   const openWizard = useHyperLinksStore(function (s) { return s.openWizard; });
   const closeWizard = useHyperLinksStore(function (s) { return s.closeWizard; });
 
+  // Resolve effective links/groups (considering demo mode and presets)
+  var effectiveLinksJson = resolveLinksJson(
+    isDemoMode,
+    !!props.useSampleData,
+    props.linkPresetId || "",
+    props.links
+  );
+  var effectiveGroupsJson = resolveGroupsJson(
+    isDemoMode,
+    !!props.useSampleData,
+    props.linkPresetId || "",
+    props.groups
+  );
+
+  // Should enable grouping in demo mode if preset has groups?
+  var effectiveGrouping = props.enableGrouping;
+  if (isDemoMode && !!props.useSampleData && props.linkPresetId) {
+    var demoPreset = getPresetLinksById(props.linkPresetId);
+    if (demoPreset && demoPreset.groups && demoPreset.groups.length > 0) {
+      effectiveGrouping = true;
+    }
+  }
+
+  const { links, groupedLinks } = useHyperLinks(effectiveLinksJson, effectiveGroupsJson, effectiveGrouping);
+
+  // Audience targeting filter (skip in demo mode)
+  const { filteredLinks, loading } = useLinksAudienceFilter(
+    links,
+    isDemoMode ? false : props.enableAudienceTargeting
+  );
+
   // Determine which links are audience-visible
-  const audienceLinks = props.enableAudienceTargeting ? filteredLinks : links;
+  const audienceLinks = (isDemoMode ? false : props.enableAudienceTargeting) ? filteredLinks : links;
 
   // Search within links
   const searchResult = useLinksSearch(audienceLinks, props.enableSearch);
@@ -136,6 +204,8 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
     props.backgroundMode, props.backgroundColor, props.backgroundGradient,
     props.backgroundImageUrl, props.backgroundImageDarken,
     props.textColor, props.iconColor, props.activePresetId,
+    props.linkDataSource, props.linkPresetId, props.linkListUrl,
+    props.linkListTitleColumn, props.linkListUrlColumn, props.useSampleData,
   ]);
 
   // Handle wizard apply
@@ -167,11 +237,62 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
     initialStateOverride: wizardStateOverride,
   });
 
+  // Demo mode toolbar: visible when useSampleData is enabled
+  var demoToolbar: React.ReactElement | undefined;
+  if (props.useSampleData) {
+    demoToolbar = React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+        marginBottom: "4px",
+      },
+    },
+      // Demo mode toggle button
+      React.createElement("button", {
+        onClick: toggleDemoMode,
+        style: {
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "6px",
+          padding: "4px 12px",
+          border: isDemoMode ? "1px solid #0078d4" : "1px solid #c8c6c4",
+          borderRadius: "4px",
+          background: isDemoMode ? "#e1effa" : "#ffffff",
+          color: isDemoMode ? "#0078d4" : "#605e5c",
+          fontSize: "12px",
+          fontWeight: 600,
+          cursor: "pointer",
+          transition: "all 0.15s ease",
+        },
+      }, isDemoMode ? "\uD83C\uDFAD Demo ON" : "\uD83C\uDFAD Demo"),
+      // Demo mode indicator
+      isDemoMode
+        ? React.createElement("span", {
+            style: {
+              fontSize: "11px",
+              color: "#0078d4",
+              fontStyle: "italic",
+            },
+          }, "Showing sample data")
+        : undefined,
+      // Spacer
+      React.createElement("span", { style: { flex: 1 } }),
+      // Configure button (visible outside edit mode when demo is enabled)
+      React.createElement("button", {
+        onClick: handleConfigureClick,
+        className: styles.configureButton,
+        style: { padding: "4px 12px", fontSize: "12px" },
+      }, "\u2699\uFE0F Configure")
+    );
+  }
+
   // Loading state while checking audience targeting
   if (loading) {
     return React.createElement(
       "div",
       { className: styles.hyperLinks },
+      demoToolbar,
       React.createElement(HyperSkeleton, { count: 3, width: "100%" }),
       wizardElement
     );
@@ -185,6 +306,7 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
     return React.createElement(
       "div",
       { className: styles.hyperLinks },
+      demoToolbar,
       React.createElement(HyperEmptyState, {
         iconName: "Link",
         title: "No Quick Links",
@@ -235,6 +357,7 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
         role: "region",
         "aria-label": props.title || "Quick Links",
       },
+      demoToolbar,
       props.title
         ? React.createElement("h2", { className: styles.title }, props.title)
         : undefined,
@@ -249,7 +372,7 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
   }
 
   // Grouped rendering
-  if (props.enableGrouping && groupedLinks.length > 0) {
+  if (effectiveGrouping && groupedLinks.length > 0) {
     // Build set of visible link IDs for audience + search filtering
     const filteredIds: Record<string, boolean> = {};
     displayLinks.forEach(function (l) { filteredIds[l.id] = true; });
@@ -309,6 +432,7 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
         role: "region",
         "aria-label": props.title || "Quick Links",
       },
+      demoToolbar,
       props.title
         ? React.createElement("h2", { className: styles.title }, props.title)
         : undefined,
@@ -345,6 +469,7 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
       role: "region",
       "aria-label": props.title || "Quick Links",
     },
+    demoToolbar,
     props.title
       ? React.createElement("h2", { className: styles.title }, props.title)
       : undefined,

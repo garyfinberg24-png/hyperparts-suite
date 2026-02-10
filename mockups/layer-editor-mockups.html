@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HyperHero Layer Editor — 5 Layout Mockups</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f0f0f0; padding: 40px; color: #323130; }
+  h1 { font-size: 24px; margin-bottom: 32px; text-align: center; }
+  .mockup { background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.12); margin-bottom: 60px; overflow: hidden; max-width: 960px; margin-left: auto; margin-right: auto; }
+  .mockup-title { background: #faf9f8; padding: 14px 20px; border-bottom: 1px solid #edebe9; display: flex; justify-content: space-between; align-items: center; }
+  .mockup-title h2 { font-size: 16px; font-weight: 700; }
+  .mockup-title .badge { background: #0078d4; color: #fff; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .mockup-desc { padding: 12px 20px; font-size: 13px; color: #605e5c; background: #faf9f8; border-bottom: 1px solid #edebe9; }
+
+  /* Common panel styles */
+  .panel-layers { background: #faf9f8; border: 1px solid #edebe9; }
+  .panel-layers .panel-header { padding: 10px 14px; font-weight: 700; font-size: 13px; border-bottom: 1px solid #edebe9; display: flex; justify-content: space-between; align-items: center; }
+  .panel-layers .panel-header .add-btn { background: #f3f2f1; border: 1px dashed #8a8886; padding: 4px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; }
+  .layer-item { display: flex; align-items: center; gap: 8px; padding: 7px 14px; font-size: 12px; border-left: 3px solid transparent; }
+  .layer-item:hover { background: #f3f2f1; }
+  .layer-item.selected { background: #f3f9ff; border-left-color: #0078d4; }
+  .layer-item .icon { font-size: 14px; width: 18px; text-align: center; }
+  .layer-item .name { flex: 1; }
+  .layer-item .actions { display: flex; gap: 2px; opacity: 0.5; font-size: 11px; }
+  .layer-bottom { padding: 8px 12px; border-top: 1px solid #edebe9; display: flex; gap: 4px; flex-wrap: wrap; }
+  .layer-bottom button { padding: 3px 7px; background: #f3f2f1; border: 1px solid #c8c6c4; border-radius: 3px; font-size: 10px; cursor: pointer; }
+
+  .panel-canvas { background: #e1dfdd; display: flex; align-items: center; justify-content: center; position: relative; padding: 16px; }
+  .canvas-surface { background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%); border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); position: relative; overflow: hidden; }
+  .canvas-layer { position: absolute; border: 2px dashed rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; }
+  .canvas-layer.text { top: 15%; left: 10%; width: 50%; height: 20%; font-size: 14px; font-weight: 600; }
+  .canvas-layer.image { top: 45%; left: 10%; width: 35%; height: 30%; background: rgba(255,255,255,0.15); border-style: solid; }
+  .canvas-handle { position: absolute; width: 12px; height: 12px; background: #fff; border: 2px solid #0078d4; border-radius: 2px; }
+  .canvas-handle.nw { top: -6px; left: -6px; }
+  .canvas-handle.ne { top: -6px; right: -6px; }
+  .canvas-handle.sw { bottom: -6px; left: -6px; }
+  .canvas-handle.se { bottom: -6px; right: -6px; }
+
+  .panel-props { background: #fff; border: 1px solid #edebe9; }
+  .panel-props .panel-header { padding: 10px 14px; font-weight: 700; font-size: 13px; border-bottom: 1px solid #edebe9; }
+  .prop-group { padding: 10px 14px; display: flex; flex-direction: column; gap: 8px; }
+  .prop-label { font-size: 11px; font-weight: 600; color: #605e5c; }
+  .prop-input { padding: 4px 8px; border: 1px solid #c8c6c4; border-radius: 4px; font-size: 12px; width: 100%; }
+  .prop-slider-row { display: flex; gap: 8px; align-items: center; }
+  .prop-slider-row input[type=range] { flex: 1; accent-color: #0078d4; }
+  .prop-slider-row span { font-size: 11px; font-weight: 600; color: #0078d4; min-width: 28px; text-align: right; }
+  .prop-divider { height: 1px; background: #edebe9; margin: 2px 0; }
+
+  .footer { padding: 12px 20px; border-top: 1px solid #edebe9; display: flex; justify-content: flex-end; gap: 8px; background: #faf9f8; }
+  .footer button { padding: 7px 16px; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .footer .btn-cancel { background: #fff; border: 1px solid #8a8886; color: #323130; }
+  .footer .btn-save { background: #0078d4; border: none; color: #fff; }
+
+  .pros-cons { display: flex; gap: 20px; padding: 12px 20px; background: #faf9f8; border-top: 1px solid #edebe9; }
+  .pros-cons div { flex: 1; }
+  .pros-cons h4 { font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+  .pros-cons .pros h4 { color: #107c10; }
+  .pros-cons .cons h4 { color: #a4262c; }
+  .pros-cons ul { list-style: none; font-size: 11px; color: #605e5c; }
+  .pros-cons ul li::before { content: "•"; margin-right: 6px; }
+</style>
+</head>
+<body>
+<h1>HyperHero Layer Editor — 5 Layout Options</h1>
+
+<!-- ============================================================ -->
+<!-- MOCKUP A: Canvas Top, Layers + Props Bottom (Split) -->
+<!-- ============================================================ -->
+<div class="mockup">
+  <div class="mockup-title">
+    <h2>Option A: Canvas Top — Layers + Properties Bottom</h2>
+    <span class="badge">RECOMMENDED</span>
+  </div>
+  <div class="mockup-desc">
+    Full-width 16:9 canvas dominates the top. Layers list and Properties panels sit side-by-side below.
+    Maximizes the design surface while keeping all controls accessible below.
+  </div>
+
+  <div style="display: flex; flex-direction: column;">
+    <!-- Canvas: full width, 16:9 -->
+    <div class="panel-canvas" style="width: 100%; aspect-ratio: 16/9; max-height: 340px;">
+      <div class="canvas-surface" style="width: 90%; aspect-ratio: 16/9; max-height: 300px;">
+        <div class="canvas-layer text">
+          Enter text here
+          <div class="canvas-handle nw"></div>
+          <div class="canvas-handle ne"></div>
+          <div class="canvas-handle sw"></div>
+          <div class="canvas-handle se"></div>
+        </div>
+        <div class="canvas-layer image">🖼️ Image 1</div>
+      </div>
+    </div>
+
+    <!-- Bottom row: Layers + Properties side by side -->
+    <div style="display: flex; height: 220px; border-top: 1px solid #edebe9;">
+      <!-- Layers (left) -->
+      <div class="panel-layers" style="width: 240px; display: flex; flex-direction: column; border-right: 1px solid #edebe9;">
+        <div class="panel-header">Layers <span class="add-btn">+ Add Layer</span></div>
+        <div style="flex: 1; overflow-y: auto;">
+          <div class="layer-item selected"><span class="icon">🖼️</span><span class="name">Image 1</span><span class="actions">👁 🗑</span></div>
+          <div class="layer-item"><span class="icon">T</span><span class="name">Text 2</span><span class="actions">👁 🗑</span></div>
+          <div class="layer-item"><span class="icon">🔘</span><span class="name">Button 3</span><span class="actions">👁 🗑</span></div>
+        </div>
+        <div class="layer-bottom">
+          <button>↑ Up</button> <button>↓ Down</button> <button>Dup</button> <button style="color:#a4262c">Del</button>
+        </div>
+      </div>
+
+      <!-- Properties (right, fills remaining) -->
+      <div class="panel-props" style="flex: 1; overflow-y: auto;">
+        <div class="panel-header">Properties — Image 1</div>
+        <div class="prop-group">
+          <div><span class="prop-label">Image URL</span><input class="prop-input" value="https://contoso.com/hero.jpg"></div>
+          <div class="prop-divider"></div>
+          <div><span class="prop-label">Position X</span>
+            <div class="prop-slider-row"><input type="range" min="0" max="100" value="10"><span>10%</span></div>
+          </div>
+          <div><span class="prop-label">Position Y</span>
+            <div class="prop-slider-row"><input type="range" min="0" max="100" value="45"><span>45%</span></div>
+          </div>
+          <div><span class="prop-label">Width</span>
+            <div class="prop-slider-row"><input type="range" min="5" max="100" value="35"><span>35%</span></div>
+          </div>
+          <div><span class="prop-label">Opacity</span>
+            <div class="prop-slider-row"><input type="range" min="0" max="100" value="100"><span>100%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <button class="btn-cancel">Cancel</button>
+    <button class="btn-save">Save Layers</button>
+  </div>
+
+  <div class="pros-cons">
+    <div class="pros"><h4>PROS</h4><ul>
+      <li>Canvas is full-width — true 16:9 aspect ratio</li>
+      <li>Design surface is the hero, matching actual output</li>
+      <li>Layers and Properties are always visible below</li>
+      <li>Natural top-down workflow: see result → edit below</li>
+    </ul></div>
+    <div class="cons"><h4>CONS</h4><ul>
+      <li>Properties panel has less vertical space</li>
+      <li>Need to scroll Properties for many fields</li>
+    </ul></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MOCKUP B: Canvas Top Full + Tabbed Bottom Panel -->
+<!-- ============================================================ -->
+<div class="mockup">
+  <div class="mockup-title">
+    <h2>Option B: Canvas Top — Tabbed Bottom Panel</h2>
+    <span class="badge">CLEAN</span>
+  </div>
+  <div class="mockup-desc">
+    Full-width canvas on top. Single bottom panel with tabs to switch between Layers and Properties.
+    Maximizes canvas area even further — only one panel visible at a time.
+  </div>
+
+  <div style="display: flex; flex-direction: column;">
+    <!-- Canvas: full width -->
+    <div class="panel-canvas" style="width: 100%; aspect-ratio: 16/9; max-height: 360px;">
+      <div class="canvas-surface" style="width: 90%; aspect-ratio: 16/9; max-height: 320px;">
+        <div class="canvas-layer text">
+          Enter text here
+          <div class="canvas-handle nw"></div><div class="canvas-handle ne"></div>
+          <div class="canvas-handle sw"></div><div class="canvas-handle se"></div>
+        </div>
+        <div class="canvas-layer image">🖼️ Image 1</div>
+      </div>
+    </div>
+
+    <!-- Tabbed bottom panel -->
+    <div style="border-top: 1px solid #edebe9;">
+      <!-- Tabs -->
+      <div style="display: flex; background: #faf9f8; border-bottom: 2px solid #edebe9;">
+        <button style="padding: 8px 20px; font-size: 13px; font-weight: 600; border: none; background: transparent; border-bottom: 2px solid #0078d4; margin-bottom: -2px; color: #0078d4; cursor: pointer;">📋 Layers</button>
+        <button style="padding: 8px 20px; font-size: 13px; font-weight: 600; border: none; background: transparent; color: #605e5c; cursor: pointer;">⚙️ Properties</button>
+      </div>
+      <!-- Layers content (active) -->
+      <div style="height: 180px; display: flex; flex-direction: column;">
+        <div style="flex: 1; overflow-y: auto;">
+          <div class="layer-item selected"><span class="icon">🖼️</span><span class="name">Image 1</span><span style="margin-left:auto;font-size:11px;color:#605e5c;">35% × 30% at (10, 45)</span><span class="actions" style="margin-left:12px;">👁 🗑</span></div>
+          <div class="layer-item"><span class="icon">T</span><span class="name">Text 2</span><span style="margin-left:auto;font-size:11px;color:#605e5c;">50% × 20% at (10, 15)</span><span class="actions" style="margin-left:12px;">👁 🗑</span></div>
+          <div class="layer-item"><span class="icon">🔘</span><span class="name">Button 3</span><span style="margin-left:auto;font-size:11px;color:#605e5c;">20% × 8% at (10, 80)</span><span class="actions" style="margin-left:12px;">👁 🗑</span></div>
+        </div>
+        <div class="layer-bottom">
+          <button>+ Add Layer</button> <button>↑ Up</button> <button>↓ Down</button> <button>Dup</button> <button style="color:#a4262c">Del</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <button class="btn-cancel">Cancel</button>
+    <button class="btn-save">Save Layers</button>
+  </div>
+
+  <div class="pros-cons">
+    <div class="pros"><h4>PROS</h4><ul>
+      <li>Maximum canvas size — largest design surface</li>
+      <li>Very clean, uncluttered interface</li>
+      <li>Tabs reduce cognitive load — one thing at a time</li>
+      <li>Similar UX to Figma's bottom panel</li>
+    </ul></div>
+    <div class="cons"><h4>CONS</h4><ul>
+      <li>Can't see Layers and Properties simultaneously</li>
+      <li>Switching tabs adds friction when frequently editing</li>
+    </ul></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MOCKUP C: Left Sidebar (Layers + Props stacked) + Canvas Right -->
+<!-- ============================================================ -->
+<div class="mockup">
+  <div class="mockup-title">
+    <h2>Option C: Left Sidebar (Layers + Props) — Canvas Right</h2>
+    <span class="badge">FAMILIAR</span>
+  </div>
+  <div class="mockup-desc">
+    All editing controls in a single left sidebar with Layers on top and Properties below (scrollable).
+    Canvas takes the full remaining width on the right with proper 16:9 aspect ratio.
+  </div>
+
+  <div style="display: flex; height: 520px;">
+    <!-- Left sidebar: Layers + Properties stacked -->
+    <div style="width: 280px; display: flex; flex-direction: column; border-right: 1px solid #edebe9; flex-shrink: 0;">
+      <!-- Layers section (top) -->
+      <div class="panel-layers" style="height: 200px; display: flex; flex-direction: column; border-bottom: 1px solid #edebe9;">
+        <div class="panel-header">Layers <span class="add-btn">+ Add</span></div>
+        <div style="flex: 1; overflow-y: auto;">
+          <div class="layer-item selected"><span class="icon">🖼️</span><span class="name">Image 1</span><span class="actions">👁 🗑</span></div>
+          <div class="layer-item"><span class="icon">T</span><span class="name">Text 2</span><span class="actions">👁 🗑</span></div>
+          <div class="layer-item"><span class="icon">🔘</span><span class="name">Button 3</span><span class="actions">👁 🗑</span></div>
+        </div>
+        <div class="layer-bottom">
+          <button>↑ Up</button> <button>↓ Down</button> <button>Dup</button> <button style="color:#a4262c">Del</button>
+        </div>
+      </div>
+
+      <!-- Properties section (bottom, scrollable) -->
+      <div class="panel-props" style="flex: 1; overflow-y: auto;">
+        <div class="panel-header">Properties — Image 1</div>
+        <div class="prop-group">
+          <div><span class="prop-label">Image URL</span><input class="prop-input" value="https://contoso.com/hero.jpg"></div>
+          <div class="prop-divider"></div>
+          <div><span class="prop-label">Position X</span>
+            <div class="prop-slider-row"><input type="range" min="0" max="100" value="10"><span>10%</span></div>
+          </div>
+          <div><span class="prop-label">Position Y</span>
+            <div class="prop-slider-row"><input type="range" min="0" max="100" value="45"><span>45%</span></div>
+          </div>
+          <div><span class="prop-label">Width</span>
+            <div class="prop-slider-row"><input type="range" min="5" max="100" value="35"><span>35%</span></div>
+          </div>
+          <div><span class="prop-label">Height</span>
+            <div class="prop-slider-row"><input type="range" min="5" max="100" value="30"><span>30%</span></div>
+          </div>
+          <div><span class="prop-label">Opacity</span>
+            <div class="prop-slider-row"><input type="range" min="0" max="100" value="100"><span>100%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Canvas (right, flex) -->
+    <div class="panel-canvas" style="flex: 1;">
+      <div class="canvas-surface" style="width: 92%; aspect-ratio: 16/9;">
+        <div class="canvas-layer text">
+          Enter text here
+          <div class="canvas-handle nw"></div><div class="canvas-handle ne"></div>
+          <div class="canvas-handle sw"></div><div class="canvas-handle se"></div>
+        </div>
+        <div class="canvas-layer image">🖼️ Image 1</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <button class="btn-cancel">Cancel</button>
+    <button class="btn-save">Save Layers</button>
+  </div>
+
+  <div class="pros-cons">
+    <div class="pros"><h4>PROS</h4><ul>
+      <li>Familiar pattern (like Photoshop/Figma left panel)</li>
+      <li>Layers + Properties always visible</li>
+      <li>Canvas gets the widest possible space</li>
+      <li>Removes the right panel — cleaner 2-column layout</li>
+    </ul></div>
+    <div class="cons"><h4>CONS</h4><ul>
+      <li>Sidebar feels cramped at 280px for properties with long inputs</li>
+      <li>Properties area is shorter due to Layers above it</li>
+    </ul></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MOCKUP D: Canvas Top + Collapsible Properties Drawer -->
+<!-- ============================================================ -->
+<div class="mockup">
+  <div class="mockup-title">
+    <h2>Option D: Canvas Top — Layers Bar + Slide-Up Properties</h2>
+    <span class="badge">MODERN</span>
+  </div>
+  <div class="mockup-desc">
+    Full-width canvas with a compact horizontal layer strip below. Properties appear in a slide-up drawer
+    when a layer is selected (like mobile design tools). Double-click a layer to expand full properties.
+  </div>
+
+  <div style="display: flex; flex-direction: column;">
+    <!-- Canvas: full width -->
+    <div class="panel-canvas" style="width: 100%; aspect-ratio: 16/9; max-height: 340px;">
+      <div class="canvas-surface" style="width: 90%; aspect-ratio: 16/9; max-height: 300px;">
+        <div class="canvas-layer text">
+          Enter text here
+          <div class="canvas-handle nw"></div><div class="canvas-handle ne"></div>
+          <div class="canvas-handle sw"></div><div class="canvas-handle se"></div>
+        </div>
+        <div class="canvas-layer image">🖼️ Image 1</div>
+      </div>
+    </div>
+
+    <!-- Horizontal layer strip -->
+    <div style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #faf9f8; border-top: 1px solid #edebe9; border-bottom: 1px solid #edebe9; overflow-x: auto;">
+      <button style="padding: 4px 10px; background: #f3f2f1; border: 1px dashed #8a8886; border-radius: 4px; font-size: 11px; cursor: pointer; white-space: nowrap;">+ Add</button>
+      <div style="display: flex; gap: 4px;">
+        <div style="display: flex; align-items: center; gap: 6px; padding: 5px 12px; background: #0078d4; color: #fff; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap;">🖼️ Image 1</div>
+        <div style="display: flex; align-items: center; gap: 6px; padding: 5px 12px; background: #fff; border: 1px solid #c8c6c4; border-radius: 4px; font-size: 12px; cursor: pointer; white-space: nowrap;">T Text 2</div>
+        <div style="display: flex; align-items: center; gap: 6px; padding: 5px 12px; background: #fff; border: 1px solid #c8c6c4; border-radius: 4px; font-size: 12px; cursor: pointer; white-space: nowrap;">🔘 Button 3</div>
+      </div>
+      <div style="margin-left: auto; display: flex; gap: 4px;">
+        <button style="padding: 3px 6px; background: #f3f2f1; border: 1px solid #c8c6c4; border-radius: 3px; font-size: 11px; cursor: pointer;">↑</button>
+        <button style="padding: 3px 6px; background: #f3f2f1; border: 1px solid #c8c6c4; border-radius: 3px; font-size: 11px; cursor: pointer;">↓</button>
+        <button style="padding: 3px 6px; background: #f3f2f1; border: 1px solid #c8c6c4; border-radius: 3px; font-size: 11px; cursor: pointer;">📋</button>
+        <button style="padding: 3px 6px; background: #f3f2f1; border: 1px solid #f3d6d8; border-radius: 3px; font-size: 11px; color: #a4262c; cursor: pointer;">🗑️</button>
+      </div>
+    </div>
+
+    <!-- Properties drawer (expanded) -->
+    <div style="background: #fff; border-top: 2px solid #0078d4; max-height: 200px; overflow-y: auto;">
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; background: #faf9f8; border-bottom: 1px solid #edebe9;">
+        <span style="font-size: 13px; font-weight: 700;">Properties — Image 1</span>
+        <button style="background: none; border: none; font-size: 14px; cursor: pointer; color: #605e5c;">▼</button>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; padding: 10px 16px;">
+        <div><span class="prop-label">Position X</span><div class="prop-slider-row"><input type="range" min="0" max="100" value="10" style="flex:1"><span>10%</span></div></div>
+        <div><span class="prop-label">Position Y</span><div class="prop-slider-row"><input type="range" min="0" max="100" value="45" style="flex:1"><span>45%</span></div></div>
+        <div><span class="prop-label">Width</span><div class="prop-slider-row"><input type="range" min="5" max="100" value="35" style="flex:1"><span>35%</span></div></div>
+        <div><span class="prop-label">Height</span><div class="prop-slider-row"><input type="range" min="5" max="100" value="30" style="flex:1"><span>30%</span></div></div>
+        <div style="grid-column: 1 / -1;"><span class="prop-label">Image URL</span><input class="prop-input" value="https://contoso.com/hero.jpg"></div>
+        <div><span class="prop-label">Opacity</span><div class="prop-slider-row"><input type="range" min="0" max="100" value="100" style="flex:1"><span>100%</span></div></div>
+        <div><span class="prop-label">Border Radius</span><div class="prop-slider-row"><input type="range" min="0" max="50" value="0" style="flex:1"><span>0px</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <button class="btn-cancel">Cancel</button>
+    <button class="btn-save">Save Layers</button>
+  </div>
+
+  <div class="pros-cons">
+    <div class="pros"><h4>PROS</h4><ul>
+      <li>Maximum canvas real estate (full width)</li>
+      <li>Horizontal layer chips are compact and scannable</li>
+      <li>2-column property grid uses space efficiently</li>
+      <li>Drawer can collapse to give even more canvas space</li>
+      <li>Modern feel — similar to Canva/mobile design tools</li>
+    </ul></div>
+    <div class="cons"><h4>CONS</h4><ul>
+      <li>Horizontal layer strip doesn't scale well with 10+ layers</li>
+      <li>More complex to implement than other options</li>
+    </ul></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MOCKUP E: Original 3-Column with Fixed Canvas Aspect Ratio -->
+<!-- ============================================================ -->
+<div class="mockup">
+  <div class="mockup-title">
+    <h2>Option E: Original 3-Column — Fixed Canvas Ratio</h2>
+    <span class="badge">MINIMAL CHANGE</span>
+  </div>
+  <div class="mockup-desc">
+    Keep the existing 3-panel layout but constrain the canvas to 16:9 aspect ratio within the center panel.
+    Minimal code changes — just fix the canvas height to use aspect-ratio instead of filling 100% height.
+  </div>
+
+  <div style="display: flex; height: 520px;">
+    <!-- Left: Layers -->
+    <div class="panel-layers" style="width: 200px; display: flex; flex-direction: column; border-right: 1px solid #edebe9; flex-shrink: 0;">
+      <div class="panel-header">Layers <span class="add-btn">+ Add</span></div>
+      <div style="flex: 1; overflow-y: auto;">
+        <div class="layer-item selected"><span class="icon">🖼️</span><span class="name">Image 1</span><span class="actions">👁 🗑</span></div>
+        <div class="layer-item"><span class="icon">T</span><span class="name">Text 2</span><span class="actions">👁 🗑</span></div>
+        <div class="layer-item"><span class="icon">🔘</span><span class="name">Button 3</span><span class="actions">👁 🗑</span></div>
+      </div>
+      <div class="layer-bottom">
+        <button>↑ Up</button> <button>↓ Down</button> <button>Dup</button> <button style="color:#a4262c">Del</button>
+      </div>
+    </div>
+
+    <!-- Center: Canvas with constrained ratio -->
+    <div class="panel-canvas" style="flex: 1; flex-direction: column; padding: 24px;">
+      <div class="canvas-surface" style="width: 100%; aspect-ratio: 16/9;">
+        <div class="canvas-layer text">
+          Enter text here
+          <div class="canvas-handle nw"></div><div class="canvas-handle ne"></div>
+          <div class="canvas-handle sw"></div><div class="canvas-handle se"></div>
+        </div>
+        <div class="canvas-layer image">🖼️ Image 1</div>
+      </div>
+      <!-- Empty space below canvas — could show coordinates/info -->
+      <div style="text-align: center; margin-top: 16px; font-size: 11px; color: #8a8886;">
+        Canvas: 16:9 &nbsp;|&nbsp; Selected: Image 1 at (10%, 45%) &nbsp;|&nbsp; Size: 35% × 30%
+      </div>
+    </div>
+
+    <!-- Right: Properties -->
+    <div class="panel-props" style="width: 280px; display: flex; flex-direction: column; flex-shrink: 0;">
+      <div class="panel-header">Properties — Image 1</div>
+      <div class="prop-group" style="flex: 1; overflow-y: auto;">
+        <div><span class="prop-label">Image URL</span><input class="prop-input" value="https://contoso.com/hero.jpg"></div>
+        <div class="prop-divider"></div>
+        <div><span class="prop-label">Position X</span>
+          <div class="prop-slider-row"><input type="range" min="0" max="100" value="10"><span>10%</span></div>
+        </div>
+        <div><span class="prop-label">Position Y</span>
+          <div class="prop-slider-row"><input type="range" min="0" max="100" value="45"><span>45%</span></div>
+        </div>
+        <div><span class="prop-label">Width</span>
+          <div class="prop-slider-row"><input type="range" min="5" max="100" value="35"><span>35%</span></div>
+        </div>
+        <div><span class="prop-label">Height</span>
+          <div class="prop-slider-row"><input type="range" min="5" max="100" value="30"><span>30%</span></div>
+        </div>
+        <div class="prop-divider"></div>
+        <div><span class="prop-label">Opacity</span>
+          <div class="prop-slider-row"><input type="range" min="0" max="100" value="100"><span>100%</span></div>
+        </div>
+        <div><span class="prop-label">Border Radius</span>
+          <div class="prop-slider-row"><input type="range" min="0" max="50" value="0"><span>0px</span></div>
+        </div>
+        <div><span class="prop-label">Z-Index</span>
+          <div class="prop-slider-row"><input type="range" min="0" max="20" value="1"><span>1</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <button class="btn-cancel">Cancel</button>
+    <button class="btn-save">Save Layers</button>
+  </div>
+
+  <div class="pros-cons">
+    <div class="pros"><h4>PROS</h4><ul>
+      <li>Minimal code change — just CSS on canvas container</li>
+      <li>Preserves existing familiar 3-column layout</li>
+      <li>Layers and Properties always visible</li>
+      <li>Status bar below canvas shows coordinates</li>
+    </ul></div>
+    <div class="cons"><h4>CONS</h4><ul>
+      <li>Canvas is narrower (~400px) due to side panels</li>
+      <li>Wasted vertical space below canvas in center panel</li>
+      <li>Doesn't address the fundamental space constraint</li>
+    </ul></div>
+  </div>
+</div>
+
+<div style="text-align: center; padding: 40px; color: #605e5c; font-size: 14px;">
+  <strong>Recommendation:</strong> Option A gives the best balance of canvas size + always-visible controls.<br>
+  Option D is the most modern/innovative but requires more implementation effort.
+</div>
+
+</body>
+</html>

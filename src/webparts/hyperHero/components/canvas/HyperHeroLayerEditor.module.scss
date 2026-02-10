@@ -1,14 +1,125 @@
 @import "~@fluentui/react/dist/sass/References.scss";
 
+// ============================================================
+// OPTION A LAYOUT: Canvas Top → Status Bar → Panels Bottom
+// ============================================================
+
 .editorLayout {
   display: flex;
-  height: 600px;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+// ── Canvas Area (TOP — compact, resizable) ──
+
+.canvasArea {
+  background: #e1dfdd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  // Default height — user can drag to resize
+  min-height: 120px;
+  max-height: 400px;
+}
+
+.canvasContainer {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  border-radius: 4px;
+  overflow: visible;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  height: 100%;
+}
+
+// ── Canvas Resize Handle (bottom edge drag bar) ──
+
+.canvasResizeHandle {
+  height: 6px;
+  background: #d2d0ce;
+  cursor: ns-resize;
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s;
+
+  &:hover {
+    background: #0078d4;
+  }
+
+  &::after {
+    content: "";
+    display: block;
+    width: 40px;
+    height: 3px;
+    background: #8a8886;
+    border-radius: 2px;
+  }
+
+  &:hover::after {
+    background: #ffffff;
+  }
+}
+
+.canvasResizeHandleActive {
+  background: #0078d4;
+
+  &::after {
+    background: #ffffff;
+  }
+}
+
+// ── Status Bar ──
+
+.statusBar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 3px 14px;
+  background: #f3f2f1;
+  font-size: 10px;
+  color: #605e5c;
+  flex-shrink: 0;
+  border-bottom: 1px solid #edebe9;
+  user-select: none;
+}
+
+.statusItem {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.statusValue {
+  font-weight: 600;
+  color: #323130;
+}
+
+.statusRight {
+  margin-left: auto;
+}
+
+// ── Bottom Panels (fills remaining space) ──
+
+.bottomPanels {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
 }
 
 // ── Left Panel: Layer List ──
 
 .leftPanel {
-  width: 200px;
+  width: 240px;
   border-right: 1px solid #edebe9;
   display: flex;
   flex-direction: column;
@@ -17,26 +128,29 @@
 }
 
 .leftPanelTitle {
-  padding: 12px 16px;
+  padding: 8px 12px;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13px;
   border-bottom: 1px solid #edebe9;
   color: #323130;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .addLayerWrapper {
   position: relative;
-  margin: 8px 12px;
+  margin: 6px 10px;
 }
 
 .addLayerBtn {
   width: 100%;
-  padding: 6px 12px;
+  padding: 5px 10px;
   background: #f3f2f1;
   border: 1px dashed #8a8886;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 11px;
   text-align: center;
   color: #323130;
 
@@ -59,9 +173,9 @@
 }
 
 .addLayerOption {
-  padding: 8px 12px;
+  padding: 7px 12px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px;
   display: flex;
   gap: 8px;
   align-items: center;
@@ -79,14 +193,14 @@
 .layerList {
   flex: 1;
   overflow-y: auto;
-  padding: 4px 0;
+  padding: 2px 0;
 }
 
 .layerItem {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
+  padding: 6px 10px;
   cursor: pointer;
   font-size: 12px;
   border-left: 3px solid transparent;
@@ -107,8 +221,8 @@
 }
 
 .layerItemIcon {
-  font-size: 14px;
-  width: 20px;
+  font-size: 13px;
+  width: 18px;
   text-align: center;
   flex-shrink: 0;
 }
@@ -142,18 +256,19 @@
 
 .layerActions {
   display: flex;
-  gap: 4px;
-  padding: 8px 12px;
+  gap: 3px;
+  padding: 6px 10px;
   border-top: 1px solid #edebe9;
   flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .layerActionBtn {
-  padding: 4px 8px;
+  padding: 3px 7px;
   background: #f3f2f1;
   border: 1px solid #c8c6c4;
   border-radius: 4px;
-  font-size: 11px;
+  font-size: 10px;
   cursor: pointer;
   color: #323130;
 
@@ -171,67 +286,46 @@
   }
 }
 
-// ── Center Panel: Canvas Preview ──
-
-.centerPanel {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #e1dfdd;
-  position: relative;
-  overflow: hidden;
-  padding: 16px;
-}
-
-.canvasContainer {
-  position: relative;
-  background-size: cover;
-  background-position: center;
-  border-radius: 4px;
-  overflow: visible;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  width: 100%;
-  height: 100%;
-}
-
 // ── Right Panel: Properties ──
 
 .rightPanel {
-  width: 300px;
+  flex: 1;
   border-left: 1px solid #edebe9;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
+  min-width: 0;
 }
 
 .rightPanelTitle {
-  padding: 12px 16px;
+  padding: 8px 14px;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13px;
   border-bottom: 1px solid #edebe9;
   color: #323130;
+  flex-shrink: 0;
 }
 
 .propertyGroup {
-  padding: 12px 16px;
+  padding: 10px 14px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .propertyLabel {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  color: #323130;
+  color: #605e5c;
   margin: 0 0 2px 0;
   display: block;
 }
 
 .propertyInput {
   width: 100%;
-  padding: 5px 8px;
+  padding: 4px 8px;
   border: 1px solid #8a8886;
   border-radius: 4px;
   font-size: 12px;
@@ -248,13 +342,13 @@
 .propertyTextArea {
   @extend .propertyInput;
   resize: vertical;
-  min-height: 60px;
+  min-height: 50px;
 }
 
 .propertySliderRow {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .propertySlider {
@@ -263,10 +357,10 @@
 }
 
 .propertySliderValue {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: #0078d4;
-  min-width: 32px;
+  min-width: 30px;
   text-align: right;
 }
 
@@ -292,10 +386,38 @@
   font-size: 12px;
 }
 
+.propertyInputRow {
+  display: flex;
+  gap: 4px;
+  align-items: stretch;
+}
+
+.propertyInputFlex {
+  flex: 1;
+  min-width: 0;
+}
+
+.browseBtn {
+  padding: 4px 10px;
+  background: #0078d4;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  &:hover {
+    background: #106ebe;
+  }
+}
+
 .sectionDivider {
   height: 1px;
   background: #edebe9;
-  margin: 4px 0;
+  margin: 2px 0;
 }
 
 // ── Footer ──

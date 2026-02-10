@@ -15,6 +15,9 @@ import {
 } from "../../models/IHyperLinksWizardState";
 import type { IHyperLinksWebPartProps } from "../../models/IHyperLinksWebPartProps";
 import { getPresetById } from "../../utils/presetStyles";
+import { getPresetLinksById } from "../../utils/linkPresets";
+import { stringifyLinks, stringifyGroups } from "../../utils/linkParser";
+import AddLinksStep from "./AddLinksStep";
 import PresetGalleryStep from "./PresetGalleryStep";
 import LayoutStyleStep from "./LayoutStyleStep";
 import IconsDisplayStep from "./IconsDisplayStep";
@@ -26,6 +29,27 @@ import FeaturesStep from "./FeaturesStep";
 // ============================================================
 
 var steps: Array<IWizardStepDef<ILinksWizardState>> = [
+  {
+    id: "addLinks",
+    label: "Add Your Links",
+    shortLabel: "Links",
+    helpText: function (state: ILinksWizardState): string {
+      if (state.linksData.dataSourceMode === "preset") {
+        var preset = getPresetLinksById(state.linksData.selectedPresetId);
+        if (preset) {
+          return "Using \"" + preset.name + "\" preset with " + preset.links.length + " links. Continue to choose a visual style.";
+        }
+        return "Select a preset link collection to get started quickly.";
+      }
+      if (state.linksData.dataSourceMode === "list") {
+        return state.linksData.listUrl
+          ? "Connecting to list: " + state.linksData.listUrl + ". Continue to configure the visual style."
+          : "Enter a SharePoint list name or URL to pull links from.";
+      }
+      return "You'll add your own links via the property pane after the wizard completes.";
+    },
+    component: AddLinksStep,
+  },
   {
     id: "presetGallery",
     label: "Style Gallery",
@@ -95,7 +119,7 @@ var steps: Array<IWizardStepDef<ILinksWizardState>> = [
 
 /** Transform wizard state into web part properties */
 function buildResult(state: ILinksWizardState): Partial<IHyperLinksWebPartProps> {
-  return {
+  var result: Partial<IHyperLinksWebPartProps> = {
     // Layout & style
     layoutMode: state.layoutStyle.layoutMode,
     hoverEffect: state.layoutStyle.hoverEffect,
@@ -131,21 +155,82 @@ function buildResult(state: ILinksWizardState): Partial<IHyperLinksWebPartProps>
     enableHealthCheck: state.features.enableHealthCheck,
     enablePopularBadges: state.features.enablePopularBadges,
 
+    // Demo mode / sample data
+    useSampleData: state.linksData.useSampleData,
+
     // Mark wizard as done
     showWizardOnInit: false,
   };
+
+  // If preset mode selected, populate links and groups from preset
+  if (state.linksData.dataSourceMode === "preset" && state.linksData.selectedPresetId) {
+    var preset = getPresetLinksById(state.linksData.selectedPresetId);
+    if (preset) {
+      result.links = stringifyLinks(preset.links);
+      if (preset.groups) {
+        result.groups = stringifyGroups(preset.groups);
+        // Auto-enable grouping when preset has groups
+        result.enableGrouping = true;
+      }
+      // Store selected preset for reference
+      result.linkPresetId = state.linksData.selectedPresetId;
+    }
+  }
+
+  // If list mode, store list config
+  if (state.linksData.dataSourceMode === "list") {
+    result.linkListUrl = state.linksData.listUrl;
+    result.linkListTitleColumn = state.linksData.listTitleColumn;
+    result.linkListUrlColumn = state.linksData.listUrlColumn;
+  }
+
+  // Store data source mode
+  result.linkDataSource = state.linksData.dataSourceMode;
+
+  return result;
 }
 
 /** Generate summary rows for the review step */
 function buildSummary(state: ILinksWizardState): IWizardSummaryRow[] {
   var rows: IWizardSummaryRow[] = [];
 
-  // Preset
+  // Link source
+  if (state.linksData.dataSourceMode === "preset") {
+    var linkPreset = getPresetLinksById(state.linksData.selectedPresetId);
+    rows.push({
+      label: "Link Source",
+      value: linkPreset ? linkPreset.name + " (" + linkPreset.links.length + " links)" : "Preset",
+      type: "badgeGreen",
+    });
+  } else if (state.linksData.dataSourceMode === "list") {
+    rows.push({
+      label: "Link Source",
+      value: "SharePoint List: " + (state.linksData.listUrl || "(not set)"),
+      type: "badge",
+    });
+  } else {
+    rows.push({
+      label: "Link Source",
+      value: "Manual (property pane)",
+      type: "text",
+    });
+  }
+
+  // Demo mode
+  if (state.linksData.useSampleData) {
+    rows.push({
+      label: "Demo Mode",
+      value: "Enabled",
+      type: "badgeGreen",
+    });
+  }
+
+  // Preset style
   if (state.layoutStyle.activePresetId) {
-    var preset = getPresetById(state.layoutStyle.activePresetId);
+    var stylePreset = getPresetById(state.layoutStyle.activePresetId);
     rows.push({
       label: "Preset Style",
-      value: preset ? preset.name : state.layoutStyle.activePresetId,
+      value: stylePreset ? stylePreset.name : state.layoutStyle.activePresetId,
       type: "badgeGreen",
     });
   }
@@ -244,6 +329,14 @@ export function buildStateFromProps(props: IHyperLinksWebPartProps): ILinksWizar
   }
 
   return {
+    linksData: {
+      dataSourceMode: props.linkDataSource || "inline",
+      selectedPresetId: props.linkPresetId || "",
+      listUrl: props.linkListUrl || "",
+      listTitleColumn: props.linkListTitleColumn || "Title",
+      listUrlColumn: props.linkListUrlColumn || "URL",
+      useSampleData: !!props.useSampleData,
+    },
     layoutStyle: {
       layoutMode: props.layoutMode || "grid",
       hoverEffect: props.hoverEffect || "lift",
@@ -289,14 +382,14 @@ export var LINKS_WIZARD_CONFIG: IHyperWizardConfig<ILinksWizardState, Partial<IH
     taglineBold: ["supercharged", "stunning layouts", "built-in analytics"],
     features: [
       {
-        icon: "\uD83C\uDFA8",
-        title: "12 Preset Styles",
-        description: "Ocean Breeze, Dark Mode, Neon Pop, Corporate Blue, and more. One-click themes for your links.",
+        icon: "\uD83D\uDCE6",
+        title: "7 Preset Collections",
+        description: "M365 Apps, Departments, Intranet Nav, Social Media, HR Resources, and more. One-click link sets.",
       },
       {
-        icon: "\uD83D\uDCAB",
-        title: "10 Hover Effects",
-        description: "Lift, Glow, Pulse, Bounce, Shimmer, Shake, Rotate, Zoom, Darken, and more",
+        icon: "\uD83C\uDFA8",
+        title: "12 Visual Styles",
+        description: "Ocean Breeze, Dark Mode, Neon Pop, Corporate Blue, and more. One-click themes for your links.",
       },
       {
         icon: "\uD83C\uDFAF",
@@ -304,9 +397,9 @@ export var LINKS_WIZARD_CONFIG: IHyperWizardConfig<ILinksWizardState, Partial<IH
         description: "Show different links to different audiences using Azure AD group membership",
       },
       {
-        icon: "\uD83D\uDCCA",
-        title: "Click Analytics",
-        description: "Track popular links, monitor link health, and surface trending content",
+        icon: "\uD83C\uDFAD",
+        title: "Demo Mode",
+        description: "Showcase the web part with sample data without entering edit mode. Perfect for demos and presentations.",
       },
     ],
   },

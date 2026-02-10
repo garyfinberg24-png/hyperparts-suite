@@ -23,6 +23,8 @@ export {
 export type { IHyperLinksWebPartProps } from "./IHyperLinksWebPartProps";
 
 export type {
+  LinksDataSourceMode,
+  IWizardLinksData,
   IWizardLayoutStyle,
   IWizardIconsDisplay,
   IWizardGroupingTargeting,

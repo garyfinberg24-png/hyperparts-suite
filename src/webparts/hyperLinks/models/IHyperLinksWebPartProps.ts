@@ -8,6 +8,7 @@ import type {
   HyperLinksAlignment,
   HyperLinksBackgroundMode,
 } from "./IHyperLink";
+import type { LinksDataSourceMode } from "./IHyperLinksWizardState";
 
 export interface IHyperLinksWebPartProps extends IBaseHyperWebPartProps {
   title: string;
@@ -51,4 +52,20 @@ export interface IHyperLinksWebPartProps extends IBaseHyperWebPartProps {
   iconColor: string;
   /** Active preset style ID (empty = custom) */
   activePresetId: string;
+
+  // ── Link Data Source ──
+  /** Data source mode: inline, preset, or list */
+  linkDataSource: LinksDataSourceMode;
+  /** Selected preset collection ID */
+  linkPresetId: string;
+  /** SP list URL or title (when data source is "list") */
+  linkListUrl: string;
+  /** Column in SP list to use for link titles */
+  linkListTitleColumn: string;
+  /** Column in SP list to use for link URLs */
+  linkListUrlColumn: string;
+
+  // ── Demo Mode ──
+  /** Enable sample data / demo mode */
+  useSampleData: boolean;
 }

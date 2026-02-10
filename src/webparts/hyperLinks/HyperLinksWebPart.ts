@@ -149,6 +149,24 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
     if (this.properties.activePresetId === undefined) {
       this.properties.activePresetId = "";
     }
+    if (this.properties.linkDataSource === undefined) {
+      this.properties.linkDataSource = "inline";
+    }
+    if (this.properties.linkPresetId === undefined) {
+      this.properties.linkPresetId = "";
+    }
+    if (this.properties.linkListUrl === undefined) {
+      this.properties.linkListUrl = "";
+    }
+    if (this.properties.linkListTitleColumn === undefined) {
+      this.properties.linkListTitleColumn = "Title";
+    }
+    if (this.properties.linkListUrlColumn === undefined) {
+      this.properties.linkListUrlColumn = "URL";
+    }
+    if (this.properties.useSampleData === undefined) {
+      this.properties.useSampleData = false;
+    }
   }
 
   protected onDispose(): void {
@@ -796,7 +814,7 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
           header: { description: strings.LinksPageDescription },
           groups: page2Groups,
         },
-        // Page 3: Features
+        // Page 3: Features & Demo
         {
           header: { description: strings.AdvancedPageDescription },
           groups: [
@@ -823,6 +841,45 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
                 }),
                 PropertyPaneToggle("enablePopularBadges", {
                   label: strings.EnablePopularBadgesLabel,
+                }),
+              ],
+            },
+            {
+              groupName: strings.DataDemoGroupName,
+              groupFields: [
+                PropertyPaneToggle("useSampleData", {
+                  label: strings.UseSampleDataLabel,
+                }),
+                PropertyPaneDropdown("linkDataSource", {
+                  label: strings.LinkDataSourceLabel,
+                  options: [
+                    { key: "inline", text: "Manual (Property Pane)" },
+                    { key: "preset", text: "Preset Collection" },
+                    { key: "list", text: "SharePoint List" },
+                  ],
+                }),
+                PropertyPaneDropdown("linkPresetId", {
+                  label: strings.LinkPresetIdLabel,
+                  options: [
+                    { key: "", text: "(None)" },
+                    { key: "m365-apps", text: "Microsoft 365 Apps" },
+                    { key: "departments", text: "Departments" },
+                    { key: "intranet-nav", text: "Intranet Navigation" },
+                    { key: "social-media", text: "Social Media" },
+                    { key: "hr-resources", text: "HR & People" },
+                    { key: "project-tools", text: "Project & Dev Tools" },
+                    { key: "quick-start", text: "Quick Start" },
+                  ],
+                }),
+                PropertyPaneTextField("linkListUrl", {
+                  label: strings.LinkListUrlLabel,
+                  description: "SharePoint list name or URL",
+                }),
+                PropertyPaneTextField("linkListTitleColumn", {
+                  label: strings.LinkListTitleColumnLabel,
+                }),
+                PropertyPaneTextField("linkListUrlColumn", {
+                  label: strings.LinkListUrlColumnLabel,
                 }),
               ],
             },

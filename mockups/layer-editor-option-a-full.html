@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Option A: Full View — Compact Canvas + Spacious Panels</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+
+  /* ── Modal shell (matches HyperModal xlarge: maxWidth 1200px, maxHeight 90vh) ── */
+  .modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; }
+  .modal {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+    width: 90%;
+    max-width: 1200px;
+    height: 90vh;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── Modal header ── */
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 24px;
+    border-bottom: 1px solid #edebe9;
+    flex-shrink: 0;
+  }
+  .modal-header h2 { font-size: 18px; font-weight: 600; color: #323130; }
+  .modal-header .close-btn { border: none; background: none; font-size: 20px; cursor: pointer; padding: 4px 8px; color: #605e5c; border-radius: 4px; }
+  .modal-header .close-btn:hover { background: #f3f2f1; }
+
+  /* ── Main content area — fills remaining space ── */
+  .modal-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  /* ── Canvas area (TOP) — COMPACT: typical slider proportions ── */
+  .canvas-area {
+    background: #e1dfdd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    flex-shrink: 0;
+    position: relative;
+    /* Typical hero slider: ~400px tall on a 1920px page = ~25% of width
+       At modal width ~1150px inner, that's ~220px canvas height.
+       We cap at 220px so panels below get the lion's share of space. */
+    max-height: 260px;
+  }
+  .canvas-surface {
+    background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    position: relative;
+    overflow: visible;
+    width: 100%;
+    /* Real slider ratio: roughly 1200:350 or ~3.4:1 */
+    height: 200px;
+  }
+
+  /* Canvas layers */
+  .canvas-layer {
+    position: absolute;
+    border: 2px dashed rgba(255,255,255,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 11px;
+  }
+  .canvas-layer.text-layer {
+    top: 12%;
+    left: 6%;
+    width: 50%;
+    height: 22%;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .canvas-layer.image-layer {
+    top: 42%;
+    left: 6%;
+    width: 30%;
+    height: 38%;
+    background: rgba(255,255,255,0.12);
+    border-style: solid;
+    border-color: rgba(255,255,255,0.5);
+  }
+  .canvas-layer.button-layer {
+    bottom: 10%;
+    left: 40%;
+    width: 14%;
+    height: 16%;
+    background: rgba(255,255,255,0.2);
+    border-radius: 4px;
+    border-style: solid;
+    font-weight: 600;
+    font-size: 10px;
+  }
+  .canvas-layer.shape-layer {
+    top: 20%;
+    right: 6%;
+    width: 18%;
+    height: 55%;
+    background: rgba(255,255,255,0.08);
+    border-style: dashed;
+    border-color: rgba(255,255,255,0.3);
+    border-radius: 50%;
+  }
+
+  /* Selection highlight */
+  .canvas-layer.selected {
+    border-color: #fff;
+    border-style: solid;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.6);
+  }
+
+  /* Resize handles */
+  .resize-handle {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border: 2px solid #0078d4;
+    border-radius: 2px;
+  }
+  .resize-handle.nw { top: -6px; left: -6px; cursor: nw-resize; }
+  .resize-handle.ne { top: -6px; right: -6px; cursor: ne-resize; }
+  .resize-handle.sw { bottom: -6px; left: -6px; cursor: sw-resize; }
+  .resize-handle.se { bottom: -6px; right: -6px; cursor: se-resize; }
+
+  /* ── Status bar ── */
+  .status-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 3px 16px;
+    background: #f3f2f1;
+    font-size: 10px;
+    color: #605e5c;
+    flex-shrink: 0;
+    border-top: 1px solid #d2d0ce;
+    border-bottom: 1px solid #edebe9;
+  }
+  .status-bar .status-item { display: flex; align-items: center; gap: 4px; }
+  .status-bar .status-value { font-weight: 600; color: #323130; }
+
+  /* ── Bottom split panels — THIS GETS THE MAJORITY OF SPACE ── */
+  .bottom-panels {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* ── Layers Panel (left bottom) ── */
+  .layers-panel {
+    width: 260px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #edebe9;
+    background: #faf9f8;
+  }
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    font-weight: 700;
+    font-size: 12px;
+    color: #323130;
+    border-bottom: 1px solid #edebe9;
+    flex-shrink: 0;
+  }
+  .add-layer-btn {
+    background: #f3f2f1;
+    border: 1px dashed #8a8886;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #323130;
+  }
+  .add-layer-btn:hover { background: #edebe9; border-color: #0078d4; color: #0078d4; }
+
+  .layer-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2px 0;
+  }
+  .layer-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    font-size: 12px;
+    border-left: 3px solid transparent;
+    cursor: pointer;
+    color: #323130;
+    transition: background 0.1s;
+  }
+  .layer-item:hover { background: #f3f2f1; }
+  .layer-item.selected { background: #f3f9ff; border-left-color: #0078d4; }
+  .layer-item .icon { font-size: 13px; width: 18px; text-align: center; flex-shrink: 0; }
+  .layer-item .name { flex: 1; font-weight: 500; }
+  .layer-item .type-badge {
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: #f3f2f1;
+    color: #605e5c;
+    font-weight: 600;
+  }
+  .layer-item.selected .type-badge { background: #deecf9; color: #0078d4; }
+  .layer-item .actions { display: flex; gap: 2px; opacity: 0; transition: opacity 0.12s; }
+  .layer-item:hover .actions { opacity: 1; }
+  .layer-item .action-btn {
+    background: none;
+    border: none;
+    padding: 2px 3px;
+    cursor: pointer;
+    font-size: 11px;
+    opacity: 0.6;
+    border-radius: 3px;
+  }
+  .layer-item .action-btn:hover { opacity: 1; background: #edebe9; }
+
+  .layer-actions-bar {
+    display: flex;
+    gap: 3px;
+    padding: 6px 10px;
+    border-top: 1px solid #edebe9;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+  }
+  .layer-action-btn {
+    padding: 3px 7px;
+    background: #f3f2f1;
+    border: 1px solid #c8c6c4;
+    border-radius: 4px;
+    font-size: 10px;
+    cursor: pointer;
+    color: #323130;
+    font-weight: 500;
+  }
+  .layer-action-btn:hover { background: #edebe9; }
+  .layer-action-btn.danger { color: #a4262c; border-color: #f3d6d8; }
+  .layer-action-btn.danger:hover { background: #fde7e9; }
+
+  /* ── Properties Panel (right bottom) ── */
+  .properties-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    min-width: 0;
+  }
+  .properties-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+  }
+
+  /* Properties organized in 2-column grid */
+  .prop-section {
+    padding: 10px 14px;
+    border-bottom: 1px solid #f3f2f1;
+  }
+  .prop-section-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #605e5c;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+  .prop-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 14px;
+  }
+  .prop-field { display: flex; flex-direction: column; gap: 2px; }
+  .prop-field.full-width { grid-column: 1 / -1; }
+  .prop-label { font-size: 10px; font-weight: 600; color: #605e5c; }
+  .prop-input {
+    padding: 4px 8px;
+    border: 1px solid #c8c6c4;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #323130;
+    width: 100%;
+  }
+  .prop-input:focus { border-color: #0078d4; outline: none; box-shadow: 0 0 0 1px #0078d4; }
+  .prop-slider-row { display: flex; gap: 6px; align-items: center; }
+  .prop-slider-row input[type=range] { flex: 1; accent-color: #0078d4; height: 4px; }
+  .prop-slider-row .value { font-size: 10px; font-weight: 600; color: #0078d4; min-width: 30px; text-align: right; }
+  .prop-select {
+    padding: 4px 8px;
+    border: 1px solid #c8c6c4;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #323130;
+    width: 100%;
+    appearance: auto;
+    cursor: pointer;
+  }
+  .prop-checkbox { display: flex; align-items: center; gap: 6px; font-size: 11px; cursor: pointer; color: #323130; }
+  .prop-color-row { display: flex; align-items: center; gap: 6px; }
+  .prop-color-swatch {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    border: 1px solid #c8c6c4;
+    cursor: pointer;
+  }
+
+  /* ── Modal footer ── */
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 10px 24px;
+    border-top: 1px solid #edebe9;
+    background: #faf9f8;
+    flex-shrink: 0;
+  }
+  .btn { padding: 7px 16px; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .btn-cancel { background: #fff; border: 1px solid #8a8886; color: #323130; }
+  .btn-cancel:hover { background: #f3f2f1; }
+  .btn-save { background: #0078d4; border: none; color: #fff; }
+  .btn-save:hover { background: #106ebe; }
+
+  /* ── Dimension annotations ── */
+  .dim-label {
+    position: absolute;
+    background: rgba(164, 38, 44, 0.85);
+    color: #fff;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  /* ── Info banner ── */
+  .info-banner {
+    position: fixed;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #323130;
+    color: #fff;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    z-index: 200;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    text-align: center;
+    line-height: 1.4;
+  }
+</style>
+</head>
+<body>
+
+<div class="info-banner">
+  Option A — Canvas is ~200px tall (realistic slider height) &bull; Panels below get ~2/3 of the modal
+</div>
+
+<div class="modal-backdrop">
+<div class="modal">
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- MODAL HEADER                                -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="modal-header">
+    <h2>Hero Designer — Welcome Banner</h2>
+    <button class="close-btn" aria-label="Close">&times;</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- MODAL BODY                                  -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="modal-body">
+
+    <!-- ──────────────────────────────────────── -->
+    <!-- CANVAS AREA (TOP) — COMPACT ~200px tall  -->
+    <!-- Matches real slider proportions          -->
+    <!-- ──────────────────────────────────────── -->
+    <div class="canvas-area" style="position: relative;">
+      <div class="canvas-surface">
+        <!-- Text layer -->
+        <div class="canvas-layer text-layer">
+          Welcome to Contoso
+          <div class="resize-handle nw"></div>
+          <div class="resize-handle ne"></div>
+          <div class="resize-handle sw"></div>
+          <div class="resize-handle se"></div>
+        </div>
+
+        <!-- Image layer (selected) -->
+        <div class="canvas-layer image-layer selected">
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <span style="font-size: 20px;">🖼️</span>
+            <span style="font-size: 9px; margin-top: 2px;">hero-bg.jpg</span>
+          </div>
+          <div class="resize-handle nw"></div>
+          <div class="resize-handle ne"></div>
+          <div class="resize-handle sw"></div>
+          <div class="resize-handle se"></div>
+        </div>
+
+        <!-- Button layer -->
+        <div class="canvas-layer button-layer">Learn More</div>
+
+        <!-- Shape layer -->
+        <div class="canvas-layer shape-layer">
+          <span style="font-size: 9px; opacity: 0.6;">circle</span>
+        </div>
+      </div>
+
+      <div class="dim-label" style="top: 4px; right: 20px;">~200px tall &bull; slider proportions</div>
+    </div>
+
+    <!-- ── STATUS BAR ── -->
+    <div class="status-bar">
+      <div class="status-item">Selected: <span class="status-value">Hero Image</span></div>
+      <div class="status-item">Pos: <span class="status-value">6%, 42%</span></div>
+      <div class="status-item">Size: <span class="status-value">30% &times; 38%</span></div>
+      <div class="status-item" style="margin-left: auto;">4 layers</div>
+    </div>
+
+    <!-- ──────────────────────────────────────── -->
+    <!-- BOTTOM PANELS — ~2/3 of modal height    -->
+    <!-- Layers (left 260px) + Properties (rest) -->
+    <!-- ──────────────────────────────────────── -->
+    <div class="bottom-panels" style="position: relative;">
+
+      <!-- ── LAYERS PANEL (left) ── -->
+      <div class="layers-panel">
+        <div class="panel-header">
+          <span>Layers</span>
+          <button class="add-layer-btn">+ Add Layer</button>
+        </div>
+
+        <div class="layer-list">
+          <div class="layer-item">
+            <span class="icon">T</span>
+            <span class="name">Welcome Text</span>
+            <span class="type-badge">TEXT</span>
+            <span class="actions">
+              <button class="action-btn" title="Visibility">👁</button>
+              <button class="action-btn" title="Lock">🔓</button>
+            </span>
+          </div>
+          <div class="layer-item selected">
+            <span class="icon">🖼️</span>
+            <span class="name">Hero Image</span>
+            <span class="type-badge">IMAGE</span>
+            <span class="actions">
+              <button class="action-btn" title="Visibility">👁</button>
+              <button class="action-btn" title="Lock">🔓</button>
+            </span>
+          </div>
+          <div class="layer-item">
+            <span class="icon">🔘</span>
+            <span class="name">Learn More CTA</span>
+            <span class="type-badge">BUTTON</span>
+            <span class="actions">
+              <button class="action-btn" title="Visibility">👁</button>
+              <button class="action-btn" title="Lock">🔓</button>
+            </span>
+          </div>
+          <div class="layer-item">
+            <span class="icon">◼</span>
+            <span class="name">Circle BG</span>
+            <span class="type-badge">SHAPE</span>
+            <span class="actions">
+              <button class="action-btn" title="Visibility">👁</button>
+              <button class="action-btn" title="Lock">🔓</button>
+            </span>
+          </div>
+          <div class="layer-item" style="opacity:0.5;">
+            <span class="icon">⭐</span>
+            <span class="name">Star Icon</span>
+            <span class="type-badge">ICON</span>
+            <span class="actions">
+              <button class="action-btn" title="Visibility">👁</button>
+              <button class="action-btn" title="Lock">🔒</button>
+            </span>
+          </div>
+          <div class="layer-item">
+            <span class="icon">T</span>
+            <span class="name">Subtitle Text</span>
+            <span class="type-badge">TEXT</span>
+            <span class="actions">
+              <button class="action-btn" title="Visibility">👁</button>
+              <button class="action-btn" title="Lock">🔓</button>
+            </span>
+          </div>
+        </div>
+
+        <div class="layer-actions-bar">
+          <button class="layer-action-btn">↑ Up</button>
+          <button class="layer-action-btn">↓ Down</button>
+          <button class="layer-action-btn">📋 Dup</button>
+          <button class="layer-action-btn danger">🗑 Del</button>
+        </div>
+      </div>
+
+      <!-- ── PROPERTIES PANEL (right, fills remaining ~940px width) ── -->
+      <div class="properties-panel">
+        <div class="panel-header">
+          <span>Properties — Hero Image</span>
+        </div>
+
+        <div class="properties-scroll">
+          <!-- Position & Size -->
+          <div class="prop-section">
+            <div class="prop-section-title">Position & Size</div>
+            <div class="prop-grid">
+              <div class="prop-field">
+                <span class="prop-label">Position X</span>
+                <div class="prop-slider-row">
+                  <input type="range" min="0" max="100" value="6">
+                  <span class="value">6%</span>
+                </div>
+              </div>
+              <div class="prop-field">
+                <span class="prop-label">Position Y</span>
+                <div class="prop-slider-row">
+                  <input type="range" min="0" max="100" value="42">
+                  <span class="value">42%</span>
+                </div>
+              </div>
+              <div class="prop-field">
+                <span class="prop-label">Width</span>
+                <div class="prop-slider-row">
+                  <input type="range" min="5" max="100" value="30">
+                  <span class="value">30%</span>
+                </div>
+              </div>
+              <div class="prop-field">
+                <span class="prop-label">Height</span>
+                <div class="prop-slider-row">
+                  <input type="range" min="5" max="100" value="38">
+                  <span class="value">38%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Content -->
+          <div class="prop-section">
+            <div class="prop-section-title">Content</div>
+            <div class="prop-grid">
+              <div class="prop-field full-width">
+                <span class="prop-label">Image URL</span>
+                <input class="prop-input" value="https://contoso.sharepoint.com/SiteAssets/hero-bg.jpg">
+              </div>
+              <div class="prop-field">
+                <span class="prop-label">Object Fit</span>
+                <select class="prop-select">
+                  <option selected>Cover</option>
+                  <option>Contain</option>
+                  <option>Fill</option>
+                </select>
+              </div>
+              <div class="prop-field">
+                <span class="prop-label">Alt Text</span>
+                <input class="prop-input" value="Hero background image">
+              </div>
+            </div>
+          </div>
+
+          <!-- Appearance -->
+          <div class="prop-section">
+            <div class="prop-section-title">Appearance</div>
+            <div class="prop-grid">
+              <div class="prop-field">
+                <span class="prop-label">Opacity</span>
+                <div class="prop-slider-row">
+                  <input type="range" min="0" max="100" value="100">
+                  <span class="value">100%</span>
+                </div>
+              </div>
+              <div class="prop-field">
+                <span class="prop-label">Rotation</span>
+                <div class="prop-slider-row">
+                  <input type="range" min="0" max="360" value="0">
+                  <span class="value">0&deg;</span>
+                </div>
+              </div>
+              <div class="prop-field">
+                <span class="prop-label">Border Radius</span>
+                <div class="prop-slider-row">
+                  <input type="range" min="0" max="50" value="0">
+                  <span class="value">0px</span>
+                </div>
+              </div>
+              <div class="prop-field">
+                <span class="prop-label">Z-Index</span>
+                <div class="prop-slider-row">
+                  <input type="range" min="0" max="20" value="2">
+                  <span class="value">2</span>
+                </div>
+              </div>
+              <div class="prop-field">
+                <label class="prop-checkbox"><input type="checkbox"> Locked</label>
+              </div>
+              <div class="prop-field">
+                <label class="prop-checkbox"><input type="checkbox" checked> Visible</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Animation -->
+          <div class="prop-section">
+            <div class="prop-section-title">Animation</div>
+            <div class="prop-grid">
+              <div class="prop-field">
+                <span class="prop-label">Entrance</span>
+                <select class="prop-select">
+                  <option>None</option>
+                  <option selected>Fade Up</option>
+                  <option>Slide Left</option>
+                  <option>Scale Up</option>
+                </select>
+              </div>
+              <div class="prop-field">
+                <span class="prop-label">Duration</span>
+                <div class="prop-slider-row">
+                  <input type="range" min="100" max="2000" value="600">
+                  <span class="value">0.6s</span>
+                </div>
+              </div>
+              <div class="prop-field">
+                <span class="prop-label">Delay</span>
+                <div class="prop-slider-row">
+                  <input type="range" min="0" max="2000" value="200">
+                  <span class="value">0.2s</span>
+                </div>
+              </div>
+              <div class="prop-field">
+                <span class="prop-label">Easing</span>
+                <select class="prop-select">
+                  <option selected>ease-out</option>
+                  <option>ease-in</option>
+                  <option>ease-in-out</option>
+                  <option>linear</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dim-label" style="bottom: 6px; left: 50%; transform: translateX(-50%);">Panels: flex:1 &mdash; get ~65% of modal height</div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- MODAL FOOTER                                -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="modal-footer">
+    <button class="btn btn-cancel">Cancel</button>
+    <button class="btn btn-save">Save Layers</button>
+  </div>
+
+</div>
+</div>
+
+</body>
+</html>

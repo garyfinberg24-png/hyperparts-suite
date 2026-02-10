@@ -53,8 +53,28 @@ export interface IWizardFeatures {
   enablePopularBadges: boolean;
 }
 
+/** Data source mode for adding links */
+export type LinksDataSourceMode = "inline" | "preset" | "list";
+
+/** Add Your Links wizard step state (Step 0 — before layout) */
+export interface IWizardLinksData {
+  /** How links are provided: inline entry, from a preset, or from a SP list */
+  dataSourceMode: LinksDataSourceMode;
+  /** Selected preset collection ID (when dataSourceMode === "preset") */
+  selectedPresetId: string;
+  /** SP list URL or title (when dataSourceMode === "list") */
+  listUrl: string;
+  /** SP list title column mapping */
+  listTitleColumn: string;
+  /** SP list URL column mapping */
+  listUrlColumn: string;
+  /** Whether to use sample data for demos */
+  useSampleData: boolean;
+}
+
 /** Complete wizard state */
 export interface ILinksWizardState {
+  linksData: IWizardLinksData;
   layoutStyle: IWizardLayoutStyle;
   iconsDisplay: IWizardIconsDisplay;
   groupingTargeting: IWizardGroupingTargeting;
@@ -63,6 +83,14 @@ export interface ILinksWizardState {
 
 /** Default wizard state for fresh configuration */
 export var DEFAULT_LINKS_WIZARD_STATE: ILinksWizardState = {
+  linksData: {
+    dataSourceMode: "preset",
+    selectedPresetId: "quick-start",
+    listUrl: "",
+    listTitleColumn: "Title",
+    listUrlColumn: "URL",
+    useSampleData: false,
+  },
   layoutStyle: {
     layoutMode: "grid",
     hoverEffect: "lift",
