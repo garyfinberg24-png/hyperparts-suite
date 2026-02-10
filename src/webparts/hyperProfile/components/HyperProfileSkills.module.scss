@@ -1,0 +1,159 @@
+/* ── Skills Component Styles ── */
+
+/* Tags layout */
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skillTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  border-radius: 20px;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+
+  &:hover {
+    background-color: rgba(0, 120, 212, 0.08);
+    transform: translateY(-1px);
+  }
+
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: 1px;
+  }
+}
+
+.skillName {
+  white-space: nowrap;
+}
+
+.endorsementBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #ffffff;
+  padding: 0 4px;
+}
+
+/* Bars layout */
+.barsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.barItem {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.barHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.barSkillName {
+  font-size: 12px;
+  font-weight: 500;
+  color: #323130;
+}
+
+.barEndorsement {
+  font-size: 10px;
+  color: #8a8886;
+}
+
+.barTrack {
+  height: 6px;
+  background: #edebe9;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+/* List layout */
+.listContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.listSkillName {
+  font-size: 13px;
+  font-weight: 500;
+  color: #323130;
+  min-width: 120px;
+}
+
+.listDots {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.dotFilled {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.dotEmpty {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #edebe9;
+}
+
+.listEndorsement {
+  font-size: 11px;
+  color: #8a8886;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .listSkillName {
+    min-width: 80px;
+    font-size: 12px;
+  }
+}
+
+/* High Contrast */
+@media (prefers-contrast: high) {
+  .skillTag {
+    border-width: 2px;
+  }
+
+  .barTrack {
+    border: 1px solid currentColor;
+  }
+
+  .dotEmpty {
+    border: 1px solid currentColor;
+  }
+}

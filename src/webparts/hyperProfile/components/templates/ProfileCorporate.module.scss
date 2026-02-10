@@ -1,0 +1,369 @@
+/* ProfileCorporate — Warm gray card, charcoal accent, traditional business card */
+
+.profileCorporate {
+  background-color: #edebe9;
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Top accent bar */
+.accentBar {
+  height: 4px;
+  width: 100%;
+}
+
+/* Header row */
+.headerRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px 24px 12px;
+}
+
+.photoWrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.photo {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border: 2px solid #c8c6c4;
+}
+
+.initialsSquare {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #323130;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 600;
+  border: 2px solid #c8c6c4;
+}
+
+.presenceIndicator {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #edebe9;
+}
+
+/* Identity */
+.identity {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #201f1e;
+  margin: 0;
+  letter-spacing: 0.3px;
+}
+
+.pronouns {
+  font-size: 11px;
+  color: #8a8886;
+  font-style: italic;
+}
+
+.jobTitle {
+  font-size: 14px;
+  color: #323130;
+  font-weight: 600;
+  display: block;
+}
+
+.orgLine {
+  font-size: 13px;
+  color: #605e5c;
+  display: block;
+}
+
+.statusMessage {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #8a8886;
+  font-style: italic;
+  margin-top: 2px;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Divider */
+.divider {
+  border: none;
+  border-top: 1px solid #c8c6c4;
+  margin: 0 24px;
+}
+
+/* Fields table */
+.fieldsTable {
+  width: 100%;
+  border-collapse: collapse;
+  padding: 0 24px;
+  margin: 8px 0;
+
+  td {
+    padding: 4px 24px;
+    font-size: 13px;
+    vertical-align: top;
+  }
+}
+
+.fieldLabel {
+  color: #8a8886;
+  font-weight: 600;
+  white-space: nowrap;
+  width: 120px;
+  text-align: right;
+  padding-right: 12px;
+}
+
+.fieldValue {
+  color: #323130;
+  word-break: break-word;
+}
+
+/* About */
+.aboutSection {
+  padding: 8px 24px;
+}
+
+.aboutLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #8a8886;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.aboutText {
+  font-size: 13px;
+  color: #605e5c;
+  line-height: 1.5;
+  margin: 4px 0 0;
+}
+
+/* Generic section */
+.section {
+  padding: 8px 24px;
+}
+
+.sectionLabel {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #8a8886;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+/* Skills */
+.tagContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skillTag {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 12px;
+  background: #d2d0ce;
+  color: #323130;
+  border: 1px solid #c8c6c4;
+}
+
+/* Badges */
+.badgeContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.badgeItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.badgeIcon {
+  font-size: 16px;
+}
+
+.badgeName {
+  color: #323130;
+  font-weight: 500;
+}
+
+.badgeDesc {
+  color: #8a8886;
+  font-size: 11px;
+}
+
+/* Personal */
+.slogan {
+  font-size: 13px;
+  color: #605e5c;
+  font-style: italic;
+  margin: 0 0 8px;
+}
+
+.personalField {
+  display: flex;
+  gap: 8px;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.personalFieldLabel {
+  color: #8a8886;
+  font-weight: 600;
+  min-width: 70px;
+  flex-shrink: 0;
+}
+
+.personalFieldValue {
+  color: #323130;
+}
+
+.websiteLink {
+  font-size: 12px;
+  color: #0078d4;
+  text-decoration: none;
+  margin-right: 8px;
+  &:hover {
+    text-decoration: underline;
+  }
+  &:focus {
+    outline: 2px solid #323130;
+    outline-offset: 2px;
+  }
+}
+
+.educationList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.educationItem {
+  font-size: 12px;
+  color: #323130;
+}
+
+/* Actions */
+.actionsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 24px;
+  border-top: 1px solid #c8c6c4;
+}
+
+.actionButton {
+  background: #323130;
+  border: none;
+  color: #ffffff;
+  padding: 6px 16px;
+  border-radius: 0;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-family: inherit;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  &:hover {
+    background-color: #201f1e;
+  }
+  &:focus {
+    outline: 2px solid #323130;
+    outline-offset: 2px;
+  }
+}
+
+/* Manager */
+.managerSection {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-top: 1px solid #c8c6c4;
+  font-size: 13px;
+}
+
+.managerLabel {
+  color: #8a8886;
+  font-weight: 600;
+}
+
+.managerName {
+  color: #323130;
+  font-weight: 600;
+}
+
+.managerTitle {
+  color: #605e5c;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .headerRow {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .identity {
+    align-items: center;
+  }
+  .fieldLabel {
+    text-align: left;
+    width: auto;
+  }
+  .personalField {
+    flex-direction: column;
+    gap: 2px;
+  }
+}
+
+/* High contrast */
+@media (forced-colors: active) {
+  .profileCorporate {
+    border: 1px solid ButtonText;
+  }
+  .accentBar {
+    background-color: Highlight;
+  }
+  .actionButton {
+    border: 1px solid ButtonText;
+  }
+  .skillTag {
+    border: 1px solid ButtonText;
+  }
+  .divider {
+    border-color: ButtonText;
+  }
+}

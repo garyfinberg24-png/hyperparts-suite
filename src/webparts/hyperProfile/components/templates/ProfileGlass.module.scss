@@ -1,0 +1,376 @@
+/* ProfileGlass — Glassmorphism: backdrop-filter blur, translucent, cyan accent */
+
+.profileGlass {
+  background: linear-gradient(135deg, #0e7490, #06b6d4, #67e8f9);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+}
+
+.photoWrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.photo {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.initialsCircle {
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.presenceDot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Identity */
+.identity {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.pronouns {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+}
+
+.jobTitle {
+  font-size: 14px;
+  color: #ecfeff;
+  font-weight: 600;
+  display: block;
+}
+
+.department {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  display: block;
+}
+
+.statusMessage {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Frosted sections */
+.frostedSection {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border-radius: 10px;
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sectionTitle {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ecfeff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 4px;
+}
+
+/* Fields */
+.field {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 2px 0;
+}
+
+.fieldLabel {
+  color: rgba(255, 255, 255, 0.6);
+  flex-shrink: 0;
+}
+
+.fieldValue {
+  color: #ffffff;
+  text-align: right;
+  word-break: break-word;
+}
+
+.aboutMe {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Tags */
+.tagsWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skillTag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(4px);
+}
+
+.glassTag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ecfeff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Badges */
+.badgesWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.badgeItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.badgeIcon {
+  font-size: 16px;
+}
+
+.badgeName {
+  font-size: 12px;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.badgeDesc {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Personal */
+.slogan {
+  font-size: 14px;
+  color: #ecfeff;
+  font-style: italic;
+  margin: 0;
+}
+
+.websitesRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.websiteLink {
+  font-size: 12px;
+  color: #ecfeff;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.4);
+  &:hover {
+    text-decoration-color: #ffffff;
+  }
+  &:focus {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
+}
+
+.educationSection {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.educationItem {
+  font-size: 12px;
+}
+
+.eduDegree {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.eduInstitution {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.eduYear {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Actions */
+.actionsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.actionButton {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-family: inherit;
+  font-weight: 500;
+  &:hover {
+    background: rgba(255, 255, 255, 0.35);
+  }
+  &:focus {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
+}
+
+/* Manager */
+.managerSection {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+.managerLabel {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.managerName {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.managerTitle {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .profileGlass {
+    padding: 16px;
+  }
+  .header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .identity {
+    align-items: center;
+  }
+  .field {
+    flex-direction: column;
+    gap: 2px;
+  }
+  .fieldValue {
+    text-align: left;
+  }
+}
+
+/* High contrast */
+@media (forced-colors: active) {
+  .profileGlass {
+    border: 1px solid ButtonText;
+    background: Canvas;
+  }
+  .header,
+  .frostedSection {
+    border: 1px solid ButtonText;
+    background: Canvas;
+    backdrop-filter: none;
+  }
+  .actionButton {
+    border: 1px solid ButtonText;
+    background: ButtonFace;
+    color: ButtonText;
+  }
+  .name,
+  .jobTitle,
+  .fieldValue,
+  .badgeName {
+    color: CanvasText;
+  }
+  .fieldLabel,
+  .department,
+  .pronouns {
+    color: GrayText;
+  }
+  .skillTag,
+  .glassTag {
+    border: 1px solid ButtonText;
+  }
+}

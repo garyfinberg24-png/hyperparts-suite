@@ -1,0 +1,288 @@
+/* ProfileCompact — White card, horizontal row, minimal info, space-efficient */
+
+.profileCompact {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 6px;
+  padding: 12px 16px;
+  gap: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  min-height: 48px;
+}
+
+/* Photo */
+.photoWrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.photo {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border: 2px solid #edebe9;
+}
+
+.initialsCircle {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0078d4;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.presenceDot {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+}
+
+/* Center info */
+.infoCenter {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.nameRow {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #323130;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pronouns {
+  font-size: 11px;
+  color: #a19f9d;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.jobTitle {
+  color: #605e5c;
+}
+
+.separator {
+  color: #c8c6c4;
+}
+
+.department {
+  color: #a19f9d;
+}
+
+.statusMessage {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #a19f9d;
+  font-style: italic;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Contact */
+.contactRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.contactItem {
+  color: #605e5c;
+}
+
+/* Skills */
+.skillsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.skillTag {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 8px;
+  font-size: 10px;
+  background: #f3f2f1;
+  color: #605e5c;
+  border: 1px solid #e1dfdd;
+}
+
+.moreTag {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 8px;
+  font-size: 10px;
+  color: #0078d4;
+  font-weight: 500;
+}
+
+/* Badges */
+.badgesRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.badgeChip {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 8px;
+  font-size: 10px;
+  background: #fef4e6;
+  color: #605e5c;
+}
+
+/* Personal inline */
+.personalRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 11px;
+  color: #605e5c;
+}
+
+.sloganInline {
+  font-style: italic;
+  color: #a19f9d;
+}
+
+.personalLabel {
+  color: #605e5c;
+}
+
+.websitesInline {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.websiteLink {
+  font-size: 11px;
+  color: #0078d4;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: 1px;
+  }
+}
+
+/* Manager */
+.managerInline {
+  display: flex;
+  gap: 4px;
+  font-size: 11px;
+}
+
+.managerLabel {
+  color: #a19f9d;
+}
+
+.managerName {
+  color: #605e5c;
+  font-weight: 500;
+}
+
+/* Action icons */
+.actionsCol {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.actionIcon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #e1dfdd;
+  background: #f3f2f1;
+  color: #605e5c;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  font-family: inherit;
+  padding: 0;
+  &:hover {
+    background-color: #0078d4;
+    color: #ffffff;
+    border-color: #0078d4;
+  }
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: 2px;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .profileCompact {
+    flex-wrap: wrap;
+  }
+  .infoCenter {
+    min-width: 120px;
+  }
+  .actionsCol {
+    width: 100%;
+    justify-content: flex-end;
+    padding-top: 4px;
+    border-top: 1px solid #f3f2f1;
+  }
+}
+
+/* High contrast */
+@media (forced-colors: active) {
+  .profileCompact {
+    border: 1px solid ButtonText;
+  }
+  .actionIcon {
+    border: 1px solid ButtonText;
+    &:hover {
+      background-color: Highlight;
+      color: HighlightText;
+    }
+  }
+  .skillTag,
+  .badgeChip {
+    border: 1px solid ButtonText;
+  }
+}

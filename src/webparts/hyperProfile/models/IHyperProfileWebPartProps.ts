@@ -2,6 +2,9 @@ import type { IBaseHyperWebPartProps } from "../../../common/BaseHyperWebPart";
 import type { TemplateType } from "./IHyperProfileTemplate";
 import type { QuickActionType } from "./IHyperProfileQuickAction";
 import type { CompletenessDisplayStyle, CompletenessPosition } from "./IHyperProfileCompleteness";
+import type { ProfileAnimation, ProfileHeaderStyle, PhotoShape } from "./IHyperProfileAnimation";
+import type { SkillDisplayStyle } from "./IHyperProfileSkill";
+import type { DemoPersonId } from "./IHyperProfileDemoConfig";
 
 /** Display mode for the web part */
 export type DisplayMode = "myProfile" | "directory";
@@ -89,4 +92,63 @@ export interface IHyperProfileWebPartProps extends IBaseHyperWebPartProps {
   borderRadius: number;
   shadow: ShadowStyle;
   useThemeColors: boolean;
+
+  /* ── V2 Properties ── */
+
+  // Skills & Expertise
+  showSkills: boolean;
+  skillDisplayStyle: SkillDisplayStyle;
+  showEndorsements: boolean;
+  skillsListName?: string;
+
+  // Badges & Recognition
+  showBadges: boolean;
+  showBadgeDescriptions: boolean;
+  badgesListName?: string;
+
+  // Personal Info
+  showHobbies: boolean;
+  showSlogan: boolean;
+  showWebsites: boolean;
+  showInterests: boolean;
+  showFunFacts: boolean;
+  showEducation: boolean;
+
+  // Organization
+  showOrgChart: boolean;
+  showManager: boolean;
+  showDirectReports: boolean;
+
+  // Calendar Availability
+  showCalendar: boolean;
+
+  // Photo Shape & Appearance
+  photoShape: PhotoShape;
+  accentColor: string;
+  coverPhotoUrl?: string;
+
+  // Header Style
+  headerStyle: ProfileHeaderStyle;
+  headerPrimaryColor?: string;
+  headerSecondaryColor?: string;
+  headerImageUrl?: string;
+  headerPatternId?: string;
+  headerHeight?: number;
+
+  // Animation
+  animation: ProfileAnimation;
+
+  // Demo Mode
+  enableDemoMode: boolean;
+  demoPersonId?: DemoPersonId;
+
+  // Wizard
+  showWizardOnInit: boolean;
+  wizardCompleted: boolean;
+
+  // Analytics
+  enableAnalytics: boolean;
+
+  // Auto Refresh
+  autoRefreshInterval?: number;
 }

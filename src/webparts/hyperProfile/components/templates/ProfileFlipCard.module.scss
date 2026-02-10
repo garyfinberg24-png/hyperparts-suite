@@ -1,0 +1,319 @@
+/* ProfileFlipCard — 3D CSS flip card with front/back faces */
+.flipCard {
+  perspective: 1000px;
+  min-height: 380px;
+  cursor: pointer;
+  outline: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.flipCard:focus-visible {
+  outline: 2px solid #14b8a6;
+  outline-offset: 2px;
+  border-radius: 16px;
+}
+
+.flipInner {
+  position: relative;
+  width: 100%;
+  min-height: 380px;
+  transition: transform 0.6s ease;
+  transform-style: preserve-3d;
+}
+
+.flipped {
+  transform: rotateY(180deg);
+}
+
+.face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 380px;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* FRONT FACE */
+.front {
+  background: linear-gradient(135deg, #f0fdfa, #ccfbf1);
+  border: 1px solid rgba(20, 184, 166, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.photoWrapper {
+  margin-bottom: 16px;
+}
+
+.photo {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border: 3px solid #14b8a6;
+  box-shadow: 0 4px 16px rgba(20, 184, 166, 0.25);
+}
+
+.initials {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  font-weight: 800;
+  color: #ffffff;
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+  border: 3px solid #14b8a6;
+}
+
+.displayName {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 4px 0;
+  line-height: 1.2;
+}
+
+.jobTitle {
+  font-size: 14px;
+  color: #475569;
+  font-weight: 500;
+}
+
+.department {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.slogan {
+  font-size: 13px;
+  font-style: italic;
+  color: #0d9488;
+  margin-top: 12px;
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+.flipHint {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 20px;
+  letter-spacing: 0.5px;
+}
+
+/* BACK FACE */
+.back {
+  background: #ffffff;
+  border: 1px solid rgba(20, 184, 166, 0.2);
+  transform: rotateY(180deg);
+  padding: 20px 24px;
+  overflow-y: auto;
+}
+
+.backHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #14b8a6;
+}
+
+.backName {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.backFlipHint {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.backSection {
+  margin-bottom: 14px;
+}
+
+.backSectionTitle {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #14b8a6;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.contactItem {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  color: #334155;
+  margin-bottom: 4px;
+}
+
+.contactLabel {
+  font-weight: 700;
+  color: #64748b;
+  min-width: 50px;
+}
+
+.tagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skillTag {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #0d9488;
+  background: #f0fdfa;
+  border: 1px solid rgba(20, 184, 166, 0.3);
+  border-radius: 12px;
+}
+
+.badgeChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px 10px;
+  font-size: 11px;
+  color: #334155;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.hobbyPill {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 11px;
+  color: #475569;
+  background: #f1f5f9;
+  border-radius: 12px;
+}
+
+.websiteLink {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 11px;
+  color: #14b8a6;
+  text-decoration: none;
+  border: 1px solid rgba(20, 184, 166, 0.2);
+  border-radius: 12px;
+  transition: background 0.2s ease;
+}
+
+.websiteLink:hover {
+  background: #f0fdfa;
+}
+
+.educationItem {
+  font-size: 12px;
+  color: #475569;
+  margin-bottom: 4px;
+  line-height: 1.5;
+}
+
+.educationDegree {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.managerRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 8px;
+}
+
+.managerLabel {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.managerButton {
+  color: #14b8a6;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.managerButton:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .flipCard {
+    min-height: 340px;
+  }
+  .flipInner {
+    min-height: 340px;
+  }
+  .face {
+    min-height: 340px;
+  }
+  .photo, .initials {
+    width: 90px;
+    height: 90px;
+  }
+  .displayName {
+    font-size: 20px;
+  }
+  .front {
+    padding: 24px 16px;
+  }
+  .back {
+    padding: 16px;
+  }
+}
+
+/* High contrast */
+@media (forced-colors: active) {
+  .flipCard:focus-visible {
+    outline-color: Highlight;
+  }
+  .front {
+    border: 2px solid ButtonText;
+    background: Canvas;
+  }
+  .back {
+    border: 2px solid ButtonText;
+    background: Canvas;
+  }
+  .backHeader {
+    border-color: ButtonText;
+  }
+  .skillTag {
+    border-color: ButtonText;
+    color: CanvasText;
+  }
+  .websiteLink {
+    color: LinkText;
+    border-color: LinkText;
+  }
+  .managerButton {
+    color: ButtonText;
+  }
+}

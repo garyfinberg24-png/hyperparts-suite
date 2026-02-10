@@ -175,6 +175,12 @@
   color: #605e5c;
 }
 
+/* Demo wrapper — wraps DemoBar + template */
+.demoWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .compact {

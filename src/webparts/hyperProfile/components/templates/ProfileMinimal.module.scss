@@ -1,0 +1,248 @@
+/* ProfileMinimal — Ultra clean with whitespace, hover-reveal for details */
+.minimalCard {
+  padding: 32px;
+  background: transparent;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.primarySection {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.photoWrapper {
+  flex-shrink: 0;
+}
+
+.photo {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+}
+
+.initials {
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: #64748b;
+  background: #f1f5f9;
+}
+
+.nameBlock {
+  flex: 1;
+  min-width: 0;
+}
+
+.displayName {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 2px 0;
+  line-height: 1.3;
+}
+
+.jobTitle {
+  font-size: 14px;
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+.actionsRow {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.actionLink {
+  display: inline-block;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  text-decoration: none;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.actionLink:hover {
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+/* Reveal container: hidden by default, shown on hover */
+.revealContainer {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.4s ease, opacity 0.3s ease, margin-top 0.3s ease;
+  margin-top: 0;
+}
+
+.minimalCard:hover .revealContainer,
+.minimalCard:focus-within .revealContainer {
+  max-height: 600px;
+  opacity: 1;
+  margin-top: 24px;
+}
+
+.slogan {
+  font-size: 15px;
+  color: #475569;
+  font-style: italic;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.detailLine {
+  font-size: 13px;
+  color: #94a3b8;
+  margin-bottom: 16px;
+}
+
+.revealSection {
+  margin-bottom: 14px;
+}
+
+.sectionLabel {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #94a3b8;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.tagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 11px;
+  color: #64748b;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+}
+
+.websiteLink {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 11px;
+  color: #64748b;
+  text-decoration: none;
+  border-bottom: 1px solid #cbd5e1;
+  transition: color 0.2s ease;
+}
+
+.websiteLink:hover {
+  color: #0f172a;
+}
+
+.educationItem {
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 4px;
+  line-height: 1.5;
+}
+
+.educationDegree {
+  font-weight: 700;
+  color: #334155;
+}
+
+.managerRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.managerLabel {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+.managerButton {
+  color: #475569;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.managerButton:hover {
+  color: #0f172a;
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .minimalCard {
+    padding: 20px;
+  }
+  .primarySection {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .photo, .initials {
+    width: 56px;
+    height: 56px;
+  }
+  .displayName {
+    font-size: 18px;
+  }
+  .actionsRow {
+    width: 100%;
+  }
+  .actionLink {
+    flex: 1;
+    text-align: center;
+  }
+  /* Always show reveal on mobile (no hover) */
+  .revealContainer {
+    max-height: none;
+    opacity: 1;
+    margin-top: 20px;
+  }
+}
+
+/* High contrast */
+@media (forced-colors: active) {
+  .actionLink {
+    border-color: ButtonText;
+    color: ButtonText;
+  }
+  .tag {
+    border-color: ButtonText;
+    color: CanvasText;
+  }
+  .websiteLink {
+    color: LinkText;
+    border-color: LinkText;
+  }
+  .managerButton {
+    color: ButtonText;
+  }
+  .managerRow {
+    border-color: ButtonText;
+  }
+}

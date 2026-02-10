@@ -1,0 +1,454 @@
+/* ProfileMosaic -- Asymmetric 3-column CSS Grid, warm palette tiles, orange accent #f97316 */
+.mosaicGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-auto-rows: auto;
+  gap: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ── Base tile ── */
+.tile {
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.tile:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+/* Tall tile: spans 2 rows */
+.tileTall {
+  grid-row: span 2;
+}
+
+/* Wide tile: spans 2 columns */
+.tileWide {
+  grid-column: span 2;
+}
+
+/* ── Unique tile backgrounds (warm palette) ── */
+.tilePhoto {
+  background: linear-gradient(135deg, #fff7ed, #fed7aa);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tileName {
+  background: #fffbeb;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.tileContact {
+  background: #fef2f2;
+}
+
+.tileSlogan {
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tileSkills {
+  background: #fefce8;
+}
+
+.tileBadges {
+  background: #fdf4ff;
+}
+
+.tilePersonal {
+  background: #f0fdf4;
+}
+
+.tileEducation {
+  background: #eff6ff;
+}
+
+.tileManager {
+  background: #faf5ff;
+}
+
+/* ── Tile title ── */
+.tileTitle {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #f97316;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.tileSubtitle {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #94a3b8;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* ── Photo tile ── */
+.photoWrapper {
+  position: relative;
+}
+
+.photo {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border: 3px solid #f97316;
+  box-shadow: 0 3px 10px rgba(249, 115, 22, 0.2);
+}
+
+.initials {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 800;
+  color: #ffffff;
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  border: 3px solid #f97316;
+}
+
+.presenceDot {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 3px solid #ffffff;
+  z-index: 1;
+}
+
+/* ── Name tile ── */
+.displayName {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 4px 0;
+  line-height: 1.2;
+}
+
+.jobTitle {
+  font-size: 14px;
+  color: #475569;
+  font-weight: 500;
+}
+
+.department {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.presenceLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.presenceIndicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.statusMessage {
+  font-size: 11px;
+  color: #94a3b8;
+  font-style: italic;
+  margin-top: 4px;
+}
+
+/* ── Contact tile ── */
+.fieldItem {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-bottom: 8px;
+}
+
+.fieldLabel {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.fieldValue {
+  font-size: 13px;
+  color: #334155;
+}
+
+/* ── Slogan tile ── */
+.sloganText {
+  font-size: 15px;
+  font-style: italic;
+  color: #9a3412;
+  line-height: 1.6;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* ── Skills tile with endorsement bars ── */
+.skillsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skillItem {
+  width: 100%;
+}
+
+.skillMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3px;
+}
+
+.skillName {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.skillEndorsements {
+  font-size: 11px;
+  color: #f97316;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(249, 115, 22, 0.1);
+  border-radius: 9px;
+  padding: 0 5px;
+}
+
+.skillBarTrack {
+  width: 100%;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.skillBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, #f97316, #fb923c);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+/* ── Badges tile ── */
+.badgeGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.badgeItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.badgeIcon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.badgeName {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.badgeDesc {
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+/* ── Personal tile ── */
+.pillRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.hobbyPill {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 11px;
+  color: #475569;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.websiteChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  font-size: 11px;
+  color: #ea580c;
+  text-decoration: none;
+  border: 1px solid rgba(249, 115, 22, 0.3);
+  border-radius: 8px;
+  transition: background 0.2s ease;
+  font-family: inherit;
+}
+
+.websiteChip:hover {
+  background: rgba(249, 115, 22, 0.08);
+}
+
+/* ── Education tile ── */
+.educationItem {
+  margin-bottom: 8px;
+}
+
+.educationDegree {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.4;
+}
+
+.educationInstitution {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* ── Manager tile ── */
+.managerButton {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  text-align: left;
+}
+
+.managerButton:hover .managerName {
+  text-decoration: underline;
+}
+
+.managerName {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ea580c;
+}
+
+.managerTitle {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+/* ── Responsive ── */
+@media (max-width: 960px) {
+  .mosaicGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .tileWide {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 600px) {
+  .mosaicGrid {
+    grid-template-columns: 1fr;
+  }
+  .tileWide {
+    grid-column: span 1;
+  }
+  .tileTall {
+    grid-row: span 1;
+  }
+  .tile {
+    padding: 16px;
+  }
+  .photo, .initials {
+    width: 80px;
+    height: 80px;
+  }
+  .displayName {
+    font-size: 18px;
+  }
+}
+
+/* ── High contrast ── */
+@media (forced-colors: active) {
+  .tile {
+    border: 2px solid ButtonText;
+    background: Canvas;
+  }
+  .tilePhoto {
+    background: Canvas;
+  }
+  .tileName, .tileContact, .tileSlogan, .tileSkills,
+  .tileBadges, .tilePersonal, .tileEducation, .tileManager {
+    background: Canvas;
+  }
+  .displayName, .jobTitle, .department {
+    color: CanvasText;
+  }
+  .tileTitle {
+    color: CanvasText;
+  }
+  .photo, .initials {
+    border-color: ButtonText;
+  }
+  .skillBarTrack {
+    border: 1px solid ButtonText;
+  }
+  .skillBarFill {
+    background: Highlight;
+  }
+  .hobbyPill {
+    border-color: ButtonText;
+    color: CanvasText;
+    background: Canvas;
+  }
+  .websiteChip {
+    color: LinkText;
+    border-color: LinkText;
+  }
+  .managerName {
+    color: LinkText;
+  }
+  .sloganText {
+    color: CanvasText;
+  }
+  .skillEndorsements {
+    border: 1px solid ButtonText;
+    background: Canvas;
+    color: CanvasText;
+  }
+}

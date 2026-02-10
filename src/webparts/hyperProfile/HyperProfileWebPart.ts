@@ -73,6 +73,77 @@ export default class HyperProfileWebPart extends BaseHyperWebPart<IHyperProfileW
     if (!this.properties.height) {
       this.properties.height = "auto";
     }
+
+    // V2 defaults
+    if (this.properties.showSkills === undefined) {
+      this.properties.showSkills = true;
+    }
+    if (this.properties.showBadges === undefined) {
+      this.properties.showBadges = true;
+    }
+    if (this.properties.showHobbies === undefined) {
+      this.properties.showHobbies = false;
+    }
+    if (this.properties.showSlogan === undefined) {
+      this.properties.showSlogan = false;
+    }
+    if (this.properties.showWebsites === undefined) {
+      this.properties.showWebsites = false;
+    }
+    if (this.properties.showInterests === undefined) {
+      this.properties.showInterests = false;
+    }
+    if (this.properties.showFunFacts === undefined) {
+      this.properties.showFunFacts = false;
+    }
+    if (this.properties.showEducation === undefined) {
+      this.properties.showEducation = false;
+    }
+    if (this.properties.showOrgChart === undefined) {
+      this.properties.showOrgChart = false;
+    }
+    if (this.properties.showManager === undefined) {
+      this.properties.showManager = true;
+    }
+    if (this.properties.showDirectReports === undefined) {
+      this.properties.showDirectReports = false;
+    }
+    if (this.properties.showCalendar === undefined) {
+      this.properties.showCalendar = false;
+    }
+    if (!this.properties.photoShape) {
+      this.properties.photoShape = "circle";
+    }
+    if (!this.properties.accentColor) {
+      this.properties.accentColor = "#0078d4";
+    }
+    if (!this.properties.headerStyle) {
+      this.properties.headerStyle = "gradient";
+    }
+    if (!this.properties.animation) {
+      this.properties.animation = "none";
+    }
+    if (this.properties.enableDemoMode === undefined) {
+      this.properties.enableDemoMode = false;
+    }
+    if (this.properties.showWizardOnInit === undefined) {
+      this.properties.showWizardOnInit = true;
+    }
+    if (this.properties.wizardCompleted === undefined) {
+      this.properties.wizardCompleted = false;
+    }
+    if (this.properties.enableAnalytics === undefined) {
+      this.properties.enableAnalytics = false;
+    }
+    if (!this.properties.skillDisplayStyle) {
+      this.properties.skillDisplayStyle = "tags";
+    }
+    if (this.properties.showEndorsements === undefined) {
+      this.properties.showEndorsements = true;
+    }
+    if (this.properties.showBadgeDescriptions === undefined) {
+      this.properties.showBadgeDescriptions = true;
+    }
   }
 
   protected onDispose(): void {
@@ -285,7 +356,7 @@ export default class HyperProfileWebPart extends BaseHyperWebPart<IHyperProfileW
 
   protected onPropertyPaneFieldChanged(propertyPath: string, oldValue: unknown, newValue: unknown): void {
     // Apply template configuration when template is changed
-    if (propertyPath === "selectedTemplate" && newValue !== "custom") {
+    if (propertyPath === "selectedTemplate") {
       const template: IHyperTemplate | undefined = getTemplateById(newValue as string);
       if (template && template.configuration) {
         const configKeys = Object.keys(template.configuration);

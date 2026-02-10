@@ -1,0 +1,404 @@
+/* ProfileStandard — Light gray card, blue accent, gradient header */
+
+.profileStandard {
+  background-color: #f3f2f1;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Header banner */
+.header {
+  min-height: 80px;
+  background: linear-gradient(135deg, #0078d4, #106ebe);
+}
+
+/* Summary row */
+.summaryRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 0 24px;
+  margin-top: -32px;
+}
+
+.photoWrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.photo {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.initialsCircle {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0078d4;
+  border: 3px solid #ffffff;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.presenceDot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #f3f2f1;
+}
+
+/* Identity */
+.identity {
+  padding-top: 34px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #323130;
+  margin: 0;
+}
+
+.pronouns {
+  font-size: 12px;
+  color: #605e5c;
+  font-style: italic;
+}
+
+.jobTitle {
+  font-size: 14px;
+  color: #0078d4;
+  font-weight: 600;
+  display: block;
+}
+
+.department {
+  font-size: 13px;
+  color: #605e5c;
+  display: block;
+}
+
+.statusMessage {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #605e5c;
+  font-style: italic;
+  margin-top: 4px;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Body */
+.body {
+  padding: 16px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.aboutMe {
+  font-size: 13px;
+  color: #605e5c;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.sectionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #323130;
+  margin: 0 0 8px 0;
+  padding-bottom: 4px;
+  border-bottom: 2px solid #0078d4;
+  display: inline-block;
+}
+
+/* Fields */
+.fieldsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+}
+
+.fieldLabel {
+  color: #605e5c;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.fieldValue {
+  color: #323130;
+  word-break: break-word;
+}
+
+/* Skills */
+.skillsSection {
+  padding-top: 4px;
+}
+
+.skillsWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skillTag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  background: #e1dfdd;
+  color: #323130;
+  border: 1px solid #c8c6c4;
+}
+
+/* Badges */
+.badgesSection {
+  padding-top: 4px;
+}
+
+.badgesWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.badgeItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #ffffff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.badgeIcon {
+  font-size: 16px;
+}
+
+.badgeName {
+  font-size: 12px;
+  color: #323130;
+  font-weight: 500;
+}
+
+.badgeDesc {
+  font-size: 11px;
+  color: #605e5c;
+}
+
+/* Personal */
+.personalSection {
+  padding-top: 4px;
+}
+
+.slogan {
+  font-size: 14px;
+  color: #0078d4;
+  font-style: italic;
+  margin: 0 0 8px 0;
+}
+
+.tagRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.tagLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #605e5c;
+  min-width: 60px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.tagWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.hobbyTag,
+.interestTag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  background: #deecf9;
+  color: #0078d4;
+}
+
+.interestTag {
+  background: #edebe9;
+  color: #605e5c;
+}
+
+.websiteLink {
+  font-size: 12px;
+  color: #0078d4;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: 2px;
+  }
+}
+
+.educationSection {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.educationItem {
+  font-size: 12px;
+}
+
+.eduDegree {
+  color: #323130;
+  font-weight: 500;
+}
+
+.eduInstitution {
+  color: #605e5c;
+}
+
+.eduYear {
+  color: #a19f9d;
+}
+
+.funFactsList {
+  margin: 0;
+  padding-left: 20px;
+  list-style: disc;
+}
+
+.funFact {
+  font-size: 12px;
+  color: #605e5c;
+  line-height: 1.4;
+}
+
+/* Actions */
+.actionsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.actionButton {
+  background: #0078d4;
+  border: none;
+  color: #ffffff;
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-family: inherit;
+  &:hover {
+    background-color: #106ebe;
+  }
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: 2px;
+  }
+}
+
+/* Manager */
+.managerSection {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 8px;
+  border-top: 1px solid #e1dfdd;
+  font-size: 13px;
+}
+
+.managerLabel {
+  color: #605e5c;
+  font-weight: 600;
+}
+
+.managerName {
+  color: #323130;
+}
+
+.managerTitle {
+  color: #a19f9d;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .summaryRow {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .identity {
+    align-items: center;
+    padding-top: 8px;
+  }
+  .fieldsGrid {
+    grid-template-columns: 1fr;
+  }
+  .body {
+    padding: 12px 16px 16px;
+  }
+}
+
+/* High contrast */
+@media (forced-colors: active) {
+  .profileStandard {
+    border: 1px solid ButtonText;
+  }
+  .actionButton {
+    border: 1px solid ButtonText;
+  }
+  .skillTag,
+  .hobbyTag,
+  .interestTag {
+    border: 1px solid ButtonText;
+  }
+  .header {
+    border-bottom: 1px solid ButtonText;
+  }
+}

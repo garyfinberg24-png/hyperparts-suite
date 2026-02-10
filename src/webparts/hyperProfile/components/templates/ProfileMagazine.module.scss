@@ -1,0 +1,290 @@
+/* ProfileMagazine — Editorial 60/40 split layout with pull-quote and serif weights */
+.magazineCard {
+  display: flex;
+  background: #fafafa;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e5e5e5;
+  min-height: 400px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.leftColumn {
+  flex: 0 0 60%;
+  max-width: 60%;
+  position: relative;
+  background: #f0f0f0;
+}
+
+.rightColumn {
+  flex: 0 0 40%;
+  max-width: 40%;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.photoWrapper {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  position: relative;
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  object-fit: cover;
+  display: block;
+}
+
+.initials {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72px;
+  font-weight: 800;
+  color: #1a1a1a;
+  background: #e8e8e8;
+}
+
+.categoryLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #1a1a1a;
+  font-weight: 700;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #1a1a1a;
+  display: inline-block;
+}
+
+.displayName {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0 0 6px 0;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.jobTitle {
+  font-size: 15px;
+  color: #555555;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #d4d4d4;
+  margin: 16px 0;
+}
+
+.pullQuote {
+  font-size: 17px;
+  font-style: italic;
+  color: #333333;
+  line-height: 1.6;
+  margin: 0 0 16px 0;
+  padding: 0 0 0 16px;
+  border-left: 3px solid #1a1a1a;
+  font-weight: 300;
+}
+
+.contactLine {
+  font-size: 12px;
+  color: #777777;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.section {
+  margin-top: 16px;
+}
+
+.sectionHeading {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #999999;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.tagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skillTag {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #1a1a1a;
+  background: #ffffff;
+  border: 1px solid #d4d4d4;
+  border-radius: 3px;
+}
+
+.badgeChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  font-size: 11px;
+  color: #1a1a1a;
+  background: #f5f5f5;
+  border-radius: 3px;
+}
+
+.badgeIcon {
+  font-size: 14px;
+}
+
+.hobbyTag {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 11px;
+  color: #555555;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 3px;
+}
+
+.websiteList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.websiteLink {
+  font-size: 12px;
+  color: #1a1a1a;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.websiteLink:hover {
+  color: #555555;
+  text-decoration: underline;
+}
+
+.educationItem {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 8px;
+}
+
+.educationDegree {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.educationInstitution {
+  font-size: 12px;
+  color: #777777;
+  font-weight: 400;
+}
+
+.managerRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.managerLabel {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #999999;
+  font-weight: 700;
+}
+
+.managerButton {
+  color: #1a1a1a;
+  cursor: pointer;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #1a1a1a;
+  padding: 0;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.managerButton:hover {
+  color: #555555;
+  border-color: #555555;
+}
+
+/* Responsive: stack vertically on narrow viewports */
+@media (max-width: 768px) {
+  .magazineCard {
+    flex-direction: column;
+  }
+  .leftColumn {
+    flex: none;
+    max-width: 100%;
+    height: 240px;
+  }
+  .rightColumn {
+    flex: none;
+    max-width: 100%;
+    padding: 20px;
+  }
+  .photoWrapper {
+    min-height: 240px;
+  }
+  .photo {
+    min-height: 240px;
+  }
+  .initials {
+    min-height: 240px;
+    font-size: 48px;
+  }
+  .displayName {
+    font-size: 22px;
+  }
+}
+
+/* High contrast */
+@media (forced-colors: active) {
+  .magazineCard {
+    border: 2px solid ButtonText;
+    background: Canvas;
+  }
+  .categoryLabel {
+    border-color: ButtonText;
+    color: CanvasText;
+  }
+  .pullQuote {
+    border-color: ButtonText;
+    color: CanvasText;
+  }
+  .skillTag, .hobbyTag {
+    border-color: ButtonText;
+    color: CanvasText;
+  }
+  .websiteLink {
+    color: LinkText;
+  }
+  .managerButton {
+    border-color: ButtonText;
+    color: ButtonText;
+  }
+}

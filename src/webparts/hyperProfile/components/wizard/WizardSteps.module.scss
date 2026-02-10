@@ -1,0 +1,718 @@
+/* Shared wizard step styles */
+
+/* Step container */
+.stepContainer {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Step header */
+.stepHeader {
+  margin-bottom: 4px;
+}
+
+.stepTitle {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #323130;
+}
+
+.stepDescription {
+  margin: 0;
+  font-size: 13px;
+  color: #605e5c;
+  line-height: 1.5;
+}
+
+/* ── Path Selection Cards ── */
+.pathCardsRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.pathCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 28px 24px;
+  border: 2px solid #e1dfdd;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: center;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+
+  &:hover {
+    border-color: #0078d4;
+    box-shadow: 0 4px 16px rgba(0, 120, 212, 0.12);
+    transform: translateY(-2px);
+  }
+
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: 2px;
+  }
+}
+
+.pathIcon {
+  font-size: 36px;
+}
+
+.pathTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #323130;
+}
+
+.pathDesc {
+  font-size: 12px;
+  color: #605e5c;
+  line-height: 1.5;
+  max-width: 260px;
+}
+
+.pathBadge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 10px;
+  background: #e6f4ea;
+  color: #137333;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pathBadgeAlt {
+  background: #eef2ff;
+  color: #4f46e5;
+}
+
+/* ── Filter Tabs ── */
+.filterTabs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.filterTab {
+  padding: 6px 14px;
+  border: 1px solid #e1dfdd;
+  border-radius: 16px;
+  background: #fff;
+  color: #605e5c;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover {
+    border-color: #0078d4;
+    color: #0078d4;
+  }
+
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: 1px;
+  }
+}
+
+.filterTabActive {
+  background: #0078d4;
+  border-color: #0078d4;
+  color: #fff;
+}
+
+/* ── Template Gallery Grid ── */
+.templateGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.templateCard {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid #e1dfdd;
+  border-radius: 10px;
+  background: #fff;
+  overflow: hidden;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  position: relative;
+
+  &:hover {
+    border-color: #0078d4;
+    box-shadow: 0 2px 12px rgba(0, 120, 212, 0.1);
+  }
+
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: 2px;
+  }
+}
+
+.templateCardSelected {
+  border-color: #0078d4;
+  box-shadow: 0 0 0 1px #0078d4, 0 2px 12px rgba(0, 120, 212, 0.15);
+}
+
+.templatePreview {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.templatePreviewIcon {
+  font-size: 24px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.templateCardBody {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.templateName {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323130;
+}
+
+.templateDesc {
+  font-size: 11px;
+  color: #605e5c;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.badgeRow {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.featureBadge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: #f3f2f1;
+  color: #605e5c;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.selectedIndicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #0078d4;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* ── Setting Section ── */
+.settingSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sectionLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323130;
+}
+
+.optionRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.optionCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 16px;
+  border: 2px solid #e1dfdd;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: center;
+  min-width: 80px;
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: #0078d4;
+  }
+
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: 2px;
+  }
+}
+
+.optionCardSelected {
+  border-color: #0078d4;
+  background: #f0f6ff;
+}
+
+.optionIcon {
+  font-size: 18px;
+}
+
+.optionLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #323130;
+}
+
+.optionDesc {
+  font-size: 10px;
+  color: #8a8886;
+}
+
+.infoNote {
+  font-size: 12px;
+  color: #8a8886;
+  font-style: italic;
+  padding: 8px 12px;
+  background: #faf9f8;
+  border-radius: 6px;
+  border: 1px solid #edebe9;
+}
+
+/* ── Color Grid ── */
+.colorGrid {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.colorSwatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.1s, border-color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+
+  &:hover {
+    transform: scale(1.15);
+  }
+
+  &:focus {
+    outline: 2px solid #323130;
+    outline-offset: 2px;
+  }
+}
+
+.colorSwatchSelected {
+  border-color: #323130;
+  transform: scale(1.15);
+}
+
+.swatchCheck {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* ── Mini option buttons (inline row) ── */
+.miniOptionRow {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.miniOptionBtn {
+  padding: 5px 12px;
+  border: 1px solid #e1dfdd;
+  border-radius: 4px;
+  background: #fff;
+  color: #605e5c;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover {
+    border-color: #0078d4;
+    color: #0078d4;
+  }
+
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: 1px;
+  }
+}
+
+.miniOptionBtnActive {
+  background: #0078d4;
+  border-color: #0078d4;
+  color: #fff;
+}
+
+/* ── Slider ── */
+.sliderRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.slider {
+  flex: 1;
+  height: 4px;
+  cursor: pointer;
+}
+
+.sliderValue {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323130;
+  min-width: 40px;
+  text-align: right;
+}
+
+/* ── Accordion Sections ── */
+.accordionSection {
+  border: 1px solid #edebe9;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.accordionSectionOpen {
+  border-color: #d2d0ce;
+}
+
+.accordionHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: #faf9f8;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #323130;
+  text-align: left;
+  transition: background 0.15s;
+
+  &:hover {
+    background: #f3f2f1;
+  }
+
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: -2px;
+  }
+}
+
+.accordionIcon {
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+}
+
+.accordionTitle {
+  flex: 1;
+}
+
+.accordionChevron {
+  font-size: 10px;
+  color: #8a8886;
+  transition: transform 0.2s;
+  transform: rotate(-90deg);
+}
+
+.accordionChevronOpen {
+  transform: rotate(0deg);
+}
+
+.accordionBody {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid #edebe9;
+}
+
+/* ── Toggle Switch ── */
+.toggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+.toggleInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.toggleLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: #323130;
+}
+
+.toggleDesc {
+  font-size: 11px;
+  color: #8a8886;
+}
+
+.toggleSwitch {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  border-radius: 11px;
+  border: 2px solid #8a8886;
+  background: #fff;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s, border-color 0.2s;
+  padding: 0;
+
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: 2px;
+  }
+}
+
+.toggleSwitchOn {
+  background: #0078d4;
+  border-color: #0078d4;
+
+  .toggleKnob {
+    transform: translateX(18px);
+    background: #fff;
+  }
+}
+
+.toggleKnob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #8a8886;
+  transition: transform 0.2s, background 0.2s;
+}
+
+/* ── Checkbox Grid ── */
+.checkboxGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 6px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid #e1dfdd;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #605e5c;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+
+  &:hover {
+    border-color: #0078d4;
+  }
+}
+
+.checkboxLabelChecked {
+  border-color: #0078d4;
+  background: #f0f6ff;
+  color: #323130;
+}
+
+.checkbox {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+}
+
+.checkboxIcon {
+  font-size: 13px;
+}
+
+/* ── Inline option row (within accordion) ── */
+.inlineOptionRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+}
+
+.inlineLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: #605e5c;
+  white-space: nowrap;
+}
+
+.inlineOptions {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+/* ── Review Step ── */
+.reviewCard {
+  border: 1px solid #edebe9;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.reviewCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #faf9f8;
+  font-size: 14px;
+  font-weight: 600;
+  color: #323130;
+  border-bottom: 1px solid #edebe9;
+}
+
+.reviewIcon {
+  font-size: 16px;
+}
+
+.reviewRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid #f3f2f1;
+  font-size: 13px;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.reviewLabel {
+  font-weight: 500;
+  color: #605e5c;
+}
+
+.reviewValue {
+  font-weight: 600;
+  color: #323130;
+}
+
+.reviewPreview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reviewPreviewLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323130;
+}
+
+.reviewColorBar {
+  width: 80px;
+  height: 24px;
+  border-radius: 4px;
+}
+
+.reviewColorHex {
+  font-size: 12px;
+  color: #605e5c;
+  font-family: monospace;
+}
+
+.reviewFeaturesSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reviewPillRow {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.reviewPill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 10px;
+  background: #e6f4ea;
+  color: #137333;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.readyMessage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px;
+  background: #e6f4ea;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #137333;
+  font-weight: 500;
+}
+
+.readyIcon {
+  font-size: 16px;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .pathCardsRow {
+    grid-template-columns: 1fr;
+  }
+
+  .templateGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .checkboxGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

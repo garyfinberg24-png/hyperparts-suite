@@ -1,85 +1,71 @@
 import * as React from "react";
 import type { IHyperProfileWebPartProps } from "../models";
+import type { IProfileTemplateProps } from "./templates/IProfileTemplateProps";
+import type { TemplateType } from "../models/IHyperProfileTemplate";
+import type { IProfileSkill } from "../models/IHyperProfileSkill";
+import type { IProfileBadge } from "../models/IHyperProfileBadge";
+import type { IProfilePersonal } from "../models/IHyperProfilePersonal";
+import type { IProfileOrgNode } from "../models/IHyperProfileOrgNode";
+import type { ICalendarDay } from "../models/IHyperProfileCalendar";
 import { HyperErrorBoundary } from "../../../common/components";
 import { HyperSkeleton } from "../../../common/components";
 import { HyperEmptyState } from "../../../common/components";
 import { useProfileData } from "../hooks/useProfileData";
 import { usePresence } from "../hooks/usePresence";
-import { getPresenceConfig, getStatusMessage } from "../utils/presenceUtils";
-import HyperProfilePhoto from "./HyperProfilePhoto";
-import HyperProfileField from "./HyperProfileField";
-import HyperProfilePresenceBadge from "./HyperProfilePresenceBadge";
-import HyperProfileQuickActions from "./HyperProfileQuickActions";
-import HyperProfileCompleteness from "./HyperProfileCompleteness";
-import HyperProfileOverlay from "./HyperProfileOverlay";
+import { useHyperProfileStore } from "../store/useHyperProfileStore";
+import { getSamplePerson } from "../utils/sampleData";
+import { getTemplateComponent } from "./templates";
+import HyperProfileDemoBar from "./HyperProfileDemoBar";
 import styles from "./HyperProfile.module.scss";
 
 export interface IHyperProfileComponentProps extends IHyperProfileWebPartProps {
   instanceId: string;
 }
 
-/** Field config for mapping profile data to display fields */
-interface IFieldConfig {
-  key: string;
-  label: string;
-  icon: string;
-  isLink?: boolean;
-}
-
-const DEFAULT_FIELDS: IFieldConfig[] = [
-  { key: "mail", label: "Email", icon: "Mail", isLink: true },
-  { key: "mobilePhone", label: "Mobile", icon: "CellPhone", isLink: true },
-  { key: "businessPhones", label: "Phone", icon: "Phone", isLink: true },
-  { key: "department", label: "Department", icon: "Org" },
-  { key: "officeLocation", label: "Office", icon: "POI" },
-  { key: "city", label: "City", icon: "CityNext" },
-  { key: "companyName", label: "Company", icon: "Contact" },
-  { key: "preferredLanguage", label: "Language", icon: "LocaleLanguage" },
-  { key: "employeeId", label: "Employee ID", icon: "ContactCard" },
-  { key: "aboutMe", label: "About", icon: "Info" },
-];
-
 const HyperProfileInner: React.FC<IHyperProfileComponentProps> = function (props) {
-  const { profile, manager, photoUrl, loading, error } = useProfileData(
-    props.defaultUserId
+  const store = useHyperProfileStore();
+
+  // Determine template
+  const templateId: TemplateType = props.selectedTemplate || store.selectedTemplateId || "standard";
+
+  // Demo mode data
+  const isDemoMode = store.isDemoMode || props.enableDemoMode;
+  const demoPersonId = store.demoPersonId || props.demoPersonId || "sarah";
+  const demoPerson = isDemoMode ? getSamplePerson(demoPersonId) : undefined;
+
+  // Real data (skip fetch in demo mode)
+  const profileData = useProfileData(
+    isDemoMode ? undefined : props.defaultUserId
   );
 
   const presenceResult = usePresence(
-    profile ? profile.id : undefined,
+    isDemoMode ? undefined : (profileData.profile ? profileData.profile.id : undefined),
     props.showPresence,
     props.presenceRefreshInterval || 30
   );
 
-  // Container styles
-  const containerStyles: React.CSSProperties = {
-    backgroundColor: props.backgroundColor || "#FFFFFF",
-    borderRadius: (props.borderRadius || 8) + "px",
-    width: props.width || "auto",
-    height: props.height === "fit-content" ? "auto" : (props.height || "auto"),
-  };
+  // Choose data source: demo or real
+  const profile = isDemoMode && demoPerson ? demoPerson.profile : profileData.profile;
+  const manager = isDemoMode && demoPerson ? demoPerson.manager : profileData.manager;
+  const photoUrl = isDemoMode && demoPerson ? demoPerson.photoUrl : profileData.photoUrl;
+  const loading = isDemoMode ? false : profileData.loading;
+  const error = isDemoMode ? undefined : profileData.error;
 
-  if (props.backgroundType === "image" && props.backgroundImageUrl) {
-    containerStyles.backgroundImage = "url(" + props.backgroundImageUrl + ")";
-    containerStyles.backgroundSize = props.backgroundImageFit || "cover";
-    containerStyles.backgroundPosition = props.backgroundImagePosition || "center";
-    containerStyles.backgroundRepeat = "no-repeat";
-  }
+  // V2 extended data from demo or empty defaults
+  const skills: IProfileSkill[] = isDemoMode && demoPerson ? demoPerson.skills : [];
+  const badges: IProfileBadge[] = isDemoMode && demoPerson ? demoPerson.badges : [];
+  const personal: IProfilePersonal | undefined = isDemoMode && demoPerson ? demoPerson.personal : undefined;
+  const orgTree: IProfileOrgNode | undefined = isDemoMode && demoPerson ? demoPerson.orgTree : undefined;
+  const calendar: ICalendarDay[] = isDemoMode && demoPerson ? demoPerson.calendar : [];
 
-  const shadowClass =
-    props.shadow === "light" ? styles.shadowLight
-    : props.shadow === "strong" ? styles.shadowStrong
-    : props.shadow === "medium" ? styles.shadowMedium
-    : "";
-
-  const cardClass = styles.hyperProfile
-    + " " + ((styles as Record<string, string>)[props.cardStyle] || styles.standard)
-    + (shadowClass ? " " + shadowClass : "");
+  // Presence: demo uses mock, real uses hook
+  const presence = isDemoMode ? { availability: "Available" as const, activity: "Available" as const } : presenceResult.presence;
 
   // Loading state
   if (loading) {
     return React.createElement(
       "div",
-      { className: cardClass, style: containerStyles, role: "region", "aria-label": "User Profile" },
+      { className: styles.hyperProfile + " " + styles.standard, role: "region", "aria-label": "User Profile" },
       React.createElement("div", { className: styles.loadingContainer },
         React.createElement(HyperSkeleton, { count: 3 })
       )
@@ -90,7 +76,7 @@ const HyperProfileInner: React.FC<IHyperProfileComponentProps> = function (props
   if (error) {
     return React.createElement(
       "div",
-      { className: cardClass, style: containerStyles, role: "region", "aria-label": "User Profile" },
+      { className: styles.hyperProfile + " " + styles.standard, role: "region", "aria-label": "User Profile" },
       React.createElement(HyperEmptyState, {
         iconName: "Error",
         title: "Unable to load profile",
@@ -103,7 +89,7 @@ const HyperProfileInner: React.FC<IHyperProfileComponentProps> = function (props
   if (!profile) {
     return React.createElement(
       "div",
-      { className: cardClass, style: containerStyles, role: "region", "aria-label": "User Profile" },
+      { className: styles.hyperProfile + " " + styles.standard, role: "region", "aria-label": "User Profile" },
       React.createElement(HyperEmptyState, {
         iconName: "Contact",
         title: "No profile found",
@@ -112,225 +98,86 @@ const HyperProfileInner: React.FC<IHyperProfileComponentProps> = function (props
     );
   }
 
-  // Build visible fields
-  const visibleFields = props.visibleFields || DEFAULT_FIELDS.map(function (f) { return f.key; });
-  const fieldOrder = props.fieldOrder || visibleFields;
+  // Build template props — in demo mode, enable all features so sample data is visible
+  const templateProps: IProfileTemplateProps = {
+    profile: profile,
+    manager: manager || undefined,
+    photoUrl: photoUrl || undefined,
+    presence: presence,
+    skills: skills,
+    badges: badges,
+    personal: personal,
+    orgTree: orgTree,
+    calendar: calendar,
+    showPresence: isDemoMode || (props.showPresence !== false),
+    showStatusMessage: isDemoMode || (props.showStatusMessage !== false),
+    showSkills: isDemoMode || (props.showSkills !== false && store.showSkills),
+    showBadges: isDemoMode || (props.showBadges !== false && store.showBadges),
+    showHobbies: isDemoMode || (props.showHobbies !== false && store.showHobbies),
+    showSlogan: isDemoMode || (props.showSlogan !== false && store.showSlogan),
+    showWebsites: isDemoMode || (props.showWebsites !== false && store.showWebsites),
+    showInterests: isDemoMode || (props.showInterests !== false),
+    showFunFacts: isDemoMode || (props.showFunFacts !== false),
+    showEducation: isDemoMode || (props.showEducation !== false && store.showEducation),
+    showOrgChart: isDemoMode || (props.showOrgChart !== false && store.showOrgChart),
+    showManager: isDemoMode || (props.showManager !== false),
+    showDirectReports: isDemoMode || (props.showDirectReports !== false),
+    showCalendar: isDemoMode || (props.showCalendar !== false && store.showCalendar),
+    showQuickActions: isDemoMode || (props.showQuickActions !== false),
+    showCompletenessScore: isDemoMode || (props.showCompletenessScore === true),
+    showEndorsements: isDemoMode || (props.showEndorsements !== false),
+    showBadgeDescriptions: isDemoMode || (props.showBadgeDescriptions !== false),
+    skillDisplayStyle: props.skillDisplayStyle || "tags",
+    enabledActions: isDemoMode
+      ? ["email", "teams_chat", "teams_call", "schedule"]
+      : (props.enabledActions || []),
+    accentColor: store.accentColor || props.accentColor || "#0078d4",
+    photoShape: store.photoShape || props.photoShape || "circle",
+    headerConfig: store.headerConfig || {
+      style: props.headerStyle || "gradient",
+      primaryColor: props.headerPrimaryColor || "#0078d4",
+      secondaryColor: props.headerSecondaryColor || "#106ebe",
+      imageUrl: props.headerImageUrl,
+      patternId: props.headerPatternId,
+      height: props.headerHeight,
+    },
+    animation: store.currentAnimation || props.animation || "none",
+    onActionClick: function (actionId: string) {
+      // eslint-disable-next-line no-void
+      void actionId;
+    },
+    onSkillClick: function (skillName: string) {
+      // eslint-disable-next-line no-void
+      void skillName;
+    },
+    onOrgNodeClick: function (nodeId: string) {
+      store.setExpandedOrgNode(nodeId);
+    },
+    onFlip: function () {
+      store.triggerFlip();
+    },
+    instanceId: props.instanceId,
+  };
 
-  const orderedFields: IFieldConfig[] = [];
-  fieldOrder.forEach(function (key) {
-    if (visibleFields.indexOf(key) === -1) return;
-    DEFAULT_FIELDS.forEach(function (f) {
-      if (f.key === key) orderedFields.push(f);
-    });
-  });
+  // Get the template component
+  const TemplateComponent = getTemplateComponent(templateId);
+  const templateEl = React.createElement(TemplateComponent, templateProps);
 
-  // Presence config
-  const presenceConfig = getPresenceConfig(presenceResult.presence);
-  const statusMessage = getStatusMessage(presenceResult.presence);
-
-  // Build children array
-  const children: React.ReactNode[] = [];
-
-  // Header section: photo + name + title + presence
-  const headerChildren: React.ReactNode[] = [];
-
-  // Photo
-  headerChildren.push(
-    React.createElement(HyperProfilePhoto, {
-      key: "photo",
-      displayName: profile.displayName,
-      photoUrl: photoUrl,
-      photoSize: props.photoSize || "medium",
-      presence: presenceResult.presence,
-      showPresence: props.showPresence && props.presencePosition === "onPhoto",
-      presencePosition: props.presencePosition || "onPhoto",
-    })
-  );
-
-  // Name + title block
-  const nameBlockChildren: React.ReactNode[] = [];
-
-  // Display name row (with optional presence badge)
-  const nameRowChildren: React.ReactNode[] = [];
-  nameRowChildren.push(
-    React.createElement("span", { key: "name", className: styles.displayName }, profile.displayName)
-  );
-
-  if (props.showPresence && props.presencePosition === "nextToName") {
-    nameRowChildren.push(
-      React.createElement("span", { key: "presence-inline", className: styles.presenceInline },
-        React.createElement(HyperProfilePresenceBadge, { presence: presenceResult.presence }),
-        React.createElement("span", { className: styles.presenceLabel }, presenceConfig.label)
-      )
+  // In demo mode, wrap with demo bar above the template
+  if (isDemoMode) {
+    return React.createElement("div", { className: styles.demoWrapper },
+      React.createElement(HyperProfileDemoBar, {
+        selectedPersonId: demoPersonId,
+        selectedTemplateId: templateId,
+        onPersonChange: function (id) { store.setDemoPersonId(id); },
+        onTemplateChange: function (id) { store.setSelectedTemplate(id); },
+        onExitDemo: function () { store.setDemoMode(false); },
+      }),
+      templateEl
     );
   }
 
-  nameBlockChildren.push(
-    React.createElement("div", { key: "name-row", className: styles.nameRow }, nameRowChildren)
-  );
-
-  // Job title
-  if (profile.jobTitle) {
-    nameBlockChildren.push(
-      React.createElement("span", { key: "title", className: styles.jobTitle }, profile.jobTitle)
-    );
-  }
-
-  // Status message
-  if (props.showStatusMessage && statusMessage) {
-    nameBlockChildren.push(
-      React.createElement("span", { key: "status", className: styles.statusMessage }, statusMessage)
-    );
-  }
-
-  headerChildren.push(
-    React.createElement("div", { key: "nameBlock", className: styles.nameBlock }, nameBlockChildren)
-  );
-
-  children.push(
-    React.createElement("div", { key: "header", className: styles.header }, headerChildren)
-  );
-
-  // Separate presence badge (below header)
-  if (props.showPresence && props.presencePosition === "separate") {
-    children.push(
-      React.createElement("div", { key: "presence-sep", className: styles.presenceSeparate },
-        React.createElement(HyperProfilePresenceBadge, { presence: presenceResult.presence }),
-        React.createElement("span", { className: styles.presenceLabel }, presenceConfig.label),
-        statusMessage
-          ? React.createElement("span", { className: styles.statusMessage }, " \u2014 " + statusMessage)
-          : undefined
-      )
-    );
-  }
-
-  // Profile fields
-  const fieldElements: React.ReactNode[] = [];
-  orderedFields.forEach(function (field) {
-    const value = profile[field.key];
-    if (!value) return;
-
-    let onLinkClick: (() => void) | undefined;
-    if (field.isLink && field.key === "mail") {
-      onLinkClick = function () { window.open("mailto:" + value, "_blank"); };
-    } else if (field.isLink && (field.key === "mobilePhone" || field.key === "businessPhones")) {
-      const phone = Array.isArray(value) ? value[0] : value;
-      if (phone) {
-        onLinkClick = function () { window.open("tel:" + phone, "_blank"); };
-      }
-    }
-
-    fieldElements.push(
-      React.createElement(HyperProfileField, {
-        key: field.key,
-        icon: field.icon,
-        label: field.label,
-        value: value,
-        isLink: field.isLink,
-        onLinkClick: onLinkClick,
-      })
-    );
-  });
-
-  if (fieldElements.length > 0) {
-    children.push(
-      React.createElement("div", { key: "fields", className: styles.fieldsSection }, fieldElements)
-    );
-  }
-
-  // Manager section
-  if (manager) {
-    const managerChildren: React.ReactNode[] = [];
-    managerChildren.push(
-      React.createElement("span", { key: "mgr-label", className: styles.managerLabel }, "Reports to")
-    );
-    managerChildren.push(
-      React.createElement("button", {
-        key: "mgr-name",
-        className: styles.managerLink,
-        type: "button",
-        onClick: function () {
-          if (manager.mail) {
-            window.open("mailto:" + manager.mail, "_blank");
-          }
-        },
-      }, manager.displayName)
-    );
-    if (manager.jobTitle) {
-      managerChildren.push(
-        React.createElement("span", { key: "mgr-title", className: styles.managerTitle }, manager.jobTitle)
-      );
-    }
-
-    children.push(
-      React.createElement("div", { key: "manager", className: styles.managerSection }, managerChildren)
-    );
-  }
-
-  // Quick actions
-  if (props.showQuickActions && props.enabledActions && props.enabledActions.length > 0) {
-    children.push(
-      React.createElement(HyperProfileQuickActions, {
-        key: "actions",
-        profile: profile,
-        enabledActionIds: props.enabledActions as string[],
-        layout: props.actionsLayout || "horizontal",
-        buttonSize: props.buttonSize || "medium",
-        showLabels: props.showActionLabels !== false,
-      })
-    );
-  }
-
-  // Profile completeness
-  if (props.showCompletenessScore) {
-    let fieldWeights: Record<string, number> | undefined;
-    if (props.fieldWeights) {
-      try {
-        fieldWeights = JSON.parse(props.fieldWeights) as Record<string, number>;
-      } catch {
-        fieldWeights = undefined;
-      }
-    }
-
-    const completenessEl = React.createElement(HyperProfileCompleteness, {
-      key: "completeness",
-      profile: profile,
-      displayStyle: props.scoreStyle || "progressBar",
-      fieldWeights: fieldWeights,
-    });
-
-    // Insert at configured position
-    if (props.scorePosition === "top") {
-      children.unshift(completenessEl);
-    } else {
-      children.push(completenessEl);
-    }
-  }
-
-  // Overlay message
-  const overlayEl = (props.enableOverlay && props.overlayText)
-    ? React.createElement(HyperProfileOverlay, {
-        key: "overlay",
-        text: props.overlayText,
-        overlayColor: props.overlayColor || "#000000",
-        overlayTransparency: props.overlayTransparency || 50,
-        textColor: props.overlayTextColor || "#ffffff",
-        textAlignment: props.overlayTextAlignment || "center",
-        position: props.overlayPosition || "bottom",
-      })
-    : undefined;
-
-  const allChildren: React.ReactNode[] = [];
-  if (overlayEl) {
-    allChildren.push(overlayEl);
-  }
-  children.forEach(function (c) { allChildren.push(c); });
-
-  return React.createElement(
-    "div",
-    { className: cardClass, style: containerStyles, role: "region", "aria-label": "Profile of " + profile.displayName },
-    allChildren
-  );
+  return templateEl;
 };
 
 const HyperProfile: React.FC<IHyperProfileComponentProps> = function (props) {

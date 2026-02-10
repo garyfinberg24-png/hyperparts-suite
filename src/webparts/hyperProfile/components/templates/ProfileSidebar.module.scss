@@ -1,0 +1,461 @@
+/* ProfileSidebar -- 2-column layout, dark navy sidebar + white main, amber accent #f59e0b */
+.sidebarLayout {
+  display: flex;
+  min-height: 400px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+/* ── LEFT SIDEBAR ── */
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: #1e293b;
+  color: #ffffff;
+  padding: 32px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.photoWrapper {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.photo {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border: 3px solid rgba(245, 158, 11, 0.6);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.initials {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 800;
+  color: #1e293b;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border: 3px solid rgba(245, 158, 11, 0.6);
+}
+
+.presenceDot {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 3px solid #1e293b;
+  z-index: 1;
+}
+
+.displayName {
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 6px 0;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.jobTitle {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+.department {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-top: 2px;
+}
+
+.presenceLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.presenceIndicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.statusMessage {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+  margin-top: 4px;
+}
+
+.sidebarSection {
+  width: 100%;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebarLink {
+  display: block;
+  font-size: 12px;
+  color: #f59e0b;
+  text-decoration: none;
+  margin-bottom: 4px;
+  word-break: break-all;
+  transition: color 0.2s ease;
+}
+
+.sidebarLink:hover {
+  color: #fbbf24;
+  text-decoration: underline;
+}
+
+.sidebarText {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 4px;
+}
+
+/* Quick action buttons */
+.actionGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.actionButton {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  color: #1e293b;
+  background: #f59e0b;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+  text-align: center;
+}
+
+.actionButton:hover {
+  background: #fbbf24;
+  transform: translateY(-1px);
+}
+
+.actionButton:active {
+  transform: translateY(0);
+}
+
+/* ── MAIN CONTENT AREA ── */
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 32px;
+  overflow-y: auto;
+}
+
+.slogan {
+  font-size: 15px;
+  font-style: italic;
+  color: #92400e;
+  background: #fffbeb;
+  padding: 16px 20px;
+  border-left: 4px solid #f59e0b;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.mainSection {
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.mainSection:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.mainSectionTitle {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #f59e0b;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+/* Skills */
+.skillsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skillItem {
+  width: 100%;
+}
+
+.skillMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.skillName {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.skillCount {
+  font-size: 11px;
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+.skillBarTrack {
+  width: 100%;
+  height: 6px;
+  background: #f1f5f9;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.skillBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+/* Badges */
+.badgeList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.badgeItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.badgeIcon {
+  font-size: 22px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.badgeText {
+  min-width: 0;
+}
+
+.badgeName {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+  display: block;
+}
+
+.badgeDesc {
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+/* Pills */
+.pillRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hobbyPill {
+  display: inline-block;
+  padding: 5px 12px;
+  font-size: 12px;
+  color: #92400e;
+  background: #fffbeb;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: 16px;
+}
+
+.websiteLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  font-size: 12px;
+  color: #d97706;
+  text-decoration: none;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 16px;
+  font-family: inherit;
+  transition: background 0.2s ease;
+}
+
+.websiteLink:hover {
+  background: #fffbeb;
+}
+
+/* Education */
+.educationItem {
+  margin-bottom: 10px;
+}
+
+.educationDegree {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.4;
+}
+
+.educationInstitution {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* Manager */
+.managerButton {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  text-align: left;
+}
+
+.managerButton:hover .managerName {
+  text-decoration: underline;
+}
+
+.managerName {
+  font-size: 14px;
+  font-weight: 700;
+  color: #d97706;
+}
+
+.managerTitle {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+/* ── Responsive: stack vertically on mobile ── */
+@media (max-width: 768px) {
+  .sidebarLayout {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    padding: 24px 20px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+  .photoWrapper {
+    margin-bottom: 0;
+  }
+  .photo, .initials {
+    width: 72px;
+    height: 72px;
+  }
+  .displayName {
+    font-size: 18px;
+  }
+  .sidebarSection {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+  .actionGrid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .actionButton {
+    width: auto;
+  }
+  .main {
+    padding: 20px;
+  }
+}
+
+/* ── High contrast ── */
+@media (forced-colors: active) {
+  .sidebarLayout {
+    border: 2px solid ButtonText;
+  }
+  .sidebar {
+    background: Canvas;
+    border-right: 2px solid Highlight;
+  }
+  .displayName, .jobTitle, .department, .presenceLabel {
+    color: CanvasText;
+  }
+  .photo, .initials {
+    border-color: ButtonText;
+  }
+  .sidebarLink {
+    color: LinkText;
+  }
+  .actionButton {
+    border: 2px solid ButtonText;
+    background: Canvas;
+    color: CanvasText;
+  }
+  .mainSectionTitle {
+    color: CanvasText;
+  }
+  .mainSection {
+    border-bottom-color: ButtonText;
+  }
+  .skillBarTrack {
+    border: 1px solid ButtonText;
+  }
+  .skillBarFill {
+    background: Highlight;
+  }
+  .slogan {
+    border-left-color: Highlight;
+    background: Canvas;
+    color: CanvasText;
+  }
+  .hobbyPill {
+    border-color: ButtonText;
+    color: CanvasText;
+    background: Canvas;
+  }
+  .websiteLink {
+    color: LinkText;
+    border-color: LinkText;
+  }
+  .managerName {
+    color: LinkText;
+  }
+}

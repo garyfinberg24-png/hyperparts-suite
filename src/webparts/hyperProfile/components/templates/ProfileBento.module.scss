@@ -1,0 +1,361 @@
+/* ProfileBento — Multi-panel CSS Grid 2x3, mini cards, indigo accent */
+
+.profileBento {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  grid-template-areas:
+    "photo info"
+    "skills badges"
+    "actions personal";
+  gap: 12px;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Shared panel style */
+.panel {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.panelTitle {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6366f1;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+/* Photo panel */
+.photoPanel {
+  grid-area: photo;
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+  position: relative;
+}
+
+.photo {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+}
+
+.initialsCircle {
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #6366f1, #818cf8);
+  border: 3px solid #ffffff;
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.presenceDot {
+  position: absolute;
+  top: 72px;
+  right: calc(50% - 40px);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #eef2ff;
+}
+
+.name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin: 4px 0 0;
+}
+
+.pronouns {
+  font-size: 11px;
+  color: #a5b4fc;
+  font-style: italic;
+}
+
+.jobTitle {
+  font-size: 13px;
+  color: #6366f1;
+  font-weight: 600;
+  display: block;
+}
+
+/* Info panel */
+.infoPanel {
+  grid-area: info;
+}
+
+.department {
+  font-size: 12px;
+  color: #605e5c;
+  display: block;
+}
+
+.statusMessage {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #a19f9d;
+  font-style: italic;
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.fieldRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  padding: 2px 0;
+}
+
+.fieldLabel {
+  color: #a19f9d;
+  flex-shrink: 0;
+}
+
+.fieldValue {
+  color: #323130;
+  text-align: right;
+  word-break: break-word;
+  min-width: 0;
+}
+
+.aboutMe {
+  font-size: 12px;
+  color: #605e5c;
+  line-height: 1.4;
+  margin: 4px 0 0;
+}
+
+/* Skills panel */
+.skillsPanel {
+  grid-area: skills;
+  background: #faf5ff;
+}
+
+.tagsWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.skillTag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  background: #e0e7ff;
+  color: #4338ca;
+  font-weight: 500;
+}
+
+.emptyText {
+  font-size: 12px;
+  color: #a19f9d;
+  font-style: italic;
+}
+
+/* Badges panel */
+.badgesPanel {
+  grid-area: badges;
+  background: #fefce8;
+}
+
+.badgeList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.badgeItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.badgeIcon {
+  font-size: 18px;
+}
+
+.badgeName {
+  font-size: 12px;
+  color: #1e1b4b;
+  font-weight: 500;
+}
+
+.badgeDesc {
+  font-size: 10px;
+  color: #a19f9d;
+}
+
+/* Actions panel */
+.actionsPanel {
+  grid-area: actions;
+}
+
+.actionsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.actionButton {
+  background: #6366f1;
+  border: none;
+  color: #ffffff;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-family: inherit;
+  font-weight: 500;
+  &:hover {
+    background-color: #4f46e5;
+  }
+  &:focus {
+    outline: 2px solid #6366f1;
+    outline-offset: 2px;
+  }
+}
+
+.managerSection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  font-size: 12px;
+  padding-top: 4px;
+  border-top: 1px solid #f3f2f1;
+}
+
+.managerLabel {
+  color: #a19f9d;
+}
+
+.managerName {
+  color: #1e1b4b;
+  font-weight: 600;
+}
+
+.managerTitle {
+  color: #605e5c;
+}
+
+/* Personal panel */
+.personalPanel {
+  grid-area: personal;
+  background: #f0fdf4;
+}
+
+.slogan {
+  font-size: 13px;
+  color: #6366f1;
+  font-style: italic;
+  margin: 0;
+}
+
+.hobbyTag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.interestTag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.funFactTag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.websitesRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.websiteLink {
+  font-size: 11px;
+  color: #6366f1;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+  &:focus {
+    outline: 2px solid #6366f1;
+    outline-offset: 2px;
+  }
+}
+
+.educationSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.educationItem {
+  font-size: 11px;
+  color: #323130;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .profileBento {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "photo"
+      "info"
+      "skills"
+      "badges"
+      "actions"
+      "personal";
+  }
+}
+
+/* High contrast */
+@media (forced-colors: active) {
+  .panel {
+    border: 1px solid ButtonText;
+  }
+  .actionButton {
+    border: 1px solid ButtonText;
+  }
+  .skillTag,
+  .hobbyTag,
+  .interestTag,
+  .funFactTag {
+    border: 1px solid ButtonText;
+  }
+}
