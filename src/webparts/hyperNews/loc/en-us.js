@@ -30,6 +30,12 @@ define([], function() {
     "ShowDescriptionLabel": "Show Description",
     "ShowAuthorLabel": "Show Author",
     "ShowDateLabel": "Show Date",
-    "ShowReadTimeLabel": "Show Read Time"
+    "ShowReadTimeLabel": "Show Read Time",
+
+    "SampleDataGroupName": "Sample Data",
+    "UseSampleDataLabel": "Use Sample Data",
+    "DemoModeGroupName": "Demo Mode",
+    "DemoModeLabel": "Enable Demo Mode",
+    "BrowseButtonLabel": "Browse Images"
   };
 });

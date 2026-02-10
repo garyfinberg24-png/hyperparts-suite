@@ -30,6 +30,13 @@ declare interface IHyperNewsWebPartStrings {
   ShowAuthorLabel: string;
   ShowDateLabel: string;
   ShowReadTimeLabel: string;
+
+  /* ── Sample Data & Demo ── */
+  SampleDataGroupName: string;
+  UseSampleDataLabel: string;
+  DemoModeGroupName: string;
+  DemoModeLabel: string;
+  BrowseButtonLabel: string;
 }
 
 declare module "HyperNewsWebPartStrings" {

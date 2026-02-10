@@ -43,13 +43,17 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
   };
 
   public render(): void {
-    const props: IHyperNewsComponentProps = {
+    var props: IHyperNewsComponentProps = {
       ...this.properties,
       instanceId: this.instanceId,
       onWizardApply: this._onWizardApply,
       onOpenWizard: this._onOpenWizard,
+      onImageSelect: (imageUrl: string): void => {
+        // Future: persist selected image URL for manual article editing
+        void imageUrl;
+      },
     };
-    const element: React.ReactElement<IHyperNewsComponentProps> =
+    var element: React.ReactElement<IHyperNewsComponentProps> =
       React.createElement(HyperNews, props);
     ReactDom.render(element, this.domElement);
   }
@@ -131,6 +135,15 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
     if (this.properties.showWizardOnInit === undefined) {
       this.properties.showWizardOnInit = true;
     }
+
+    // Sample data — on by default so the web part renders immediately
+    if (this.properties.useSampleData === undefined) {
+      this.properties.useSampleData = true;
+    }
+    // Demo mode
+    if (this.properties.demoMode === undefined) {
+      this.properties.demoMode = false;
+    }
   }
 
   protected onDispose(): void {
@@ -182,6 +195,26 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
                 }),
                 PropertyPaneLabel("sourcesSummary", {
                   text: self._getSourcesSummary(),
+                }),
+              ],
+            },
+            {
+              groupName: strings.SampleDataGroupName,
+              groupFields: [
+                PropertyPaneToggle("useSampleData", {
+                  label: strings.UseSampleDataLabel,
+                  onText: "On",
+                  offText: "Off",
+                }),
+              ],
+            },
+            {
+              groupName: strings.DemoModeGroupName,
+              groupFields: [
+                PropertyPaneToggle("demoMode", {
+                  label: strings.DemoModeLabel,
+                  onText: "On",
+                  offText: "Off",
                 }),
               ],
             },
@@ -296,6 +329,11 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
             {
               groupName: strings.SourcesGroupName,
               groupFields: [
+                PropertyPaneButton("_browseImage", {
+                  text: strings.BrowseButtonLabel,
+                  buttonType: PropertyPaneButtonType.Normal,
+                  onClick: this._onOpenImageBrowser.bind(this),
+                }),
                 PropertyPaneTextField("reactionListName", {
                   label: strings.ReactionListNameLabel,
                 }),
@@ -308,5 +346,14 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
         },
       ],
     };
+  }
+
+  /** Open the SharePoint image browser panel */
+  private _onOpenImageBrowser(): void {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    var store = require("./store/useHyperNewsStore");
+    if (store && store.useHyperNewsStore) {
+      store.useHyperNewsStore.getState().openBrowser();
+    }
   }
 }
