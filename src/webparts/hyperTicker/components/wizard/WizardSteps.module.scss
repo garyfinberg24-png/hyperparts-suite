@@ -1,0 +1,438 @@
+// ============================================================
+// HyperTicker Wizard Steps — Shared Styles
+// ============================================================
+
+.stepContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 4px 0;
+}
+
+.stepSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stepSectionLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323130;
+  margin-bottom: 4px;
+}
+
+.stepSectionHint {
+  font-size: 12px;
+  color: #605e5c;
+  margin-top: -4px;
+}
+
+// ── Template Gallery ──
+
+.templateIntro {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.templateIntroTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #323130;
+  margin: 0 0 6px;
+}
+
+.templateIntroDesc {
+  font-size: 13px;
+  color: #605e5c;
+  margin: 0;
+}
+
+.templateGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.templateCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 12px;
+  border: 2px solid #edebe9;
+  border-radius: 10px;
+  background: #faf9f8;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+
+  &:hover {
+    border-color: #c7e0f4;
+    background: #f3f9ff;
+    box-shadow: 0 2px 8px rgba(0, 120, 212, 0.1);
+  }
+
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: 2px;
+  }
+}
+
+.templateCardSelected {
+  composes: templateCard;
+  border-color: #0078d4;
+  background: #f0f6ff;
+  box-shadow: 0 2px 12px rgba(0, 120, 212, 0.15);
+}
+
+.templateIcon {
+  font-size: 28px;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+
+.templateName {
+  font-size: 13px;
+  font-weight: 700;
+  color: #323130;
+  margin-bottom: 4px;
+}
+
+.templateDesc {
+  font-size: 11px;
+  color: #605e5c;
+  line-height: 1.3;
+  margin-bottom: 8px;
+  min-height: 28px;
+}
+
+.templateModeBadge {
+  display: inline-block;
+  padding: 2px 10px;
+  background: #e1dfdd;
+  color: #605e5c;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.templateModeBadgeActive {
+  composes: templateModeBadge;
+  background: #0078d4;
+  color: #ffffff;
+}
+
+.templatePreviewStrip {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  margin-top: 8px;
+}
+
+// ── Radio cards (data source + display mode) ──
+
+.radioCardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.radioCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 10px;
+  border: 2px solid #edebe9;
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  text-align: center;
+
+  &:hover {
+    border-color: #0078d4;
+    box-shadow: 0 2px 8px rgba(0, 120, 212, 0.1);
+  }
+
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: 2px;
+  }
+}
+
+.radioCardSelected {
+  composes: radioCard;
+  border-color: #0078d4;
+  background: #f0f6ff;
+  box-shadow: 0 2px 8px rgba(0, 120, 212, 0.15);
+}
+
+.radioCardIcon {
+  font-size: 24px;
+  margin-bottom: 2px;
+}
+
+.radioCardName {
+  font-size: 12px;
+  font-weight: 600;
+  color: #323130;
+}
+
+.radioCardDesc {
+  font-size: 10px;
+  color: #605e5c;
+  line-height: 1.3;
+}
+
+// ── Sub-fields (conditional inputs) ──
+
+.subFieldArea {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid #edebe9;
+  border-radius: 6px;
+  background: #fafafa;
+}
+
+.fieldRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fieldLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #605e5c;
+}
+
+.textInput {
+  padding: 6px 10px;
+  border: 1px solid #c8c6c4;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #323130;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: #0078d4;
+  }
+}
+
+.textArea {
+  composes: textInput;
+  resize: vertical;
+  min-height: 60px;
+  font-family: inherit;
+}
+
+// ── Toggle row ──
+
+.toggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border: 1px solid #edebe9;
+  border-radius: 6px;
+  background: #fafafa;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: #f3f2f1;
+  }
+}
+
+.toggleInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.toggleLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323130;
+}
+
+.toggleDesc {
+  font-size: 12px;
+  color: #605e5c;
+}
+
+.toggleSwitch {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.toggleInput {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+
+  &:checked + .toggleTrack {
+    background: #0078d4;
+
+    .toggleThumb {
+      transform: translateX(18px);
+    }
+  }
+
+  &:focus + .toggleTrack {
+    box-shadow: 0 0 0 2px #0078d4;
+  }
+}
+
+.toggleTrack {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #c8c6c4;
+  border-radius: 11px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: #ffffff;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+// ── Slider control ──
+
+.sliderRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  border: 1px solid #edebe9;
+  border-radius: 6px;
+  background: #fafafa;
+}
+
+.sliderLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323130;
+  min-width: 100px;
+}
+
+.sliderInput {
+  flex: 1;
+  height: 4px;
+  accent-color: #0078d4;
+  cursor: pointer;
+}
+
+.sliderValue {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0078d4;
+  min-width: 30px;
+  text-align: right;
+}
+
+// ── Dropdown ──
+
+.selectInput {
+  padding: 6px 10px;
+  border: 1px solid #c8c6c4;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #323130;
+  background: #ffffff;
+  outline: none;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: #0078d4;
+  }
+}
+
+// ── Demo bar ──
+
+.demoBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px;
+  background: #fff4ce;
+  border-bottom: 2px solid #ffaa44;
+}
+
+.demoBarLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #8a6914;
+}
+
+.demoBarSelect {
+  padding: 3px 8px;
+  border: 1px solid #c8c6c4;
+  border-radius: 4px;
+  font-size: 12px;
+  background: #ffffff;
+  color: #323130;
+  cursor: pointer;
+}
+
+.demoBarBadge {
+  display: inline-block;
+  padding: 1px 8px;
+  background: #ffaa44;
+  color: #ffffff;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.demoBarExitBtn {
+  margin-left: auto;
+  padding: 4px 12px;
+  border: 1px solid #8a6914;
+  border-radius: 4px;
+  background: transparent;
+  color: #8a6914;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: #ffedab;
+  }
+}
+
+@media (max-width: 600px) {
+  .templateGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .radioCardGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

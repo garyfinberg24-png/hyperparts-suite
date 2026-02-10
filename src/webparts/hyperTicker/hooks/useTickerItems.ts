@@ -2,16 +2,26 @@ import { useState, useEffect, useRef } from "react";
 import type { ITickerItem, TickerSeverity } from "../models";
 import { parseTickerItems, parseRssConfigs } from "../models";
 import { useListItems } from "../../../common/hooks/useListItems";
-import { mapListItemToTickerItem, parseRssFeed, filterExpired, filterActive, sortBySeverity } from "../utils/tickerUtils";
+import { mapListItemToTickerItem, parseRssFeed, filterExpired, filterActive, sortBySeverity, filterDismissed } from "../utils/tickerUtils";
 import { getContext } from "../../../common/services/HyperPnP";
+import { useGraphTickerItems } from "./useGraphTickerItems";
+import { useRestApiTickerItems } from "./useRestApiTickerItems";
+import { useTickerSchedule } from "./useTickerSchedule";
 
 export interface UseTickerItemsOptions {
+  // V1 options
   manualItemsJson: string;
   listName: string;
   listFilter: string;
   rssConfigsJson: string;
   defaultSeverity: TickerSeverity;
   autoRefreshInterval: number; // seconds
+  // V2 options
+  graphEndpoint: string;
+  restApiUrl: string;
+  restApiHeaders: string;
+  enableScheduleFilter: boolean;
+  dismissedIds: string[];
 }
 
 export interface UseTickerItemsResult {
@@ -116,7 +126,22 @@ export function useTickerItems(options: UseTickerItemsOptions): UseTickerItemsRe
     return function () { cancelled = true; };
   }, [options.rssConfigsJson, options.defaultSeverity]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Auto-refresh timer
+  // V2: Graph API items
+  const graphResult = useGraphTickerItems({
+    endpoint: options.graphEndpoint,
+    enabled: options.graphEndpoint.length > 0,
+    refreshInterval: options.autoRefreshInterval,
+  });
+
+  // V2: REST API items
+  const restResult = useRestApiTickerItems({
+    apiUrl: options.restApiUrl,
+    headersJson: options.restApiHeaders,
+    enabled: options.restApiUrl.length > 0,
+    refreshInterval: options.autoRefreshInterval,
+  });
+
+  // Auto-refresh timer (for SP list + RSS)
   useEffect(function () {
     if (options.autoRefreshInterval <= 0) return;
 
@@ -137,14 +162,29 @@ export function useTickerItems(options: UseTickerItemsOptions): UseTickerItemsRe
   manualItems.forEach(function (item) { allItems.push(item); });
   listTickerItems.forEach(function (item) { allItems.push(item); });
   rssItems.forEach(function (item) { allItems.push(item); });
+  graphResult.items.forEach(function (item) { allItems.push(item); });
+  restResult.items.forEach(function (item) { allItems.push(item); });
 
-  // Filter and sort
+  // Filter pipeline
   const activeItems = filterActive(allItems);
   const unexpiredItems = filterExpired(activeItems);
-  const sortedItems = sortBySeverity(unexpiredItems);
 
-  const isLoading = (listEnabled && listResult.loading) || rssLoading;
-  const errorMsg = listResult.error ? listResult.error.message : rssError;
+  // V2: Schedule filter
+  const scheduledItems = useTickerSchedule(unexpiredItems, options.enableScheduleFilter);
+
+  // V2: Dismiss filter
+  const undismissedItems = filterDismissed(scheduledItems, options.dismissedIds);
+
+  // Sort
+  const sortedItems = sortBySeverity(undismissedItems);
+
+  const isLoading = (listEnabled && listResult.loading) || rssLoading || graphResult.loading || restResult.loading;
+  const errors: string[] = [];
+  if (listResult.error) errors.push(listResult.error.message);
+  if (rssError) errors.push(rssError);
+  if (graphResult.error) errors.push(graphResult.error);
+  if (restResult.error) errors.push(restResult.error);
+  const errorMsg = errors.join("; ");
 
   return {
     items: sortedItems,

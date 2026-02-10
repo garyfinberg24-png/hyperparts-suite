@@ -2,16 +2,21 @@ import * as React from "react";
 import type { ITickerItem } from "../models";
 import { useHyperTickerStore } from "../store/useHyperTickerStore";
 import HyperTickerItem from "./HyperTickerItem";
+import HyperTickerKeyboardNav from "./HyperTickerKeyboardNav";
 import styles from "./HyperTickerStatic.module.scss";
 
 export interface IHyperTickerStaticProps {
   items: ITickerItem[];
   speed: number;
   severityClassName: string;
+  enableDismiss?: boolean;
+  onDismiss?: (itemId: string) => void;
+  enableCopy?: boolean;
+  onItemClick?: (item: ITickerItem) => void;
 }
 
 const HyperTickerStatic: React.FC<IHyperTickerStaticProps> = function (props) {
-  const { items, speed, severityClassName } = props;
+  const { items, speed, severityClassName, enableDismiss, onDismiss, enableCopy, onItemClick } = props;
   const currentItemIndex = useHyperTickerStore(function (s) { return s.currentItemIndex; });
   const nextItem = useHyperTickerStore(function (s) { return s.nextItem; });
   const setCurrentItemIndex = useHyperTickerStore(function (s) { return s.setCurrentItemIndex; });
@@ -52,6 +57,12 @@ const HyperTickerStatic: React.FC<IHyperTickerStaticProps> = function (props) {
     nextItem(items.length);
   }, [items.length, nextItem]);
 
+  const handleKeyboardActivate = React.useCallback(function (index: number): void {
+    if (onItemClick && items[index]) {
+      onItemClick(items[index]);
+    }
+  }, [onItemClick, items]);
+
   const prevButton = items.length > 1
     ? React.createElement(
         "button",
@@ -85,20 +96,32 @@ const HyperTickerStatic: React.FC<IHyperTickerStaticProps> = function (props) {
     : undefined;
 
   return React.createElement(
-    "div",
+    HyperTickerKeyboardNav,
     {
-      className: styles.staticContainer,
+      itemCount: items.length,
+      activeIndex: safeIndex,
+      onActiveIndexChange: setCurrentItemIndex,
+      onItemActivate: handleKeyboardActivate,
       role: "status",
-      "aria-live": "polite",
-      "aria-atomic": "true",
+      ariaLabel: "Ticker items",
+      className: styles.staticContainer,
     },
     prevButton,
     React.createElement(
       "div",
-      { className: styles.staticContent },
+      {
+        className: styles.staticContent,
+        "aria-live": "polite",
+        "aria-atomic": "true",
+        id: "ticker-item-" + String(safeIndex),
+      },
       React.createElement(HyperTickerItem, {
         item: currentItem,
         severityClassName: severityClassName,
+        onClick: onItemClick,
+        enableDismiss: enableDismiss,
+        onDismiss: onDismiss,
+        enableCopy: enableCopy,
       })
     ),
     nextButton

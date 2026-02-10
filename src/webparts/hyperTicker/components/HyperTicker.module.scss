@@ -6,6 +6,8 @@
   width: 100%;
 }
 
+// ── Position classes ──
+
 .tickerTop {
   position: fixed;
   top: 0;
@@ -26,6 +28,25 @@
   position: relative;
 }
 
+// ── Height presets ──
+
+.heightCompact .tickerContent {
+  min-height: 32px;
+  font-size: 12px;
+}
+
+.heightStandard .tickerContent {
+  min-height: 40px;
+  font-size: 14px;
+}
+
+.heightLarge .tickerContent {
+  min-height: 52px;
+  font-size: 15px;
+}
+
+// ── Severity classes ──
+
 .severityNormal {
   background-color: #deecf9;
   color: #004578;
@@ -45,9 +66,21 @@
   font-weight: 600;
 }
 
+// ── Content ──
+
 .tickerContent {
   display: flex;
   align-items: center;
   min-height: 40px;
   padding: 0 8px;
+}
+
+// ── Interaction buttons ──
+
+.interactionButtons {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+  flex-shrink: 0;
 }

@@ -27,3 +27,8 @@
 .stackedCardCritical {
   border-left: 3px solid #d13438;
 }
+
+.stackedCardActive {
+  outline: 2px solid #0078d4;
+  outline-offset: -2px;
+}

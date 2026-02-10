@@ -1,0 +1,57 @@
+@import '~@fluentui/react/dist/sass/References';
+
+.gradientFadeWrapper {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+// Horizontal gradient edges (for scroll modes)
+.gradientHorizontal {
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40px;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  &::before {
+    left: 0;
+    background: linear-gradient(to right, inherit, transparent);
+    background: linear-gradient(to right, var(--ticker-bg, #deecf9), transparent);
+  }
+
+  &::after {
+    right: 0;
+    background: linear-gradient(to left, inherit, transparent);
+    background: linear-gradient(to left, var(--ticker-bg, #deecf9), transparent);
+  }
+}
+
+// Vertical gradient edges (for vertical scroll mode)
+.gradientVertical {
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  &::before {
+    top: 0;
+    background: linear-gradient(to bottom, var(--ticker-bg, #deecf9), transparent);
+  }
+
+  &::after {
+    bottom: 0;
+    background: linear-gradient(to top, var(--ticker-bg, #deecf9), transparent);
+  }
+}

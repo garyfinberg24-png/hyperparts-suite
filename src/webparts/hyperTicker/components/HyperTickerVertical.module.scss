@@ -1,0 +1,31 @@
+.verticalContainer {
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+}
+
+.verticalTrack {
+  display: flex;
+  flex-direction: column;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.verticalItem {
+  white-space: nowrap;
+  padding: 4px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+:global {
+  @keyframes scrollUp {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-50%);
+    }
+  }
+}

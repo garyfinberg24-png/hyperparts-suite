@@ -96,6 +96,15 @@ export function mapListItemToTickerItem(
       : [],
     isActive: listItem.IsActive !== false,
     sortOrder: Number(listItem.SortOrder) || 0,
+    // V2 fields
+    messageType: listItem.MessageType || undefined,
+    description: listItem.Description ? String(listItem.Description) : undefined,
+    startsAt: listItem.StartsAt ? String(listItem.StartsAt) : undefined,
+    recurPattern: listItem.RecurPattern || undefined,
+    category: listItem.Category ? String(listItem.Category) : undefined,
+    templateId: listItem.TemplateId ? String(listItem.TemplateId) : undefined,
+    acknowledged: listItem.Acknowledged === true,
+    dismissed: listItem.Dismissed === true,
   };
 }
 
@@ -144,4 +153,87 @@ export function parseRssFeed(
     // Failed to parse RSS — return empty
   }
   return items;
+}
+
+// ── V2 mapping functions ──
+
+/**
+ * Map a Microsoft Graph API response item to a ticker item.
+ * Works with list items from Graph (sites/{id}/lists/{id}/items).
+ */
+export function mapGraphItemToTickerItem(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  graphItem: Record<string, any>
+): ITickerItem {
+  const fields = graphItem.fields || graphItem;
+  return {
+    id: "graph-" + String(graphItem.id || fields.id || Date.now().toString(36)),
+    title: String(fields.Title || fields.title || fields.displayName || ""),
+    url: String(fields.Url || fields.URL || fields.url || ""),
+    iconName: String(fields.IconName || fields.Icon || "Info"),
+    severity: (fields.Severity as TickerSeverity) || "normal",
+    dataSource: "graph",
+    expiresAt: String(fields.ExpiresAt || fields.Expires || ""),
+    audienceGroups: fields.AudienceGroups
+      ? String(fields.AudienceGroups).split(",").map(function (g) { return g.trim(); })
+      : [],
+    isActive: fields.IsActive !== false,
+    sortOrder: Number(fields.SortOrder) || 0,
+    messageType: fields.MessageType || undefined,
+    description: fields.Description ? String(fields.Description) : undefined,
+    startsAt: fields.StartsAt ? String(fields.StartsAt) : undefined,
+    recurPattern: fields.RecurPattern || undefined,
+    category: fields.Category ? String(fields.Category) : undefined,
+  };
+}
+
+/**
+ * Map an external REST API response item to a ticker item.
+ * Handles common field naming conventions (camelCase and PascalCase).
+ */
+export function mapRestApiItemToTickerItem(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  apiItem: Record<string, any>
+): ITickerItem {
+  const titleVal = apiItem.title || apiItem.Title || apiItem.name || "";
+  const urlVal = apiItem.url || apiItem.Url || apiItem.link || "";
+  const descVal = apiItem.description || apiItem.Description || "";
+  const startsVal = apiItem.startsAt || apiItem.StartsAt || "";
+  const catVal = apiItem.category || apiItem.Category || "";
+
+  return {
+    id: "api-" + String(apiItem.id || apiItem.Id || Date.now().toString(36)),
+    title: String(titleVal),
+    url: String(urlVal),
+    iconName: String(apiItem.iconName || apiItem.IconName || apiItem.icon || "Info"),
+    severity: (apiItem.severity || apiItem.Severity || "normal") as TickerSeverity,
+    dataSource: "restApi",
+    expiresAt: String(apiItem.expiresAt || apiItem.ExpiresAt || ""),
+    audienceGroups: apiItem.audienceGroups
+      ? (Array.isArray(apiItem.audienceGroups)
+          ? apiItem.audienceGroups
+          : String(apiItem.audienceGroups).split(",").map(function (g: string) { return g.trim(); }))
+      : [],
+    isActive: apiItem.isActive !== false && apiItem.IsActive !== false,
+    sortOrder: Number(apiItem.sortOrder || apiItem.SortOrder) || 0,
+    messageType: apiItem.messageType || apiItem.MessageType || undefined,
+    description: descVal ? String(descVal) : undefined,
+    startsAt: startsVal ? String(startsVal) : undefined,
+    recurPattern: apiItem.recurPattern || apiItem.RecurPattern || undefined,
+    category: catVal ? String(catVal) : undefined,
+  };
+}
+
+/**
+ * Filter out dismissed items by ID.
+ */
+export function filterDismissed(items: ITickerItem[], dismissedIds: string[]): ITickerItem[] {
+  if (dismissedIds.length === 0) return items;
+  const result: ITickerItem[] = [];
+  items.forEach(function (item) {
+    if (dismissedIds.indexOf(item.id) === -1) {
+      result.push(item);
+    }
+  });
+  return result;
 }

@@ -1,0 +1,76 @@
+.breakingContainer {
+  position: relative;
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  background: linear-gradient(90deg, #b71c1c, #d32f2f, #b71c1c);
+  color: #ffffff;
+  font-weight: 700;
+  text-align: center;
+}
+
+.breakingPulse {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.breakingContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  z-index: 1;
+  position: relative;
+}
+
+.breakingIcon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.breakingText {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.breakingAckButton {
+  margin-left: 16px;
+  padding: 4px 16px;
+  border: 2px solid #ffffff;
+  border-radius: 4px;
+  background: transparent;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.breakingAckButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.breakingAckButton:focus {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+:global {
+  @keyframes tickerPulse {
+    0%, 100% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 0.3;
+    }
+  }
+}

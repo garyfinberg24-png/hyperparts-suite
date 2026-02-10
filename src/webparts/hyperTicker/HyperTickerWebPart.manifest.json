@@ -13,7 +13,7 @@
     "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
     "group": { "default": "HyperParts" },
     "title": { "default": "HyperTicker" },
-    "description": { "default": "News ticker and emergency banner with scrolling marquee, fading rotation, stacked cards, severity levels, SP list and RSS sources, and audience targeting." },
+    "description": { "default": "Multipurpose communication command strip with 8 display modes, 10 templates, 5 data sources, emergency messaging, and interactive features including dismiss, acknowledge, expand, and analytics." },
     "officeFabricIconFontName": "Marquee",
     "properties": {
       "title": "News Ticker",
@@ -31,7 +31,25 @@
       "enableItemAudience": false,
       "defaultSeverity": "normal",
       "criticalOverrideBg": "#d13438",
-      "criticalOverrideText": "#ffffff"
+      "criticalOverrideText": "#ffffff",
+      "heightPreset": "standard",
+      "templateId": "",
+      "enableDismiss": false,
+      "enableAcknowledge": false,
+      "enableExpand": false,
+      "enableCopy": false,
+      "enableDemoMode": false,
+      "demoPresetId": "",
+      "enableEmergencyMode": false,
+      "enableAnalytics": false,
+      "enableGradientFade": false,
+      "enableCategoryDividers": false,
+      "graphEndpoint": "",
+      "restApiUrl": "",
+      "restApiHeaders": "",
+      "backgroundGradient": "",
+      "showWizardOnInit": true,
+      "wizardCompleted": false
     }
   }]
 }

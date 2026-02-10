@@ -1,0 +1,38 @@
+.typewriterContainer {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 16px;
+  overflow: hidden;
+}
+
+.typewriterIcon {
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.typewriterText {
+  font-family: 'Consolas', 'Courier New', monospace;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.typewriterCursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background-color: currentColor;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+}
+
+:global {
+  @keyframes cursorBlink {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+}

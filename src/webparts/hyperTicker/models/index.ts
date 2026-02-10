@@ -5,6 +5,7 @@ export type {
   TickerDirection,
   TickerDataSource,
   TickerPosition,
+  TickerHeightPreset,
 } from "./IHyperTickerEnums";
 export {
   ALL_SEVERITIES,
@@ -12,9 +13,14 @@ export {
   ALL_DIRECTIONS,
   ALL_DATA_SOURCES,
   ALL_POSITIONS,
+  ALL_HEIGHT_PRESETS,
   getSeverityDisplayName,
   getDisplayModeDisplayName,
+  getDisplayModeIcon,
   getPositionDisplayName,
+  getHeightPresetDisplayName,
+  getHeightPresetPx,
+  getDataSourceDisplayName,
   getSeverityColor,
   getSeverityBackgroundColor,
 } from "./IHyperTickerEnums";
@@ -35,6 +41,36 @@ export {
   parseRssConfigs,
   stringifyRssConfigs,
 } from "./ITickerRssConfig";
+
+// Message types (V2)
+export type { TickerMessageType, ITickerMessageTypeConfig } from "./ITickerMessageType";
+export {
+  ALL_MESSAGE_TYPES,
+  MESSAGE_TYPE_CONFIGS,
+  getMessageTypeConfig,
+  getMessageTypeDisplayName,
+} from "./ITickerMessageType";
+
+// Templates (V2)
+export type { TickerTemplateId, ITickerTemplate } from "./ITickerTemplate";
+export {
+  ALL_TEMPLATE_IDS,
+  TICKER_TEMPLATES,
+  getTickerTemplate,
+  getTickerTemplateDisplayName,
+} from "./ITickerTemplate";
+
+// Schedule (V2)
+export type { TickerRecurPattern, ITickerSchedule } from "./ITickerSchedule";
+export {
+  ALL_RECUR_PATTERNS,
+  DEFAULT_TICKER_SCHEDULE,
+  getRecurPatternDisplayName,
+} from "./ITickerSchedule";
+
+// Wizard state (V2)
+export type { TickerWizardPath, ITickerWizardState } from "./ITickerWizardState";
+export { DEFAULT_TICKER_WIZARD_STATE } from "./ITickerWizardState";
 
 // Web part props
 export type { IHyperTickerWebPartProps } from "./IHyperTickerWebPartProps";
