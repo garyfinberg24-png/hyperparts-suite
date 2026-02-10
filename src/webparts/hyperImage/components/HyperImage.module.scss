@@ -1,0 +1,365 @@
+/* ── HyperImage Styles ── */
+
+.hyperImageContainer {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  line-height: 0;
+}
+
+.hyperImageFigure {
+  position: relative;
+  margin: 0;
+  line-height: 0;
+  overflow: hidden;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.hyperImageImg {
+  display: block;
+  width: 100%;
+  transition: all 0.4s ease;
+}
+
+/* ── Sample Data Banner ── */
+.sampleBanner {
+  background: #fff4ce;
+  color: #6d5700;
+  padding: 6px 12px;
+  font-size: 12px;
+  text-align: center;
+  border-bottom: 1px solid #f0d855;
+  line-height: 1.4;
+}
+
+/* ── Text Overlay (on image) ── */
+.textOverlay {
+  position: absolute;
+  z-index: 2;
+  padding: 12px 16px;
+  pointer-events: none;
+}
+
+/* 9 overlay positions */
+.textPosTopLeft { top: 12px; left: 12px; }
+.textPosTopCenter { top: 12px; left: 50%; transform: translateX(-50%); }
+.textPosTopRight { top: 12px; right: 12px; }
+.textPosCenterLeft { top: 50%; left: 12px; transform: translateY(-50%); }
+.textPosCenter { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.textPosCenterRight { top: 50%; right: 12px; transform: translateY(-50%); }
+.textPosBottomLeft { bottom: 12px; left: 12px; }
+.textPosBottomCenter { bottom: 12px; left: 50%; transform: translateX(-50%); }
+.textPosBottomRight { bottom: 12px; right: 12px; }
+
+/* ── Text Caption (below image) — callout box ── */
+.textCaption {
+  padding: 16px 20px;
+  line-height: 1.5;
+}
+
+/* ── Text elements ── */
+.textTitle {
+  margin: 0 0 4px 0;
+  line-height: 1.3;
+}
+
+.textSubtitle {
+  margin: 0 0 8px 0;
+  font-weight: 400;
+  opacity: 0.85;
+  line-height: 1.4;
+}
+
+.textBody {
+  margin: 0;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+/* ── Text Entrance Animations ── */
+:global {
+  @keyframes hyperImageTextFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes hyperImageTextSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes hyperImageTextSlideLeft {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes hyperImageTextTypewriter {
+    from { max-width: 0; overflow: hidden; white-space: nowrap; }
+    to { max-width: 100%; overflow: hidden; white-space: nowrap; }
+  }
+}
+
+.textEntranceFade {
+  animation: hyperImageTextFade 0.6s ease-out forwards;
+}
+
+.textEntranceSlideUp {
+  animation: hyperImageTextSlideUp 0.6s ease-out forwards;
+}
+
+.textEntranceSlideLeft {
+  animation: hyperImageTextSlideLeft 0.6s ease-out forwards;
+}
+
+.textEntranceTypewriter {
+  animation: hyperImageTextTypewriter 1.2s steps(40) forwards;
+}
+
+/* ── Hover Effects ── */
+
+/* Zoom In */
+.hoverZoomIn .hyperImageImg:hover {
+  transform: scale(1.1);
+}
+
+/* Zoom Out */
+.hoverZoomOut .hyperImageImg {
+  transform: scale(1.1);
+}
+.hoverZoomOut .hyperImageImg:hover {
+  transform: scale(1.0);
+}
+
+/* Lift */
+.hoverLift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Rotate */
+.hoverRotate .hyperImageImg:hover {
+  transform: rotate(3deg) scale(1.05);
+}
+
+/* Grayscale to Color */
+.hoverGrayscaleToColor .hyperImageImg {
+  filter: grayscale(100%);
+}
+.hoverGrayscaleToColor .hyperImageImg:hover {
+  filter: grayscale(0%);
+}
+
+/* Color to Grayscale */
+.hoverColorToGrayscale .hyperImageImg:hover {
+  filter: grayscale(100%);
+}
+
+/* Blur to Clear */
+.hoverBlurToClear .hyperImageImg {
+  filter: blur(3px);
+}
+.hoverBlurToClear .hyperImageImg:hover {
+  filter: blur(0);
+}
+
+/* Darken */
+.hoverDarken .hyperImageImg:hover {
+  filter: brightness(60%);
+}
+
+/* Brighten */
+.hoverBrighten .hyperImageImg:hover {
+  filter: brightness(130%);
+}
+
+/* Slide Reveal — clip grows on hover */
+.hoverSlideReveal {
+  overflow: hidden;
+}
+.hoverSlideReveal .hyperImageImg {
+  transform: scale(1.15);
+  transition: transform 0.6s ease;
+}
+.hoverSlideReveal .hyperImageImg:hover {
+  transform: scale(1.0);
+}
+
+/* Shine Sweep */
+.hoverShineSweep {
+  overflow: hidden;
+}
+.hoverShineSweep::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  transform: skewX(-25deg);
+  transition: left 0.6s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+.hoverShineSweep:hover::after {
+  left: 130%;
+}
+
+/* Tilt 3D */
+.hoverTilt3d {
+  perspective: 600px;
+}
+.hoverTilt3d .hyperImageImg {
+  transition: transform 0.4s ease;
+}
+.hoverTilt3d:hover .hyperImageImg {
+  transform: rotateY(8deg) rotateX(4deg) scale(1.02);
+}
+
+/* ── Entrance Animations (container level) ── */
+:global {
+  @keyframes hyperImageFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes hyperImageSlideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes hyperImageSlideLeft {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes hyperImageZoomIn {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes hyperImageBounceIn {
+    0% { opacity: 0; transform: scale(0.3); }
+    50% { opacity: 1; transform: scale(1.05); }
+    70% { transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+}
+
+.entranceHidden {
+  opacity: 0;
+}
+
+.entranceFadeIn {
+  animation: hyperImageFadeIn 0.6s ease-out forwards;
+}
+
+.entranceSlideUp {
+  animation: hyperImageSlideUp 0.6s ease-out forwards;
+}
+
+.entranceSlideLeft {
+  animation: hyperImageSlideLeft 0.6s ease-out forwards;
+}
+
+.entranceZoomIn {
+  animation: hyperImageZoomIn 0.5s ease-out forwards;
+}
+
+.entranceBounceIn {
+  animation: hyperImageBounceIn 0.7s ease-out forwards;
+}
+
+/* ── Lightbox ── */
+.lightboxContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.lightboxImg {
+  max-width: 90vw;
+  max-height: 80vh;
+  object-fit: contain;
+}
+
+/* ── Link wrapper ── */
+.imageLink {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.imageLinkButton {
+  display: block;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+
+/* ── Multi-image Layouts ── */
+.layoutRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.layoutGrid {
+  display: grid;
+}
+
+.layoutCollage {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+
+.layoutCollageMain {
+  grid-row: 1 / -1;
+}
+
+.layoutFilmstrip {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.layoutFilmstrip > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+.layoutItem {
+  overflow: hidden;
+}
+
+.layoutItemImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .hyperImageImg,
+  .hyperImageFigure,
+  .hoverShineSweep::after {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .entranceFadeIn,
+  .entranceSlideUp,
+  .entranceSlideLeft,
+  .entranceZoomIn,
+  .entranceBounceIn,
+  .textEntranceFade,
+  .textEntranceSlideUp,
+  .textEntranceSlideLeft,
+  .textEntranceTypewriter {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
