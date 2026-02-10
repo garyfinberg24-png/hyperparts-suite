@@ -1,0 +1,56 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.tabBar {
+  background: #ffffff;
+  border-bottom: 1px solid $ms-color-neutralLight;
+}
+
+.tabBarInner {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  overflow-x: auto;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 20px;
+  text-decoration: none;
+  color: $ms-color-neutralSecondary;
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-regular;
+  white-space: nowrap;
+  cursor: pointer;
+  position: relative;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    color: $ms-color-themePrimary;
+    border-bottom-color: $ms-color-themeLighter;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.tabActive {
+  color: $ms-color-themePrimary;
+  font-weight: $ms-font-weight-semibold;
+  border-bottom-color: $ms-color-themePrimary;
+}
+
+.tabIcon {
+  font-size: $ms-font-size-16;
+  flex-shrink: 0;
+}
+
+.tabExternal {
+  font-size: $ms-font-size-10;
+  color: $ms-color-neutralTertiary;
+  margin-left: 2px;
+}

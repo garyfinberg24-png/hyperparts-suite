@@ -1,0 +1,109 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.layoutStyleStep {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sectionTitle {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  margin: 0;
+}
+
+.rowGroup {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.chipGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  padding: 5px 12px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 16px;
+  background: $ms-color-white;
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralPrimary;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: $ms-color-themePrimary;
+    color: $ms-color-themePrimary;
+  }
+}
+
+.chipActive {
+  background: $ms-color-themePrimary;
+  border-color: $ms-color-themePrimary;
+  color: $ms-color-white;
+}
+
+.colorGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+}
+
+.colorRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.colorLabel {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  min-width: 100px;
+}
+
+.colorInputWrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.colorInput {
+  width: 32px;
+  height: 32px;
+  border: 1px solid $ms-color-neutralTertiaryAlt;
+  border-radius: 6px;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.colorHex {
+  font-size: $ms-font-size-10;
+  font-family: "Consolas", monospace;
+  color: $ms-color-neutralSecondary;
+}
+
+.sliderGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sliderLabel {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+}
+
+.slider {
+  width: 100%;
+  max-width: 300px;
+}

@@ -1,9 +1,18 @@
 import * as React from "react";
-import type { IHyperNavWebPartProps, IHyperNavLink, IHyperNavGroup, HyperNavLayoutMode } from "../models";
+import type {
+  IHyperNavWebPartProps,
+  IHyperNavLink,
+  IHyperNavGroup,
+  HyperNavLayoutMode,
+  HyperNavHoverEffect,
+  HyperNavTheme,
+} from "../models";
 import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton } from "../../../common/components";
 import { parseLinks, parseGroups } from "../utils/linkUtils";
 import { isExternalLink } from "../utils/externalLinkUtils";
 import { detectDeepLinkType } from "../utils/deepLinkUtils";
+import { parseColorConfig, parsePanelConfig, buildNavCssVars } from "../utils/colorUtils";
+import { SAMPLE_NAV_LINKS, SAMPLE_NAV_GROUPS } from "../utils/sampleData";
 import { useNavSearch } from "../hooks/useNavSearch";
 import { useNavAudienceFilter } from "../hooks/useNavAudienceFilter";
 import { useNavPersonalization } from "../hooks/useNavPersonalization";
@@ -13,6 +22,7 @@ import { useHyperNavStore } from "../store/useHyperNavStore";
 import { HyperNavSearchBar } from "./HyperNavSearchBar";
 import { HyperNavPinnedSection } from "./HyperNavPinnedSection";
 import { HyperNavGroupSection } from "./HyperNavGroupSection";
+import { HyperNavDemoBar } from "./HyperNavDemoBar";
 import {
   CompactLayout,
   TilesLayout,
@@ -22,6 +32,13 @@ import {
   CardLayout,
   MegaMenuLayout,
   SidebarLayout,
+  TopBarLayout,
+  DropdownLayout,
+  TabBarLayout,
+  HamburgerLayout,
+  BreadcrumbLayout,
+  CmdPaletteLayout,
+  FabLayout,
 } from "./layouts";
 import type { INavLayoutProps } from "./layouts";
 import styles from "./HyperNav.module.scss";
@@ -30,6 +47,8 @@ export interface IHyperNavComponentProps extends IHyperNavWebPartProps {
   instanceId: string;
   isEditMode?: boolean;
   siteUrl?: string;
+  onConfigure?: () => void;
+  onWizardComplete?: (result: Record<string, unknown>) => void;
 }
 
 /** Map layout mode string to component */
@@ -43,6 +62,13 @@ function getLayoutComponent(mode: HyperNavLayoutMode): React.FC<INavLayoutProps>
     case "card": return CardLayout;
     case "megaMenu": return MegaMenuLayout;
     case "sidebar": return SidebarLayout;
+    case "topbar": return TopBarLayout;
+    case "dropdown": return DropdownLayout;
+    case "tabbar": return TabBarLayout;
+    case "hamburger": return HamburgerLayout;
+    case "breadcrumb": return BreadcrumbLayout;
+    case "cmdPalette": return CmdPaletteLayout;
+    case "fab": return FabLayout;
     default: return TilesLayout;
   }
 }
@@ -54,7 +80,7 @@ function enrichLinks(
   enableDeepLinks: boolean
 ): IHyperNavLink[] {
   return links.map(function (link) {
-    const enriched = { ...link };
+    var enriched = { ...link };
     if (link.url) {
       enriched.isExternal = isExternalLink(link.url, siteUrl);
       if (enableDeepLinks) {
@@ -73,8 +99,8 @@ function groupLinks(
   links: IHyperNavLink[],
   groups: IHyperNavGroup[]
 ): Array<{ groupName: string; links: IHyperNavLink[] }> {
-  const grouped: Record<string, IHyperNavLink[]> = {};
-  const ungrouped: IHyperNavLink[] = [];
+  var grouped: Record<string, IHyperNavLink[]> = {};
+  var ungrouped: IHyperNavLink[] = [];
 
   links.forEach(function (link) {
     if (link.groupName) {
@@ -87,9 +113,8 @@ function groupLinks(
     }
   });
 
-  const result: Array<{ groupName: string; links: IHyperNavLink[] }> = [];
+  var result: Array<{ groupName: string; links: IHyperNavLink[] }> = [];
 
-  // Add groups in order defined by groups config
   groups.forEach(function (g) {
     if (grouped[g.name] && grouped[g.name].length > 0) {
       result.push({ groupName: g.name, links: grouped[g.name] });
@@ -97,14 +122,12 @@ function groupLinks(
     }
   });
 
-  // Add remaining grouped links not in config
   Object.keys(grouped).forEach(function (name) {
     if (grouped[name].length > 0) {
       result.push({ groupName: name, links: grouped[name] });
     }
   });
 
-  // Add ungrouped at beginning
   if (ungrouped.length > 0) {
     result.unshift({ groupName: "", links: ungrouped });
   }
@@ -113,35 +136,88 @@ function groupLinks(
 }
 
 const HyperNavInner: React.FC<IHyperNavComponentProps> = function (props) {
-  const store = useHyperNavStore();
+  var store = useHyperNavStore();
 
-  // Parse JSON string props
-  const rawLinks = React.useMemo(function () {
+  // V2: Demo mode local overrides
+  var demoLayoutState = React.useState<HyperNavLayoutMode>(props.layoutMode);
+  var demoLayout = demoLayoutState[0];
+  var setDemoLayout = demoLayoutState[1];
+
+  var demoHoverState = React.useState<HyperNavHoverEffect>(props.hoverEffect || "lift");
+  var demoHover = demoHoverState[0];
+  var setDemoHover = demoHoverState[1];
+
+  var demoThemeState = React.useState<HyperNavTheme>(props.navTheme || "light");
+  var demoTheme = demoThemeState[0];
+  var setDemoTheme = demoThemeState[1];
+
+  var demoSearchState = React.useState(props.showSearch);
+  var demoSearch = demoSearchState[0];
+  var setDemoSearch = demoSearchState[1];
+
+  var demoGroupingState = React.useState(props.enableGrouping);
+  var demoGrouping = demoGroupingState[0];
+  var setDemoGrouping = demoGroupingState[1];
+
+  var demoTooltipsState = React.useState(props.enableTooltips);
+  var demoTooltips = demoTooltipsState[0];
+  var setDemoTooltips = demoTooltipsState[1];
+
+  var demoStickyState = React.useState(props.enableStickyNav);
+  var demoSticky = demoStickyState[0];
+  var setDemoSticky = demoStickyState[1];
+
+  // Use demo overrides when demo mode is on
+  var activeLayout = props.enableDemoMode ? demoLayout : props.layoutMode;
+  var activeSearch = props.enableDemoMode ? demoSearch : props.showSearch;
+  var activeGrouping = props.enableDemoMode ? demoGrouping : props.enableGrouping;
+
+  // Parse JSON string props (or use sample data)
+  var rawLinks = React.useMemo(function () {
+    if (props.useSampleData) {
+      return SAMPLE_NAV_LINKS;
+    }
     return parseLinks(props.links);
-  }, [props.links]);
+  }, [props.links, props.useSampleData]);
 
-  const groups = React.useMemo(function () {
+  var groups = React.useMemo(function () {
+    if (props.useSampleData) {
+      return SAMPLE_NAV_GROUPS;
+    }
     return parseGroups(props.groups);
-  }, [props.groups]);
+  }, [props.groups, props.useSampleData]);
 
-  // Enrich links with external detection + deep link types
-  const siteUrl = props.siteUrl || (typeof window !== "undefined" ? window.location.origin : "");
-  const allLinks = React.useMemo(function () {
+  // V2: Color engine
+  var colorConfig = React.useMemo(function () {
+    return parseColorConfig(props.colorConfig);
+  }, [props.colorConfig]);
+
+  var panelConfig = React.useMemo(function () {
+    return parsePanelConfig(props.panelConfig);
+  }, [props.panelConfig]);
+
+  var cssVars = React.useMemo(function () {
+    return buildNavCssVars(colorConfig, panelConfig);
+  }, [colorConfig, panelConfig]);
+
+  // Enrich links
+  var siteUrl = props.siteUrl || (typeof window !== "undefined" ? window.location.origin : "");
+  var allLinks = React.useMemo(function () {
     return enrichLinks(rawLinks, siteUrl, props.enableDeepLinks);
   }, [rawLinks, siteUrl, props.enableDeepLinks]);
 
-  // Audience targeting (batch check)
-  const audienceResult = useNavAudienceFilter(allLinks, props.enableAudienceTargeting);
+  // Audience targeting
+  var audienceResult = useNavAudienceFilter(allLinks, props.enableAudienceTargeting);
 
   // Search
-  const searchResult = useNavSearch(audienceResult.visibleLinks, store.searchQuery);
+  var searchResult = useNavSearch(audienceResult.visibleLinks, store.searchQuery);
 
-  // Personalization (pins)
-  const personalization = useNavPersonalization(props.instanceId, props.enablePersonalization);
+  // Personalization
+  var personalization = useNavPersonalization(props.instanceId, props.enablePersonalization);
 
-  // Link health (edit mode only)
-  const healthLinks = React.useMemo(function () {
-    const flat: Array<{ id: string; url: string }> = [];
+  // Link health
+  var healthLinks = React.useMemo(function () {
+    var flat: Array<{ id: string; url: string }> = [];
     function walk(items: IHyperNavLink[]): void {
       items.forEach(function (link) {
         if (link.url) {
@@ -153,21 +229,20 @@ const HyperNavInner: React.FC<IHyperNavComponentProps> = function (props) {
     walk(allLinks);
     return flat;
   }, [allLinks]);
-  const healthResult = useNavLinkHealth(
+  var healthResult = useNavLinkHealth(
     healthLinks,
     props.enableLinkHealthCheck,
     !!props.isEditMode
   );
 
   // Analytics
-  const analytics = useNavAnalytics(props.enableAnalytics);
+  var analytics = useNavAnalytics(props.enableAnalytics);
 
-  // Link click handler
-  const handleLinkClick = React.useCallback(function (link: IHyperNavLink) {
+  var handleLinkClick = React.useCallback(function (link: IHyperNavLink) {
     analytics.trackLinkClick(link.id, link.title, link.url);
   }, [analytics]);
 
-  // Show loading while audience check runs
+  // Loading
   if (audienceResult.loading) {
     return React.createElement(HyperSkeleton, { count: 3, variant: "rectangular", height: 40 });
   }
@@ -182,7 +257,7 @@ const HyperNavInner: React.FC<IHyperNavComponentProps> = function (props) {
   }
 
   // Build layout props
-  const layoutProps: INavLayoutProps = {
+  var layoutProps: INavLayoutProps = {
     links: searchResult.filteredLinks,
     groups: groups,
     onLinkClick: handleLinkClick,
@@ -201,12 +276,45 @@ const HyperNavInner: React.FC<IHyperNavComponentProps> = function (props) {
     gridColumns: props.gridColumns || 4,
   };
 
-  const LayoutComponent = getLayoutComponent(props.layoutMode);
+  var LayoutComponent = getLayoutComponent(activeLayout);
 
-  const children: React.ReactNode[] = [];
+  var children: React.ReactNode[] = [];
+
+  // V2: Demo bar (top)
+  if (props.enableDemoMode) {
+    children.push(
+      React.createElement(HyperNavDemoBar, {
+        key: "demo",
+        layoutMode: demoLayout,
+        hoverEffect: demoHover,
+        navTheme: demoTheme,
+        showSearch: demoSearch,
+        enableGrouping: demoGrouping,
+        enableTooltips: demoTooltips,
+        enableStickyNav: demoSticky,
+        onLayoutChange: setDemoLayout,
+        onHoverChange: setDemoHover,
+        onThemeChange: setDemoTheme,
+        onToggleSearch: function () { setDemoSearch(function (v) { return !v; }); },
+        onToggleGrouping: function () { setDemoGrouping(function (v) { return !v; }); },
+        onToggleTooltips: function () { setDemoTooltips(function (v) { return !v; }); },
+        onToggleStickyNav: function () { setDemoSticky(function (v) { return !v; }); },
+      })
+    );
+  }
+
+  // V2: Sample data banner
+  if (props.useSampleData) {
+    children.push(
+      React.createElement("div", {
+        key: "sample-banner",
+        className: styles.sampleBanner,
+      }, "\u26A0\uFE0F Sample data active \u2014 connect a real data source in the property pane.")
+    );
+  }
 
   // Search bar
-  if (props.showSearch) {
+  if (activeSearch) {
     children.push(
       React.createElement(
         "div",
@@ -232,13 +340,12 @@ const HyperNavInner: React.FC<IHyperNavComponentProps> = function (props) {
   }
 
   // Grouping support
-  if (props.enableGrouping) {
-    const groupedLinks = groupLinks(searchResult.filteredLinks, groups);
+  if (activeGrouping) {
+    var groupedLinks = groupLinks(searchResult.filteredLinks, groups);
 
-    const groupElements: React.ReactNode[] = [];
+    var groupElements: React.ReactNode[] = [];
     groupedLinks.forEach(function (group, idx) {
       if (!group.groupName) {
-        // Ungrouped links — render directly
         groupElements.push(
           React.createElement(
             "div",
@@ -250,7 +357,7 @@ const HyperNavInner: React.FC<IHyperNavComponentProps> = function (props) {
           )
         );
       } else {
-        const isExpanded = store.expandedGroupIds.indexOf(group.groupName) !== -1;
+        var isExpanded = store.expandedGroupIds.indexOf(group.groupName) !== -1;
         groupElements.push(
           React.createElement(HyperNavGroupSection, {
             key: "group-" + group.groupName,
@@ -272,7 +379,6 @@ const HyperNavInner: React.FC<IHyperNavComponentProps> = function (props) {
       React.createElement("div", { key: "groups", className: styles.hyperNavContent }, groupElements)
     );
   } else {
-    // No grouping — single layout
     children.push(
       React.createElement(
         "div",
@@ -282,18 +388,26 @@ const HyperNavInner: React.FC<IHyperNavComponentProps> = function (props) {
     );
   }
 
+  // V2: Theme class
+  var themeClass = "";
+  var activeTheme = props.enableDemoMode ? demoTheme : (props.navTheme || "light");
+  if (activeTheme === "dark") {
+    themeClass = " " + styles.hyperNavDark;
+  }
+
   return React.createElement(
     "nav",
     {
-      className: styles.hyperNav,
+      className: styles.hyperNav + themeClass,
       "aria-label": props.title || "Navigation",
       role: "navigation",
+      style: cssVars as React.CSSProperties,
     },
     children
   );
 };
 
-const HyperNav: React.FC<IHyperNavComponentProps> = function (props) {
+var HyperNav: React.FC<IHyperNavComponentProps> = function (props) {
   return React.createElement(
     HyperErrorBoundary,
     undefined,

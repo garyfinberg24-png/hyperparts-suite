@@ -1,0 +1,120 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.dropdown {
+  position: relative;
+}
+
+.dropdownBar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: #ffffff;
+  border-bottom: 1px solid $ms-color-neutralLight;
+}
+
+.dropdownItem {
+  position: relative;
+}
+
+.dropdownTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  color: $ms-color-neutralPrimary;
+  font-size: $ms-font-size-14;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: $ms-color-neutralLighter;
+    color: $ms-color-themePrimary;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.dropdownIcon {
+  font-size: $ms-font-size-16;
+  color: $ms-color-themePrimary;
+  flex-shrink: 0;
+}
+
+.dropdownChevron {
+  font-size: $ms-font-size-10;
+  color: $ms-color-neutralSecondary;
+  transition: transform 0.2s ease;
+}
+
+.dropdownChevronOpen {
+  transform: rotate(180deg);
+}
+
+.dropdownPanel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  min-width: 220px;
+  max-width: 320px;
+  background: #ffffff;
+  border: 1px solid $ms-color-neutralLight;
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  padding: 4px 0;
+  animation: dropdownFadeIn 0.15s ease;
+}
+
+.dropdownChild {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 16px;
+  text-decoration: none;
+  color: $ms-color-neutralPrimary;
+  font-size: $ms-font-size-14;
+  cursor: pointer;
+  transition: background 0.1s ease;
+
+  &:hover {
+    background: $ms-color-neutralLighter;
+    color: $ms-color-themePrimary;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.dropdownChildIcon {
+  font-size: $ms-font-size-14;
+  color: $ms-color-themePrimary;
+  flex-shrink: 0;
+}
+
+.dropdownChildDesc {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  font-weight: $ms-font-weight-regular;
+}
+
+:global {
+  @keyframes dropdownFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

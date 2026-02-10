@@ -1,0 +1,80 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.featuresStep {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.stepTitle {
+  font-size: $ms-font-size-18;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  margin: 0;
+}
+
+.featureCategory {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.categoryTitle {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralSecondary;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+  padding-bottom: 4px;
+  border-bottom: 1px solid $ms-color-neutralLighter;
+}
+
+.toggleGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 8px;
+}
+
+.toggleCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  background: $ms-color-white;
+  border: 1px solid $ms-color-neutralLighter;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: $ms-color-themePrimary;
+  }
+}
+
+.toggleCardOn {
+  border-color: $ms-color-themePrimary;
+  background: rgba(0, 120, 212, 0.04);
+}
+
+.toggleInput {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.toggleInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.toggleLabel {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+}
+
+.toggleDesc {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  line-height: 1.3;
+}

@@ -5,6 +5,7 @@ define([], function () {
     LinksGroupName: "Links Management",
     GroupsGroupName: "Group Management",
     FeaturesGroupName: "Features",
+    StylingGroupName: "Styling",
     TitleFieldLabel: "Title",
     LayoutModeFieldLabel: "Layout Mode",
     GridColumnsFieldLabel: "Grid Columns",
@@ -37,6 +38,22 @@ define([], function () {
     GroupNameLabel: "Group",
     RemoveGroupLabel: "Remove Group",
     AddGroupLabel: "Add Group",
-    NewGroupDefaultName: "Group"
+    NewGroupDefaultName: "Group",
+    HoverEffectLabel: "Hover Effect",
+    BorderRadiusLabel: "Border Radius",
+    NavThemeLabel: "Theme",
+    SeparatorLabel: "Separator Style",
+    EnableStickyNavLabel: "Enable Sticky Navigation",
+    EnableNotificationsLabel: "Enable Notification Badges",
+    EnableActiveDetectionLabel: "Enable Active Link Detection",
+    EnableTooltipsLabel: "Enable Tooltips",
+    EnableCommandPaletteLabel: "Enable Command Palette (Ctrl+K)",
+    EnableDarkModeToggleLabel: "Enable Dark Mode Toggle",
+    WizardCompletedLabel: "Setup Wizard Completed",
+    UseSampleDataLabel: "Use Sample Data",
+    EnableDemoModeLabel: "Enable Demo Mode",
+    SampleDataBanner: "Sample data active \u2014 connect a real data source in the property pane.",
+    RunWizardLabel: "Run Setup Wizard",
+    DemoControlsLabel: "Demo Controls"
   };
 });

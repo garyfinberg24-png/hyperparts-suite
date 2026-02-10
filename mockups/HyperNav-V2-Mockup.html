@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HyperNav V2 - Mother of All Nav Webparts</title>
+<style>
+/* === CSS VARIABLES === */
+:root {
+  --primary: #0078d4;
+  --primary-dark: #106ebe;
+  --primary-hover: #005a9e;
+  --success: #107c10;
+  --success-light: #66bb6a;
+  --navy-dark: #0f1b2d;
+  --navy-light: #1a2744;
+  --cyan: #4fc3f7;
+  --text-primary: #323130;
+  --text-secondary: #605e5c;
+  --text-disabled: #a19f9d;
+  --border: #edebe9;
+  --surface: #faf9f8;
+  --white: #ffffff;
+  --danger: #d13438;
+  --warning: #ffb900;
+  --font: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* === RESET === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); color: var(--text-primary); background: #f3f2f1; overflow: hidden; height: 100vh; }
+button { font-family: var(--font); cursor: pointer; border: none; background: none; }
+input, select { font-family: var(--font); }
+
+/* === WIZARD OVERLAY === */
+.wizard-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 1; transition: opacity 0.3s ease;
+}
+.wizard-overlay.hidden { opacity: 0; pointer-events: none; }
+
+.wizard-container {
+  width: 960px; max-width: 95vw; height: 680px; max-height: 90vh;
+  background: var(--white); border-radius: 8px; box-shadow: 0 25px 80px rgba(0,0,0,0.35);
+  display: flex; overflow: hidden;
+}
+
+/* === WIZARD SIDEBAR === */
+.wizard-sidebar {
+  width: 240px; min-width: 240px;
+  background: linear-gradient(180deg, #0f1b2d 0%, #1a2744 100%);
+  padding: 24px 20px; display: flex; flex-direction: column;
+}
+.wizard-brand { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.7); margin-bottom: 32px; }
+.wizard-brand span { color: var(--cyan); }
+.wizard-steps { flex: 1; }
+.wizard-step-item {
+  display: flex; align-items: flex-start; gap: 12px; padding: 8px 0; cursor: pointer; position: relative;
+}
+.wizard-step-item + .wizard-step-item { margin-top: 4px; }
+.wizard-step-circle {
+  width: 28px; height: 28px; min-width: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600; transition: all 0.2s ease; position: relative; z-index: 1;
+}
+.wizard-step-item.pending .wizard-step-circle { border: 2px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.5); }
+.wizard-step-item.active .wizard-step-circle { background: var(--cyan); color: var(--navy-dark); }
+.wizard-step-item.complete .wizard-step-circle { background: var(--success-light); color: #fff; }
+.wizard-step-label { font-size: 13px; color: rgba(255,255,255,0.5); padding-top: 4px; line-height: 1.3; transition: color 0.2s ease; }
+.wizard-step-item.active .wizard-step-label { color: #fff; font-weight: 600; }
+.wizard-step-item.complete .wizard-step-label { color: rgba(255,255,255,0.8); }
+.wizard-step-connector {
+  position: absolute; left: 33px; top: 36px; width: 2px; height: 20px;
+  background: rgba(255,255,255,0.15);
+}
+.wizard-step-item.complete .wizard-step-connector { background: var(--success-light); }
+
+/* === WIZARD MAIN === */
+.wizard-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.wizard-header { padding: 24px 32px 0; }
+.wizard-header h2 { font-size: 20px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+.wizard-header p { font-size: 13px; color: var(--text-secondary); }
+.wizard-content { flex: 1; overflow-y: auto; padding: 20px 32px; }
+.wizard-footer {
+  padding: 16px 32px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;
+}
+.wizard-footer-right { display: flex; gap: 8px; }
+
+/* === BUTTONS === */
+.btn { padding: 8px 20px; border-radius: 4px; font-size: 14px; font-weight: 600; transition: all 0.15s ease; display: inline-flex; align-items: center; gap: 6px; }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-outline { border: 1px solid #8a8886; color: var(--text-primary); background: var(--white); }
+.btn-outline:hover { background: var(--surface); }
+.btn-success { background: var(--success); color: #fff; }
+.btn-success:hover { background: #0b6a0b; }
+.btn-pill { border-radius: 24px; padding: 10px 28px; }
+.btn-sm { padding: 6px 14px; font-size: 12px; }
+
+/* === WELCOME SCREEN === */
+.welcome-screen { display: flex; flex-direction: column; height: 100%; }
+.welcome-banner {
+  background: linear-gradient(135deg, #003a70 0%, #0050a0 25%, #0078d4 50%, #00bcf2 75%, #30e0b0 100%);
+  height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  color: #fff; text-align: center; border-radius: 0; margin: -20px -32px 24px;
+  padding: 0 32px;
+}
+.welcome-banner h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+.welcome-banner h1 .accent { color: #b3e5fc; font-style: italic; }
+.welcome-banner p { font-size: 14px; opacity: 0.9; max-width: 520px; line-height: 1.5; }
+.welcome-features { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; padding: 0 4px; }
+.welcome-feature-card {
+  background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 20px 16px; text-align: center;
+  transition: all 0.2s ease;
+}
+.welcome-feature-card:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(0,120,212,0.1); transform: translateY(-2px); }
+.welcome-feature-card .emoji { font-size: 28px; margin-bottom: 10px; display: block; }
+.welcome-feature-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 6px; color: var(--text-primary); }
+.welcome-feature-card p { font-size: 11px; color: var(--text-secondary); line-height: 1.4; }
+.welcome-actions { text-align: center; }
+.welcome-hint { font-size: 12px; color: var(--text-disabled); margin-top: 10px; }
+
+/* === TEMPLATE GALLERY (Step 1) === */
+.filter-tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+.filter-tab {
+  padding: 6px 16px; border-radius: 16px; font-size: 12px; font-weight: 600;
+  border: 1px solid var(--border); color: var(--text-secondary); background: var(--white);
+  transition: all 0.15s ease;
+}
+.filter-tab:hover { border-color: var(--primary); color: var(--primary); }
+.filter-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.template-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.template-card {
+  border: 2px solid var(--border); border-radius: 8px; overflow: hidden; cursor: pointer;
+  transition: all 0.15s ease; background: var(--white);
+}
+.template-card:hover { border-color: #b3d7f2; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.template-card.selected { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
+.template-card-preview { height: 48px; position: relative; }
+.template-card-body { padding: 10px 12px; }
+.template-card-body h4 { font-size: 12px; font-weight: 700; margin-bottom: 2px; display: flex; align-items: center; gap: 6px; }
+.template-card-body p { font-size: 10px; color: var(--text-secondary); line-height: 1.3; }
+.template-check { position: absolute; top: 6px; right: 6px; width: 20px; height: 20px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; }
+.layout-badge { font-size: 9px; background: rgba(0,0,0,0.06); padding: 2px 6px; border-radius: 8px; color: var(--text-secondary); }
+
+/* === LAYOUT GRID (Step 2) === */
+.layout-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; }
+.layout-card {
+  border: 2px solid var(--border); border-radius: 6px; padding: 10px; text-align: center; cursor: pointer;
+  transition: all 0.15s ease; background: var(--white); min-height: 90px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.layout-card:hover { border-color: #b3d7f2; }
+.layout-card.selected { border-color: var(--primary); background: #f0f7ff; }
+.layout-card .layout-icon { font-size: 24px; margin-bottom: 6px; opacity: 0.7; }
+.layout-card .layout-name { font-size: 10px; font-weight: 600; color: var(--text-secondary); }
+.style-options { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.style-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+.style-group select, .style-group input {
+  width: 100%; padding: 7px 10px; border: 1px solid var(--border); border-radius: 4px; font-size: 13px;
+  background: var(--white); color: var(--text-primary);
+}
+.radio-group { display: flex; gap: 12px; }
+.radio-group label { display: flex; align-items: center; gap: 5px; font-weight: 400; font-size: 13px; cursor: pointer; }
+.mini-preview {
+  border: 1px solid var(--border); border-radius: 8px; background: var(--surface); height: 140px;
+  display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;
+}
+
+/* === DATA SOURCE (Step 3) === */
+.source-options { display: flex; flex-direction: column; gap: 10px; }
+.source-card {
+  display: flex; align-items: center; gap: 16px; padding: 16px 20px; border: 2px solid var(--border);
+  border-radius: 8px; cursor: pointer; transition: all 0.15s ease; background: var(--white);
+}
+.source-card:hover { border-color: #b3d7f2; }
+.source-card.selected { border-color: var(--primary); background: #f0f7ff; }
+.source-icon { font-size: 24px; width: 40px; text-align: center; }
+.source-info h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.source-info p { font-size: 12px; color: var(--text-secondary); }
+
+/* === NAV LINKS (Step 4) === */
+.links-toolbar { display: flex; gap: 8px; margin-bottom: 12px; }
+.links-list { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.link-group-header {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--surface);
+  border-bottom: 1px solid var(--border); cursor: pointer; font-weight: 600; font-size: 13px;
+  transition: background 0.15s ease;
+}
+.link-group-header:hover { background: #eee; }
+.link-group-header .chevron { transition: transform 0.2s ease; font-size: 10px; color: var(--text-secondary); }
+.link-group-header .chevron.collapsed { transform: rotate(-90deg); }
+.link-group-header .group-count { font-size: 11px; color: var(--text-disabled); font-weight: 400; margin-left: auto; }
+.link-row {
+  display: flex; align-items: center; gap: 8px; padding: 8px 14px 8px 28px; border-bottom: 1px solid var(--border);
+  font-size: 13px; transition: background 0.1s ease;
+}
+.link-row:hover { background: #f9f9f9; }
+.link-row:last-child { border-bottom: none; }
+.link-drag { color: var(--text-disabled); cursor: grab; font-size: 11px; }
+.link-icon { font-size: 16px; width: 24px; text-align: center; }
+.link-title { font-weight: 600; min-width: 100px; }
+.link-url { flex: 1; color: var(--text-disabled); font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
+.link-actions { display: flex; gap: 4px; }
+.link-actions button { width: 26px; height: 26px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--text-secondary); }
+.link-actions button:hover { background: var(--border); }
+.link-group-content { overflow: hidden; transition: max-height 0.3s ease; }
+
+/* === FEATURES (Step 5) === */
+.features-grid { display: flex; flex-direction: column; gap: 6px; }
+.feature-row {
+  display: flex; align-items: center; justify-content: space-between; padding: 10px 14px;
+  border: 1px solid var(--border); border-radius: 6px; background: var(--white);
+}
+.feature-info { flex: 1; }
+.feature-info h4 { font-size: 13px; font-weight: 600; }
+.feature-info p { font-size: 11px; color: var(--text-secondary); }
+.toggle {
+  width: 44px; height: 24px; border-radius: 12px; background: #c8c6c4; cursor: pointer;
+  position: relative; transition: background 0.2s ease; flex-shrink: 0;
+}
+.toggle.on { background: var(--primary); }
+.toggle-knob {
+  width: 18px; height: 18px; border-radius: 50%; background: #fff; position: absolute;
+  top: 3px; left: 3px; transition: transform 0.2s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.toggle.on .toggle-knob { transform: translateX(20px); }
+
+/* === SUMMARY (Step 6) === */
+.summary-card {
+  border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--white);
+}
+.summary-row {
+  display: flex; padding: 12px 20px; border-bottom: 1px solid var(--border);
+}
+.summary-row:last-child { border-bottom: none; }
+.summary-label { width: 160px; font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+.summary-value { flex: 1; font-size: 13px; color: var(--text-primary); }
+
+/* === COLOR MANAGEMENT === */
+.color-section { margin-top: 20px; }
+.color-section-title {
+  font-size: 12px; font-weight: 700; color: var(--text-primary); margin-bottom: 10px;
+  padding-bottom: 6px; border-bottom: 1px solid var(--border); text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.color-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
+.color-field { display: flex; align-items: center; gap: 8px; }
+.color-field label { font-size: 11px; color: var(--text-secondary); min-width: 80px; }
+.color-field input[type="color"] {
+  width: 28px; height: 28px; border: 2px solid var(--border); border-radius: 6px;
+  cursor: pointer; padding: 0; background: none;
+}
+.color-field input[type="color"]::-webkit-color-swatch-wrapper { padding: 2px; }
+.color-field input[type="color"]::-webkit-color-swatch { border: none; border-radius: 3px; }
+.color-field .color-hex {
+  font-size: 10px; color: var(--text-disabled); font-family: 'Courier New', monospace;
+  background: var(--surface); padding: 2px 6px; border-radius: 4px;
+}
+
+/* === DROPDOWN/FLYOUT PANEL CONFIG === */
+.panel-config-section { margin-top: 20px; }
+.panel-config-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.panel-config-field { display: flex; flex-direction: column; gap: 4px; }
+.panel-config-field label { font-size: 11px; font-weight: 600; color: var(--text-secondary); }
+.panel-config-field select, .panel-config-field input {
+  padding: 6px 10px; font-size: 12px; border: 1px solid var(--border); border-radius: 6px;
+  background: var(--white); color: var(--text-primary); outline: none;
+}
+.panel-config-field select:focus, .panel-config-field input:focus { border-color: var(--primary); }
+.panel-preview-box {
+  margin-top: 12px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+}
+.panel-preview-header {
+  font-size: 11px; font-weight: 600; color: var(--text-secondary); padding: 8px 12px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+}
+.panel-preview-content {
+  padding: 12px; min-height: 80px;
+  transition: all 0.2s ease;
+}
+.panel-preview-item {
+  padding: 6px 10px; font-size: 12px; color: var(--text-primary); border-radius: 4px;
+  cursor: default; transition: background 0.1s ease;
+}
+.panel-preview-item:hover { background: var(--surface); }
+
+/* === NAV PREVIEW (Post-Wizard) === */
+.nav-preview-page {
+  display: none; flex-direction: column; height: 100vh; background: #f3f2f1;
+}
+.nav-preview-page.visible { display: flex; }
+.nav-preview-area { flex: 1; overflow: auto; }
+.nav-content-mock { max-width: 1100px; margin: 0 auto; padding: 24px; }
+
+/* TopBar Nav */
+.nav-topbar {
+  background: var(--navy-dark); display: flex; align-items: center; padding: 0 24px; height: 48px; gap: 0;
+}
+.nav-topbar .nav-logo { color: var(--cyan); font-weight: 700; font-size: 15px; margin-right: 24px; letter-spacing: 0.5px; }
+.nav-topbar .nav-item {
+  color: rgba(255,255,255,0.85); padding: 14px 16px; font-size: 13px; font-weight: 500; cursor: pointer;
+  transition: all 0.15s ease; position: relative;
+}
+.nav-topbar .nav-item:hover { color: #fff; background: rgba(255,255,255,0.08); }
+.nav-topbar .nav-item.active { color: var(--cyan); }
+.nav-topbar .nav-item.active::after { content: ''; position: absolute; bottom: 0; left: 16px; right: 16px; height: 2px; background: var(--cyan); }
+.nav-topbar .nav-search { margin-left: auto; color: rgba(255,255,255,0.6); cursor: pointer; font-size: 15px; }
+.nav-topbar .nav-search:hover { color: #fff; }
+
+/* MegaMenu dropdown */
+.mega-dropdown {
+  position: absolute; top: 100%; left: 0; right: 0; background: var(--white);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15); border-top: 2px solid var(--primary);
+  padding: 24px 32px; display: none; z-index: 100;
+}
+.mega-dropdown.show { display: block; animation: fadeDown 0.2s ease; }
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+.mega-columns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.mega-col h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--primary); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.mega-col a { display: block; font-size: 13px; color: var(--text-primary); text-decoration: none; padding: 5px 0; transition: color 0.15s ease; }
+.mega-col a:hover { color: var(--primary); }
+
+/* Sidebar Nav */
+.nav-sidebar-layout { display: flex; height: calc(100vh - 52px); }
+.nav-sidebar {
+  width: 260px; background: var(--white); border-right: 1px solid var(--border);
+  overflow-y: auto; padding: 16px 0;
+}
+.nav-sidebar .sidebar-brand { padding: 0 20px 16px; font-weight: 700; font-size: 16px; color: var(--primary); border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+.nav-sidebar .sidebar-group-title { padding: 12px 20px 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-disabled); }
+.nav-sidebar .sidebar-item {
+  display: flex; align-items: center; gap: 10px; padding: 9px 20px; font-size: 13px;
+  color: var(--text-primary); cursor: pointer; transition: all 0.15s ease; border-left: 3px solid transparent;
+}
+.nav-sidebar .sidebar-item:hover { background: var(--surface); }
+.nav-sidebar .sidebar-item.active { border-left-color: var(--primary); background: #f0f7ff; color: var(--primary); font-weight: 600; }
+.nav-sidebar .sidebar-item .s-icon { width: 20px; text-align: center; font-size: 14px; }
+.sidebar-main { flex: 1; overflow-y: auto; }
+
+/* Tiles Nav */
+.nav-tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 24px; max-width: 800px; margin: 40px auto; }
+.nav-tile {
+  background: var(--white); border: 1px solid var(--border); border-radius: 10px;
+  padding: 24px 16px; text-align: center; cursor: pointer; transition: all 0.2s ease;
+}
+.nav-tile:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); border-color: var(--primary); }
+.nav-tile .tile-icon { font-size: 32px; margin-bottom: 10px; display: block; }
+.nav-tile .tile-label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+
+/* Card Nav */
+.nav-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 24px; max-width: 900px; margin: 40px auto; }
+.nav-card-item {
+  background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 20px;
+  cursor: pointer; transition: all 0.2s ease;
+}
+.nav-card-item:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.1); transform: translateY(-2px); }
+.nav-card-item .card-icon { font-size: 28px; margin-bottom: 10px; }
+.nav-card-item h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.nav-card-item p { font-size: 12px; color: var(--text-secondary); line-height: 1.4; }
+
+/* Compact Nav */
+.nav-compact {
+  display: flex; align-items: center; gap: 4px; padding: 10px 24px; background: var(--white);
+  border-bottom: 1px solid var(--border);
+}
+.nav-compact .compact-item { padding: 6px 14px; font-size: 13px; color: var(--text-secondary); cursor: pointer; border-radius: 4px; transition: all 0.15s ease; }
+.nav-compact .compact-item:hover { background: var(--surface); color: var(--text-primary); }
+.nav-compact .compact-item.active { color: var(--primary); font-weight: 600; }
+.nav-compact .compact-sep { color: var(--text-disabled); font-size: 10px; }
+
+/* List Nav */
+.nav-list { max-width: 500px; margin: 40px auto; background: var(--white); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.nav-list .list-item {
+  display: flex; align-items: center; gap: 12px; padding: 12px 20px; font-size: 14px;
+  border-bottom: 1px solid var(--border); cursor: pointer; transition: all 0.15s ease;
+}
+.nav-list .list-item:last-child { border-bottom: none; }
+.nav-list .list-item:hover { background: var(--surface); }
+.nav-list .list-item .l-icon { font-size: 18px; width: 28px; text-align: center; }
+.nav-list .list-item .l-arrow { margin-left: auto; color: var(--text-disabled); font-size: 12px; }
+
+/* TabBar Nav */
+.nav-tabbar {
+  display: flex; background: var(--white); border-bottom: 2px solid var(--border); padding: 0 24px;
+}
+.nav-tabbar .tab-item {
+  padding: 14px 20px; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+  cursor: pointer; position: relative; transition: color 0.15s ease; border-bottom: 2px solid transparent; margin-bottom: -2px;
+}
+.nav-tabbar .tab-item:hover { color: var(--text-primary); }
+.nav-tabbar .tab-item.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+/* Grid Nav */
+.nav-grid-layout { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 24px; max-width: 700px; margin: 40px auto; }
+.nav-grid-item {
+  display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--white);
+  border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: all 0.15s ease;
+}
+.nav-grid-item:hover { border-color: var(--primary); background: #f0f7ff; }
+.nav-grid-item .g-icon { font-size: 20px; }
+.nav-grid-item .g-label { font-size: 13px; font-weight: 600; }
+
+/* Dropdown Nav */
+.nav-dropdown-bar {
+  display: flex; align-items: center; gap: 0; padding: 0 24px; background: var(--white);
+  border-bottom: 1px solid var(--border); height: 44px; position: relative;
+}
+.nav-dropdown-bar .dd-item {
+  padding: 12px 16px; font-size: 13px; font-weight: 500; color: var(--text-primary); cursor: pointer;
+  transition: all 0.15s ease; position: relative;
+}
+.nav-dropdown-bar .dd-item:hover { background: var(--surface); color: var(--primary); }
+.dd-submenu {
+  position: absolute; top: 100%; left: 0; min-width: 200px; background: var(--white);
+  border: 1px solid var(--border); border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  padding: 6px 0; display: none; z-index: 50;
+}
+.dd-submenu.show { display: block; animation: fadeDown 0.15s ease; }
+.dd-submenu a {
+  display: block; padding: 8px 16px; font-size: 13px; color: var(--text-primary);
+  text-decoration: none; transition: all 0.1s ease;
+}
+.dd-submenu a:hover { background: var(--surface); color: var(--primary); }
+
+/* Dark mode */
+.nav-preview-area.dark { background: #1a1a2e; }
+.nav-preview-area.dark .nav-content-mock { color: #e0e0e0; }
+.nav-preview-area.dark .nav-sidebar { background: #16213e; border-right-color: #2a2a4a; }
+.nav-preview-area.dark .nav-sidebar .sidebar-item { color: #ccc; }
+.nav-preview-area.dark .nav-sidebar .sidebar-item:hover { background: #1a2744; }
+.nav-preview-area.dark .nav-sidebar .sidebar-item.active { color: var(--cyan); background: rgba(79,195,247,0.08); border-left-color: var(--cyan); }
+.nav-preview-area.dark .nav-tile { background: #16213e; border-color: #2a2a4a; color: #e0e0e0; }
+.nav-preview-area.dark .nav-tile .tile-label { color: #e0e0e0; }
+.nav-preview-area.dark .nav-card-item { background: #16213e; border-color: #2a2a4a; color: #e0e0e0; }
+.nav-preview-area.dark .nav-card-item h4 { color: #e0e0e0; }
+.nav-preview-area.dark .nav-compact { background: #16213e; border-bottom-color: #2a2a4a; }
+.nav-preview-area.dark .nav-compact .compact-item { color: #aaa; }
+.nav-preview-area.dark .nav-list { background: #16213e; border-color: #2a2a4a; }
+.nav-preview-area.dark .nav-list .list-item { border-bottom-color: #2a2a4a; color: #e0e0e0; }
+.nav-preview-area.dark .nav-tabbar { background: #16213e; border-bottom-color: #2a2a4a; }
+.nav-preview-area.dark .nav-tabbar .tab-item { color: #999; }
+.nav-preview-area.dark .nav-tabbar .tab-item.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+.nav-preview-area.dark .nav-grid-item { background: #16213e; border-color: #2a2a4a; color: #e0e0e0; }
+.nav-preview-area.dark .nav-grid-item .g-label { color: #e0e0e0; }
+.nav-preview-area.dark .nav-dropdown-bar { background: #16213e; border-bottom-color: #2a2a4a; }
+.nav-preview-area.dark .nav-dropdown-bar .dd-item { color: #ccc; }
+.nav-preview-area.dark .dd-submenu { background: #16213e; border-color: #2a2a4a; }
+.nav-preview-area.dark .dd-submenu a { color: #ccc; }
+.nav-preview-area.dark .dd-submenu a:hover { background: #1a2744; }
+
+/* Search overlay */
+.search-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200;
+  align-items: flex-start; justify-content: center; padding-top: 120px;
+}
+.search-overlay.show { display: flex; animation: fadeDown 0.2s ease; }
+.search-box {
+  width: 560px; background: var(--white); border-radius: 10px; box-shadow: 0 16px 64px rgba(0,0,0,0.25);
+  overflow: hidden;
+}
+.search-box input {
+  width: 100%; padding: 16px 20px; border: none; font-size: 16px; outline: none;
+  border-bottom: 1px solid var(--border);
+}
+.search-box .search-results { padding: 8px 0; max-height: 300px; overflow-y: auto; }
+.search-box .search-result {
+  display: flex; align-items: center; gap: 12px; padding: 10px 20px; cursor: pointer; transition: background 0.1s ease;
+}
+.search-box .search-result:hover { background: var(--surface); }
+.search-box .search-result .sr-icon { font-size: 18px; }
+.search-box .search-result .sr-text { font-size: 14px; }
+.search-box .search-result .sr-cat { font-size: 11px; color: var(--text-disabled); margin-left: auto; }
+
+/* Pin badge */
+.pin-badge {
+  display: inline-flex; align-items: center; gap: 3px; font-size: 9px; background: #fff3cd; color: #856404;
+  padding: 1px 6px; border-radius: 8px; font-weight: 600;
+}
+.link-badge-new {
+  display: inline-flex; font-size: 9px; background: #d4edda; color: #155724;
+  padding: 1px 6px; border-radius: 8px; font-weight: 700;
+}
+
+/* === DEMO BAR === */
+.demo-bar {
+  background: linear-gradient(90deg, #1a1a2e, #16213e, #0f3460); padding: 10px 20px;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.demo-label {
+  font-size: 11px; font-weight: 800; color: var(--cyan); text-transform: uppercase;
+  letter-spacing: 2px; padding-right: 12px; border-right: 1px solid rgba(255,255,255,0.15);
+}
+.demo-section { display: flex; align-items: center; gap: 4px; }
+.demo-section-label { font-size: 10px; color: rgba(255,255,255,0.5); margin-right: 6px; text-transform: uppercase; font-weight: 600; }
+.demo-btn {
+  padding: 4px 10px; font-size: 11px; color: rgba(255,255,255,0.7); border-radius: 4px;
+  transition: all 0.15s ease; border: 1px solid transparent;
+}
+.demo-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+.demo-btn.active { background: var(--primary); color: #fff; }
+.demo-toggle {
+  display: flex; align-items: center; gap: 4px; font-size: 11px; color: rgba(255,255,255,0.7); cursor: pointer;
+}
+.demo-toggle input { display: none; }
+.demo-toggle .demo-check {
+  width: 14px; height: 14px; border: 1px solid rgba(255,255,255,0.4); border-radius: 3px;
+  display: flex; align-items: center; justify-content: center; font-size: 9px; transition: all 0.15s ease;
+}
+.demo-toggle input:checked + .demo-check { background: var(--primary); border-color: var(--primary); color: #fff; }
+.demo-reset { margin-left: auto; }
+
+/* === CONTENT MOCK === */
+.mock-content-area { padding: 40px; }
+.mock-content-area h2 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+.mock-content-area p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px; }
+.mock-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px; }
+.mock-card-placeholder {
+  height: 140px; background: var(--white); border: 1px solid var(--border); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; color: var(--text-disabled); font-size: 13px;
+}
+.nav-preview-area.dark .mock-content-area h2 { color: #e0e0e0; }
+.nav-preview-area.dark .mock-card-placeholder { background: #16213e; border-color: #2a2a4a; color: #555; }
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #c8c6c4; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #a19f9d; }
+</style>
+</head>
+<body>
+
+<!-- ====== WIZARD OVERLAY ====== -->
+<div class="wizard-overlay" id="wizardOverlay">
+  <div class="wizard-container">
+    <!-- Sidebar -->
+    <div class="wizard-sidebar" id="wizardSidebar">
+      <div class="wizard-brand">Hyper<span>Parts</span> Suite</div>
+      <div class="wizard-steps" id="wizardSteps"></div>
+    </div>
+    <!-- Main -->
+    <div class="wizard-main">
+      <div class="wizard-header" id="wizardHeader"></div>
+      <div class="wizard-content" id="wizardContent"></div>
+      <div class="wizard-footer" id="wizardFooter"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== NAV PREVIEW PAGE ====== -->
+<div class="nav-preview-page" id="navPreviewPage">
+  <div class="demo-bar" id="demoBar"></div>
+  <div class="nav-preview-area" id="navPreviewArea"></div>
+</div>
+
+<!-- ====== SEARCH OVERLAY ====== -->
+<div class="search-overlay" id="searchOverlay">
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search navigation..." oninput="filterSearch(this.value)">
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+var state = {
+  currentStep: -1, // -1 = welcome
+  selectedTemplate: 'corporate',
+  selectedLayout: 'topbar',
+  hoverEffect: 'lift',
+  borderRadius: 'slight',
+  theme: 'light',
+  separator: 'line',
+  // Color management
+  linkDefaultColor: '#323130',
+  linkHoverColor: '#0078d4',
+  linkActiveColor: '#004578',
+  linkVisitedColor: '#8764b8',
+  btnDefaultBg: '#0078d4',
+  btnDefaultText: '#ffffff',
+  btnHoverBg: '#106ebe',
+  btnHoverText: '#ffffff',
+  btnPressedBg: '#004578',
+  btnPressedText: '#ffffff',
+  // Dropdown / Flyout panel
+  ddPanelBg: '#ffffff',
+  ddPanelBorder: '#edebe9',
+  ddPanelShadow: 'large',
+  ddPanelAnimation: 'fade',
+  ddPanelColumns: '1',
+  ddPanelPadding: '12',
+  ddPanelMaxHeight: '400',
+  ddPanelRadius: '8',
+  dataSource: 'manual',
+  features: {
+    search: true, pinning: true, analytics: false, audience: false,
+    health: true, badges: true, notifications: false, sticky: false,
+    darkMode: false, activeDetection: true, tooltips: true, commandPalette: false
+  },
+  collapsedGroups: {},
+  demoLayout: 'topbar',
+  demoTheme: 'light',
+  demoFeatures: { search: true, pins: true, badges: true }
+};
+
+var STEPS = [
+  { id: 'templates', label: 'Template Gallery' },
+  { id: 'layout',    label: 'Layout & Style' },
+  { id: 'source',    label: 'Data Source' },
+  { id: 'links',     label: 'Navigation Links' },
+  { id: 'features',  label: 'Features' },
+  { id: 'summary',   label: 'Review & Apply' }
+];
+
+var TEMPLATES = [
+  { id:'corporate', name:'Corporate Intranet', desc:'Full-featured corporate navigation', cat:'corporate', color:'#0078d4', layout:'megamenu' },
+  { id:'department', name:'Department Hub', desc:'Team-focused with quick access links', cat:'department', color:'#8764b8', layout:'sidebar' },
+  { id:'quicklinks', name:'Quick Links', desc:'Simple, fast-access link collection', cat:'quick', color:'#00b294', layout:'tiles' },
+  { id:'applauncher', name:'App Launcher', desc:'Application grid like Office 365', cat:'portal', color:'#ff8c00', layout:'tiles' },
+  { id:'project', name:'Project Dashboard', desc:'Project-centric nav with status', cat:'department', color:'#e74856', layout:'card' },
+  { id:'helpdesk', name:'Help Desk', desc:'IT support & knowledge base nav', cat:'department', color:'#16c60c', layout:'list' },
+  { id:'executive', name:'Executive Dashboard', desc:'High-level KPI & report access', cat:'corporate', color:'#886ce4', layout:'topbar' },
+  { id:'training', name:'Training Portal', desc:'Learning paths & course catalog', cat:'portal', color:'#0099bc', layout:'tabbar' },
+  { id:'newemployee', name:'New Employee', desc:'Onboarding-focused navigation', cat:'portal', color:'#f7630c', layout:'card' },
+  { id:'sales', name:'Sales Toolkit', desc:'Sales resources & CRM links', cat:'department', color:'#e3008c', layout:'dropdown' },
+  { id:'hr', name:'HR Hub', desc:'People, policies & benefits', cat:'corporate', color:'#038387', layout:'sidebar' },
+  { id:'modern', name:'Modern Intranet', desc:'Clean, minimal modern design', cat:'corporate', color:'#767676', layout:'topbar' }
+];
+
+var LAYOUTS = [
+  { id:'compact', name:'Compact', icon:'\u2500\u2500\u2500' },
+  { id:'tiles', name:'Tiles', icon:'\u25A1\u25A1\u25A1' },
+  { id:'grid', name:'Grid', icon:'\u229E' },
+  { id:'list', name:'List', icon:'\u2261' },
+  { id:'icononly', name:'IconOnly', icon:'\u25CF\u25CF\u25CF' },
+  { id:'card', name:'Card', icon:'\u25AD' },
+  { id:'megamenu', name:'MegaMenu', icon:'\u25E8\u25E8' },
+  { id:'sidebar', name:'Sidebar', icon:'\u258C' },
+  { id:'topbar', name:'TopBar', icon:'\u2594' },
+  { id:'dropdown', name:'Dropdown', icon:'\u25BE' },
+  { id:'tabbar', name:'TabBar', icon:'\u2581\u2581\u2581' },
+  { id:'hamburger', name:'Hamburger', icon:'\u2630' },
+  { id:'breadcrumb', name:'Breadcrumb', icon:'\u203A' },
+  { id:'cmdpalette', name:'Cmd Palette', icon:'\u2318' },
+  { id:'fab', name:'FAB Menu', icon:'\u2795' }
+];
+
+var NAV_DATA = {
+  'Home': [
+    { icon:'\uD83C\uDFE0', title:'Dashboard', url:'/sites/intranet' },
+    { icon:'\uD83D\uDCF0', title:'News', url:'/sites/intranet/news' },
+    { icon:'\uD83D\uDCC5', title:'Events', url:'/sites/intranet/events' },
+    { icon:'\uD83D\uDC65', title:'Directory', url:'/sites/intranet/directory' }
+  ],
+  'Departments': [
+    { icon:'\uD83D\uDC64', title:'HR', url:'/sites/hr' },
+    { icon:'\uD83D\uDCB0', title:'Finance', url:'/sites/finance' },
+    { icon:'\uD83D\uDCBB', title:'IT', url:'/sites/it' },
+    { icon:'\uD83D\uDCE2', title:'Marketing', url:'/sites/marketing' },
+    { icon:'\u2699\uFE0F', title:'Operations', url:'/sites/operations' },
+    { icon:'\u2696\uFE0F', title:'Legal', url:'/sites/legal' }
+  ],
+  'Tools': [
+    { icon:'\uD83D\uDCAC', title:'Teams', url:'https://teams.microsoft.com' },
+    { icon:'\uD83D\uDCE7', title:'Outlook', url:'https://outlook.office.com' },
+    { icon:'\uD83D\uDDC2\uFE0F', title:'SharePoint', url:'https://sharepoint.com' },
+    { icon:'\u2601\uFE0F', title:'OneDrive', url:'https://onedrive.com' },
+    { icon:'\uD83D\uDCCB', title:'Planner', url:'https://tasks.office.com' },
+    { icon:'\uD83D\uDCCA', title:'Power BI', url:'https://app.powerbi.com' }
+  ],
+  'Resources': [
+    { icon:'\uD83C\uDF93', title:'Training', url:'/sites/training' },
+    { icon:'\uD83C\uDFE5', title:'Benefits', url:'/sites/hr/benefits' },
+    { icon:'\uD83D\uDEE0\uFE0F', title:'IT Help Desk', url:'/sites/it/helpdesk' },
+    { icon:'\uD83D\uDCC4', title:'Policies', url:'/sites/policies' },
+    { icon:'\uD83C\uDF5D', title:'Cafeteria Menu', url:'/sites/facilities/cafe' }
+  ],
+  'Quick Links': [
+    { icon:'\uD83D\uDCB3', title:'Submit Expense', url:'/sites/finance/expenses' },
+    { icon:'\uD83D\uDCCD', title:'Book Meeting Room', url:'/sites/facilities/rooms' },
+    { icon:'\uD83C\uDFAB', title:'IT Ticket', url:'/sites/it/tickets' },
+    { icon:'\uD83C\uDFD6\uFE0F', title:'PTO Request', url:'/sites/hr/pto' }
+  ]
+};
+
+var FEATURES = [
+  { id:'search', label:'Search', desc:'Fuzzy search across all navigation links', default:true },
+  { id:'pinning', label:'Pinning', desc:'Let users pin favorite links to the top', default:true },
+  { id:'analytics', label:'Analytics', desc:'Track link click frequency and patterns', default:false },
+  { id:'audience', label:'Audience Targeting', desc:'Show links based on group membership', default:false },
+  { id:'health', label:'Link Health', desc:'Monitor links for broken URLs', default:true },
+  { id:'badges', label:'Link Badges', desc:'Show "New" and "Updated" badges on links', default:true },
+  { id:'notifications', label:'Notification Dots', desc:'Show red dots for items needing attention', default:false },
+  { id:'sticky', label:'Sticky Mode', desc:'Keep navigation fixed when scrolling', default:false },
+  { id:'darkMode', label:'Dark Mode', desc:'Enable dark theme for navigation', default:false },
+  { id:'activeDetection', label:'Active Link Detection', desc:'Highlight the current page link', default:true },
+  { id:'tooltips', label:'Tooltips', desc:'Show descriptions on hover', default:true },
+  { id:'commandPalette', label:'Command Palette', desc:'Ctrl+K keyboard shortcut for search', default:false }
+];
+
+// ============================================================
+// WIZARD RENDERING
+// ============================================================
+function renderWizard() {
+  var step = state.currentStep;
+
+  // Sidebar — always visible (including welcome step)
+  var sidebar = document.getElementById('wizardSidebar');
+  sidebar.style.display = '';
+
+  // Sidebar steps — show step list even on welcome (all pending)
+  var stepsHtml = '';
+  for (var i = 0; i < STEPS.length; i++) {
+    var cls = 'pending';
+    var circleContent = String(i + 1);
+    if (step >= 0) {
+      cls = i < step ? 'complete' : (i === step ? 'active' : 'pending');
+      circleContent = i < step ? '\u2713' : String(i + 1);
+    }
+    var connector = i < STEPS.length - 1 ? '<div class="wizard-step-connector"></div>' : '';
+    stepsHtml += '<div class="wizard-step-item ' + cls + '"' + (step >= 0 ? ' onclick="goToStep(' + i + ')"' : '') + '>' +
+      '<div class="wizard-step-circle">' + circleContent + '</div>' +
+      '<div class="wizard-step-label">' + STEPS[i].label + '</div>' +
+      connector + '</div>';
+  }
+  document.getElementById('wizardSteps').innerHTML = stepsHtml;
+
+  // Header
+  var header = document.getElementById('wizardHeader');
+  // Content
+  var content = document.getElementById('wizardContent');
+  // Footer
+  var footer = document.getElementById('wizardFooter');
+
+  if (step === -1) {
+    header.innerHTML = '';
+    content.innerHTML = renderWelcome();
+    footer.innerHTML = '';
+  } else {
+    var s = STEPS[step];
+    var subtitles = [
+      'Browse pre-built navigation templates or start from scratch',
+      'Choose layout, colors, hover effects, and dropdown panel styling',
+      'Choose how your navigation links are managed',
+      'Add, edit, and organize your links',
+      'Toggle smart navigation features',
+      'Review your configuration before applying'
+    ];
+    header.innerHTML = '<h2>' + s.label + '</h2><p>' + subtitles[step] + '</p>';
+    content.innerHTML = renderStepContent(step);
+    footer.innerHTML = renderFooter(step);
+  }
+}
+
+function renderWelcome() {
+  return '<div class="welcome-screen">' +
+    '<div class="welcome-banner">' +
+      '<h1>Hyper<span class="accent">Nav</span></h1>' +
+      '<p>The most powerful navigation web part for SharePoint with 15 layouts, mega menus, and smart automation</p>' +
+    '</div>' +
+    '<div class="welcome-features">' +
+      '<div class="welcome-feature-card"><span class="emoji">\uD83E\uDDED</span><h3>15 Layouts</h3><p>TopBar, MegaMenu, Sidebar, Dropdown, Tiles, Cards, Breadcrumb, Command Palette &amp; more</p></div>' +
+      '<div class="welcome-feature-card"><span class="emoji">\uD83C\uDFA8</span><h3>Rich Styling</h3><p>15+ hover effects, gradients, glass morphism, dark mode, custom colors per link</p></div>' +
+      '<div class="welcome-feature-card"><span class="emoji">\u26A1</span><h3>Smart Features</h3><p>Fuzzy search, personalized pins, audience targeting, link health monitoring, analytics</p></div>' +
+      '<div class="welcome-feature-card"><span class="emoji">\u2728</span><h3>Easy Setup</h3><p>12+ templates, sample data, demo mode, and a guided wizard to get started fast</p></div>' +
+    '</div>' +
+    '<div class="welcome-actions">' +
+      '<button class="btn btn-primary btn-pill" onclick="goToStep(0)">Configure Now \u2192</button>' +
+      '<div class="welcome-hint">Set up your navigation, layout, and features</div>' +
+    '</div>' +
+  '</div>';
+}
+
+function renderStepContent(step) {
+  switch(step) {
+    case 0: return renderTemplateGallery();
+    case 1: return renderLayoutStyle();
+    case 2: return renderDataSource();
+    case 3: return renderNavLinks();
+    case 4: return renderFeatures();
+    case 5: return renderSummary();
+    default: return '';
+  }
+}
+
+function renderFooter(step) {
+  var left = '';
+  if (step > 0) {
+    left = '<button class="btn btn-outline" onclick="goToStep(' + (step - 1) + ')">\u2190 Back</button>';
+  } else {
+    left = '<button class="btn btn-outline" onclick="goToStep(-1)">\u2190 Back</button>';
+  }
+  var right = '';
+  if (step < 5) {
+    right = '<button class="btn btn-primary" onclick="goToStep(' + (step + 1) + ')">Next \u2192</button>';
+  } else {
+    right = '<button class="btn btn-success" onclick="applyConfig()">\u2713 Apply Configuration</button>';
+  }
+  return '<div>' + left + '</div><div class="wizard-footer-right">' + right + '</div>';
+}
+
+// ============================================================
+// STEP 1: TEMPLATE GALLERY
+// ============================================================
+function renderTemplateGallery() {
+  var cats = ['all','corporate','department','portal','quick'];
+  var catLabels = { all:'All', corporate:'Corporate', department:'Department', portal:'Portal', quick:'Quick Links' };
+  var tabs = '<div class="filter-tabs">';
+  for (var i = 0; i < cats.length; i++) {
+    tabs += '<button class="filter-tab' + (i === 0 ? ' active' : '') + '" onclick="filterTemplates(\'' + cats[i] + '\', this)">' + catLabels[cats[i]] + '</button>';
+  }
+  tabs += '</div>';
+  var grid = '<div class="template-grid" id="templateGrid">';
+  for (var t = 0; t < TEMPLATES.length; t++) {
+    var tpl = TEMPLATES[t];
+    var sel = state.selectedTemplate === tpl.id;
+    grid += '<div class="template-card' + (sel ? ' selected' : '') + '" data-cat="' + tpl.cat + '" onclick="selectTemplate(\'' + tpl.id + '\')">' +
+      '<div class="template-card-preview" style="background:' + tpl.color + ';">' +
+        (sel ? '<div class="template-check">\u2713</div>' : '') +
+      '</div>' +
+      '<div class="template-card-body">' +
+        '<h4>' + tpl.name + ' <span class="layout-badge">' + tpl.layout + '</span></h4>' +
+        '<p>' + tpl.desc + '</p>' +
+      '</div>' +
+    '</div>';
+  }
+  grid += '</div>';
+  return tabs + grid;
+}
+
+function filterTemplates(cat, btn) {
+  var tabs = btn.parentElement.querySelectorAll('.filter-tab');
+  for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+  btn.classList.add('active');
+  var cards = document.querySelectorAll('#templateGrid .template-card');
+  for (var i = 0; i < cards.length; i++) {
+    cards[i].style.display = (cat === 'all' || cards[i].dataset.cat === cat) ? '' : 'none';
+  }
+}
+
+function selectTemplate(id) {
+  state.selectedTemplate = id;
+  for (var t = 0; t < TEMPLATES.length; t++) {
+    if (TEMPLATES[t].id === id) { state.selectedLayout = TEMPLATES[t].layout; break; }
+  }
+  renderWizard();
+}
+
+// ============================================================
+// STEP 2: LAYOUT & STYLE
+// ============================================================
+function renderLayoutStyle() {
+  var grid = '<div class="layout-grid">';
+  for (var i = 0; i < LAYOUTS.length; i++) {
+    var l = LAYOUTS[i];
+    var sel = state.selectedLayout === l.id;
+    grid += '<div class="layout-card' + (sel ? ' selected' : '') + '" onclick="selectLayout(\'' + l.id + '\')">' +
+      '<div class="layout-icon">' + l.icon + '</div>' +
+      '<div class="layout-name">' + l.name + '</div>' +
+    '</div>';
+  }
+  grid += '</div>';
+
+  var opts = '<div class="style-options">' +
+    '<div class="style-group"><label>Hover Effect</label><select onchange="state.hoverEffect=this.value">' +
+      '<option value="lift"' + (state.hoverEffect==='lift'?' selected':'') + '>Lift</option>' +
+      '<option value="glow"' + (state.hoverEffect==='glow'?' selected':'') + '>Glow</option>' +
+      '<option value="zoom"' + (state.hoverEffect==='zoom'?' selected':'') + '>Zoom</option>' +
+      '<option value="darken"' + (state.hoverEffect==='darken'?' selected':'') + '>Darken</option>' +
+      '<option value="underline"' + (state.hoverEffect==='underline'?' selected':'') + '>Underline Slide</option>' +
+      '<option value="bgfill"' + (state.hoverEffect==='bgfill'?' selected':'') + '>Background Fill</option>' +
+    '</select></div>' +
+    '<div class="style-group"><label>Border Radius</label><select onchange="state.borderRadius=this.value">' +
+      '<option value="none"' + (state.borderRadius==='none'?' selected':'') + '>None</option>' +
+      '<option value="slight"' + (state.borderRadius==='slight'?' selected':'') + '>Slight (4px)</option>' +
+      '<option value="rounded"' + (state.borderRadius==='rounded'?' selected':'') + '>Rounded (8px)</option>' +
+      '<option value="pill"' + (state.borderRadius==='pill'?' selected':'') + '>Pill (24px)</option>' +
+    '</select></div>' +
+    '<div class="style-group"><label>Theme</label><div class="radio-group">' +
+      '<label><input type="radio" name="theme" value="light"' + (state.theme==='light'?' checked':'') + ' onchange="state.theme=this.value"> Light</label>' +
+      '<label><input type="radio" name="theme" value="dark"' + (state.theme==='dark'?' checked':'') + ' onchange="state.theme=this.value"> Dark</label>' +
+      '<label><input type="radio" name="theme" value="auto"' + (state.theme==='auto'?' checked':'') + ' onchange="state.theme=this.value"> Auto</label>' +
+    '</div></div>' +
+    '<div class="style-group"><label>Separator</label><select onchange="state.separator=this.value">' +
+      '<option value="line"' + (state.separator==='line'?' selected':'') + '>Line</option>' +
+      '<option value="dot"' + (state.separator==='dot'?' selected':'') + '>Dot</option>' +
+      '<option value="slash"' + (state.separator==='slash'?' selected':'') + '>Slash</option>' +
+      '<option value="pipe"' + (state.separator==='pipe'?' selected':'') + '>Pipe</option>' +
+    '</select></div>' +
+  '</div>';
+
+  // ── Color Management ──
+  var colorSection = '<div class="color-section">' +
+    '<div class="color-section-title">Link Colors</div>' +
+    '<div class="color-grid">' +
+      '<div class="color-field"><label>Default</label><input type="color" value="' + state.linkDefaultColor + '" onchange="state.linkDefaultColor=this.value;this.nextElementSibling.textContent=this.value"><span class="color-hex">' + state.linkDefaultColor + '</span></div>' +
+      '<div class="color-field"><label>Hover</label><input type="color" value="' + state.linkHoverColor + '" onchange="state.linkHoverColor=this.value;this.nextElementSibling.textContent=this.value"><span class="color-hex">' + state.linkHoverColor + '</span></div>' +
+      '<div class="color-field"><label>Active / Clicked</label><input type="color" value="' + state.linkActiveColor + '" onchange="state.linkActiveColor=this.value;this.nextElementSibling.textContent=this.value"><span class="color-hex">' + state.linkActiveColor + '</span></div>' +
+      '<div class="color-field"><label>Visited</label><input type="color" value="' + state.linkVisitedColor + '" onchange="state.linkVisitedColor=this.value;this.nextElementSibling.textContent=this.value"><span class="color-hex">' + state.linkVisitedColor + '</span></div>' +
+    '</div>' +
+    '<div class="color-section-title">Button Colors</div>' +
+    '<div class="color-grid">' +
+      '<div class="color-field"><label>Default BG</label><input type="color" value="' + state.btnDefaultBg + '" onchange="state.btnDefaultBg=this.value;this.nextElementSibling.textContent=this.value"><span class="color-hex">' + state.btnDefaultBg + '</span></div>' +
+      '<div class="color-field"><label>Default Text</label><input type="color" value="' + state.btnDefaultText + '" onchange="state.btnDefaultText=this.value;this.nextElementSibling.textContent=this.value"><span class="color-hex">' + state.btnDefaultText + '</span></div>' +
+      '<div class="color-field"><label>Hover BG</label><input type="color" value="' + state.btnHoverBg + '" onchange="state.btnHoverBg=this.value;this.nextElementSibling.textContent=this.value"><span class="color-hex">' + state.btnHoverBg + '</span></div>' +
+      '<div class="color-field"><label>Hover Text</label><input type="color" value="' + state.btnHoverText + '" onchange="state.btnHoverText=this.value;this.nextElementSibling.textContent=this.value"><span class="color-hex">' + state.btnHoverText + '</span></div>' +
+      '<div class="color-field"><label>Pressed BG</label><input type="color" value="' + state.btnPressedBg + '" onchange="state.btnPressedBg=this.value;this.nextElementSibling.textContent=this.value"><span class="color-hex">' + state.btnPressedBg + '</span></div>' +
+      '<div class="color-field"><label>Pressed Text</label><input type="color" value="' + state.btnPressedText + '" onchange="state.btnPressedText=this.value;this.nextElementSibling.textContent=this.value"><span class="color-hex">' + state.btnPressedText + '</span></div>' +
+    '</div>' +
+  '</div>';
+
+  // ── Dropdown / Flyout Panel Config ──
+  var panelSection = '<div class="panel-config-section">' +
+    '<div class="color-section-title">Dropdown / Flyout Panel</div>' +
+    '<div class="panel-config-grid">' +
+      '<div class="panel-config-field"><label>Background</label><input type="color" value="' + state.ddPanelBg + '" onchange="state.ddPanelBg=this.value"></div>' +
+      '<div class="panel-config-field"><label>Border Color</label><input type="color" value="' + state.ddPanelBorder + '" onchange="state.ddPanelBorder=this.value"></div>' +
+      '<div class="panel-config-field"><label>Shadow</label><select onchange="state.ddPanelShadow=this.value">' +
+        '<option value="none"' + (state.ddPanelShadow==='none'?' selected':'') + '>None</option>' +
+        '<option value="small"' + (state.ddPanelShadow==='small'?' selected':'') + '>Small</option>' +
+        '<option value="medium"' + (state.ddPanelShadow==='medium'?' selected':'') + '>Medium</option>' +
+        '<option value="large"' + (state.ddPanelShadow==='large'?' selected':'') + '>Large</option>' +
+      '</select></div>' +
+      '<div class="panel-config-field"><label>Open Animation</label><select onchange="state.ddPanelAnimation=this.value">' +
+        '<option value="fade"' + (state.ddPanelAnimation==='fade'?' selected':'') + '>Fade</option>' +
+        '<option value="slide"' + (state.ddPanelAnimation==='slide'?' selected':'') + '>Slide Down</option>' +
+        '<option value="scale"' + (state.ddPanelAnimation==='scale'?' selected':'') + '>Scale Up</option>' +
+        '<option value="none"' + (state.ddPanelAnimation==='none'?' selected':'') + '>None (Instant)</option>' +
+      '</select></div>' +
+      '<div class="panel-config-field"><label>Columns</label><select onchange="state.ddPanelColumns=this.value">' +
+        '<option value="1"' + (state.ddPanelColumns==='1'?' selected':'') + '>1 Column</option>' +
+        '<option value="2"' + (state.ddPanelColumns==='2'?' selected':'') + '>2 Columns</option>' +
+        '<option value="3"' + (state.ddPanelColumns==='3'?' selected':'') + '>3 Columns</option>' +
+        '<option value="4"' + (state.ddPanelColumns==='4'?' selected':'') + '>4 Columns</option>' +
+        '<option value="auto"' + (state.ddPanelColumns==='auto'?' selected':'') + '>Auto-fit</option>' +
+      '</select></div>' +
+      '<div class="panel-config-field"><label>Corner Radius</label><select onchange="state.ddPanelRadius=this.value">' +
+        '<option value="0"' + (state.ddPanelRadius==='0'?' selected':'') + '>None</option>' +
+        '<option value="4"' + (state.ddPanelRadius==='4'?' selected':'') + '>Slight (4px)</option>' +
+        '<option value="8"' + (state.ddPanelRadius==='8'?' selected':'') + '>Rounded (8px)</option>' +
+        '<option value="12"' + (state.ddPanelRadius==='12'?' selected':'') + '>Smooth (12px)</option>' +
+      '</select></div>' +
+      '<div class="panel-config-field"><label>Padding (px)</label><input type="number" min="0" max="32" value="' + state.ddPanelPadding + '" onchange="state.ddPanelPadding=this.value"></div>' +
+      '<div class="panel-config-field"><label>Max Height (px)</label><input type="number" min="100" max="800" step="50" value="' + state.ddPanelMaxHeight + '" onchange="state.ddPanelMaxHeight=this.value"></div>' +
+    '</div>' +
+    '<div class="panel-preview-box">' +
+      '<div class="panel-preview-header">Flyout Panel Preview</div>' +
+      '<div class="panel-preview-content" style="background:' + state.ddPanelBg + ';border:1px solid ' + state.ddPanelBorder + ';border-radius:' + state.ddPanelRadius + 'px;padding:' + state.ddPanelPadding + 'px;max-height:' + state.ddPanelMaxHeight + 'px;">' +
+        '<div class="panel-preview-item">\uD83D\uDCC4 Sub-item One</div>' +
+        '<div class="panel-preview-item">\uD83D\uDCC1 Sub-item Two</div>' +
+        '<div class="panel-preview-item">\u2699\uFE0F Sub-item Three</div>' +
+        '<div class="panel-preview-item">\uD83D\uDD17 Sub-item Four</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+
+  var preview = '<div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;margin-top:20px;">Live Preview</div>' +
+    '<div class="mini-preview" id="miniPreview">' + renderMiniPreview(state.selectedLayout) + '</div>';
+
+  return grid + opts + colorSection + panelSection + preview;
+}
+
+function selectLayout(id) {
+  state.selectedLayout = id;
+  renderWizard();
+}
+
+function renderMiniPreview(layout) {
+  var links = ['Home', 'Departments', 'Tools', 'Resources', 'Quick Links'];
+  switch(layout) {
+    case 'topbar':
+    case 'megamenu':
+      var items = '';
+      for (var i = 0; i < links.length; i++) items += '<span style="padding:6px 10px;font-size:11px;color:' + (i===0?'var(--cyan)':'rgba(255,255,255,0.8)') + ';cursor:pointer;">' + links[i] + '</span>';
+      return '<div style="width:100%;height:100%;display:flex;flex-direction:column;">' +
+        '<div style="background:var(--navy-dark);display:flex;align-items:center;padding:0 12px;height:36px;">' +
+          '<span style="color:var(--cyan);font-weight:700;font-size:11px;margin-right:16px;">HyperNav</span>' + items +
+        '</div>' +
+        '<div style="flex:1;background:#f3f2f1;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-disabled);">Page Content</div>' +
+      '</div>';
+    case 'sidebar':
+      var sitems = '';
+      for (var i = 0; i < links.length; i++) sitems += '<div style="padding:5px 10px;font-size:10px;' + (i===0?'color:var(--primary);font-weight:600;border-left:2px solid var(--primary);':'color:var(--text-secondary);border-left:2px solid transparent;') + '">' + links[i] + '</div>';
+      return '<div style="width:100%;height:100%;display:flex;">' +
+        '<div style="width:80px;background:#fff;border-right:1px solid var(--border);padding:8px 0;">' + sitems + '</div>' +
+        '<div style="flex:1;background:#f3f2f1;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-disabled);">Content</div>' +
+      '</div>';
+    case 'tiles':
+      var tiles = '';
+      for (var i = 0; i < 6; i++) tiles += '<div style="background:#fff;border:1px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--text-secondary);">' + (NAV_DATA['Tools'][i] ? NAV_DATA['Tools'][i].icon : '') + '</div>';
+      return '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:16px;width:100%;">' + tiles + '</div>';
+    case 'card':
+      var cards = '';
+      for (var i = 0; i < 3; i++) cards += '<div style="background:#fff;border:1px solid var(--border);border-radius:4px;padding:8px;font-size:9px;">' +
+        '<div style="font-size:14px;margin-bottom:4px;">' + (NAV_DATA['Home'][i] ? NAV_DATA['Home'][i].icon : '') + '</div>' +
+        '<div style="font-weight:600;">' + (NAV_DATA['Home'][i] ? NAV_DATA['Home'][i].title : '') + '</div></div>';
+      return '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:16px;width:100%;">' + cards + '</div>';
+    case 'compact':
+      var citems = '';
+      for (var i = 0; i < links.length; i++) {
+        if (i > 0) citems += '<span style="color:var(--text-disabled);font-size:8px;">\u2022</span>';
+        citems += '<span style="font-size:10px;color:' + (i===0?'var(--primary)':'var(--text-secondary)') + ';">' + links[i] + '</span>';
+      }
+      return '<div style="display:flex;align-items:center;gap:6px;padding:8px 12px;background:#fff;border-bottom:1px solid var(--border);width:100%;align-self:flex-start;">' + citems + '</div>';
+    case 'list':
+      var litems = '';
+      for (var i = 0; i < 4; i++) litems += '<div style="padding:4px 10px;font-size:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;">' +
+        '<span style="font-size:12px;">' + NAV_DATA['Home'][i].icon + '</span><span>' + NAV_DATA['Home'][i].title + '</span></div>';
+      return '<div style="width:60%;background:#fff;border:1px solid var(--border);border-radius:4px;overflow:hidden;">' + litems + '</div>';
+    case 'tabbar':
+      var tbitems = '';
+      for (var i = 0; i < links.length; i++) tbitems += '<span style="padding:8px 10px;font-size:10px;' + (i===0?'color:var(--primary);border-bottom:2px solid var(--primary);':'color:var(--text-secondary);border-bottom:2px solid transparent;') + '">' + links[i] + '</span>';
+      return '<div style="display:flex;border-bottom:1px solid var(--border);width:100%;align-self:flex-start;">' + tbitems + '</div>';
+    case 'dropdown':
+      return '<div style="display:flex;gap:2px;background:#fff;padding:6px 10px;border-bottom:1px solid var(--border);width:100%;align-self:flex-start;">' +
+        links.map(function(l){ return '<span style="padding:4px 8px;font-size:10px;color:var(--text-primary);">' + l + ' \u25BE</span>'; }).join('') + '</div>';
+    default:
+      return '<div style="font-size:12px;color:var(--text-disabled);">' + layout + ' preview</div>';
+  }
+}
+
+// ============================================================
+// STEP 3: DATA SOURCE
+// ============================================================
+function renderDataSource() {
+  var sources = [
+    { id:'manual', icon:'\u270F\uFE0F', name:'Manual Entry', desc:'Add links directly in the web part' },
+    { id:'list', icon:'\uD83D\uDCCB', name:'SharePoint List', desc:'Read from a SharePoint list' },
+    { id:'sitenav', icon:'\uD83C\uDF10', name:'Site Navigation', desc:'Import from SP site navigation' },
+    { id:'json', icon:'\uD83D\uDCBB', name:'JSON Import', desc:'Import from JSON file' }
+  ];
+  var html = '<div class="source-options">';
+  for (var i = 0; i < sources.length; i++) {
+    var s = sources[i];
+    html += '<div class="source-card' + (state.dataSource === s.id ? ' selected' : '') + '" onclick="selectSource(\'' + s.id + '\')">' +
+      '<div class="source-icon">' + s.icon + '</div>' +
+      '<div class="source-info"><h4>' + s.name + '</h4><p>' + s.desc + '</p></div>' +
+    '</div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function selectSource(id) {
+  state.dataSource = id;
+  renderWizard();
+}
+
+// ============================================================
+// STEP 4: NAV LINKS
+// ============================================================
+function renderNavLinks() {
+  var html = '<div class="links-toolbar">' +
+    '<button class="btn btn-primary btn-sm">+ Add Link</button>' +
+    '<button class="btn btn-outline btn-sm">+ Add Group</button>' +
+  '</div>';
+  html += '<div class="links-list">';
+  var groups = Object.keys(NAV_DATA);
+  for (var g = 0; g < groups.length; g++) {
+    var groupName = groups[g];
+    var links = NAV_DATA[groupName];
+    var collapsed = state.collapsedGroups[groupName];
+    html += '<div class="link-group-header" onclick="toggleGroup(\'' + groupName + '\')">' +
+      '<span class="chevron' + (collapsed ? ' collapsed' : '') + '">\u25BC</span>' +
+      '<span>' + groupName + '</span>' +
+      '<span class="group-count">' + links.length + ' links</span>' +
+    '</div>';
+    html += '<div class="link-group-content" style="max-height:' + (collapsed ? '0' : (links.length * 42 + 4) + 'px') + ';overflow:hidden;">';
+    for (var i = 0; i < links.length; i++) {
+      var lnk = links[i];
+      html += '<div class="link-row">' +
+        '<span class="link-drag">\u22EE\u22EE</span>' +
+        '<span class="link-icon">' + lnk.icon + '</span>' +
+        '<span class="link-title">' + lnk.title + '</span>' +
+        '<span class="link-url">' + lnk.url + '</span>' +
+        '<span class="link-actions">' +
+          '<button title="Edit">\u270F\uFE0F</button>' +
+          '<button title="Delete">\uD83D\uDDD1\uFE0F</button>' +
+        '</span>' +
+      '</div>';
+    }
+    html += '</div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function toggleGroup(name) {
+  state.collapsedGroups[name] = !state.collapsedGroups[name];
+  renderWizard();
+}
+
+// ============================================================
+// STEP 5: FEATURES
+// ============================================================
+function renderFeatures() {
+  var html = '<div class="features-grid">';
+  for (var i = 0; i < FEATURES.length; i++) {
+    var f = FEATURES[i];
+    var on = state.features[f.id];
+    html += '<div class="feature-row">' +
+      '<div class="feature-info"><h4>' + f.label + '</h4><p>' + f.desc + '</p></div>' +
+      '<div class="toggle' + (on ? ' on' : '') + '" onclick="toggleFeature(\'' + f.id + '\')">' +
+        '<div class="toggle-knob"></div>' +
+      '</div>' +
+    '</div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function toggleFeature(id) {
+  state.features[id] = !state.features[id];
+  renderWizard();
+}
+
+// ============================================================
+// STEP 6: SUMMARY
+// ============================================================
+function renderSummary() {
+  var tplName = '(none)';
+  for (var i = 0; i < TEMPLATES.length; i++) {
+    if (TEMPLATES[i].id === state.selectedTemplate) { tplName = TEMPLATES[i].name; break; }
+  }
+  var layoutName = state.selectedLayout;
+  for (var i = 0; i < LAYOUTS.length; i++) {
+    if (LAYOUTS[i].id === state.selectedLayout) { layoutName = LAYOUTS[i].name; break; }
+  }
+  var totalLinks = 0;
+  var groups = Object.keys(NAV_DATA);
+  for (var g = 0; g < groups.length; g++) totalLinks += NAV_DATA[groups[g]].length;
+
+  var enabledFeatures = [];
+  for (var i = 0; i < FEATURES.length; i++) {
+    if (state.features[FEATURES[i].id]) enabledFeatures.push(FEATURES[i].label);
+  }
+
+  var shadowMap = { none:'None', small:'Small', medium:'Medium', large:'Large' };
+  var animMap = { fade:'Fade', slide:'Slide Down', scale:'Scale Up', none:'Instant' };
+
+  var rows = [
+    ['Template', tplName],
+    ['Layout', layoutName],
+    ['Hover Effect', state.hoverEffect],
+    ['Border Radius', state.borderRadius],
+    ['Theme', state.theme],
+    ['Link Colors', '<span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:' + state.linkDefaultColor + ';vertical-align:middle;margin-right:4px;border:1px solid #ccc;"></span> Default &nbsp; <span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:' + state.linkHoverColor + ';vertical-align:middle;margin-right:4px;border:1px solid #ccc;"></span> Hover &nbsp; <span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:' + state.linkActiveColor + ';vertical-align:middle;margin-right:4px;border:1px solid #ccc;"></span> Active &nbsp; <span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:' + state.linkVisitedColor + ';vertical-align:middle;border:1px solid #ccc;"></span> Visited'],
+    ['Button Colors', '<span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:' + state.btnDefaultBg + ';vertical-align:middle;margin-right:4px;border:1px solid #ccc;"></span> Default &nbsp; <span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:' + state.btnHoverBg + ';vertical-align:middle;margin-right:4px;border:1px solid #ccc;"></span> Hover &nbsp; <span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:' + state.btnPressedBg + ';vertical-align:middle;border:1px solid #ccc;"></span> Pressed'],
+    ['Flyout Panel', state.ddPanelColumns + ' col, ' + (shadowMap[state.ddPanelShadow] || state.ddPanelShadow) + ' shadow, ' + (animMap[state.ddPanelAnimation] || state.ddPanelAnimation) + ', ' + state.ddPanelRadius + 'px radius'],
+    ['Data Source', state.dataSource],
+    ['Groups', groups.length + ' groups'],
+    ['Total Links', totalLinks + ' links'],
+    ['Features', enabledFeatures.join(', ') || 'None']
+  ];
+
+  var html = '<div class="summary-card">';
+  for (var i = 0; i < rows.length; i++) {
+    html += '<div class="summary-row"><div class="summary-label">' + rows[i][0] + '</div><div class="summary-value">' + rows[i][1] + '</div></div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function goToStep(step) {
+  state.currentStep = step;
+  renderWizard();
+}
+
+function applyConfig() {
+  state.demoLayout = state.selectedLayout;
+  state.demoTheme = state.theme === 'dark' ? 'dark' : 'light';
+  closeWizard();
+}
+
+function closeWizard() {
+  document.getElementById('wizardOverlay').classList.add('hidden');
+  var page = document.getElementById('navPreviewPage');
+  page.classList.add('visible');
+  renderNavPreview();
+  renderDemoBar();
+}
+
+function openWizard() {
+  state.currentStep = -1;
+  document.getElementById('wizardOverlay').classList.remove('hidden');
+  document.getElementById('navPreviewPage').classList.remove('visible');
+  renderWizard();
+}
+
+// ============================================================
+// NAV PREVIEW RENDERERS
+// ============================================================
+function renderNavPreview() {
+  var area = document.getElementById('navPreviewArea');
+  area.className = 'nav-preview-area' + (state.demoTheme === 'dark' ? ' dark' : '');
+  var layout = state.demoLayout;
+  var html = '';
+
+  switch(layout) {
+    case 'topbar':   html = renderTopBarNav(); break;
+    case 'megamenu': html = renderMegaMenuNav(); break;
+    case 'sidebar':  html = renderSidebarNav(); break;
+    case 'tiles':    html = renderTilesNav(); break;
+    case 'card':     html = renderCardNav(); break;
+    case 'compact':  html = renderCompactNav(); break;
+    case 'list':     html = renderListNav(); break;
+    case 'tabbar':   html = renderTabBarNav(); break;
+    case 'dropdown': html = renderDropdownNav(); break;
+    case 'grid':     html = renderGridNav(); break;
+    default:         html = renderTopBarNav(); break;
+  }
+  area.innerHTML = html;
+}
+
+function getMockContent() {
+  return '<div class="mock-content-area">' +
+    '<h2>Welcome to the Intranet</h2>' +
+    '<p>This is a mock page content area demonstrating the HyperNav V2 navigation web part. The navigation above (or beside) is fully interactive. Try hovering over menu items, clicking links, and using the demo bar below to switch layouts and features.</p>' +
+    '<div class="mock-cards">' +
+      '<div class="mock-card-placeholder">News Card</div>' +
+      '<div class="mock-card-placeholder">Events Card</div>' +
+      '<div class="mock-card-placeholder">Quick Links Card</div>' +
+    '</div>' +
+  '</div>';
+}
+
+function getSearchIcon() {
+  return state.demoFeatures.search ? '<span class="nav-search" onclick="openSearch()" title="Search">\uD83D\uDD0D</span>' : '';
+}
+
+function getBadge(title) {
+  if (!state.demoFeatures.badges) return '';
+  if (title === 'News' || title === 'Training') return ' <span class="link-badge-new">NEW</span>';
+  return '';
+}
+
+function getPinBadge(title) {
+  if (!state.demoFeatures.pins) return '';
+  if (title === 'Dashboard' || title === 'Teams') return ' <span class="pin-badge">\uD83D\uDCCC</span>';
+  return '';
+}
+
+function renderTopBarNav() {
+  var groups = Object.keys(NAV_DATA);
+  var items = '';
+  for (var i = 0; i < groups.length; i++) {
+    var cls = i === 0 ? ' active' : '';
+    var hasChildren = NAV_DATA[groups[i]].length > 3;
+    items += '<span class="nav-item' + cls + '" onmouseenter="showTopbarSub(this,' + i + ')" onmouseleave="hideTopbarSub()">' +
+      groups[i] + (hasChildren ? ' \u25BE' : '') + '</span>';
+  }
+  return '<div style="position:relative;">' +
+    '<div class="nav-topbar">' +
+      '<span class="nav-logo">HyperNav</span>' + items + getSearchIcon() +
+    '</div>' +
+    '<div class="mega-dropdown" id="topbarSub" onmouseenter="keepTopbarSub()" onmouseleave="hideTopbarSub()"></div>' +
+  '</div>' + getMockContent();
+}
+
+var topbarSubTimeout = null;
+function showTopbarSub(el, groupIndex) {
+  clearTimeout(topbarSubTimeout);
+  var groups = Object.keys(NAV_DATA);
+  var links = NAV_DATA[groups[groupIndex]];
+  var html = '<div style="display:flex;flex-wrap:wrap;gap:16px;">';
+  for (var i = 0; i < links.length; i++) {
+    html += '<a href="#" onclick="return false" style="display:flex;align-items:center;gap:8px;padding:6px 12px;text-decoration:none;color:var(--text-primary);border-radius:4px;transition:background 0.15s;" onmouseover="this.style.background=\'var(--surface)\'" onmouseout="this.style.background=\'transparent\'">' +
+      '<span style="font-size:18px;">' + links[i].icon + '</span>' +
+      '<span style="font-size:13px;">' + links[i].title + getBadge(links[i].title) + getPinBadge(links[i].title) + '</span>' +
+    '</a>';
+  }
+  html += '</div>';
+  var sub = document.getElementById('topbarSub');
+  sub.innerHTML = html;
+  sub.classList.add('show');
+}
+function keepTopbarSub() { clearTimeout(topbarSubTimeout); }
+function hideTopbarSub() { topbarSubTimeout = setTimeout(function(){ document.getElementById('topbarSub').classList.remove('show'); }, 150); }
+
+function renderMegaMenuNav() {
+  var groups = Object.keys(NAV_DATA);
+  var items = '';
+  for (var i = 0; i < groups.length; i++) {
+    items += '<span class="nav-item' + (i===0?' active':'') + '" onmouseenter="showMegaMenu(this)" onmouseleave="hideMegaMenu()">' +
+      groups[i] + ' \u25BE</span>';
+  }
+  return '<div style="position:relative;">' +
+    '<div class="nav-topbar">' +
+      '<span class="nav-logo">HyperNav</span>' + items + getSearchIcon() +
+    '</div>' +
+    '<div class="mega-dropdown" id="megaPanel" onmouseenter="keepMega()" onmouseleave="hideMegaMenu()"></div>' +
+  '</div>' + getMockContent();
+}
+
+var megaTimeout = null;
+function showMegaMenu(el) {
+  clearTimeout(megaTimeout);
+  var groups = Object.keys(NAV_DATA);
+  // Show 3 columns of links from different groups
+  var cols = '';
+  for (var g = 0; g < Math.min(3, groups.length); g++) {
+    cols += '<div class="mega-col"><h4>' + groups[g] + '</h4>';
+    var links = NAV_DATA[groups[g]];
+    for (var i = 0; i < links.length; i++) {
+      cols += '<a href="#" onclick="return false">' + links[i].icon + ' ' + links[i].title + getBadge(links[i].title) + '</a>';
+    }
+    cols += '</div>';
+  }
+  document.getElementById('megaPanel').innerHTML = '<div class="mega-columns">' + cols + '</div>';
+  document.getElementById('megaPanel').classList.add('show');
+}
+function keepMega() { clearTimeout(megaTimeout); }
+function hideMegaMenu() { megaTimeout = setTimeout(function(){ document.getElementById('megaPanel').classList.remove('show'); }, 150); }
+
+function renderSidebarNav() {
+  var groups = Object.keys(NAV_DATA);
+  var sidebar = '<div class="sidebar-brand">\uD83E\uDDED HyperNav</div>';
+  if (state.demoFeatures.search) {
+    sidebar += '<div style="padding:8px 12px;"><input type="text" placeholder="\uD83D\uDD0D Search..." style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:4px;font-size:12px;"></div>';
+  }
+  for (var g = 0; g < groups.length; g++) {
+    sidebar += '<div class="sidebar-group-title">' + groups[g] + '</div>';
+    var links = NAV_DATA[groups[g]];
+    for (var i = 0; i < links.length; i++) {
+      var isActive = g === 0 && i === 0;
+      sidebar += '<div class="sidebar-item' + (isActive ? ' active' : '') + '">' +
+        '<span class="s-icon">' + links[i].icon + '</span>' +
+        '<span>' + links[i].title + getBadge(links[i].title) + getPinBadge(links[i].title) + '</span>' +
+      '</div>';
+    }
+  }
+  return '<div class="nav-sidebar-layout">' +
+    '<div class="nav-sidebar">' + sidebar + '</div>' +
+    '<div class="sidebar-main">' + getMockContent() + '</div>' +
+  '</div>';
+}
+
+function renderTilesNav() {
+  var allLinks = [];
+  var groups = Object.keys(NAV_DATA);
+  for (var g = 0; g < groups.length; g++) {
+    var links = NAV_DATA[groups[g]];
+    for (var i = 0; i < Math.min(3, links.length); i++) allLinks.push(links[i]);
+  }
+  var html = '<div class="nav-tiles">';
+  for (var i = 0; i < Math.min(12, allLinks.length); i++) {
+    html += '<div class="nav-tile"><span class="tile-icon">' + allLinks[i].icon + '</span><span class="tile-label">' + allLinks[i].title + '</span></div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function renderCardNav() {
+  var allLinks = [];
+  var groups = Object.keys(NAV_DATA);
+  var descs = ['Access your personal dashboard and overview', 'Stay updated with the latest company news',
+    'View upcoming company events and meetings', 'Find colleagues and contact information',
+    'Human Resources portal and services', 'Financial reports and budgeting tools',
+    'IT support and technology resources', 'Marketing campaigns and brand assets',
+    'Operations management and logistics'];
+  for (var g = 0; g < groups.length; g++) {
+    var links = NAV_DATA[groups[g]];
+    for (var i = 0; i < Math.min(2, links.length); i++) allLinks.push(links[i]);
+  }
+  var html = '<div class="nav-cards">';
+  for (var i = 0; i < Math.min(9, allLinks.length); i++) {
+    html += '<div class="nav-card-item"><div class="card-icon">' + allLinks[i].icon + '</div>' +
+      '<h4>' + allLinks[i].title + getBadge(allLinks[i].title) + '</h4>' +
+      '<p>' + (descs[i] || 'Quick access link') + '</p></div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function renderCompactNav() {
+  var allLinks = [];
+  var groups = Object.keys(NAV_DATA);
+  for (var g = 0; g < groups.length; g++) allLinks.push({ icon:'', title: groups[g] });
+  var seps = { line:'\u2502', dot:'\u2022', slash:'/', pipe:'|' };
+  var sep = seps[state.separator] || '\u2022';
+  var html = '<div class="nav-compact">';
+  for (var i = 0; i < allLinks.length; i++) {
+    if (i > 0) html += '<span class="compact-sep">' + sep + '</span>';
+    html += '<span class="compact-item' + (i===0?' active':'') + '">' + allLinks[i].title + '</span>';
+  }
+  if (state.demoFeatures.search) html += '<span class="compact-item" onclick="openSearch()" style="margin-left:auto;cursor:pointer;">\uD83D\uDD0D</span>';
+  html += '</div>' + getMockContent();
+  return html;
+}
+
+function renderListNav() {
+  var allLinks = [];
+  var groups = Object.keys(NAV_DATA);
+  for (var g = 0; g < groups.length; g++) {
+    var links = NAV_DATA[groups[g]];
+    for (var i = 0; i < links.length; i++) allLinks.push(links[i]);
+  }
+  var html = '<div class="nav-list">';
+  for (var i = 0; i < Math.min(12, allLinks.length); i++) {
+    html += '<div class="list-item"><span class="l-icon">' + allLinks[i].icon + '</span>' +
+      '<span>' + allLinks[i].title + getBadge(allLinks[i].title) + getPinBadge(allLinks[i].title) + '</span>' +
+      '<span class="l-arrow">\u203A</span></div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function renderTabBarNav() {
+  var groups = Object.keys(NAV_DATA);
+  var html = '<div class="nav-tabbar">';
+  for (var i = 0; i < groups.length; i++) {
+    html += '<span class="tab-item' + (i===0?' active':'') + '">' + groups[i] + '</span>';
+  }
+  html += '</div>' + getMockContent();
+  return html;
+}
+
+function renderDropdownNav() {
+  var groups = Object.keys(NAV_DATA);
+  var html = '<div class="nav-dropdown-bar">';
+  for (var i = 0; i < groups.length; i++) {
+    html += '<span class="dd-item" onmouseenter="showDropdown(this, \'' + groups[i] + '\')" onmouseleave="hideDropdown(this)">' +
+      groups[i] + ' \u25BE' +
+      '<div class="dd-submenu" onmouseenter="keepDropdown(this)" onmouseleave="hideDropdown(this.parentElement)">';
+    var links = NAV_DATA[groups[i]];
+    for (var j = 0; j < links.length; j++) {
+      html += '<a href="#" onclick="return false">' + links[j].icon + ' ' + links[j].title + '</a>';
+    }
+    html += '</div></span>';
+  }
+  html += '</div>' + getMockContent();
+  return html;
+}
+
+var ddTimeout = {};
+function showDropdown(el, name) {
+  clearTimeout(ddTimeout[name]);
+  var sub = el.querySelector('.dd-submenu');
+  if (sub) sub.classList.add('show');
+}
+function keepDropdown(sub) {
+  // keep open
+}
+function hideDropdown(el) {
+  var name = el.textContent.trim();
+  ddTimeout[name] = setTimeout(function(){
+    var sub = el.querySelector('.dd-submenu');
+    if (sub) sub.classList.remove('show');
+  }, 100);
+}
+
+function renderGridNav() {
+  var allLinks = [];
+  var groups = Object.keys(NAV_DATA);
+  for (var g = 0; g < groups.length; g++) {
+    var links = NAV_DATA[groups[g]];
+    for (var i = 0; i < links.length; i++) allLinks.push(links[i]);
+  }
+  var html = '<div class="nav-grid-layout">';
+  for (var i = 0; i < Math.min(12, allLinks.length); i++) {
+    html += '<div class="nav-grid-item"><span class="g-icon">' + allLinks[i].icon + '</span><span class="g-label">' + allLinks[i].title + '</span></div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+// ============================================================
+// SEARCH
+// ============================================================
+function openSearch() {
+  document.getElementById('searchOverlay').classList.add('show');
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchInput').focus();
+  filterSearch('');
+}
+
+function closeSearch() {
+  document.getElementById('searchOverlay').classList.remove('show');
+}
+
+function filterSearch(query) {
+  var results = [];
+  var groups = Object.keys(NAV_DATA);
+  for (var g = 0; g < groups.length; g++) {
+    var links = NAV_DATA[groups[g]];
+    for (var i = 0; i < links.length; i++) {
+      var lnk = links[i];
+      if (!query || lnk.title.toLowerCase().indexOf(query.toLowerCase()) !== -1 || groups[g].toLowerCase().indexOf(query.toLowerCase()) !== -1) {
+        results.push({ icon: lnk.icon, title: lnk.title, cat: groups[g] });
+      }
+    }
+  }
+  var html = '';
+  for (var i = 0; i < Math.min(8, results.length); i++) {
+    html += '<div class="search-result" onclick="closeSearch()">' +
+      '<span class="sr-icon">' + results[i].icon + '</span>' +
+      '<span class="sr-text">' + results[i].title + '</span>' +
+      '<span class="sr-cat">' + results[i].cat + '</span>' +
+    '</div>';
+  }
+  if (results.length === 0) {
+    html = '<div style="padding:20px;text-align:center;color:var(--text-disabled);font-size:13px;">No results found</div>';
+  }
+  document.getElementById('searchResults').innerHTML = html;
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeSearch();
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    if (state.demoFeatures.search && document.getElementById('navPreviewPage').classList.contains('visible')) {
+      openSearch();
+    }
+  }
+});
+
+document.getElementById('searchOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeSearch();
+});
+
+// ============================================================
+// DEMO BAR
+// ============================================================
+function renderDemoBar() {
+  var layoutButtons = ['compact','tiles','grid','list','card','megamenu','sidebar','topbar','dropdown','tabbar'];
+  var layoutHtml = '';
+  for (var i = 0; i < layoutButtons.length; i++) {
+    var lb = layoutButtons[i];
+    layoutHtml += '<button class="demo-btn' + (state.demoLayout === lb ? ' active' : '') + '" onclick="setDemoLayout(\'' + lb + '\')">' + lb + '</button>';
+  }
+
+  var themeHtml = '<button class="demo-btn' + (state.demoTheme === 'light' ? ' active' : '') + '" onclick="setDemoTheme(\'light\')">Light</button>' +
+    '<button class="demo-btn' + (state.demoTheme === 'dark' ? ' active' : '') + '" onclick="setDemoTheme(\'dark\')">Dark</button>';
+
+  var featureHtml = '';
+  var fkeys = ['search','pins','badges'];
+  var fLabels = ['Search','Pins','Badges'];
+  for (var i = 0; i < fkeys.length; i++) {
+    var checked = state.demoFeatures[fkeys[i]] ? ' checked' : '';
+    featureHtml += '<label class="demo-toggle"><input type="checkbox"' + checked + ' onchange="toggleDemoFeature(\'' + fkeys[i] + '\', this.checked)"><span class="demo-check">\u2713</span>' + fLabels[i] + '</label>';
+  }
+
+  document.getElementById('demoBar').innerHTML =
+    '<span class="demo-label">DEMO</span>' +
+    '<div class="demo-section"><span class="demo-section-label">Layout</span>' + layoutHtml + '</div>' +
+    '<div class="demo-section"><span class="demo-section-label">Theme</span>' + themeHtml + '</div>' +
+    '<div class="demo-section"><span class="demo-section-label">Features</span>' + featureHtml + '</div>' +
+    '<div class="demo-reset"><button class="demo-btn" onclick="openWizard()">\uD83D\uDD04 Reset</button></div>';
+}
+
+function setDemoLayout(layout) {
+  state.demoLayout = layout;
+  renderNavPreview();
+  renderDemoBar();
+}
+
+function setDemoTheme(theme) {
+  state.demoTheme = theme;
+  renderNavPreview();
+  renderDemoBar();
+}
+
+function toggleDemoFeature(key, val) {
+  state.demoFeatures[key] = val;
+  renderNavPreview();
+  renderDemoBar();
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderWizard();
+</script>
+</body>
+</html>

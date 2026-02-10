@@ -8,6 +8,15 @@
   font-family: $ms-font-family-fallbacks;
 }
 
+.hyperNavDark {
+  background: #1b2838;
+  color: #e0e0e0;
+
+  a {
+    color: #90caf9;
+  }
+}
+
 .hyperNavToolbar {
   display: flex;
   align-items: center;
@@ -17,4 +26,13 @@
 .hyperNavContent {
   display: flex;
   flex-direction: column;
+}
+
+.sampleBanner {
+  padding: 8px 14px;
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 6px;
+  font-size: $ms-font-size-12;
+  color: #795548;
 }

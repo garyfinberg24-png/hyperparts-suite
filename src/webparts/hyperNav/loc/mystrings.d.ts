@@ -4,6 +4,7 @@ declare interface IHyperNavWebPartStrings {
   LinksGroupName: string;
   GroupsGroupName: string;
   FeaturesGroupName: string;
+  StylingGroupName: string;
   TitleFieldLabel: string;
   LayoutModeFieldLabel: string;
   GridColumnsFieldLabel: string;
@@ -37,6 +38,22 @@ declare interface IHyperNavWebPartStrings {
   RemoveGroupLabel: string;
   AddGroupLabel: string;
   NewGroupDefaultName: string;
+  HoverEffectLabel: string;
+  BorderRadiusLabel: string;
+  NavThemeLabel: string;
+  SeparatorLabel: string;
+  EnableStickyNavLabel: string;
+  EnableNotificationsLabel: string;
+  EnableActiveDetectionLabel: string;
+  EnableTooltipsLabel: string;
+  EnableCommandPaletteLabel: string;
+  EnableDarkModeToggleLabel: string;
+  WizardCompletedLabel: string;
+  UseSampleDataLabel: string;
+  EnableDemoModeLabel: string;
+  SampleDataBanner: string;
+  RunWizardLabel: string;
+  DemoControlsLabel: string;
 }
 
 declare module "HyperNavWebPartStrings" {

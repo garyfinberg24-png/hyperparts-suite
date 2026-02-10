@@ -14,6 +14,8 @@ export interface IHyperNavStoreState {
   pinnedLinkIds: string[];
   /** Map of linkId → health status (edit mode only) */
   linkHealthMap: Record<string, LinkHealthStatus>;
+  /** Whether the wizard modal is open */
+  wizardOpen: boolean;
 }
 
 export interface IHyperNavStoreActions {
@@ -26,6 +28,7 @@ export interface IHyperNavStoreActions {
   togglePinnedLink: (linkId: string) => void;
   setLinkHealth: (linkId: string, status: LinkHealthStatus) => void;
   clearLinkHealth: () => void;
+  setWizardOpen: (open: boolean) => void;
   reset: () => void;
 }
 
@@ -37,6 +40,7 @@ const initialState: IHyperNavStoreState = {
   megaMenuOpen: false,
   pinnedLinkIds: [],
   linkHealthMap: {},
+  wizardOpen: false,
 };
 
 export const useHyperNavStore = create<IHyperNavStore>(function (set) {
@@ -110,6 +114,10 @@ export const useHyperNavStore = create<IHyperNavStore>(function (set) {
 
     clearLinkHealth: function (): void {
       set({ linkHealthMap: {} });
+    },
+
+    setWizardOpen: function (open: boolean): void {
+      set({ wizardOpen: open });
     },
 
     reset: function (): void {

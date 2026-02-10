@@ -1,0 +1,72 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.breadcrumb {
+  padding: 8px 0;
+}
+
+.breadcrumbList {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 0;
+}
+
+.breadcrumbItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+}
+
+.breadcrumbLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  text-decoration: none;
+  color: $ms-color-themePrimary;
+  font-size: $ms-font-size-14;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: $ms-color-neutralLighter;
+    text-decoration: underline;
+  }
+
+  &:focus {
+    outline: 2px solid $ms-color-themePrimary;
+    outline-offset: -2px;
+  }
+}
+
+.breadcrumbCurrent {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  color: $ms-color-neutralPrimary;
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+}
+
+.breadcrumbSeparator {
+  font-size: $ms-font-size-10;
+  color: $ms-color-neutralTertiary;
+  margin: 0 2px;
+  flex-shrink: 0;
+}
+
+.breadcrumbIcon {
+  font-size: $ms-font-size-14;
+  flex-shrink: 0;
+}
+
+.breadcrumbExternal {
+  font-size: $ms-font-size-10;
+  color: $ms-color-neutralSecondary;
+  margin-left: 2px;
+}

@@ -37,9 +37,12 @@ const WelcomeStep: React.FC<IWelcomeStepProps> = function (props) {
           React.createElement("span", { className: styles.splashTaglineStrong }, "Navigate"),
           " smarter, not harder.",
           React.createElement("br"),
-          "8 layouts with ",
-          React.createElement("span", { className: styles.splashTaglineStrong }, "audience targeting"),
-          " & link health."
+          React.createElement("span", { className: styles.splashTaglineStrong }, "15 layouts"),
+          " with ",
+          React.createElement("span", { className: styles.splashTaglineStrong }, "color engine"),
+          " & ",
+          React.createElement("span", { className: styles.splashTaglineStrong }, "demo mode"),
+          "."
         )
       )
     ),
@@ -47,29 +50,29 @@ const WelcomeStep: React.FC<IWelcomeStepProps> = function (props) {
     // ── Body: Feature Cards + CTA ──
     React.createElement("div", { className: styles.splashBody },
       React.createElement("div", { className: styles.splashCards },
-        // Card 1: 8 Layouts
+        // Card 1: 15 Layouts
         React.createElement("div", { className: styles.splashCard },
           React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDCCC"),
-          React.createElement("div", { className: styles.splashCardTitle }, "8 Layouts"),
-          React.createElement("div", { className: styles.splashCardDesc }, "Tiles, mega menu, sidebar, icon grid & more")
+          React.createElement("div", { className: styles.splashCardTitle }, "15 Layouts"),
+          React.createElement("div", { className: styles.splashCardDesc }, "Topbar, mega menu, sidebar, FAB, command palette & more")
         ),
-        // Card 2: Audience Filter
+        // Card 2: Color Engine
         React.createElement("div", { className: styles.splashCard },
-          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDD12"),
-          React.createElement("div", { className: styles.splashCardTitle }, "Audience Filter"),
-          React.createElement("div", { className: styles.splashCardDesc }, "Show links based on AD group membership")
+          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83C\uDFA8"),
+          React.createElement("div", { className: styles.splashCardTitle }, "Color Engine"),
+          React.createElement("div", { className: styles.splashCardDesc }, "Full link + button state colors with dropdown panel config")
         ),
-        // Card 3: Pinned Links
+        // Card 3: Template Gallery
         React.createElement("div", { className: styles.splashCard },
-          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDCCD"),
-          React.createElement("div", { className: styles.splashCardTitle }, "Pinned Links"),
-          React.createElement("div", { className: styles.splashCardDesc }, "Users pin their favorites for quick access")
+          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDE80"),
+          React.createElement("div", { className: styles.splashCardTitle }, "12 Templates"),
+          React.createElement("div", { className: styles.splashCardDesc }, "Pre-built configs for corporate, department, portal & more")
         ),
-        // Card 4: Link Health
+        // Card 4: Demo Mode
         React.createElement("div", { className: styles.splashCard },
-          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDFE2"),
-          React.createElement("div", { className: styles.splashCardTitle }, "Link Health"),
-          React.createElement("div", { className: styles.splashCardDesc }, "Auto-check for broken links in edit mode")
+          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDD27"),
+          React.createElement("div", { className: styles.splashCardTitle }, "Demo Mode"),
+          React.createElement("div", { className: styles.splashCardDesc }, "Live control bar to showcase every feature in real time")
         )
       ),
 

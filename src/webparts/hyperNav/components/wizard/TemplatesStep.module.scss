@@ -1,0 +1,115 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.templatesStep {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.templatesHeader {
+  margin-bottom: 4px;
+}
+
+.templatesTitle {
+  font-size: $ms-font-size-18;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  margin: 0 0 4px;
+}
+
+.templatesSubtitle {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  margin: 0;
+}
+
+.skipButton {
+  background: none;
+  border: 2px dashed $ms-color-neutralTertiaryAlt;
+  color: $ms-color-neutralSecondary;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: $ms-font-size-14;
+  transition: all 0.2s ease;
+  align-self: flex-start;
+
+  &:hover {
+    border-color: $ms-color-themePrimary;
+    color: $ms-color-themePrimary;
+  }
+}
+
+.skipButtonActive {
+  border-color: $ms-color-themePrimary;
+  background: rgba(0, 120, 212, 0.06);
+  color: $ms-color-themePrimary;
+  font-weight: $ms-font-weight-semibold;
+}
+
+.templateGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.templateCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: $ms-color-white;
+  border: 2px solid $ms-color-neutralLighter;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: $ms-color-themePrimary;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.templateCardSelected {
+  border-color: $ms-color-themePrimary;
+  background: rgba(0, 120, 212, 0.04);
+  box-shadow: 0 0 0 1px $ms-color-themePrimary;
+}
+
+.templateSwatch {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.templateInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.templateName {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+}
+
+.templateDesc {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  line-height: 1.3;
+}
+
+.templateLayout {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 2px 8px;
+  background: $ms-color-neutralLighter;
+  border-radius: 4px;
+  font-size: $ms-font-size-10;
+  font-family: "Consolas", monospace;
+  color: $ms-color-neutralSecondary;
+}

@@ -21,7 +21,8 @@ import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
 import HyperNav from "./components/HyperNav";
 import type { IHyperNavComponentProps } from "./components/HyperNav";
 import type { IHyperNavWebPartProps, IHyperNavLink } from "./models";
-import { SAMPLE_LINKS } from "./models";
+import { SAMPLE_LINKS, DEFAULT_COLOR_CONFIG, DEFAULT_PANEL_CONFIG } from "./models";
+import { stringifyColorConfig, stringifyPanelConfig } from "./utils/colorUtils";
 import {
   parseLinks,
   stringifyLinks,
@@ -37,13 +38,14 @@ import {
 export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartProps> {
 
   public render(): void {
-    const props: IHyperNavComponentProps = {
+    var props: IHyperNavComponentProps = {
       ...this.properties,
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
       siteUrl: this.context.pageContext.web.absoluteUrl,
+      onConfigure: (): void => { this.context.propertyPane.open(); },
     };
-    const element: React.ReactElement<IHyperNavComponentProps> =
+    var element: React.ReactElement<IHyperNavComponentProps> =
       React.createElement(HyperNav, props);
     ReactDom.render(element, this.domElement);
   }
@@ -51,6 +53,7 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
   protected async onInit(): Promise<void> {
     await super.onInit();
 
+    // V1 defaults
     if (this.properties.title === undefined) {
       this.properties.title = "Quick Links";
     }
@@ -99,6 +102,53 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
     if (this.properties.enableDeepLinks === undefined) {
       this.properties.enableDeepLinks = false;
     }
+
+    // V2 defaults
+    if (this.properties.hoverEffect === undefined) {
+      this.properties.hoverEffect = "lift";
+    }
+    if (this.properties.borderRadius === undefined) {
+      this.properties.borderRadius = "slight";
+    }
+    if (this.properties.navTheme === undefined) {
+      this.properties.navTheme = "light";
+    }
+    if (this.properties.separator === undefined) {
+      this.properties.separator = "line";
+    }
+    if (this.properties.colorConfig === undefined) {
+      this.properties.colorConfig = stringifyColorConfig(DEFAULT_COLOR_CONFIG);
+    }
+    if (this.properties.panelConfig === undefined) {
+      this.properties.panelConfig = stringifyPanelConfig(DEFAULT_PANEL_CONFIG);
+    }
+    if (this.properties.wizardCompleted === undefined) {
+      this.properties.wizardCompleted = false;
+    }
+    if (this.properties.useSampleData === undefined) {
+      this.properties.useSampleData = true;
+    }
+    if (this.properties.enableDemoMode === undefined) {
+      this.properties.enableDemoMode = false;
+    }
+    if (this.properties.enableStickyNav === undefined) {
+      this.properties.enableStickyNav = false;
+    }
+    if (this.properties.enableNotifications === undefined) {
+      this.properties.enableNotifications = false;
+    }
+    if (this.properties.enableActiveDetection === undefined) {
+      this.properties.enableActiveDetection = true;
+    }
+    if (this.properties.enableTooltips === undefined) {
+      this.properties.enableTooltips = true;
+    }
+    if (this.properties.enableCommandPalette === undefined) {
+      this.properties.enableCommandPalette = false;
+    }
+    if (this.properties.enableDarkModeToggle === undefined) {
+      this.properties.enableDarkModeToggle = false;
+    }
   }
 
   protected onDispose(): void {
@@ -106,21 +156,15 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
   }
 
   protected get dataVersion(): Version {
-    return Version.parse("1.0");
+    return Version.parse("2.0");
   }
 
-  /**
-   * Update links JSON and refresh the property pane + component.
-   */
   private _updateLinks(links: IHyperNavLink[]): void {
     this.properties.links = stringifyLinks(links);
     this.render();
     this.context.propertyPane.refresh();
   }
 
-  /**
-   * Build fields for a single link at the given index (enhanced with icon, description, group).
-   */
   private _buildSingleLinkFields(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     fields: IPropertyPaneField<any>[],
@@ -128,14 +172,12 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
     index: number,
     totalLinks: number
   ): void {
-    // Link header label
     fields.push(
       PropertyPaneLabel("_linkLabel" + index, {
         text: strings.LinkHeaderPrefix + " " + (index + 1) + ": " + link.title,
       })
     );
 
-    // Title field
     fields.push(
       PropertyPaneTextField("_linkTitle" + index, {
         label: strings.LinkTitleLabel,
@@ -143,7 +185,6 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
       })
     );
 
-    // URL field
     fields.push(
       PropertyPaneTextField("_linkUrl" + index, {
         label: strings.LinkUrlLabel,
@@ -151,7 +192,6 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
       })
     );
 
-    // Description field
     fields.push(
       PropertyPaneTextField("_linkDescription" + index, {
         label: strings.LinkDescriptionLabel,
@@ -160,7 +200,6 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
       })
     );
 
-    // Icon name field
     fields.push(
       PropertyPaneTextField("_linkIconName" + index, {
         label: strings.LinkIconNameLabel,
@@ -169,7 +208,6 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
       })
     );
 
-    // Open in new tab
     fields.push(
       PropertyPaneCheckbox("_linkNewTab" + index, {
         text: strings.LinkOpenInNewTabLabel,
@@ -177,7 +215,6 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
       })
     );
 
-    // Group name (when grouping enabled)
     if (this.properties.enableGrouping) {
       fields.push(
         PropertyPaneTextField("_linkGroupName" + index, {
@@ -187,7 +224,6 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
       );
     }
 
-    // Move Up button (disabled for first link)
     fields.push(
       PropertyPaneButton("_linkMoveUp" + index, {
         text: strings.MoveUpLabel,
@@ -198,7 +234,6 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
       })
     );
 
-    // Move Down button (disabled for last link)
     fields.push(
       PropertyPaneButton("_linkMoveDown" + index, {
         text: strings.MoveDownLabel,
@@ -209,7 +244,6 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
       })
     );
 
-    // Remove button
     fields.push(
       PropertyPaneButton("_linkRemove" + index, {
         text: strings.RemoveLinkLabel,
@@ -219,14 +253,13 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
       })
     );
 
-    // Horizontal rule between links
     fields.push(PropertyPaneHorizontalRule());
   }
 
   private _createMoveHandler(fromIndex: number, toIndex: number): () => string {
     return (): string => {
-      const currentLinks = parseLinks(this.properties.links);
-      const reordered = reorderLink(currentLinks, fromIndex, toIndex);
+      var currentLinks = parseLinks(this.properties.links);
+      var reordered = reorderLink(currentLinks, fromIndex, toIndex);
       this._updateLinks(reordered);
       return "";
     };
@@ -234,8 +267,8 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
 
   private _createRemoveHandler(linkId: string): () => string {
     return (): string => {
-      const currentLinks = parseLinks(this.properties.links);
-      const updated = removeLink(currentLinks, linkId);
+      var currentLinks = parseLinks(this.properties.links);
+      var updated = removeLink(currentLinks, linkId);
       this._updateLinks(updated);
       return "";
     };
@@ -243,8 +276,8 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
 
   private _createAddHandler(): () => string {
     return (): string => {
-      const currentLinks = parseLinks(this.properties.links);
-      const newLink = createLink(
+      var currentLinks = parseLinks(this.properties.links);
+      var newLink = createLink(
         strings.NewLinkDefaultTitle + " " + (currentLinks.length + 1),
         currentLinks.length
       );
@@ -254,19 +287,15 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
     };
   }
 
-  /**
-   * Build dynamic per-link fields for property pane Page 2.
-   */
   private _buildLinkFields(): IPropertyPaneField<unknown>[] {
-    const links = parseLinks(this.properties.links);
+    var links = parseLinks(this.properties.links);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const fields: IPropertyPaneField<any>[] = [];
+    var fields: IPropertyPaneField<any>[] = [];
 
-    for (let i = 0; i < links.length; i++) {
+    for (var i = 0; i < links.length; i++) {
       this._buildSingleLinkFields(fields, links[i], i, links.length);
     }
 
-    // Add New Link button
     fields.push(
       PropertyPaneButton("_linkAdd", {
         text: strings.AddLinkLabel,
@@ -279,15 +308,12 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
     return fields;
   }
 
-  /**
-   * Build group management fields (when grouping is enabled).
-   */
   private _buildGroupFields(): IPropertyPaneField<unknown>[] {
     if (!this.properties.enableGrouping) return [];
 
-    const groups = parseGroups(this.properties.groups);
+    var groups = parseGroups(this.properties.groups);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const fields: IPropertyPaneField<any>[] = [];
+    var fields: IPropertyPaneField<any>[] = [];
 
     fields.push(
       PropertyPaneLabel("_groupsSectionLabel", {
@@ -295,8 +321,8 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
       })
     );
 
-    for (let i = 0; i < groups.length; i++) {
-      const group = groups[i];
+    for (var i = 0; i < groups.length; i++) {
+      var group = groups[i];
       fields.push(
         PropertyPaneTextField("_groupName" + i, {
           label: strings.GroupNameLabel + " " + (i + 1),
@@ -329,8 +355,8 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
 
   private _createRemoveGroupHandler(groupId: string): () => string {
     return (): string => {
-      const groups = parseGroups(this.properties.groups);
-      const updated = removeGroup(groups, groupId);
+      var groups = parseGroups(this.properties.groups);
+      var updated = removeGroup(groups, groupId);
       this.properties.groups = stringifyGroups(updated);
       this.render();
       this.context.propertyPane.refresh();
@@ -340,8 +366,8 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
 
   private _createAddGroupHandler(): () => string {
     return (): string => {
-      const groups = parseGroups(this.properties.groups);
-      const newGroup = createGroup(
+      var groups = parseGroups(this.properties.groups);
+      var newGroup = createGroup(
         strings.NewGroupDefaultName + " " + (groups.length + 1),
         groups.length
       );
@@ -353,20 +379,16 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
     };
   }
 
-  /**
-   * Handle dynamic property pane field changes for per-link editing.
-   */
   protected onPropertyPaneFieldChanged(
     propertyPath: string,
     oldValue: unknown,
     newValue: unknown
   ): void {
-    // Handle per-link title changes
     if (propertyPath.indexOf("_linkTitle") === 0) {
-      const indexStr = propertyPath.substring("_linkTitle".length);
-      const linkIndex = parseInt(indexStr, 10);
+      var indexStr = propertyPath.substring("_linkTitle".length);
+      var linkIndex = parseInt(indexStr, 10);
       if (!isNaN(linkIndex)) {
-        const links = parseLinks(this.properties.links);
+        var links = parseLinks(this.properties.links);
         if (linkIndex >= 0 && linkIndex < links.length) {
           links[linkIndex].title = String(newValue);
           this.properties.links = stringifyLinks(links);
@@ -376,95 +398,89 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
       return;
     }
 
-    // Handle per-link URL changes
     if (propertyPath.indexOf("_linkUrl") === 0) {
-      const indexStr = propertyPath.substring("_linkUrl".length);
-      const linkIndex = parseInt(indexStr, 10);
-      if (!isNaN(linkIndex)) {
-        const links = parseLinks(this.properties.links);
-        if (linkIndex >= 0 && linkIndex < links.length) {
-          links[linkIndex].url = String(newValue);
-          this.properties.links = stringifyLinks(links);
+      var indexStr2 = propertyPath.substring("_linkUrl".length);
+      var linkIndex2 = parseInt(indexStr2, 10);
+      if (!isNaN(linkIndex2)) {
+        var links2 = parseLinks(this.properties.links);
+        if (linkIndex2 >= 0 && linkIndex2 < links2.length) {
+          links2[linkIndex2].url = String(newValue);
+          this.properties.links = stringifyLinks(links2);
           this.render();
         }
       }
       return;
     }
 
-    // Handle per-link description changes
     if (propertyPath.indexOf("_linkDescription") === 0) {
-      const indexStr = propertyPath.substring("_linkDescription".length);
-      const linkIndex = parseInt(indexStr, 10);
-      if (!isNaN(linkIndex)) {
-        const links = parseLinks(this.properties.links);
-        if (linkIndex >= 0 && linkIndex < links.length) {
-          links[linkIndex].description = String(newValue) || undefined;
-          this.properties.links = stringifyLinks(links);
+      var indexStr3 = propertyPath.substring("_linkDescription".length);
+      var linkIndex3 = parseInt(indexStr3, 10);
+      if (!isNaN(linkIndex3)) {
+        var links3 = parseLinks(this.properties.links);
+        if (linkIndex3 >= 0 && linkIndex3 < links3.length) {
+          links3[linkIndex3].description = String(newValue) || undefined;
+          this.properties.links = stringifyLinks(links3);
           this.render();
         }
       }
       return;
     }
 
-    // Handle per-link icon name changes
     if (propertyPath.indexOf("_linkIconName") === 0) {
-      const indexStr = propertyPath.substring("_linkIconName".length);
-      const linkIndex = parseInt(indexStr, 10);
-      if (!isNaN(linkIndex)) {
-        const links = parseLinks(this.properties.links);
-        if (linkIndex >= 0 && linkIndex < links.length) {
-          const iconValue = String(newValue);
+      var indexStr4 = propertyPath.substring("_linkIconName".length);
+      var linkIndex4 = parseInt(indexStr4, 10);
+      if (!isNaN(linkIndex4)) {
+        var links4 = parseLinks(this.properties.links);
+        if (linkIndex4 >= 0 && linkIndex4 < links4.length) {
+          var iconValue = String(newValue);
           if (iconValue) {
-            links[linkIndex].icon = { type: "fluent", value: iconValue };
+            links4[linkIndex4].icon = { type: "fluent", value: iconValue };
           } else {
-            links[linkIndex].icon = undefined;
+            links4[linkIndex4].icon = undefined;
           }
-          this.properties.links = stringifyLinks(links);
+          this.properties.links = stringifyLinks(links4);
           this.render();
         }
       }
       return;
     }
 
-    // Handle per-link openInNewTab changes
     if (propertyPath.indexOf("_linkNewTab") === 0) {
-      const indexStr = propertyPath.substring("_linkNewTab".length);
-      const linkIndex = parseInt(indexStr, 10);
-      if (!isNaN(linkIndex)) {
-        const links = parseLinks(this.properties.links);
-        if (linkIndex >= 0 && linkIndex < links.length) {
-          links[linkIndex].openInNewTab = !!newValue;
-          this.properties.links = stringifyLinks(links);
+      var indexStr5 = propertyPath.substring("_linkNewTab".length);
+      var linkIndex5 = parseInt(indexStr5, 10);
+      if (!isNaN(linkIndex5)) {
+        var links5 = parseLinks(this.properties.links);
+        if (linkIndex5 >= 0 && linkIndex5 < links5.length) {
+          links5[linkIndex5].openInNewTab = !!newValue;
+          this.properties.links = stringifyLinks(links5);
           this.render();
         }
       }
       return;
     }
 
-    // Handle per-link group name changes
     if (propertyPath.indexOf("_linkGroupName") === 0) {
-      const indexStr = propertyPath.substring("_linkGroupName".length);
-      const linkIndex = parseInt(indexStr, 10);
-      if (!isNaN(linkIndex)) {
-        const links = parseLinks(this.properties.links);
-        if (linkIndex >= 0 && linkIndex < links.length) {
-          links[linkIndex].groupName = String(newValue) || undefined;
-          this.properties.links = stringifyLinks(links);
+      var indexStr6 = propertyPath.substring("_linkGroupName".length);
+      var linkIndex6 = parseInt(indexStr6, 10);
+      if (!isNaN(linkIndex6)) {
+        var links6 = parseLinks(this.properties.links);
+        if (linkIndex6 >= 0 && linkIndex6 < links6.length) {
+          links6[linkIndex6].groupName = String(newValue) || undefined;
+          this.properties.links = stringifyLinks(links6);
           this.render();
         }
       }
       return;
     }
 
-    // Handle group name changes
     if (propertyPath.indexOf("_groupName") === 0) {
-      const indexStr = propertyPath.substring("_groupName".length);
-      const groupIndex = parseInt(indexStr, 10);
+      var indexStr7 = propertyPath.substring("_groupName".length);
+      var groupIndex = parseInt(indexStr7, 10);
       if (!isNaN(groupIndex)) {
-        const groups = parseGroups(this.properties.groups);
-        if (groupIndex >= 0 && groupIndex < groups.length) {
-          groups[groupIndex].name = String(newValue);
-          this.properties.groups = stringifyGroups(groups);
+        var grps = parseGroups(this.properties.groups);
+        if (groupIndex >= 0 && groupIndex < grps.length) {
+          grps[groupIndex].name = String(newValue);
+          this.properties.groups = stringifyGroups(grps);
           this.render();
         }
       }
@@ -475,15 +491,13 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
   }
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
-    // Build dynamic link management group
-    const linkManagementGroup: IPropertyPaneGroup = {
+    var linkManagementGroup: IPropertyPaneGroup = {
       groupName: strings.LinksGroupName,
       groupFields: this._buildLinkFields(),
     };
 
-    // Build group management fields
-    const groupFields = this._buildGroupFields();
-    const page2Groups: IPropertyPaneGroup[] = [linkManagementGroup];
+    var groupFields = this._buildGroupFields();
+    var page2Groups: IPropertyPaneGroup[] = [linkManagementGroup];
     if (groupFields.length > 0) {
       page2Groups.unshift({
         groupName: strings.GroupsGroupName,
@@ -493,7 +507,7 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
 
     return {
       pages: [
-        // ── Page 1: Layout & Appearance ──
+        // ── Page 1: Layout & Styling ──
         {
           header: { description: strings.PropertyPaneDescription },
           groups: [
@@ -514,6 +528,13 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
                     { key: "card", text: "Card" },
                     { key: "megaMenu", text: "Mega Menu" },
                     { key: "sidebar", text: "Sidebar" },
+                    { key: "topbar", text: "Top Bar" },
+                    { key: "dropdown", text: "Dropdown" },
+                    { key: "tabbar", text: "Tab Bar" },
+                    { key: "hamburger", text: "Hamburger" },
+                    { key: "breadcrumb", text: "Breadcrumb" },
+                    { key: "cmdPalette", text: "Command Palette" },
+                    { key: "fab", text: "FAB (Floating)" },
                   ],
                 }),
                 PropertyPaneSlider("gridColumns", {
@@ -527,6 +548,50 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
                 }),
                 PropertyPaneToggle("showDescriptions", {
                   label: strings.ShowDescriptionsLabel,
+                }),
+              ],
+            },
+            {
+              groupName: strings.StylingGroupName,
+              groupFields: [
+                PropertyPaneDropdown("hoverEffect", {
+                  label: strings.HoverEffectLabel,
+                  options: [
+                    { key: "lift", text: "Lift" },
+                    { key: "glow", text: "Glow" },
+                    { key: "zoom", text: "Zoom" },
+                    { key: "darken", text: "Darken" },
+                    { key: "underline", text: "Underline" },
+                    { key: "bgfill", text: "Background Fill" },
+                    { key: "none", text: "None" },
+                  ],
+                }),
+                PropertyPaneDropdown("borderRadius", {
+                  label: strings.BorderRadiusLabel,
+                  options: [
+                    { key: "none", text: "Square" },
+                    { key: "slight", text: "Slight" },
+                    { key: "rounded", text: "Rounded" },
+                    { key: "pill", text: "Pill" },
+                  ],
+                }),
+                PropertyPaneDropdown("navTheme", {
+                  label: strings.NavThemeLabel,
+                  options: [
+                    { key: "light", text: "Light" },
+                    { key: "dark", text: "Dark" },
+                    { key: "auto", text: "Auto" },
+                  ],
+                }),
+                PropertyPaneDropdown("separator", {
+                  label: strings.SeparatorLabel,
+                  options: [
+                    { key: "line", text: "Line" },
+                    { key: "dot", text: "Dot" },
+                    { key: "slash", text: "Slash" },
+                    { key: "pipe", text: "Pipe" },
+                    { key: "none", text: "None" },
+                  ],
                 }),
               ],
             },
@@ -571,6 +636,32 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
                 }),
                 PropertyPaneToggle("enableDeepLinks", {
                   label: strings.EnableDeepLinksLabel,
+                }),
+                PropertyPaneHorizontalRule(),
+                PropertyPaneToggle("enableStickyNav", {
+                  label: strings.EnableStickyNavLabel,
+                }),
+                PropertyPaneToggle("enableNotifications", {
+                  label: strings.EnableNotificationsLabel,
+                }),
+                PropertyPaneToggle("enableActiveDetection", {
+                  label: strings.EnableActiveDetectionLabel,
+                }),
+                PropertyPaneToggle("enableTooltips", {
+                  label: strings.EnableTooltipsLabel,
+                }),
+                PropertyPaneToggle("enableCommandPalette", {
+                  label: strings.EnableCommandPaletteLabel,
+                }),
+                PropertyPaneToggle("enableDarkModeToggle", {
+                  label: strings.EnableDarkModeToggleLabel,
+                }),
+                PropertyPaneHorizontalRule(),
+                PropertyPaneToggle("useSampleData", {
+                  label: strings.UseSampleDataLabel,
+                }),
+                PropertyPaneToggle("enableDemoMode", {
+                  label: strings.EnableDemoModeLabel,
                 }),
               ],
             },
