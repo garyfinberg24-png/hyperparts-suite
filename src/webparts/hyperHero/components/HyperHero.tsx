@@ -26,7 +26,6 @@ import { HERO_WIZARD_CONFIG, buildStateFromProps } from "./wizard/heroWizardConf
 import type { IHeroWizardResult } from "./wizard/heroWizardConfig";
 import { HyperHeroSlideEditor } from "./editor";
 import { HyperHeroEditOverlay, HyperHeroEditToolbar } from "./editor";
-import { HyperHeroSlidesManager } from "./editor/HyperHeroSlidesManager";
 import { HyperHeroSliderManager } from "./editor/HyperHeroSliderManager";
 import type { IStoredSliderConfig } from "../utils/sliderStorage";
 import styles from "./HyperHero.module.scss";
@@ -171,8 +170,8 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
   // ── Edit state ──
   const [showWizard, setShowWizard] = React.useState(false);
   const [editingSlideId, setEditingSlideId] = React.useState<string | undefined>(undefined);
-  const [showSlidesManager, setShowSlidesManager] = React.useState(false);
   const [showSliderManager, setShowSliderManager] = React.useState(false);
+  const [editorInitialView, setEditorInitialView] = React.useState<"editor" | "manager">("editor");
 
   // Auto-open wizard on first use in edit mode
   React.useEffect(function () {
@@ -258,6 +257,7 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
   }, [editingSlideId, slides]);
 
   const handleEditSlide = React.useCallback(function (slideId: string) {
+    setEditorInitialView("editor");
     setEditingSlideId(slideId);
   }, []);
 
@@ -358,14 +358,14 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
     setShowWizard(true);
   }, [onSettingsChange]);
 
-  // ── Slides Manager + Slider Manager ──
+  // ── Slides Manager (opens editor in manager view) + Slider Manager ──
   const handleOpenSlidesManager = React.useCallback(function () {
-    setShowSlidesManager(true);
-  }, []);
-
-  const handleCloseSlidesManager = React.useCallback(function () {
-    setShowSlidesManager(false);
-  }, []);
+    setEditorInitialView("manager");
+    // Open editor modal — use first slide as fallback
+    if (slides && slides.length > 0) {
+      setEditingSlideId(slides[0].id);
+    }
+  }, [slides]);
 
   const handleOpenSliderManager = React.useCallback(function () {
     setShowSliderManager(true);
@@ -438,7 +438,7 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
       });
     }
 
-    // Slide Editor modal
+    // Slide Editor modal (with embedded Slides Manager toggle)
     editModals.push(
       React.createElement(HyperHeroSlideEditor, {
         key: "editor",
@@ -451,22 +451,14 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
         onClose: handleEditorClose,
         onAddSlide: handleAddSlide,
         onSaveAndContinue: handleEditorSaveAndContinue,
-      })
-    );
-
-    // Slides Manager panel
-    editModals.push(
-      React.createElement(HyperHeroSlidesManager, {
-        key: "slides-manager",
-        isOpen: showSlidesManager,
-        onClose: handleCloseSlidesManager,
-        slides: slides || [],
+        // Slides Manager props (embedded toggle view)
+        initialViewMode: editorInitialView,
+        allSlides: slides || [],
         onEditSlide: function (slideId: string) {
-          handleCloseSlidesManager();
-          handleEditSlide(slideId);
+          setEditorInitialView("editor");
+          setEditingSlideId(slideId);
         },
         onSlidesChange: onSlidesChange || function () { /* no-op */ },
-        onAddSlide: handleAddSlide,
         onDuplicateSlide: handleDuplicateSlide,
         onDeleteSlide: handleDeleteSlide,
         onOpenSliderLibrary: handleOpenSliderManager,

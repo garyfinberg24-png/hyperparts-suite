@@ -196,6 +196,19 @@ const HyperHeroLayerEditorInner: React.FC<IHyperHeroLayerEditorProps> = function
     dragStartXRef.current = e.clientX;
     dragStartYRef.current = e.clientY;
 
+    // Visual cursor feedback during drag
+    if (handle === "move") {
+      document.body.style.cursor = "grabbing";
+    } else if (handle === "resize-se") {
+      document.body.style.cursor = "se-resize";
+    } else if (handle === "resize-ne") {
+      document.body.style.cursor = "ne-resize";
+    } else if (handle === "resize-sw") {
+      document.body.style.cursor = "sw-resize";
+    } else if (handle === "resize-nw") {
+      document.body.style.cursor = "nw-resize";
+    }
+
     // Find the layer's current position/size
     let found: IHyperHeroLayer | undefined;
     layers.forEach(function (l) {
@@ -278,6 +291,7 @@ const HyperHeroLayerEditorInner: React.FC<IHyperHeroLayerEditorProps> = function
 
     const handleMouseUp = function (): void {
       isDraggingRef.current = false;
+      document.body.style.cursor = "";
     };
 
     document.addEventListener("mousemove", handleMouseMove);

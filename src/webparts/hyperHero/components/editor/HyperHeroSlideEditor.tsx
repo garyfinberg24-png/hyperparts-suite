@@ -34,6 +34,14 @@ export interface IHyperHeroSlideEditorProps {
   onClose: () => void;
   onAddSlide?: () => void;
   onSaveAndContinue?: (slide: IHyperHeroSlide) => void;
+  // Slides Manager props (embedded toggle view)
+  allSlides?: IHyperHeroSlide[];
+  onEditSlide?: (slideId: string) => void;
+  onSlidesChange?: (slides: IHyperHeroSlide[]) => void;
+  onDuplicateSlide?: (slideId: string) => void;
+  onDeleteSlide?: (slideId: string) => void;
+  onOpenSliderLibrary?: () => void;
+  initialViewMode?: "editor" | "manager";
 }
 
 type TabId = "background" | "content" | "ctas" | "advanced" | "animations" | "typography" | "accessibility";
@@ -168,6 +176,31 @@ const HyperHeroSlideEditorInner: React.FC<IHyperHeroSlideEditorProps> = function
   const slideCount = props.slideCount || 1;
   const onAddSlide = props.onAddSlide;
   const onSaveAndContinue = props.onSaveAndContinue;
+  // Manager view props
+  const allSlides = props.allSlides;
+  const onEditSlide = props.onEditSlide;
+  const onSlidesChange = props.onSlidesChange;
+  const onDuplicateSlide = props.onDuplicateSlide;
+  const onDeleteSlide = props.onDeleteSlide;
+  const onOpenSliderLibrary = props.onOpenSliderLibrary;
+
+  // View mode: toggle between Slides Manager and Slide Editor
+  const viewModeState = React.useState<"editor" | "manager">(props.initialViewMode || "editor");
+  const viewMode = viewModeState[0];
+  const setViewMode = viewModeState[1];
+
+  // Manager delete confirmation state
+  const mgrDeletingIdState = React.useState<string | undefined>(undefined);
+  const mgrDeletingId = mgrDeletingIdState[0];
+  const setMgrDeletingId = mgrDeletingIdState[1];
+
+  // Reset viewMode when modal opens with a new initialViewMode
+  React.useEffect(function () {
+    if (isOpen) {
+      setViewMode(props.initialViewMode || "editor");
+      setMgrDeletingId(undefined);
+    }
+  }, [isOpen, props.initialViewMode]);
 
   const tabState = React.useState<TabId>("background");
   const activeTab = tabState[0];
@@ -425,61 +458,264 @@ const HyperHeroSlideEditorInner: React.FC<IHyperHeroSlideEditorProps> = function
     });
   }, [pushUndo]);
 
+  // In editor mode, if no draft, don't render
   // eslint-disable-next-line @rushstack/no-new-null
-  if (!draft) return null;
+  if (viewMode === "editor" && !draft) return null;
 
-  // ── Footer: Undo/Redo + Save as Template + Add Slide | Cancel / Save & Continue / Save & Close ──
-  const canUndo = undoStackRef.current.length > 0;
-  const canRedo = redoStackRef.current.length > 0;
+  // Safe cast: in editor mode draft is guaranteed defined (early return above),
+  // in manager mode editorDraft is never used.
+  var editorDraft = (draft || {}) as IHyperHeroSlide;
 
-  const footer = React.createElement("div", { className: styles.footerRow },
-    // Left side: Undo/Redo
-    React.createElement("div", { className: styles.footerLeft },
-      React.createElement("button", {
-        onClick: handleUndo,
-        className: styles.footerBtnSecondary + (canUndo ? "" : " " + styles.footerBtnDisabled),
-        type: "button",
-        disabled: !canUndo,
-        "aria-label": "Undo",
-      }, "\u21A9 Undo"),
-      React.createElement("button", {
-        onClick: handleRedo,
-        className: styles.footerBtnSecondary + (canRedo ? "" : " " + styles.footerBtnDisabled),
-        type: "button",
-        disabled: !canRedo,
-        "aria-label": "Redo",
-      }, "\u21AA Redo"),
-      onAddSlide
-        ? React.createElement("button", {
-            className: styles.footerBtnSecondary,
-            onClick: function (): void {
-              if (onAddSlide) onAddSlide();
-            },
-            type: "button",
-          }, "+ Add Slide")
-        : undefined
-    ),
-    // Right side: Cancel / Save & Continue / Save & Close
-    React.createElement("div", { className: styles.footerRight },
+  // ── Manager View: inline slide list ──
+  var hasManagerProps = allSlides && onEditSlide && onSlidesChange;
+
+  var handleManagerMoveUp = function (slideId: string): void {
+    if (!allSlides || !onSlidesChange) return;
+    var idx = -1;
+    allSlides.forEach(function (s, i) { if (s.id === slideId) idx = i; });
+    if (idx <= 0) return;
+    var updated = allSlides.slice();
+    var temp = updated[idx - 1];
+    updated[idx - 1] = updated[idx];
+    updated[idx] = temp;
+    onSlidesChange(updated);
+  };
+
+  var handleManagerMoveDown = function (slideId: string): void {
+    if (!allSlides || !onSlidesChange) return;
+    var idx = -1;
+    allSlides.forEach(function (s, i) { if (s.id === slideId) idx = i; });
+    if (idx < 0 || idx >= allSlides.length - 1) return;
+    var updated = allSlides.slice();
+    var temp = updated[idx + 1];
+    updated[idx + 1] = updated[idx];
+    updated[idx] = temp;
+    onSlidesChange(updated);
+  };
+
+  var handleManagerToggleLock = function (slideId: string): void {
+    if (!allSlides || !onSlidesChange) return;
+    var updated: IHyperHeroSlide[] = [];
+    allSlides.forEach(function (s) {
+      if (s.id === slideId) {
+        updated.push({ ...s, locked: !s.locked });
+      } else {
+        updated.push(s);
+      }
+    });
+    onSlidesChange(updated);
+  };
+
+  var handleManagerToggleEnabled = function (slideId: string): void {
+    if (!allSlides || !onSlidesChange) return;
+    var updated: IHyperHeroSlide[] = [];
+    allSlides.forEach(function (s) {
+      if (s.id === slideId) {
+        updated.push({ ...s, enabled: !s.enabled });
+      } else {
+        updated.push(s);
+      }
+    });
+    onSlidesChange(updated);
+  };
+
+  var handleManagerEditSlide = function (slideId: string): void {
+    if (onEditSlide) onEditSlide(slideId);
+    setViewMode("editor");
+  };
+
+  var handleManagerConfirmDelete = function (slideId: string): void {
+    setMgrDeletingId(undefined);
+    if (onDeleteSlide) onDeleteSlide(slideId);
+  };
+
+  var getManagerThumbnailStyle = function (s: IHyperHeroSlide): React.CSSProperties {
+    var bg = s.background;
+    if (bg.type === "image" && bg.imageUrl) {
+      return { backgroundImage: "url(" + bg.imageUrl + ")" };
+    }
+    if (bg.type === "solidColor" && bg.backgroundColor) {
+      return { backgroundColor: bg.backgroundColor };
+    }
+    return { backgroundColor: "#0078d4" };
+  };
+
+  var renderManagerSlideRow = function (s: IHyperHeroSlide, idx: number): React.ReactElement {
+    var isLocked = !!s.locked;
+    var isHidden = !s.enabled;
+    var isDeleting = mgrDeletingId === s.id;
+    var rowClass = isHidden
+      ? styles.managerSlideRowHidden
+      : isLocked
+        ? styles.managerSlideRowLocked
+        : styles.managerSlideRow;
+
+    return React.createElement("div", { key: s.id, className: rowClass, role: "listitem" },
+      // Position badge
+      React.createElement("span", { className: styles.managerSlidePosition, "aria-label": "Position " + (idx + 1) },
+        String(idx + 1)
+      ),
+      // Thumbnail
+      React.createElement("div", {
+        className: styles.managerSlideThumbnail,
+        style: getManagerThumbnailStyle(s),
+        "aria-hidden": "true",
+      }),
+      // Info (clickable to edit)
+      React.createElement("div", {
+        className: styles.managerSlideInfo,
+        onClick: function () { if (!isLocked) handleManagerEditSlide(s.id); },
+        role: isLocked ? undefined : "button",
+        tabIndex: isLocked ? undefined : 0,
+        onKeyDown: function (e: React.KeyboardEvent) {
+          if (!isLocked && (e.key === "Enter" || e.key === " ")) {
+            e.preventDefault();
+            handleManagerEditSlide(s.id);
+          }
+        },
+        "aria-label": isLocked ? s.heading + " (locked)" : "Edit " + s.heading,
+      },
+        React.createElement("span", { className: styles.managerSlideName }, s.heading || "Untitled"),
+        React.createElement("div", { className: styles.managerSlideStatus },
+          isLocked ? React.createElement("span", { className: styles.managerStatusIcon, title: "Locked", "aria-label": "Locked" }, "\uD83D\uDD12") : undefined,
+          isHidden ? React.createElement("span", { className: styles.managerStatusIcon, title: "Hidden", "aria-label": "Hidden" }, "\uD83D\uDE48") : undefined
+        )
+      ),
+      // Actions
+      isDeleting
+        ? React.createElement("div", { className: styles.managerDeleteConfirmRow },
+            React.createElement("span", { className: styles.managerDeleteConfirmLabel }, "Delete?"),
+            React.createElement("button", {
+              className: styles.managerDeleteConfirmBtnDanger,
+              onClick: function () { handleManagerConfirmDelete(s.id); },
+              type: "button",
+            }, "Yes"),
+            React.createElement("button", {
+              className: styles.managerDeleteConfirmBtn,
+              onClick: function () { setMgrDeletingId(undefined); },
+              type: "button",
+            }, "No")
+          )
+        : React.createElement("div", { className: styles.managerSlideActions },
+            // Move Up
+            React.createElement("button", {
+              className: isLocked || idx === 0 ? styles.managerActionBtnDisabled : styles.managerActionBtn,
+              onClick: function (e: React.MouseEvent) { e.stopPropagation(); if (!isLocked && idx > 0) handleManagerMoveUp(s.id); },
+              type: "button",
+              "aria-label": "Move up",
+              disabled: isLocked || idx === 0,
+            }, "\u2191"),
+            // Move Down
+            React.createElement("button", {
+              className: isLocked || idx === (allSlides ? allSlides.length - 1 : 0) ? styles.managerActionBtnDisabled : styles.managerActionBtn,
+              onClick: function (e: React.MouseEvent) { e.stopPropagation(); if (!isLocked && allSlides && idx < allSlides.length - 1) handleManagerMoveDown(s.id); },
+              type: "button",
+              "aria-label": "Move down",
+              disabled: isLocked || idx === (allSlides ? allSlides.length - 1 : 0),
+            }, "\u2193"),
+            // Lock / Unlock
+            React.createElement("button", {
+              className: styles.managerActionBtn,
+              onClick: function (e: React.MouseEvent) { e.stopPropagation(); handleManagerToggleLock(s.id); },
+              type: "button",
+              "aria-label": isLocked ? "Unlock slide" : "Lock slide",
+            }, isLocked ? "\uD83D\uDD13" : "\uD83D\uDD12"),
+            // Show / Hide
+            React.createElement("button", {
+              className: styles.managerActionBtn,
+              onClick: function (e: React.MouseEvent) { e.stopPropagation(); handleManagerToggleEnabled(s.id); },
+              type: "button",
+              "aria-label": isHidden ? "Show slide" : "Hide slide",
+            }, isHidden ? "\uD83D\uDC41\uFE0F" : "\uD83D\uDE48"),
+            // Duplicate
+            React.createElement("button", {
+              className: isLocked ? styles.managerActionBtnDisabled : styles.managerActionBtn,
+              onClick: function (e: React.MouseEvent) { e.stopPropagation(); if (!isLocked && onDuplicateSlide) onDuplicateSlide(s.id); },
+              type: "button",
+              "aria-label": "Duplicate slide",
+              disabled: isLocked,
+            }, "\uD83D\uDCCB"),
+            // Delete
+            React.createElement("button", {
+              className: isLocked ? styles.managerActionBtnDisabled : styles.managerActionBtnDanger,
+              onClick: function (e: React.MouseEvent) { e.stopPropagation(); if (!isLocked) setMgrDeletingId(s.id); },
+              type: "button",
+              "aria-label": "Delete slide",
+              disabled: isLocked,
+            }, "\uD83D\uDDD1\uFE0F")
+          )
+    );
+  };
+
+  // ── Build footer based on viewMode ──
+  var footer: React.ReactElement;
+
+  if (viewMode === "manager") {
+    var mgrSlideCount = allSlides ? allSlides.length : 0;
+    footer = React.createElement("div", { className: styles.managerFooter },
+      React.createElement("span", { className: styles.managerFooterLabel },
+        mgrSlideCount === 1 ? "1 slide" : mgrSlideCount + " slides"
+      ),
       React.createElement("button", {
         onClick: onClose,
-        className: styles.footerBtnCancel,
+        className: styles.managerCloseBtn,
         type: "button",
-      }, "Cancel"),
-      onSaveAndContinue
-        ? React.createElement("button", {
-            onClick: handleSaveAndContinue,
-            className: styles.footerBtnSaveContinue,
-            type: "button",
-          }, "Save & Continue")
-        : undefined,
-      React.createElement("button", {
-        onClick: handleSave,
-        className: styles.footerBtnSave,
-        type: "button",
-      }, "Save & Close")
-    )
-  );
+      }, "Close")
+    );
+  } else {
+    // Editor footer: Undo/Redo + Save as Template + Add Slide | Cancel / Save & Continue / Save & Close
+    var canUndo = undoStackRef.current.length > 0;
+    var canRedo = redoStackRef.current.length > 0;
+
+    footer = React.createElement("div", { className: styles.footerRow },
+      // Left side: Undo/Redo
+      React.createElement("div", { className: styles.footerLeft },
+        React.createElement("button", {
+          onClick: handleUndo,
+          className: styles.footerBtnSecondary + (canUndo ? "" : " " + styles.footerBtnDisabled),
+          type: "button",
+          disabled: !canUndo,
+          "aria-label": "Undo",
+        }, "\u21A9 Undo"),
+        React.createElement("button", {
+          onClick: handleRedo,
+          className: styles.footerBtnSecondary + (canRedo ? "" : " " + styles.footerBtnDisabled),
+          type: "button",
+          disabled: !canRedo,
+          "aria-label": "Redo",
+        }, "\u21AA Redo"),
+        onAddSlide
+          ? React.createElement("button", {
+              className: styles.footerBtnSecondary,
+              onClick: function (): void {
+                if (onAddSlide) onAddSlide();
+              },
+              type: "button",
+            }, "+ Add Slide")
+          : undefined
+      ),
+      // Right side: Cancel / Save & Continue / Save & Close
+      React.createElement("div", { className: styles.footerRight },
+        React.createElement("button", {
+          onClick: onClose,
+          className: styles.footerBtnCancel,
+          type: "button",
+        }, "Cancel"),
+        onSaveAndContinue
+          ? React.createElement("button", {
+              onClick: handleSaveAndContinue,
+              className: styles.footerBtnSaveContinue,
+              type: "button",
+            }, "Save & Continue")
+          : undefined,
+        React.createElement("button", {
+          onClick: handleSave,
+          className: styles.footerBtnSave,
+          type: "button",
+        }, "Save & Close")
+      )
+    );
+  }
 
   // Tab definitions — filtered by sliderMode
   const ALL_TAB_DEFS: Array<{ id: TabId; label: string; icon: string; hyperOnly: boolean }> = [
@@ -499,16 +735,70 @@ const HyperHeroSlideEditorInner: React.FC<IHyperHeroSlideEditorProps> = function
     }
   });
 
-  // ── Title bar: "Edit Slide X of N: [name]" ──
-  const editorTitle = "Edit Slide " + (slideIndex + 1) + " of " + slideCount + ": " + (draft.heading || "Untitled");
+  // ── Dynamic title based on viewMode ──
+  var mgrCount = allSlides ? allSlides.length : slideCount;
+  var modalTitle = viewMode === "manager"
+    ? "Slides Manager (" + mgrCount + " slide" + (mgrCount === 1 ? "" : "s") + ")"
+    : "Edit Slide " + (slideIndex + 1) + " of " + slideCount + ": " + (draft ? draft.heading || "Untitled" : "Untitled");
+
+  // ── View Toggle Bar ──
+  var viewToggleBar = hasManagerProps
+    ? React.createElement("div", { className: styles.viewToggleBar },
+        React.createElement("button", {
+          className: viewMode === "manager" ? styles.viewToggleBtnActive : styles.viewToggleBtn,
+          onClick: function () { setViewMode("manager"); },
+          type: "button",
+          "aria-label": "Switch to Slides Manager",
+        }, "\uD83D\uDCCB Slides Manager"),
+        React.createElement("button", {
+          className: viewMode === "editor" ? styles.viewToggleBtnActive : styles.viewToggleBtn,
+          onClick: function () { setViewMode("editor"); },
+          type: "button",
+          "aria-label": "Switch to Slide Editor",
+        }, "\u270F\uFE0F Slide Editor")
+      )
+    : undefined;
+
+  // ── Manager View Content ──
+  var managerViewContent = viewMode === "manager" && allSlides
+    ? React.createElement("div", { className: styles.editorContainer },
+        // Add bar
+        React.createElement("div", { className: styles.managerAddBar },
+          React.createElement("button", {
+            className: styles.managerAddBtn,
+            onClick: function () { if (onAddSlide) onAddSlide(); },
+            type: "button",
+            "aria-label": "Add new slide",
+          }, "+ Add Slide"),
+          onOpenSliderLibrary
+            ? React.createElement("button", {
+                className: styles.managerLibraryBtn,
+                onClick: onOpenSliderLibrary,
+                type: "button",
+                "aria-label": "Open slider library",
+              }, "\uD83D\uDDC2\uFE0F Library")
+            : undefined
+        ),
+        // Slide list
+        React.createElement("div", { className: styles.managerSlideList, role: "list", "aria-label": "Slides" },
+          allSlides.map(renderManagerSlideRow)
+        )
+      )
+    : undefined;
 
   return React.createElement(HyperModal, {
     isOpen: isOpen,
     onClose: onClose,
-    title: editorTitle,
+    title: modalTitle,
     size: "xlarge",
     footer: footer,
-  }, React.createElement("div", { className: styles.editorContainer },
+  },
+  // View toggle bar
+  viewToggleBar,
+  // Manager view or Editor view
+  viewMode === "manager" && managerViewContent
+    ? managerViewContent
+    : React.createElement("div", { className: styles.editorContainer },
     // Live preview with actual HyperHeroSlide
     React.createElement("div", { className: styles.livePreview },
       // Preview toolbar
@@ -556,7 +846,7 @@ const HyperHeroSlideEditorInner: React.FC<IHyperHeroSlideEditorProps> = function
         },
           React.createElement(HyperHeroSlide, {
             key: replayKey,
-            slide: draft,
+            slide: editorDraft,
             previewMode: true,
           })
         )
@@ -603,11 +893,11 @@ const HyperHeroSlideEditorInner: React.FC<IHyperHeroSlideEditorProps> = function
     ),
     // Tab content
     React.createElement("div", { className: styles.tabContent },
-      activeTab === "background" && renderBackgroundTab(draft, updateBackground, updateGradient, setShowImageBrowser, setShowLottieBrowser, expandedSections, setExpandedSections),
-      activeTab === "content" && renderContentTab(draft, setDraft, setShowLayerEditor),
-      activeTab === "ctas" && renderCtasTab(draft.ctas, handleAddCta, handleRemoveCta, handleUpdateCta),
+      activeTab === "background" && renderBackgroundTab(editorDraft, updateBackground, updateGradient, setShowImageBrowser, setShowLottieBrowser, expandedSections, setExpandedSections),
+      activeTab === "content" && renderContentTab(editorDraft, setDraft, setShowLayerEditor),
+      activeTab === "ctas" && renderCtasTab(editorDraft.ctas, handleAddCta, handleRemoveCta, handleUpdateCta),
       activeTab === "advanced" && renderAdvancedTab(
-        draft,
+        editorDraft,
         updateGradient,
         updateParallax,
         updateCountdown,
@@ -616,9 +906,9 @@ const HyperHeroSlideEditorInner: React.FC<IHyperHeroSlideEditorProps> = function
         expandedSections,
         setExpandedSections
       ),
-      activeTab === "animations" && renderAnimationsTab(draft, setDraft, expandedSections, setExpandedSections),
-      activeTab === "typography" && renderTypographyTab(draft, updateFontSetting, expandedSections, setExpandedSections),
-      activeTab === "accessibility" && renderAccessibilityTab(draft, updateBackground)
+      activeTab === "animations" && renderAnimationsTab(editorDraft, setDraft, expandedSections, setExpandedSections),
+      activeTab === "typography" && renderTypographyTab(editorDraft, updateFontSetting, expandedSections, setExpandedSections),
+      activeTab === "accessibility" && renderAccessibilityTab(editorDraft, updateBackground)
     ),
 
     // Image browser modal
@@ -652,7 +942,7 @@ const HyperHeroSlideEditorInner: React.FC<IHyperHeroSlideEditorProps> = function
     // Layer editor (Hero Designer) modal
     React.createElement(HyperHeroLayerEditor, {
       isOpen: showLayerEditor,
-      slide: draft,
+      slide: editorDraft,
       onClose: function (): void { setShowLayerEditor(false); },
       onSave: function (updatedLayers: IHyperHeroLayer[]): void {
         setDraft(function (prev) {
