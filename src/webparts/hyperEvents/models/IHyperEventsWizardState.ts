@@ -1,4 +1,5 @@
-import type { HyperEventsViewMode, EventSourceType } from "./IHyperEventsWebPartProps";
+import type { HyperEventsViewMode } from "./IHyperEventsWebPartProps";
+import type { EventSourceType } from "./IEventSource";
 
 // ============================================================
 // Wizard State — Multi-step setup flow for HyperEvents

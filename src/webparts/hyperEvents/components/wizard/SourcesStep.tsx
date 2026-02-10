@@ -1,6 +1,7 @@
 import * as React from "react";
 import type { IWizardStepProps } from "../../../../common/components/wizard/IHyperWizard";
 import type { IEventsWizardState, IWizardEventSource } from "../../models/IHyperEventsWizardState";
+import styles from "./WizardSteps.module.scss";
 
 // ============================================================
 // Step 1: Calendar Sources
@@ -8,14 +9,29 @@ import type { IEventsWizardState, IWizardEventSource } from "../../models/IHyper
 
 var SOURCE_COLORS: string[] = ["#0078d4", "#107c10", "#d83b01", "#8764b8", "#ff8c00", "#00b7c3"];
 
-var SOURCE_TYPE_OPTIONS: Array<{ key: string; label: string; desc: string }> = [
-  { key: "spCalendar", label: "SharePoint Calendar", desc: "Events from a SharePoint list on this or another site" },
-  { key: "exchangeCalendar", label: "Exchange Calendar", desc: "Your personal or shared Exchange/Outlook calendar" },
-  { key: "outlookGroup", label: "Outlook Group", desc: "Calendar from a Microsoft 365 Group" },
+var SOURCE_TYPE_OPTIONS: Array<{ key: string; icon: string; label: string; desc: string }> = [
+  { key: "spCalendar", icon: "\uD83D\uDCCB", label: "SharePoint Calendar", desc: "Events from a SharePoint list" },
+  { key: "exchangeCalendar", icon: "\uD83D\uDCE7", label: "Exchange Calendar", desc: "Your Outlook calendar" },
+  { key: "outlookGroup", icon: "\uD83D\uDC65", label: "Outlook Group", desc: "M365 Group calendar" },
 ];
+
+function getSourceTypeLabel(type: string): string {
+  if (type === "spCalendar") return "SharePoint Calendar";
+  if (type === "exchangeCalendar") return "Exchange Calendar";
+  return "Outlook Group";
+}
+
+function getSourceTypeIcon(type: string): string {
+  if (type === "spCalendar") return "\uD83D\uDCCB";
+  if (type === "exchangeCalendar") return "\uD83D\uDCE7";
+  return "\uD83D\uDC65";
+}
 
 var SourcesStep: React.FC<IWizardStepProps<IEventsWizardState>> = function (props) {
   var sources = props.state.sources;
+  var showAddMenuState = React.useState(false);
+  var showAddMenu = showAddMenuState[0];
+  var setShowAddMenu = showAddMenuState[1];
 
   var handleAddSource = React.useCallback(function (type: string) {
     var newSource: IWizardEventSource = {
@@ -31,7 +47,8 @@ var SourcesStep: React.FC<IWizardStepProps<IEventsWizardState>> = function (prop
     sources.forEach(function (s) { updated.push(s); });
     updated.push(newSource);
     props.onChange({ sources: updated });
-  }, [sources, props]);
+    setShowAddMenu(false);
+  }, [sources, props, setShowAddMenu]);
 
   var handleRemoveSource = React.useCallback(function (index: number) {
     var updated = sources.filter(function (_s, i) { return i !== index; });
@@ -54,118 +71,141 @@ var SourcesStep: React.FC<IWizardStepProps<IEventsWizardState>> = function (prop
     props.onChange({ sources: updated });
   }, [sources, props]);
 
-  // Source type selector cards
-  var typeCards = SOURCE_TYPE_OPTIONS.map(function (opt) {
-    return React.createElement("button", {
-      key: opt.key,
-      type: "button",
-      onClick: function () { handleAddSource(opt.key); },
-      style: {
-        display: "flex",
-        flexDirection: "column" as React.CSSProperties["flexDirection"],
-        padding: "12px 16px",
-        border: "1px solid #e5e7eb",
-        borderRadius: "8px",
-        background: "#fafafa",
-        cursor: "pointer",
-        textAlign: "left" as React.CSSProperties["textAlign"],
-        transition: "border-color 0.15s",
-      },
-    },
-      React.createElement("span", { style: { fontWeight: 600, fontSize: "13px", color: "#1e293b" } }, opt.label),
-      React.createElement("span", { style: { fontSize: "12px", color: "#64748b", marginTop: "4px" } }, opt.desc)
-    );
-  });
+  // Existing source cards
+  var sourceCards = sources.map(function (src, idx) {
+    var typeFields: React.ReactElement[] = [];
 
-  // Existing sources list
-  var sourceList = sources.map(function (src, idx) {
-    var typeLabel = src.type === "spCalendar" ? "SharePoint" : src.type === "exchangeCalendar" ? "Exchange" : "Group";
-
-    var fields: React.ReactNode[] = [
-      React.createElement("div", { key: "name", style: { display: "flex", gap: "8px", alignItems: "center" } },
-        React.createElement("span", {
-          style: { width: "12px", height: "12px", borderRadius: "50%", background: src.color, flexShrink: 0 },
-        }),
+    // Display name + color
+    typeFields.push(
+      React.createElement("div", { key: "name", className: styles.sourceFieldRow },
+        React.createElement("label", { className: styles.sourceFieldLabel }, "Display Name"),
         React.createElement("input", {
+          className: styles.sourceFieldInput,
           type: "text",
           value: src.displayName,
           onChange: function (e: React.ChangeEvent<HTMLInputElement>) { handleFieldChange(idx, "displayName", e.target.value); },
-          style: { flex: 1, padding: "6px 8px", border: "1px solid #d1d5db", borderRadius: "4px", fontSize: "13px" },
-          "aria-label": "Source name",
-        }),
-        React.createElement("span", { style: { fontSize: "11px", color: "#6b7280", background: "#f3f4f6", padding: "2px 8px", borderRadius: "10px" } }, typeLabel),
-        React.createElement("button", {
-          type: "button",
-          onClick: function () { handleRemoveSource(idx); },
-          style: { background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: "14px", padding: "4px" },
-          "aria-label": "Remove source",
-        }, "\u2715")
-      ),
-    ];
-
-    // Conditional fields
-    if (src.type === "spCalendar") {
-      fields.push(
-        React.createElement("input", {
-          key: "list",
-          type: "text",
-          placeholder: "List name (e.g. Events)",
-          value: src.listName,
-          onChange: function (e: React.ChangeEvent<HTMLInputElement>) { handleFieldChange(idx, "listName", e.target.value); },
-          style: { padding: "6px 8px", border: "1px solid #d1d5db", borderRadius: "4px", fontSize: "12px", marginLeft: "20px" },
-        }),
-        React.createElement("input", {
-          key: "site",
-          type: "text",
-          placeholder: "Site URL (leave empty for current site)",
-          value: src.siteUrl,
-          onChange: function (e: React.ChangeEvent<HTMLInputElement>) { handleFieldChange(idx, "siteUrl", e.target.value); },
-          style: { padding: "6px 8px", border: "1px solid #d1d5db", borderRadius: "4px", fontSize: "12px", marginLeft: "20px" },
+          "aria-label": "Source display name",
         })
+      )
+    );
+
+    // Type-specific fields
+    if (src.type === "spCalendar") {
+      typeFields.push(
+        React.createElement("div", { key: "list", className: styles.sourceFieldRow },
+          React.createElement("label", { className: styles.sourceFieldLabel }, "List Name"),
+          React.createElement("input", {
+            className: styles.sourceFieldInput,
+            type: "text",
+            value: src.listName,
+            placeholder: "Events",
+            onChange: function (e: React.ChangeEvent<HTMLInputElement>) { handleFieldChange(idx, "listName", e.target.value); },
+          })
+        ),
+        React.createElement("div", { key: "site", className: styles.sourceFieldRow },
+          React.createElement("label", { className: styles.sourceFieldLabel }, "Site URL (leave empty for current site)"),
+          React.createElement("input", {
+            className: styles.sourceFieldInput,
+            type: "text",
+            value: src.siteUrl,
+            placeholder: "https://tenant.sharepoint.com/sites/...",
+            onChange: function (e: React.ChangeEvent<HTMLInputElement>) { handleFieldChange(idx, "siteUrl", e.target.value); },
+          })
+        )
       );
     } else if (src.type === "exchangeCalendar") {
-      fields.push(
-        React.createElement("input", {
-          key: "cal",
-          type: "text",
-          placeholder: "Calendar ID (leave empty for default)",
-          value: src.calendarId,
-          onChange: function (e: React.ChangeEvent<HTMLInputElement>) { handleFieldChange(idx, "calendarId", e.target.value); },
-          style: { padding: "6px 8px", border: "1px solid #d1d5db", borderRadius: "4px", fontSize: "12px", marginLeft: "20px" },
-        })
+      typeFields.push(
+        React.createElement("div", { key: "cal", className: styles.sourceFieldRow },
+          React.createElement("label", { className: styles.sourceFieldLabel }, "Calendar ID (leave empty for default)"),
+          React.createElement("input", {
+            className: styles.sourceFieldInput,
+            type: "text",
+            value: src.calendarId,
+            placeholder: "Calendar GUID",
+            onChange: function (e: React.ChangeEvent<HTMLInputElement>) { handleFieldChange(idx, "calendarId", e.target.value); },
+          })
+        )
       );
     } else {
-      fields.push(
-        React.createElement("input", {
-          key: "group",
-          type: "text",
-          placeholder: "Group ID",
-          value: src.groupId,
-          onChange: function (e: React.ChangeEvent<HTMLInputElement>) { handleFieldChange(idx, "groupId", e.target.value); },
-          style: { padding: "6px 8px", border: "1px solid #d1d5db", borderRadius: "4px", fontSize: "12px", marginLeft: "20px" },
-        })
+      typeFields.push(
+        React.createElement("div", { key: "group", className: styles.sourceFieldRow },
+          React.createElement("label", { className: styles.sourceFieldLabel }, "Group ID"),
+          React.createElement("input", {
+            className: styles.sourceFieldInput,
+            type: "text",
+            value: src.groupId,
+            placeholder: "Microsoft 365 Group ID",
+            onChange: function (e: React.ChangeEvent<HTMLInputElement>) { handleFieldChange(idx, "groupId", e.target.value); },
+          })
+        )
       );
     }
 
-    return React.createElement("div", {
-      key: "src-" + String(idx),
-      style: { display: "flex", flexDirection: "column" as React.CSSProperties["flexDirection"], gap: "6px", padding: "10px", border: "1px solid #e5e7eb", borderRadius: "6px", background: "#ffffff" },
-    }, fields);
+    return React.createElement("div", { key: "src-" + String(idx), className: styles.sourceCard },
+      // Header
+      React.createElement("div", { className: styles.sourceCardHeader },
+        React.createElement("span", { className: styles.sourceCardIcon }, getSourceTypeIcon(src.type)),
+        React.createElement("span", { className: styles.sourceCardType }, getSourceTypeLabel(src.type)),
+        React.createElement("span", {
+          className: styles.sourceColorDot,
+          style: { background: src.color },
+          "aria-hidden": "true",
+        }),
+        React.createElement("div", { className: styles.sourceCardActions },
+          React.createElement("button", {
+            type: "button",
+            className: styles.sourceRemoveBtn,
+            onClick: function () { handleRemoveSource(idx); },
+            "aria-label": "Remove " + src.displayName,
+          }, "Remove")
+        )
+      ),
+      // Body
+      React.createElement("div", { className: styles.sourceCardBody }, typeFields)
+    );
   });
 
-  return React.createElement("div", { style: { display: "flex", flexDirection: "column" as React.CSSProperties["flexDirection"], gap: "16px" } },
-    // Existing sources
-    sources.length > 0
-      ? React.createElement("div", { style: { display: "flex", flexDirection: "column" as React.CSSProperties["flexDirection"], gap: "8px" } },
-          React.createElement("span", { style: { fontSize: "13px", fontWeight: 600, color: "#374151" } }, "Configured Sources (" + String(sources.length) + ")"),
-          sourceList
-        )
-      : React.createElement("div", { style: { textAlign: "center" as React.CSSProperties["textAlign"], padding: "16px", color: "#9ca3af" } }, "No sources added yet. Add one below to get started."),
+  // Add source menu items
+  var menuItems = SOURCE_TYPE_OPTIONS.map(function (opt) {
+    return React.createElement("button", {
+      key: opt.key,
+      type: "button",
+      className: styles.addSourceMenuItem,
+      onClick: function () { handleAddSource(opt.key); },
+    },
+      React.createElement("span", { className: styles.addSourceMenuIcon }, opt.icon),
+      opt.label
+    );
+  });
 
-    // Add new source
-    React.createElement("div", { style: { display: "flex", flexDirection: "column" as React.CSSProperties["flexDirection"], gap: "8px" } },
-      React.createElement("span", { style: { fontSize: "13px", fontWeight: 600, color: "#374151" } }, "Add a Source"),
-      React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px" } }, typeCards)
+  return React.createElement("div", { className: styles.stepContainer },
+    // Section: Configured sources
+    React.createElement("div", { className: styles.stepSection },
+      React.createElement("div", { className: styles.stepSectionLabel },
+        "Configured Sources (" + String(sources.length) + ")"
+      ),
+      React.createElement("div", { className: styles.stepSectionHint },
+        "Add calendar sources to aggregate events from multiple places."
+      )
+    ),
+
+    // Source cards or empty state
+    sources.length > 0
+      ? React.createElement("div", { className: styles.sourcesList }, sourceCards)
+      : React.createElement("div", { className: styles.emptySources },
+          React.createElement("span", { className: styles.emptySourcesIcon }, "\uD83D\uDCC5"),
+          React.createElement("span", { className: styles.emptySourcesText }, "No sources added yet. Add one below to get started.")
+        ),
+
+    // Add source area
+    React.createElement("div", { className: styles.addSourceArea },
+      showAddMenu
+        ? React.createElement("div", { className: styles.addSourceMenu }, menuItems)
+        : React.createElement("button", {
+            type: "button",
+            className: styles.addSourceBtn,
+            onClick: function () { setShowAddMenu(true); },
+          }, "+ Add Calendar Source")
     )
   );
 };

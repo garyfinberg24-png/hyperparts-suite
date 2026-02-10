@@ -49,4 +49,10 @@ export interface IHyperEventsWebPartProps extends IBaseHyperWebPartProps {
   refreshInterval: number;
   /** Cache duration in seconds */
   cacheDuration: number;
+  /** Show wizard on first add (auto-opens setup flow) */
+  showWizardOnInit: boolean;
+  /** Use built-in sample data (for demo / first-use experience) */
+  useSampleData: boolean;
+  /** Show demo bar on published page for stakeholder previews */
+  demoMode: boolean;
 }

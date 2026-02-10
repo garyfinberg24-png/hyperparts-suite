@@ -64,6 +64,11 @@ declare interface IHyperEventsWebPartStrings {
   NewFieldDefaultLabel: string;
   // Storage
   StorageGroupName: string;
+  // Wizard & Demo
+  ShowWizardOnInitLabel: string;
+  UseSampleDataLabel: string;
+  DemoModeLabel: string;
+  SetupGroupName: string;
 }
 
 declare module "HyperEventsWebPartStrings" {

@@ -1,7 +1,9 @@
 import * as React from "react";
-import type { IHyperEventsWebPartProps, IHyperEvent } from "../models";
+import type { IHyperEventsWebPartProps, IHyperEvent, HyperEventsViewMode } from "../models";
 import { parseSources, parseCategories, parseRegistrationFields } from "../models";
 import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton } from "../../../common/components";
+import { HyperWizard } from "../../../common/components/wizard/HyperWizard";
+import { EVENTS_WIZARD_CONFIG, buildStateFromProps } from "./wizard/eventsWizardConfig";
 import { useHyperEventsStore } from "../store/useHyperEventsStore";
 import { useCalendarEvents } from "../hooks/useCalendarEvents";
 import { useEventFilters } from "../hooks/useEventFilters";
@@ -11,12 +13,14 @@ import { useEventNotifications } from "../hooks/useEventNotifications";
 import { getViewRangeStart, getViewRangeEnd } from "../utils/dateUtils";
 import { getEnabledSources } from "../utils/sourceUtils";
 import { applySourceColors, filterByVisibleSources } from "../utils/calendarOverlay";
+import { getSampleEvents } from "../utils/sampleEvents";
 import HyperEventsToolbar from "./HyperEventsToolbar";
 import HyperEventsCategoryBar from "./HyperEventsCategoryBar";
 import HyperEventsDetailPanel from "./HyperEventsDetailPanel";
 import HyperEventsPastArchive from "./HyperEventsPastArchive";
 import HyperEventsRegistrationForm from "./HyperEventsRegistrationForm";
 import HyperEventsOverlayLegend from "./HyperEventsOverlayLegend";
+import HyperEventsDemoBar from "./HyperEventsDemoBar";
 import { MonthView, WeekView, DayView, AgendaView, TimelineView, CardGridView } from "./views";
 import styles from "./HyperEvents.module.scss";
 
@@ -24,6 +28,8 @@ export interface IHyperEventsComponentProps extends IHyperEventsWebPartProps {
   instanceId: string;
   isEditMode?: boolean;
   siteUrl?: string;
+  /** Callback from web part class to persist wizard result */
+  onWizardApply?: (result: Partial<IHyperEventsWebPartProps>) => void;
 }
 
 /**
@@ -42,6 +48,43 @@ const HyperEventsInner: React.FC<IHyperEventsComponentProps> = function (props) 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Auto-open wizard on first load when showWizardOnInit and no sources configured
+  React.useEffect(function () {
+    if (props.showWizardOnInit && (!props.sources || props.sources === "[]") && !props.useSampleData) {
+      store.openWizard();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ── Sample data ──
+  var sampleEvents = React.useMemo(function () {
+    if (props.useSampleData) {
+      return getSampleEvents();
+    }
+    return [];
+  }, [props.useSampleData]);
+
+  // Build wizard state override from current props (for re-editing)
+  var wizardStateOverride = React.useMemo(function () {
+    return buildStateFromProps(props);
+  }, [props.sources, props.defaultView, props.enableRsvp, props.enableRegistration,
+      props.enableCountdown, props.enableNotifications, props.enableCategoryFilter,
+      props.enableLocationLinks, props.enableVirtualLinks, props.enablePastArchive,
+      props.showCalendarOverlay, props.title, props.refreshInterval, props.showWizardOnInit]);
+  // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Handle wizard apply
+  var handleWizardApply = React.useCallback(function (result: Partial<IHyperEventsWebPartProps>): void {
+    if (props.onWizardApply) {
+      props.onWizardApply(result);
+    }
+    store.closeWizard();
+  }, [props.onWizardApply, store]);
+
+  // ── Demo mode overrides ──
+  var demoViewMode = store.demoViewMode;
+  var effectiveViewMode: HyperEventsViewMode = props.demoMode && demoViewMode !== undefined ? demoViewMode : store.viewMode;
+
   // Parse sources, categories, and registration fields from JSON props
   const sources = React.useMemo(function () {
     return parseSources(props.sources);
@@ -59,14 +102,14 @@ const HyperEventsInner: React.FC<IHyperEventsComponentProps> = function (props) 
     return getEnabledSources(sources);
   }, [sources]);
 
-  // Compute visible date range based on view mode
+  // Compute visible date range based on effective view mode
   const rangeStart = React.useMemo(function () {
-    return getViewRangeStart(store.selectedDate, store.viewMode);
-  }, [store.selectedDate, store.viewMode]);
+    return getViewRangeStart(store.selectedDate, effectiveViewMode);
+  }, [store.selectedDate, effectiveViewMode]);
 
   const rangeEnd = React.useMemo(function () {
-    return getViewRangeEnd(store.selectedDate, store.viewMode);
-  }, [store.selectedDate, store.viewMode]);
+    return getViewRangeEnd(store.selectedDate, effectiveViewMode);
+  }, [store.selectedDate, effectiveViewMode]);
 
   // Fetch events
   const { events, loading, error } = useCalendarEvents(
@@ -76,11 +119,19 @@ const HyperEventsInner: React.FC<IHyperEventsComponentProps> = function (props) 
     props.cacheDuration || 300
   );
 
+  // Merge sample data in front of live events
+  const mergedEvents = React.useMemo(function (): IHyperEvent[] {
+    if (sampleEvents.length > 0) {
+      return sampleEvents.concat(events);
+    }
+    return events;
+  }, [sampleEvents, events]);
+
   // Apply source colors for calendar overlay
   const coloredEvents = React.useMemo(function () {
-    if (!props.showCalendarOverlay) return events;
-    return applySourceColors(events, sources);
-  }, [events, sources, props.showCalendarOverlay]);
+    if (!props.showCalendarOverlay) return mergedEvents;
+    return applySourceColors(mergedEvents, sources);
+  }, [mergedEvents, sources, props.showCalendarOverlay]);
 
   // Filter by visible sources (overlay toggle)
   const sourceFilteredEvents = React.useMemo(function () {
@@ -146,12 +197,49 @@ const HyperEventsInner: React.FC<IHyperEventsComponentProps> = function (props) 
   // Build content
   const contentChildren: React.ReactNode[] = [];
 
+  // ── Wizard element (always rendered, controlled by store) ──
+  contentChildren.push(
+    React.createElement(HyperWizard, {
+      key: "wizard",
+      config: EVENTS_WIZARD_CONFIG,
+      isOpen: store.isWizardOpen,
+      onClose: store.closeWizard,
+      onApply: handleWizardApply,
+      initialStateOverride: wizardStateOverride,
+    })
+  );
+
+  // Demo bar (rendered above everything when demo mode is on)
+  if (props.demoMode) {
+    contentChildren.push(
+      React.createElement(HyperEventsDemoBar, { key: "demobar" })
+    );
+  }
+
+  // Sample data banner
+  if (props.useSampleData && !props.demoMode) {
+    contentChildren.push(
+      React.createElement("div", {
+        key: "sampleBanner",
+        style: {
+          background: "linear-gradient(90deg, #fff7ed, #fef3c7)",
+          border: "1px solid #fbbf24",
+          borderRadius: "6px",
+          padding: "8px 16px",
+          marginBottom: "12px",
+          fontSize: "13px",
+          color: "#92400e",
+        },
+      }, "Sample Data \u2014 Turn off \"Use Sample Data\" in the property pane and configure your calendar sources.")
+    );
+  }
+
   // Toolbar
   contentChildren.push(
     React.createElement(HyperEventsToolbar, {
       key: "toolbar",
       selectedDate: store.selectedDate,
-      viewMode: store.viewMode,
+      viewMode: effectiveViewMode,
       onNavigateBackward: store.navigateBackward,
       onNavigateForward: store.navigateForward,
       onNavigateToday: store.navigateToday,
@@ -225,7 +313,7 @@ const HyperEventsInner: React.FC<IHyperEventsComponentProps> = function (props) 
     };
 
     let viewElement: React.ReactNode;
-    switch (store.viewMode) {
+    switch (effectiveViewMode) {
       case "month":
         viewElement = React.createElement(MonthView, viewProps);
         break;

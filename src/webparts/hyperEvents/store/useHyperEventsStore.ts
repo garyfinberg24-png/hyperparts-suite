@@ -28,6 +28,12 @@ export interface IHyperEventsStoreState {
   isLoading: boolean;
   /** Error message */
   errorMessage: string;
+  /** Whether the setup wizard modal is open */
+  isWizardOpen: boolean;
+  /** Demo mode: overridden view mode */
+  demoViewMode: HyperEventsViewMode | undefined;
+  /** Demo mode: feature toggles */
+  demoFeatureToggles: Record<string, boolean>;
 }
 
 export interface IHyperEventsStoreActions {
@@ -53,6 +59,11 @@ export interface IHyperEventsStoreActions {
   navigateBackward: () => void;
   navigateToday: () => void;
   reset: () => void;
+  openWizard: () => void;
+  closeWizard: () => void;
+  setDemoViewMode: (mode: HyperEventsViewMode) => void;
+  toggleDemoFeature: (key: string) => void;
+  resetDemo: () => void;
 }
 
 export type IHyperEventsStore = IHyperEventsStoreState & IHyperEventsStoreActions;
@@ -70,6 +81,9 @@ const initialState: IHyperEventsStoreState = {
   isDatePickerOpen: false,
   isLoading: false,
   errorMessage: "",
+  isWizardOpen: false,
+  demoViewMode: undefined,
+  demoFeatureToggles: {},
 };
 
 export const useHyperEventsStore = create<IHyperEventsStore>(function (set) {
@@ -199,6 +213,33 @@ export const useHyperEventsStore = create<IHyperEventsStore>(function (set) {
 
     reset: function (): void {
       set({ ...initialState, selectedDate: new Date() });
+    },
+
+    openWizard: function (): void {
+      set({ isWizardOpen: true });
+    },
+
+    closeWizard: function (): void {
+      set({ isWizardOpen: false });
+    },
+
+    setDemoViewMode: function (mode: HyperEventsViewMode): void {
+      set({ demoViewMode: mode });
+    },
+
+    toggleDemoFeature: function (key: string): void {
+      set(function (state) {
+        var updated: Record<string, boolean> = {};
+        Object.keys(state.demoFeatureToggles).forEach(function (k) {
+          updated[k] = state.demoFeatureToggles[k];
+        });
+        updated[key] = !updated[key];
+        return { demoFeatureToggles: updated };
+      });
+    },
+
+    resetDemo: function (): void {
+      set({ demoViewMode: undefined, demoFeatureToggles: {} });
     },
   };
 });
