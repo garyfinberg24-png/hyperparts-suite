@@ -23,10 +23,15 @@ import HyperImageTextOverlay from "./HyperImageTextOverlay";
 import HyperImageDemoBar from "./HyperImageDemoBar";
 import { HyperImageEditorModal } from "./editor";
 import type { IEditorChanges } from "./editor";
+// Cross-web-part import: HyperImageBrowser from HyperHero shared components (pitfall #29)
+import { HyperImageBrowser } from "../../hyperHero/components/shared/HyperImageBrowser";
+import type { IHyperImageBrowserProps } from "../../hyperHero/components/shared/HyperImageBrowser";
 import styles from "./HyperImage.module.scss";
 
 export interface IHyperImageComponentProps extends IHyperImageWebPartProps {
   instanceId: string;
+  /** Callback when user selects an image from the browser */
+  onImageSelect?: (imageUrl: string) => void;
 }
 
 /** Safely parse a JSON string with a fallback default */
@@ -333,10 +338,12 @@ function _renderMultiImageLayout(
   );
 }
 
-// ── Lightbox + Editor modals (rendered as siblings) ──
+// ── Lightbox + Editor + Browser modals (rendered as siblings) ──
 var HyperImageWithLightbox: React.FC<IHyperImageComponentProps> = function (props) {
   var lightboxOpen = useHyperImageStore(function (s) { return s.lightboxOpen; });
   var closeLightbox = useHyperImageStore(function (s) { return s.closeLightbox; });
+  var isBrowserOpen = useHyperImageStore(function (s) { return s.isBrowserOpen; });
+  var closeBrowser = useHyperImageStore(function (s) { return s.closeBrowser; });
   var imageUrl = props.useSampleData ? getSampleImageUrl() : props.imageUrl;
 
   /** Called when the visual editor "Apply" button is clicked */
@@ -344,6 +351,14 @@ var HyperImageWithLightbox: React.FC<IHyperImageComponentProps> = function (prop
     // In a full integration the web part class would update its properties.
     // For now the editor stores changes locally; a future enhancement
     // will use a callback prop to persist changes back to the property bag.
+  }
+
+  /** Called when user selects an image from the SP browser */
+  function handleBrowserSelect(selectedUrl: string): void {
+    closeBrowser();
+    if (props.onImageSelect) {
+      props.onImageSelect(selectedUrl);
+    }
   }
 
   return React.createElement(
@@ -380,7 +395,14 @@ var HyperImageWithLightbox: React.FC<IHyperImageComponentProps> = function (prop
       objectFit: props.objectFit,
       aspectRatio: props.aspectRatio,
       onApply: handleEditorApply,
-    })
+    }),
+    // SharePoint Image Browser (right-docked panel)
+    React.createElement(HyperImageBrowser, {
+      isOpen: isBrowserOpen,
+      onClose: function () { closeBrowser(); },
+      onSelect: handleBrowserSelect,
+      size: "panel",
+    } as IHyperImageBrowserProps)
   );
 };
 

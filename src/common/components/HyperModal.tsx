@@ -4,7 +4,7 @@ export interface IHyperModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  size?: "small" | "medium" | "large" | "xlarge" | "fullscreen";
+  size?: "small" | "medium" | "large" | "xlarge" | "fullscreen" | "panel";
   children?: React.ReactNode;
   footer?: React.ReactNode;
 }
@@ -43,6 +43,8 @@ export const HyperModal: React.FC<IHyperModalProps> = (props) => {
 
   if (!isOpen) return null;
 
+  var isPanel = size === "panel";
+
   return React.createElement("div", {
     style: {
       position: "fixed" as const,
@@ -52,8 +54,8 @@ export const HyperModal: React.FC<IHyperModalProps> = (props) => {
       bottom: 0,
       backgroundColor: "rgba(0, 0, 0, 0.4)",
       display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: isPanel ? "stretch" : "center",
+      justifyContent: isPanel ? "flex-end" : "center",
       zIndex: 1000000,
     },
     onClick: (e: React.MouseEvent) => {
@@ -66,7 +68,16 @@ export const HyperModal: React.FC<IHyperModalProps> = (props) => {
       role: "dialog",
       "aria-modal": "true",
       "aria-label": title,
-      style: {
+      style: isPanel ? {
+        backgroundColor: "#ffffff",
+        boxShadow: "-4px 0 24px rgba(0,0,0,0.18)",
+        width: "380px",
+        maxWidth: "90vw",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column" as const,
+        overflow: "hidden",
+      } : {
         backgroundColor: "#ffffff",
         borderRadius: "8px",
         boxShadow: "0 8px 24px rgba(0,0,0,0.14)",

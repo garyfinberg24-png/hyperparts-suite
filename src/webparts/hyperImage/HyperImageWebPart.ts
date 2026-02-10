@@ -116,6 +116,11 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
     var props: IHyperImageComponentProps = {
       ...this.properties,
       instanceId: this.instanceId,
+      onImageSelect: (imageUrl: string): void => {
+        this.properties.imageUrl = imageUrl;
+        this.properties.useSampleData = false;
+        this.render();
+      },
     };
     var element: React.ReactElement<IHyperImageComponentProps> =
       React.createElement(HyperImage, props);
@@ -164,6 +169,11 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
                 PropertyPaneTextField("imageUrl", {
                   label: strings.ImageUrlLabel,
                   disabled: this.properties.useSampleData,
+                }),
+                PropertyPaneButton("_browseImage", {
+                  text: strings.BrowseButtonLabel,
+                  buttonType: PropertyPaneButtonType.Normal,
+                  onClick: this._onOpenImageBrowser.bind(this),
                 }),
                 PropertyPaneTextField("altText", {
                   label: strings.AltTextLabel,
@@ -414,6 +424,15 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
         },
       ],
     };
+  }
+
+  /** Open the SharePoint image browser modal */
+  private _onOpenImageBrowser(): void {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    var store = require("./store/useHyperImageStore");
+    if (store && store.useHyperImageStore) {
+      store.useHyperImageStore.getState().openBrowser();
+    }
   }
 
   /** Open the visual editor modal */

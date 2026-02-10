@@ -9,6 +9,8 @@ export interface IHyperImageBrowserProps {
   isOpen: boolean;
   onClose: () => void;
   onSelect: (imageUrl: string) => void;
+  /** Modal size override. Defaults to "large" (centered). Use "panel" for SP-style right-docked panel. */
+  size?: "small" | "medium" | "large" | "xlarge" | "fullscreen" | "panel";
 }
 
 // ── Tab definition ─────────────────────────────────────────────────────────────
@@ -861,7 +863,7 @@ const HyperImageBrowserInner: React.FC<IHyperImageBrowserProps> = function (prop
     isOpen: isOpen,
     onClose: onClose,
     title: "Select an image",
-    size: "large",
+    size: props.size || "large",
     footer: footerEl,
   }, bodyEl);
 };
