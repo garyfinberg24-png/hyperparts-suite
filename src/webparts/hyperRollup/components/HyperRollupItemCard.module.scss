@@ -93,6 +93,21 @@
   font-size: $ms-font-size-10;
 }
 
+.newBadge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: #f57c00;
+  color: #ffffff;
+  font-size: $ms-font-size-10;
+  font-weight: $ms-font-weight-bold;
+  letter-spacing: 0.5px;
+  line-height: 16px;
+  z-index: 1;
+}
+
 .previewButton {
   position: absolute;
   top: 10px;

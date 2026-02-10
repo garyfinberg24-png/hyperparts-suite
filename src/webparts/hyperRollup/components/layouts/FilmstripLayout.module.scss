@@ -1,0 +1,58 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.filmstripContainer {
+  position: relative;
+  padding: 16px;
+}
+
+.filmstripTrack {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: 4px 0;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.filmstripCard {
+  min-width: 240px;
+  max-width: 240px;
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+.filmstripArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid "[theme:neutralLight, default: #edebe9]";
+  background: "[theme:white, default: #ffffff]";
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+  font-size: $ms-font-size-14;
+
+  &:hover {
+    color: "[theme:themePrimary, default: #0078d4]";
+    background: "[theme:neutralLighter, default: #f3f2f1]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default: #0078d4]";
+    outline-offset: 2px;
+  }
+}
+
+.arrowLeft { left: 0; }
+.arrowRight { right: 0; }

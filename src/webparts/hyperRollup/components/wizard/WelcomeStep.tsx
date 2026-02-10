@@ -37,7 +37,7 @@ const WelcomeStep: React.FC<IWelcomeStepProps> = function (props) {
           React.createElement("span", { className: styles.splashTaglineStrong }, "Aggregate"),
           " content across sites & lists.",
           React.createElement("br"),
-          "Kanban, tables, cards with ",
+          "11 layouts from cards to calendars, powered by ",
           React.createElement("span", { className: styles.splashTaglineStrong }, "Handlebars templates"),
           "."
         )
@@ -53,11 +53,11 @@ const WelcomeStep: React.FC<IWelcomeStepProps> = function (props) {
           React.createElement("div", { className: styles.splashCardTitle }, "Cross-Site"),
           React.createElement("div", { className: styles.splashCardDesc }, "Pull from any site collection in your tenant")
         ),
-        // Card 2: 3 Layouts
+        // Card 2: 11 Layouts
         React.createElement("div", { className: styles.splashCard },
           React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDCCA"),
-          React.createElement("div", { className: styles.splashCardTitle }, "3 Layouts"),
-          React.createElement("div", { className: styles.splashCardDesc }, "Cards, data table & Kanban board")
+          React.createElement("div", { className: styles.splashCardTitle }, "11 Layouts"),
+          React.createElement("div", { className: styles.splashCardDesc }, "Cards, table, Kanban, calendar, timeline & more")
         ),
         // Card 3: Templates
         React.createElement("div", { className: styles.splashCard },

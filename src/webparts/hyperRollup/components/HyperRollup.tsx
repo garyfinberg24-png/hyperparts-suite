@@ -16,9 +16,10 @@ import {
   parseCustomActions,
 } from "../models";
 import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton } from "../../../common/components";
-import { useRollupItems, useRollupFilters, useRollupGrouping, useRollupAggregation } from "../hooks";
+import { useRollupItems, useRollupFilters, useRollupGrouping, useRollupAggregation, useRollupAutoRefresh, useRollupAudienceFilter } from "../hooks";
 import { useHyperRollupStore } from "../store/useHyperRollupStore";
 import { exportToCsv } from "../utils/exportUtils";
+import { trackViewModeChange, trackItemClick, trackPreview, trackExport, trackSearch } from "../utils/rollupAnalytics";
 import { resolveTemplate } from "../templates/builtInTemplates";
 import { HyperRollupToolbar } from "./HyperRollupToolbar";
 import { HyperRollupFilterPanel } from "./HyperRollupFilterPanel";
@@ -29,7 +30,22 @@ import { HyperRollupInlineEdit } from "./HyperRollupInlineEdit";
 import { HyperRollupViewManager } from "./HyperRollupViewManager";
 import { HyperRollupTemplateView } from "./HyperRollupTemplateView";
 import { HyperRollupActionButtons } from "./HyperRollupActionButtons";
-import { CardLayout, TableLayout, KanbanLayout } from "./layouts";
+import { HyperRollupDemoBar } from "./HyperRollupDemoBar";
+import { getSampleData } from "../utils/sampleData";
+import type { DemoPresetId } from "../utils/sampleData";
+import {
+  CardLayout,
+  TableLayout,
+  KanbanLayout,
+  ListLayout,
+  CarouselLayout,
+  FilmstripLayout,
+  GalleryLayout,
+  TimelineLayout,
+  CalendarLayout,
+  MagazineLayout,
+  Top10Layout,
+} from "./layouts";
 import styles from "./HyperRollup.module.scss";
 
 export interface IHyperRollupComponentProps extends IHyperRollupWebPartProps {
@@ -38,6 +54,22 @@ export interface IHyperRollupComponentProps extends IHyperRollupWebPartProps {
 
 const HyperRollupInner: React.FC<IHyperRollupComponentProps> = (props) => {
   const store = useHyperRollupStore();
+
+  // Sync demo mode state from props on mount/change
+  React.useEffect(function () {
+    if (props.enableDemoMode && !store.isDemoMode) {
+      store.setDemoMode(true);
+      store.setDemoPreset((props.demoPresetId || "documents") as DemoPresetId);
+    } else if (!props.enableDemoMode && store.isDemoMode) {
+      store.setDemoMode(false);
+    }
+  }, [props.enableDemoMode, props.demoPresetId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Generate demo data when in demo mode
+  var demoItems = React.useMemo(function (): IHyperRollupItem[] {
+    if (!store.isDemoMode) return [];
+    return getSampleData(store.demoPresetId);
+  }, [store.isDemoMode, store.demoPresetId]);
 
   // Parse JSON string properties
   const sources = React.useMemo(function () {
@@ -79,7 +111,7 @@ const HyperRollupInner: React.FC<IHyperRollupComponentProps> = (props) => {
     : (props.enableGrouping ? store.groupByField || props.groupByField : "");
 
   // Fetch items from sources
-  const { items, loading, error, hasMore, loadMore } = useRollupItems({
+  const { items, loading, error, hasMore, loadMore, refresh } = useRollupItems({
     sources: sources,
     query: query,
     pageSize: props.pageSize,
@@ -87,9 +119,28 @@ const HyperRollupInner: React.FC<IHyperRollupComponentProps> = (props) => {
     cacheDuration: props.cacheDuration,
   });
 
+  // Auto-refresh timer (disabled in demo mode)
+  useRollupAutoRefresh({
+    enabled: props.enableAutoRefresh && !store.isDemoMode,
+    interval: props.autoRefreshInterval || 0,
+    onRefresh: refresh,
+  });
+
+  // Effective items: demo data or fetched data
+  var effectiveItems = store.isDemoMode ? demoItems : items;
+  var effectiveLoading = store.isDemoMode ? false : loading;
+  var effectiveError = store.isDemoMode ? undefined : error;
+
+  // Audience targeting filter (between fetch and faceted filters, disabled in demo mode)
+  var { filteredItems: audienceFilteredItems, loading: audienceLoading } = useRollupAudienceFilter(
+    effectiveItems,
+    props.enableAudienceTargeting && !store.isDemoMode,
+    props.audienceTargetField || ""
+  );
+
   // Apply filters and search
   const { filteredItems, facetGroups, activeFilterCount } = useRollupFilters({
-    items: items,
+    items: audienceFilteredItems,
     columns: columns,
     activeFacets: store.activeFacets,
     searchQuery: store.searchQuery,
@@ -159,13 +210,13 @@ const HyperRollupInner: React.FC<IHyperRollupComponentProps> = (props) => {
   const selectedItem = React.useMemo(function (): IHyperRollupItem | undefined {
     if (!store.selectedItemId) return undefined;
     let found: IHyperRollupItem | undefined;
-    items.forEach(function (item) {
+    effectiveItems.forEach(function (item) {
       if (item.id === store.selectedItemId) {
         found = item;
       }
     });
     return found;
-  }, [items, store.selectedItemId]);
+  }, [effectiveItems, store.selectedItemId]);
 
   // Expand all groups by default when grouping changes
   React.useEffect(function () {
@@ -189,27 +240,50 @@ const HyperRollupInner: React.FC<IHyperRollupComponentProps> = (props) => {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Handlers
+  // Handlers (with optional analytics)
   const handleViewModeChange = React.useCallback(function (mode: ViewMode): void {
     store.setViewMode(mode);
-  }, [store.setViewMode]);
+    if (props.enableAnalytics) {
+      trackViewModeChange(props.instanceId, mode);
+    }
+  }, [store.setViewMode, props.enableAnalytics, props.instanceId]);
 
   const handleSearchChange = React.useCallback(function (q: string): void {
     store.setSearchQuery(q);
-  }, [store.setSearchQuery]);
+    if (props.enableAnalytics && q.length > 0) {
+      trackSearch(props.instanceId, q, filteredItems.length);
+    }
+  }, [store.setSearchQuery, props.enableAnalytics, props.instanceId, filteredItems.length]);
 
   const handleExport = React.useCallback(function (): void {
     exportToCsv(filteredItems, columns, props.title + "-export.csv");
-  }, [filteredItems, columns, props.title]);
+    if (props.enableAnalytics) {
+      trackExport(props.instanceId, filteredItems.length);
+    }
+  }, [filteredItems, columns, props.title, props.enableAnalytics, props.instanceId]);
 
   const handleSelectItem = React.useCallback(function (itemId: string): void {
     store.selectItem(itemId);
-  }, [store.selectItem]);
+    if (props.enableAnalytics) {
+      var clickedItem: IHyperRollupItem | undefined;
+      items.forEach(function (it) { if (it.id === itemId) clickedItem = it; });
+      if (clickedItem) {
+        trackItemClick(props.instanceId, clickedItem);
+      }
+    }
+  }, [store.selectItem, props.enableAnalytics, props.instanceId, items]);
 
   const handlePreviewItem = React.useCallback(function (itemId: string): void {
     store.selectItem(itemId);
     store.openPreview();
-  }, [store.selectItem, store.openPreview]);
+    if (props.enableAnalytics) {
+      var previewItem: IHyperRollupItem | undefined;
+      items.forEach(function (it) { if (it.id === itemId) previewItem = it; });
+      if (previewItem) {
+        trackPreview(props.instanceId, previewItem);
+      }
+    }
+  }, [store.selectItem, store.openPreview, props.enableAnalytics, props.instanceId, items]);
 
   const handlePageChange = React.useCallback(function (page: number): void {
     store.setPage(page);
@@ -270,8 +344,17 @@ const HyperRollupInner: React.FC<IHyperRollupComponentProps> = (props) => {
     }
   }, [store.activeViewId, store.setActiveView]);
 
-  // Loading state
-  if (loading && items.length === 0) {
+  // Demo mode handlers
+  var handleToggleDemo = React.useCallback(function (): void {
+    store.toggleDemoMode();
+  }, [store.toggleDemoMode]);
+
+  var handleSelectPreset = React.useCallback(function (presetId: DemoPresetId): void {
+    store.setDemoPreset(presetId);
+  }, [store.setDemoPreset]);
+
+  // Loading state (includes audience filter loading)
+  if ((effectiveLoading || audienceLoading) && effectiveItems.length === 0) {
     return React.createElement(
       "div",
       { className: styles.rollupContainer, role: "region", "aria-label": props.title || "Content Rollup" },
@@ -283,7 +366,7 @@ const HyperRollupInner: React.FC<IHyperRollupComponentProps> = (props) => {
   }
 
   // Error state
-  if (error) {
+  if (effectiveError) {
     return React.createElement(
       "div",
       { className: styles.rollupContainer, role: "region", "aria-label": props.title || "Content Rollup" },
@@ -292,7 +375,7 @@ const HyperRollupInner: React.FC<IHyperRollupComponentProps> = (props) => {
         : undefined,
       React.createElement(HyperEmptyState, {
         title: "Failed to load content",
-        description: error.message,
+        description: effectiveError.message,
         iconName: "Error",
       })
     );
@@ -328,7 +411,101 @@ const HyperRollupInner: React.FC<IHyperRollupComponentProps> = (props) => {
       onSelectItem: handleSelectItem,
       onPreviewItem: props.enableDocPreview ? handlePreviewItem : undefined,
     });
+  } else if (store.viewMode === "list") {
+    layoutElement = React.createElement(ListLayout, {
+      groups: groups,
+      isGrouped: isGrouped,
+      selectedItemId: store.selectedItemId,
+      expandedGroups: store.expandedGroups,
+      onSelectItem: handleSelectItem,
+      onPreviewItem: props.enableDocPreview ? handlePreviewItem : undefined,
+      onToggleGroup: store.toggleGroup,
+    });
+  } else if (store.viewMode === "carousel") {
+    layoutElement = React.createElement(CarouselLayout, {
+      groups: groups,
+      isGrouped: isGrouped,
+      selectedItemId: store.selectedItemId,
+      expandedGroups: store.expandedGroups,
+      autoPlay: props.carouselAutoPlay,
+      autoPlayInterval: props.carouselInterval,
+      onSelectItem: handleSelectItem,
+      onPreviewItem: props.enableDocPreview ? handlePreviewItem : undefined,
+      onToggleGroup: store.toggleGroup,
+    });
+  } else if (store.viewMode === "filmstrip") {
+    layoutElement = React.createElement(FilmstripLayout, {
+      groups: groups,
+      isGrouped: isGrouped,
+      selectedItemId: store.selectedItemId,
+      expandedGroups: store.expandedGroups,
+      onSelectItem: handleSelectItem,
+      onPreviewItem: props.enableDocPreview ? handlePreviewItem : undefined,
+      onToggleGroup: store.toggleGroup,
+    });
+  } else if (store.viewMode === "gallery") {
+    layoutElement = React.createElement(GalleryLayout, {
+      groups: groups,
+      isGrouped: isGrouped,
+      selectedItemId: store.selectedItemId,
+      expandedGroups: store.expandedGroups,
+      galleryColumns: props.galleryColumns,
+      onSelectItem: handleSelectItem,
+      onPreviewItem: props.enableDocPreview ? handlePreviewItem : undefined,
+      onToggleGroup: store.toggleGroup,
+    });
+  } else if (store.viewMode === "timeline") {
+    layoutElement = React.createElement(TimelineLayout, {
+      groups: groups,
+      isGrouped: isGrouped,
+      selectedItemId: store.selectedItemId,
+      expandedGroups: store.expandedGroups,
+      dateField: props.dateField || "modified",
+      onSelectItem: handleSelectItem,
+      onPreviewItem: props.enableDocPreview ? handlePreviewItem : undefined,
+      onToggleGroup: store.toggleGroup,
+    });
+  } else if (store.viewMode === "calendar") {
+    layoutElement = React.createElement(CalendarLayout, {
+      groups: groups,
+      isGrouped: isGrouped,
+      selectedItemId: store.selectedItemId,
+      expandedGroups: store.expandedGroups,
+      dateField: props.dateField || "modified",
+      calendarYear: store.calendarYear,
+      calendarMonth: store.calendarMonth,
+      onNavigateMonth: store.navigateMonth,
+      onSelectItem: handleSelectItem,
+      onPreviewItem: props.enableDocPreview ? handlePreviewItem : undefined,
+      onToggleGroup: store.toggleGroup,
+    });
+  } else if (store.viewMode === "magazine") {
+    layoutElement = React.createElement(MagazineLayout, {
+      groups: groups,
+      isGrouped: isGrouped,
+      selectedItemId: store.selectedItemId,
+      expandedGroups: store.expandedGroups,
+      cardColumns: props.cardColumns,
+      onSelectItem: handleSelectItem,
+      onPreviewItem: props.enableDocPreview ? handlePreviewItem : undefined,
+      onToggleGroup: store.toggleGroup,
+      newBadgeDays: props.newBadgeDays,
+    });
+  } else if (store.viewMode === "top10") {
+    layoutElement = React.createElement(Top10Layout, {
+      groups: groups,
+      isGrouped: isGrouped,
+      selectedItemId: store.selectedItemId,
+      expandedGroups: store.expandedGroups,
+      rankByField: props.top10RankField || "modified",
+      rankDirection: props.top10RankDirection || "desc",
+      maxItems: props.top10MaxItems || 10,
+      onSelectItem: handleSelectItem,
+      onPreviewItem: props.enableDocPreview ? handlePreviewItem : undefined,
+      onToggleGroup: store.toggleGroup,
+    });
   } else {
+    // Default: card layout
     layoutElement = React.createElement(CardLayout, {
       groups: groups,
       isGrouped: isGrouped,
@@ -338,11 +515,12 @@ const HyperRollupInner: React.FC<IHyperRollupComponentProps> = (props) => {
       onSelectItem: handleSelectItem,
       onPreviewItem: props.enableDocPreview ? handlePreviewItem : undefined,
       onToggleGroup: store.toggleGroup,
+      newBadgeDays: props.newBadgeDays,
     });
   }
 
   // Empty state (after all filters applied)
-  if (filteredItems.length === 0 && !loading) {
+  if (filteredItems.length === 0 && !effectiveLoading) {
     return React.createElement(
       "div",
       { className: styles.rollupContainer, role: "region", "aria-label": props.title || "Content Rollup" },
@@ -384,6 +562,14 @@ const HyperRollupInner: React.FC<IHyperRollupComponentProps> = (props) => {
       ? React.createElement("h2", { className: styles.rollupTitle }, props.title)
       : undefined,
 
+    // Demo mode bar
+    React.createElement(HyperRollupDemoBar, {
+      isDemoMode: store.isDemoMode,
+      activePresetId: store.demoPresetId,
+      onToggleDemo: handleToggleDemo,
+      onSelectPreset: handleSelectPreset,
+    }),
+
     // Toolbar row: toolbar + view manager
     React.createElement(
       "div",
@@ -394,12 +580,14 @@ const HyperRollupInner: React.FC<IHyperRollupComponentProps> = (props) => {
         enableSearch: props.enableSearch,
         enableExport: props.enableExport,
         enableSavedViews: props.enableSavedViews,
+        enableAutoRefresh: props.enableAutoRefresh,
         itemCount: filteredItems.length,
         activeFilterCount: activeFilterCount,
         onViewModeChange: handleViewModeChange,
         onSearchChange: handleSearchChange,
         onExport: handleExport,
         onClearFilters: store.clearFacets,
+        onRefresh: refresh,
       }),
       props.enableSavedViews
         ? React.createElement(HyperRollupViewManager, {
@@ -480,7 +668,7 @@ const HyperRollupInner: React.FC<IHyperRollupComponentProps> = (props) => {
         }),
 
         // Loading indicator for incremental loads
-        loading
+        effectiveLoading
           ? React.createElement(
               "div",
               { className: styles.loadingMore, "aria-live": "polite" },

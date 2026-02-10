@@ -1,5 +1,6 @@
 import * as React from "react";
 import type { IHyperRollupItem } from "../models";
+import { isNewItem } from "../utils/newBadgeUtils";
 import styles from "./HyperRollupItemCard.module.scss";
 
 export interface IHyperRollupItemCardProps {
@@ -7,10 +8,14 @@ export interface IHyperRollupItemCardProps {
   isSelected: boolean;
   onSelect: (itemId: string) => void;
   onPreview?: (itemId: string) => void;
+  /** Show "NEW" badge on items modified within N days (0 = disabled) */
+  newBadgeDays?: number;
 }
 
 const HyperRollupItemCardInner: React.FC<IHyperRollupItemCardProps> = (props) => {
-  const { item, isSelected, onSelect, onPreview } = props;
+  const { item, isSelected, onSelect, onPreview, newBadgeDays } = props;
+
+  var showNewBadge = newBadgeDays ? isNewItem(item, newBadgeDays) : false;
 
   const handleClick = React.useCallback(function (): void {
     onSelect(item.id);
@@ -48,6 +53,11 @@ const HyperRollupItemCardInner: React.FC<IHyperRollupItemCardProps> = (props) =>
         }
       },
     },
+
+    // NEW badge
+    showNewBadge
+      ? React.createElement("span", { className: styles.newBadge, "aria-label": "Recently updated" }, "NEW")
+      : undefined,
 
     // Header row: file icon + title
     React.createElement(

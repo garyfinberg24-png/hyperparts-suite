@@ -1,0 +1,2113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HyperRollup V2 — 10 Layouts + Features Mockup</title>
+<link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/11.1.0/css/fabric.min.css">
+<style>
+  /* ============================================================
+     DESIGN TOKENS (Fluent UI SharePoint theme)
+     ============================================================ */
+  :root {
+    --themePrimary: #0078d4;
+    --themeDarkAlt: #106ebe;
+    --themeDark: #005a9e;
+    --themeLighter: #deecf9;
+    --themeLighterAlt: #eff6fc;
+    --themeLight: #c7e0f4;
+    --neutralPrimary: #323130;
+    --neutralSecondary: #605e5c;
+    --neutralTertiary: #a19f9d;
+    --neutralTertiaryAlt: #c8c6c4;
+    --neutralLight: #edebe9;
+    --neutralLighter: #f3f2f1;
+    --neutralLighterAlt: #faf9f8;
+    --white: #ffffff;
+    --red: #d13438;
+    --orange: #ca5010;
+    --green: #107c10;
+    --yellow: #ffb900;
+
+    --font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif;
+    --shadow-4: 0 1.6px 3.6px rgba(0,0,0,.132), 0 0.3px 0.9px rgba(0,0,0,.108);
+    --shadow-8: 0 3.2px 7.2px rgba(0,0,0,.132), 0 0.6px 1.8px rgba(0,0,0,.108);
+    --shadow-16: 0 6.4px 14.4px rgba(0,0,0,.132), 0 1.2px 3.6px rgba(0,0,0,.108);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-family);
+    background: #f5f5f5;
+    color: var(--neutralPrimary);
+    line-height: 1.5;
+    padding: 24px;
+  }
+
+  /* Page header */
+  .page-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .page-header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--themeDark);
+    margin-bottom: 8px;
+  }
+  .page-header p {
+    font-size: 16px;
+    color: var(--neutralSecondary);
+  }
+  .page-header .badge-row {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .page-header .badge {
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .badge-blue { background: var(--themeLighterAlt); color: var(--themePrimary); border: 1px solid var(--themeLight); }
+  .badge-green { background: #dff6dd; color: var(--green); border: 1px solid #a7e3a5; }
+  .badge-orange { background: #fff4ce; color: var(--orange); border: 1px solid #ffe0b2; }
+
+  /* ============================================================
+     SECTION / LAYOUT CONTAINER
+     ============================================================ */
+  .section {
+    background: var(--white);
+    border-radius: 8px;
+    box-shadow: var(--shadow-4);
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--neutralLight);
+    background: var(--neutralLighterAlt);
+  }
+  .section-header .layout-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--themePrimary);
+    color: var(--white);
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .section-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--neutralPrimary);
+  }
+  .section-header .tag {
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .tag-existing { background: var(--neutralLighter); color: var(--neutralSecondary); }
+  .tag-new { background: #dff6dd; color: var(--green); }
+  .section-header .description {
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--neutralSecondary);
+    font-style: italic;
+  }
+  .section-body {
+    padding: 20px;
+  }
+
+  /* ============================================================
+     SHARED: WEB PART WRAPPER (simulates SP web part container)
+     ============================================================ */
+  .webpart-wrapper {
+    border: 1px solid var(--neutralLight);
+    border-radius: 6px;
+    background: var(--white);
+    overflow: hidden;
+  }
+
+  /* ============================================================
+     TOOLBAR (updated for 10 views)
+     ============================================================ */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--neutralLight);
+    flex-wrap: wrap;
+  }
+  .view-switcher {
+    display: flex;
+    gap: 2px;
+    border: 1px solid var(--neutralLight);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .view-btn {
+    border: none;
+    background: var(--neutralLighter);
+    color: var(--neutralSecondary);
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-family);
+  }
+  .view-btn:hover { background: var(--neutralLight); }
+  .view-btn.active {
+    background: var(--themePrimary);
+    color: var(--white);
+  }
+  .view-btn .label { font-size: 12px; }
+
+  /* More views dropdown */
+  .more-views-btn {
+    position: relative;
+    border: 1px solid var(--neutralLight);
+    border-radius: 4px;
+    background: var(--neutralLighter);
+    color: var(--neutralSecondary);
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: var(--font-family);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .more-views-btn:hover { background: var(--neutralLight); }
+  .more-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 4px;
+    background: var(--white);
+    border: 1px solid var(--neutralLight);
+    border-radius: 6px;
+    box-shadow: var(--shadow-16);
+    padding: 4px 0;
+    min-width: 200px;
+    z-index: 100;
+    display: none;
+  }
+  .more-views-btn:focus .more-dropdown,
+  .more-views-btn:hover .more-dropdown { display: block; }
+  .more-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    color: var(--neutralPrimary);
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .more-dropdown-item:hover { background: var(--neutralLighterAlt); }
+  .more-dropdown-item.active {
+    color: var(--themePrimary);
+    font-weight: 600;
+    background: var(--themeLighterAlt);
+  }
+  .more-dropdown-item i { width: 16px; text-align: center; }
+
+  /* Search bar in toolbar */
+  .search-bar {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 180px;
+    max-width: 360px;
+    border: 1px solid var(--neutralTertiaryAlt);
+    border-radius: 4px;
+    padding: 0 8px;
+    background: var(--white);
+  }
+  .search-bar i { color: var(--neutralSecondary); margin-right: 6px; font-size: 14px; }
+  .search-bar input {
+    border: none;
+    outline: none;
+    flex: 1;
+    padding: 6px 0;
+    font-size: 14px;
+    font-family: var(--font-family);
+    color: var(--neutralPrimary);
+  }
+
+  .toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+  }
+  .item-count { font-size: 12px; color: var(--neutralSecondary); }
+  .action-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid var(--neutralTertiaryAlt);
+    border-radius: 4px;
+    background: var(--white);
+    color: var(--neutralPrimary);
+    padding: 4px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: var(--font-family);
+  }
+  .action-btn:hover { background: var(--neutralLighter); }
+
+  /* Auto-refresh indicator */
+  .auto-refresh-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 10px;
+    border-radius: 12px;
+    background: #dff6dd;
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .auto-refresh-pill .dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--green);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  /* ============================================================
+     DEMO MODE BAR
+     ============================================================ */
+  .demo-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    background: linear-gradient(90deg, #fff7ed 0%, #fff4e6 100%);
+    border-bottom: 1px solid #ffe0b2;
+    font-size: 12px;
+  }
+  .demo-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border: 1px solid var(--orange);
+    border-radius: 4px;
+    background: #fff4ce;
+    color: var(--orange);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--font-family);
+  }
+  .demo-indicator { font-size: 11px; color: var(--orange); font-style: italic; }
+  .demo-preset-select {
+    padding: 3px 8px;
+    border: 1px solid var(--neutralTertiaryAlt);
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: var(--font-family);
+  }
+
+  /* ============================================================
+     "NEW" BADGE on items
+     ============================================================ */
+  .new-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--orange);
+    color: var(--white);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ============================================================
+     LAYOUT 1: CARD GRID (existing)
+     ============================================================ */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding: 16px;
+  }
+  .item-card {
+    position: relative;
+    padding: 14px;
+    border: 1px solid var(--neutralLight);
+    border-radius: 6px;
+    background: var(--white);
+    cursor: pointer;
+    transition: box-shadow 0.15s, border-color 0.15s;
+  }
+  .item-card:hover {
+    box-shadow: var(--shadow-8);
+    border-color: var(--neutralTertiaryAlt);
+  }
+  .item-card.selected {
+    border-color: var(--themePrimary);
+    box-shadow: 0 0 0 1px var(--themePrimary);
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .file-icon { color: var(--themePrimary); font-size: 16px; flex-shrink: 0; }
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--neutralPrimary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .card-desc {
+    margin: 0 0 8px 0;
+    font-size: 12px;
+    color: var(--neutralSecondary);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--neutralTertiary);
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+  .meta-badge {
+    padding: 1px 6px;
+    border-radius: 3px;
+    background: var(--neutralLighter);
+    color: var(--neutralSecondary);
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .card-source {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    color: var(--neutralTertiary);
+  }
+
+  /* ============================================================
+     LAYOUT 2: TABLE (existing)
+     ============================================================ */
+  .table-container { padding: 16px; overflow-x: auto; }
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .data-table th {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 2px solid var(--neutralLight);
+    color: var(--neutralSecondary);
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .data-table th:hover { color: var(--themePrimary); }
+  .data-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--neutralLighter);
+    color: var(--neutralPrimary);
+  }
+  .data-table tr:hover td { background: var(--neutralLighterAlt); }
+  .data-table tr.selected td {
+    background: var(--themeLighterAlt);
+    border-left: 3px solid var(--themePrimary);
+  }
+
+  /* ============================================================
+     LAYOUT 3: KANBAN (existing)
+     ============================================================ */
+  .kanban-container {
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    overflow-x: auto;
+  }
+  .kanban-lane {
+    min-width: 260px;
+    flex: 1;
+    background: var(--neutralLighterAlt);
+    border-radius: 6px;
+    padding: 12px;
+  }
+  .kanban-lane-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid;
+  }
+  .kanban-lane-header h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--neutralPrimary);
+  }
+  .kanban-lane-header .count {
+    font-size: 11px;
+    color: var(--neutralSecondary);
+    padding: 2px 8px;
+    background: var(--neutralLighter);
+    border-radius: 10px;
+  }
+  .kanban-card {
+    position: relative;
+    padding: 10px;
+    background: var(--white);
+    border: 1px solid var(--neutralLight);
+    border-radius: 4px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: box-shadow 0.15s;
+  }
+  .kanban-card:hover { box-shadow: var(--shadow-4); }
+  .kanban-card-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .kanban-card-meta { font-size: 11px; color: var(--neutralTertiary); }
+
+  /* ============================================================
+     LAYOUT 4: LIST (NEW)
+     ============================================================ */
+  .list-layout { padding: 0; }
+  .list-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--neutralLighter);
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .list-row:hover { background: var(--neutralLighterAlt); }
+  .list-row.selected { background: var(--themeLighterAlt); border-left: 3px solid var(--themePrimary); }
+  .list-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    background: var(--neutralLighter);
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+  .list-icon.docx { background: #d4e6f9; color: #185abd; }
+  .list-icon.xlsx { background: #d9ead3; color: #107c10; }
+  .list-icon.pptx { background: #fde8d4; color: #ca5010; }
+  .list-icon.pdf { background: #fdd; color: var(--red); }
+  .list-icon.page { background: var(--themeLighterAlt); color: var(--themePrimary); }
+  .list-content { flex: 1; min-width: 0; }
+  .list-title { font-size: 14px; font-weight: 600; color: var(--neutralPrimary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .list-subtitle { font-size: 12px; color: var(--neutralTertiary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .list-meta { font-size: 12px; color: var(--neutralTertiary); white-space: nowrap; flex-shrink: 0; }
+  .list-type-badge { padding: 2px 8px; border-radius: 3px; background: var(--neutralLighter); font-size: 10px; font-weight: 600; color: var(--neutralSecondary); flex-shrink: 0; }
+
+  /* ============================================================
+     LAYOUT 5: CAROUSEL (NEW)
+     ============================================================ */
+  .carousel-container {
+    position: relative;
+    padding: 16px;
+    min-height: 280px;
+  }
+  .carousel-slide {
+    background: var(--white);
+    border: 1px solid var(--neutralLight);
+    border-radius: 8px;
+    padding: 32px;
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    min-height: 200px;
+  }
+  .carousel-thumb {
+    width: 180px;
+    height: 140px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, var(--themeLighterAlt), var(--themeLight));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 40px;
+    color: var(--themePrimary);
+  }
+  .carousel-content { flex: 1; }
+  .carousel-content h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--neutralPrimary);
+    margin-bottom: 8px;
+  }
+  .carousel-content p {
+    font-size: 14px;
+    color: var(--neutralSecondary);
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+  .carousel-content .meta-row {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--neutralTertiary);
+  }
+  .carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--neutralLight);
+    background: var(--white);
+    color: var(--neutralSecondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-4);
+    font-size: 16px;
+    z-index: 2;
+  }
+  .carousel-arrow:hover { background: var(--neutralLighter); color: var(--themePrimary); }
+  .carousel-arrow.left { left: 4px; }
+  .carousel-arrow.right { right: 4px; }
+  .carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 16px;
+  }
+  .carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--neutralTertiaryAlt);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .carousel-dot.active { background: var(--themePrimary); width: 20px; border-radius: 4px; }
+  .carousel-autoplay {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-size: 11px;
+    color: var(--neutralTertiary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ============================================================
+     LAYOUT 6: FILMSTRIP (NEW)
+     ============================================================ */
+  .filmstrip-container {
+    position: relative;
+    padding: 16px;
+  }
+  .filmstrip-track {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding: 4px 0;
+  }
+  .filmstrip-track::-webkit-scrollbar { display: none; }
+  .filmstrip-card {
+    position: relative;
+    min-width: 240px;
+    max-width: 240px;
+    scroll-snap-align: start;
+    border: 1px solid var(--neutralLight);
+    border-radius: 6px;
+    background: var(--white);
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow 0.15s;
+  }
+  .filmstrip-card:hover { box-shadow: var(--shadow-8); }
+  .filmstrip-card-image {
+    height: 120px;
+    background: linear-gradient(135deg, var(--themeLighterAlt), var(--themeLight));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: var(--themePrimary);
+  }
+  .filmstrip-card-body {
+    padding: 12px;
+  }
+  .filmstrip-card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--neutralPrimary);
+    margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .filmstrip-card-meta {
+    font-size: 11px;
+    color: var(--neutralTertiary);
+  }
+  .filmstrip-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--neutralLight);
+    background: var(--white);
+    color: var(--neutralSecondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-4);
+    z-index: 2;
+    font-size: 14px;
+  }
+  .filmstrip-arrow:hover { color: var(--themePrimary); }
+  .filmstrip-arrow.left { left: 4px; }
+  .filmstrip-arrow.right { right: 4px; }
+
+  /* ============================================================
+     LAYOUT 7: GALLERY / MASONRY (NEW)
+     ============================================================ */
+  .gallery-container {
+    padding: 16px;
+    column-count: 3;
+    column-gap: 16px;
+  }
+  .gallery-item {
+    position: relative;
+    break-inside: avoid;
+    margin-bottom: 16px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .gallery-item:hover { transform: scale(1.02); }
+  .gallery-thumb {
+    width: 100%;
+    display: block;
+    background: linear-gradient(135deg, var(--themeLighterAlt), var(--themeLight));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--themePrimary);
+    font-size: 32px;
+  }
+  .gallery-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 24px 12px 12px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    color: var(--white);
+  }
+  .gallery-overlay h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .gallery-overlay span { font-size: 11px; opacity: 0.8; }
+
+  /* ============================================================
+     LAYOUT 8: TIMELINE (NEW)
+     ============================================================ */
+  .timeline-container {
+    padding: 24px 16px;
+    position: relative;
+  }
+  .timeline-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--neutralLight);
+    transform: translateX(-50%);
+  }
+  .timeline-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .timeline-item:nth-child(odd) {
+    flex-direction: row;
+    padding-right: calc(50% + 24px);
+  }
+  .timeline-item:nth-child(even) {
+    flex-direction: row-reverse;
+    padding-left: calc(50% + 24px);
+  }
+  .timeline-dot {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 3px solid var(--themePrimary);
+    background: var(--white);
+    z-index: 1;
+  }
+  .timeline-card {
+    position: relative;
+    flex: 1;
+    padding: 14px;
+    background: var(--white);
+    border: 1px solid var(--neutralLight);
+    border-radius: 6px;
+    box-shadow: var(--shadow-4);
+    cursor: pointer;
+    transition: box-shadow 0.15s;
+  }
+  .timeline-card:hover { box-shadow: var(--shadow-8); }
+  .timeline-date {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--themePrimary);
+    margin-bottom: 6px;
+  }
+  .timeline-card h4 { font-size: 14px; font-weight: 600; color: var(--neutralPrimary); margin-bottom: 4px; }
+  .timeline-card p { font-size: 12px; color: var(--neutralSecondary); line-height: 1.4; margin-bottom: 6px; }
+  .timeline-card .card-meta { font-size: 11px; }
+  .timeline-date-marker {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 14px;
+    background: var(--themePrimary);
+    color: var(--white);
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 12px;
+    z-index: 2;
+    margin-bottom: 16px;
+    white-space: nowrap;
+  }
+
+  /* ============================================================
+     LAYOUT 9: CALENDAR (NEW)
+     ============================================================ */
+  .calendar-container { padding: 16px; }
+  .calendar-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .calendar-nav h3 { font-size: 18px; font-weight: 600; color: var(--neutralPrimary); }
+  .calendar-nav-btn {
+    border: 1px solid var(--neutralLight);
+    background: var(--white);
+    color: var(--neutralSecondary);
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: var(--font-family);
+  }
+  .calendar-nav-btn:hover { background: var(--neutralLighter); }
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border: 1px solid var(--neutralLight);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .calendar-day-header {
+    padding: 8px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--neutralSecondary);
+    background: var(--neutralLighterAlt);
+    border-bottom: 1px solid var(--neutralLight);
+  }
+  .calendar-cell {
+    min-height: 90px;
+    padding: 4px;
+    border-right: 1px solid var(--neutralLighter);
+    border-bottom: 1px solid var(--neutralLighter);
+    background: var(--white);
+  }
+  .calendar-cell:nth-child(7n) { border-right: none; }
+  .calendar-cell.other-month { background: var(--neutralLighterAlt); }
+  .calendar-cell.today { background: var(--themeLighterAlt); }
+  .calendar-date {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--neutralPrimary);
+    margin-bottom: 4px;
+    padding: 2px 4px;
+  }
+  .calendar-cell.today .calendar-date {
+    background: var(--themePrimary);
+    color: var(--white);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .calendar-chip {
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    display: block;
+  }
+  .calendar-chip.doc { background: #d4e6f9; color: #185abd; }
+  .calendar-chip.page { background: #e8d5f5; color: #6b3fa0; }
+  .calendar-chip.news { background: #dff6dd; color: var(--green); }
+  .calendar-more {
+    font-size: 10px;
+    color: var(--themePrimary);
+    cursor: pointer;
+    padding: 2px 6px;
+    font-weight: 600;
+  }
+
+  /* ============================================================
+     LAYOUT 10: MAGAZINE (NEW)
+     ============================================================ */
+  .magazine-container { padding: 16px; }
+  .magazine-hero {
+    position: relative;
+    display: flex;
+    gap: 24px;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, var(--themeLighterAlt) 0%, var(--themeLight) 100%);
+    border-radius: 8px;
+    padding: 24px;
+    min-height: 220px;
+    cursor: pointer;
+    transition: box-shadow 0.2s;
+    border: 1px solid var(--neutralLight);
+  }
+  .magazine-hero:hover { box-shadow: var(--shadow-8); }
+  .magazine-hero-image {
+    width: 280px;
+    height: 180px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: var(--themePrimary);
+    flex-shrink: 0;
+  }
+  .magazine-hero-content { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .magazine-hero-content h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--neutralPrimary);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+  .magazine-hero-content p {
+    font-size: 14px;
+    color: var(--neutralSecondary);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .magazine-hero-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--neutralTertiary);
+  }
+  .magazine-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .magazine-small-card {
+    position: relative;
+    border: 1px solid var(--neutralLight);
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow 0.15s;
+  }
+  .magazine-small-card:hover { box-shadow: var(--shadow-8); }
+  .magazine-small-image {
+    height: 100px;
+    background: linear-gradient(135deg, var(--neutralLighterAlt), var(--neutralLighter));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: var(--themePrimary);
+  }
+  .magazine-small-body { padding: 12px; }
+  .magazine-small-body h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--neutralPrimary);
+    margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .magazine-small-body p {
+    font-size: 12px;
+    color: var(--neutralSecondary);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .magazine-small-meta {
+    display: flex;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--neutralTertiary);
+    margin-top: 8px;
+  }
+
+  /* ============================================================
+     CROSS-CUTTING: FEATURES SECTION MOCKUP
+     ============================================================ */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    padding: 16px;
+  }
+  .feature-card {
+    border: 1px solid var(--neutralLight);
+    border-radius: 8px;
+    padding: 20px;
+    background: var(--white);
+  }
+  .feature-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .feature-card p { font-size: 13px; color: var(--neutralSecondary); line-height: 1.5; }
+  .feature-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .feature-icon.blue { background: var(--themeLighterAlt); color: var(--themePrimary); }
+  .feature-icon.green { background: #dff6dd; color: var(--green); }
+  .feature-icon.orange { background: #fff4ce; color: var(--orange); }
+  .feature-icon.red { background: #fdd; color: var(--red); }
+
+  /* ============================================================
+     TOOLBAR V2 DIAGRAM (annotated)
+     ============================================================ */
+  .annotation {
+    display: inline-block;
+    padding: 2px 8px;
+    background: #fff4ce;
+    border: 1px solid #ffe0b2;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--orange);
+    margin-left: 8px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ================================================================
+     PAGE HEADER
+     ================================================================ -->
+<div class="page-header">
+  <h1>HyperRollup V2 — UI Mockup</h1>
+  <p>10 Layouts &bull; Auto-Refresh &bull; Audience Targeting &bull; Analytics &bull; NEW Badges &bull; Demo Mode</p>
+  <div class="badge-row">
+    <span class="badge badge-blue">10 View Modes</span>
+    <span class="badge badge-green">5 New Features</span>
+    <span class="badge badge-orange">Exceeds Omnia (9 views)</span>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     TOOLBAR V2 (with overflow menu)
+     ================================================================ -->
+<div class="section">
+  <div class="section-header">
+    <span class="layout-number">T</span>
+    <h2>Updated Toolbar — View Switcher with Overflow</h2>
+    <span class="tag tag-new">ENHANCED</span>
+    <span class="description">4 primary icons inline + "More Views" dropdown for 6 additional</span>
+  </div>
+  <div class="section-body">
+    <div class="webpart-wrapper">
+      <!-- Demo mode bar (visible when demo mode is enabled) -->
+      <div class="demo-bar">
+        <button class="demo-toggle">&#x1F3AD; Demo ON</button>
+        <span class="demo-indicator">Showing sample data</span>
+        <select class="demo-preset-select">
+          <option>Documents (12 items)</option>
+          <option>News Articles (10)</option>
+          <option>Events (8)</option>
+          <option>Projects (10)</option>
+          <option>HR Policies (8)</option>
+        </select>
+        <span style="flex:1"></span>
+        <button class="action-btn" style="font-size:11px">&#x2699;&#xFE0F; Configure</button>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <!-- 4 primary view buttons -->
+        <div class="view-switcher">
+          <button class="view-btn active" title="Card Grid">
+            <i class="ms-Icon ms-Icon--GridViewMedium"></i>
+          </button>
+          <button class="view-btn" title="Data Table">
+            <i class="ms-Icon ms-Icon--List"></i>
+          </button>
+          <button class="view-btn" title="Compact List">
+            <i class="ms-Icon ms-Icon--AlignLeft"></i>
+          </button>
+          <button class="view-btn" title="Kanban Board">
+            <i class="ms-Icon ms-Icon--ViewAll2"></i>
+          </button>
+        </div>
+
+        <!-- More views dropdown -->
+        <div class="more-views-btn" tabindex="0">
+          <i class="ms-Icon ms-Icon--More"></i>
+          <span style="font-size:12px">More Views</span>
+          <i class="ms-Icon ms-Icon--ChevronDown" style="font-size:10px"></i>
+          <div class="more-dropdown">
+            <div class="more-dropdown-item"><i class="ms-Icon ms-Icon--Slideshow"></i> Carousel</div>
+            <div class="more-dropdown-item"><i class="ms-Icon ms-Icon--TripleColumn"></i> Filmstrip</div>
+            <div class="more-dropdown-item"><i class="ms-Icon ms-Icon--Photo2"></i> Gallery</div>
+            <div class="more-dropdown-item"><i class="ms-Icon ms-Icon--TimelineProgress"></i> Timeline</div>
+            <div class="more-dropdown-item"><i class="ms-Icon ms-Icon--Calendar"></i> Calendar</div>
+            <div class="more-dropdown-item"><i class="ms-Icon ms-Icon--ReadingMode"></i> Magazine</div>
+          </div>
+        </div>
+
+        <!-- Search -->
+        <div class="search-bar">
+          <i class="ms-Icon ms-Icon--Search"></i>
+          <input placeholder="Search items..." />
+        </div>
+
+        <!-- Right side -->
+        <div class="toolbar-right">
+          <span class="auto-refresh-pill"><span class="dot"></span> Auto-refresh 30s</span>
+          <span class="item-count">12 items</span>
+          <button class="action-btn"><i class="ms-Icon ms-Icon--Refresh"></i></button>
+          <button class="action-btn"><i class="ms-Icon ms-Icon--Download"></i> Export</button>
+        </div>
+      </div>
+      <div style="padding:20px; text-align:center; color:var(--neutralSecondary); font-size:13px">
+        <em>Toolbar renders above all 10 layout views. "More Views" dropdown shown on hover/click.</em>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     LAYOUT 1: CARD GRID (existing)
+     ================================================================ -->
+<div class="section">
+  <div class="section-header">
+    <span class="layout-number">1</span>
+    <h2>Card Grid</h2>
+    <span class="tag tag-existing">EXISTING</span>
+    <span class="description">CSS Grid, responsive columns, grouped sections</span>
+  </div>
+  <div class="section-body">
+    <div class="webpart-wrapper">
+      <div class="card-grid">
+        <div class="item-card">
+          <span class="new-badge">NEW</span>
+          <div class="card-header">
+            <i class="ms-Icon ms-Icon--WordDocument file-icon"></i>
+            <span class="card-title">Q4 Planning Document</span>
+          </div>
+          <p class="card-desc">Strategic planning document for the Q4 initiative covering resource allocation, milestones, and risk assessment...</p>
+          <div class="card-meta">
+            <span>Sarah Johnson</span>
+            <span>Jan 28, 2026</span>
+            <span class="meta-badge">DOCX</span>
+          </div>
+          <div class="card-source"><i class="ms-Icon ms-Icon--Globe" style="font-size:10px"></i> <span>Marketing Team Site</span></div>
+        </div>
+        <div class="item-card selected">
+          <div class="card-header">
+            <i class="ms-Icon ms-Icon--ExcelDocument file-icon" style="color:#107c10"></i>
+            <span class="card-title">Budget Analysis FY2026</span>
+          </div>
+          <p class="card-desc">Comprehensive budget analysis with department breakdowns and quarterly projections for the fiscal year...</p>
+          <div class="card-meta">
+            <span>Mike Chen</span>
+            <span>Jan 25, 2026</span>
+            <span class="meta-badge">XLSX</span>
+          </div>
+          <div class="card-source"><i class="ms-Icon ms-Icon--Globe" style="font-size:10px"></i> <span>Finance Hub</span></div>
+        </div>
+        <div class="item-card">
+          <div class="card-header">
+            <i class="ms-Icon ms-Icon--PowerPointDocument file-icon" style="color:#ca5010"></i>
+            <span class="card-title">Brand Guidelines 2026</span>
+          </div>
+          <p class="card-desc">Updated brand guidelines including new logo usage, color palette, typography standards, and social media templates...</p>
+          <div class="card-meta">
+            <span>Emily Rivera</span>
+            <span>Jan 20, 2026</span>
+            <span class="meta-badge">PPTX</span>
+          </div>
+          <div class="card-source"><i class="ms-Icon ms-Icon--Globe" style="font-size:10px"></i> <span>Branding Team</span></div>
+        </div>
+        <div class="item-card">
+          <span class="new-badge">NEW</span>
+          <div class="card-header">
+            <i class="ms-Icon ms-Icon--Page file-icon"></i>
+            <span class="card-title">Engineering Roadmap</span>
+          </div>
+          <p class="card-desc">Technical roadmap covering infrastructure modernization, API platform, and cloud migration initiatives...</p>
+          <div class="card-meta">
+            <span>James Park</span>
+            <span>Feb 1, 2026</span>
+            <span class="meta-badge">PAGE</span>
+          </div>
+          <div class="card-source"><i class="ms-Icon ms-Icon--Globe" style="font-size:10px"></i> <span>Engineering Wiki</span></div>
+        </div>
+        <div class="item-card">
+          <div class="card-header">
+            <i class="ms-Icon ms-Icon--PDF file-icon" style="color:#d13438"></i>
+            <span class="card-title">Compliance Report</span>
+          </div>
+          <p class="card-desc">Annual compliance audit report including SOC2 findings and remediation plan for identified control gaps...</p>
+          <div class="card-meta">
+            <span>Lisa Wang</span>
+            <span>Jan 15, 2026</span>
+            <span class="meta-badge">PDF</span>
+          </div>
+          <div class="card-source"><i class="ms-Icon ms-Icon--Globe" style="font-size:10px"></i> <span>Legal & Compliance</span></div>
+        </div>
+        <div class="item-card">
+          <div class="card-header">
+            <i class="ms-Icon ms-Icon--WordDocument file-icon"></i>
+            <span class="card-title">Onboarding Checklist</span>
+          </div>
+          <p class="card-desc">New employee onboarding checklist with IT setup, training schedule, and first-week activities guide...</p>
+          <div class="card-meta">
+            <span>Tom Harris</span>
+            <span>Jan 10, 2026</span>
+            <span class="meta-badge">DOCX</span>
+          </div>
+          <div class="card-source"><i class="ms-Icon ms-Icon--Globe" style="font-size:10px"></i> <span>HR Portal</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     LAYOUT 2: DATA TABLE (existing)
+     ================================================================ -->
+<div class="section">
+  <div class="section-header">
+    <span class="layout-number">2</span>
+    <h2>Data Table</h2>
+    <span class="tag tag-existing">EXISTING</span>
+    <span class="description">Sortable columns, conditional formatting, compact mode</span>
+  </div>
+  <div class="section-body">
+    <div class="webpart-wrapper">
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Title &#9660;</th>
+              <th>Author</th>
+              <th>Modified</th>
+              <th>Type</th>
+              <th>Source</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="selected">
+              <td><i class="ms-Icon ms-Icon--WordDocument" style="color:#185abd;margin-right:6px"></i>Q4 Planning Document <span class="new-badge" style="position:static;display:inline;margin-left:6px;font-size:9px;padding:1px 5px">NEW</span></td>
+              <td>Sarah Johnson</td>
+              <td>Jan 28, 2026</td>
+              <td><span class="meta-badge">DOCX</span></td>
+              <td>Marketing Team Site</td>
+            </tr>
+            <tr>
+              <td><i class="ms-Icon ms-Icon--ExcelDocument" style="color:#107c10;margin-right:6px"></i>Budget Analysis FY2026</td>
+              <td>Mike Chen</td>
+              <td>Jan 25, 2026</td>
+              <td><span class="meta-badge">XLSX</span></td>
+              <td>Finance Hub</td>
+            </tr>
+            <tr>
+              <td><i class="ms-Icon ms-Icon--PowerPointDocument" style="color:#ca5010;margin-right:6px"></i>Brand Guidelines 2026</td>
+              <td>Emily Rivera</td>
+              <td>Jan 20, 2026</td>
+              <td><span class="meta-badge">PPTX</span></td>
+              <td>Branding Team</td>
+            </tr>
+            <tr>
+              <td><i class="ms-Icon ms-Icon--Page" style="color:#0078d4;margin-right:6px"></i>Engineering Roadmap <span class="new-badge" style="position:static;display:inline;margin-left:6px;font-size:9px;padding:1px 5px">NEW</span></td>
+              <td>James Park</td>
+              <td>Feb 1, 2026</td>
+              <td><span class="meta-badge">PAGE</span></td>
+              <td>Engineering Wiki</td>
+            </tr>
+            <tr>
+              <td><i class="ms-Icon ms-Icon--PDF" style="color:#d13438;margin-right:6px"></i>Compliance Report</td>
+              <td>Lisa Wang</td>
+              <td>Jan 15, 2026</td>
+              <td><span class="meta-badge">PDF</span></td>
+              <td>Legal & Compliance</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     LAYOUT 3: KANBAN (existing)
+     ================================================================ -->
+<div class="section">
+  <div class="section-header">
+    <span class="layout-number">3</span>
+    <h2>Kanban Board</h2>
+    <span class="tag tag-existing">EXISTING</span>
+    <span class="description">Horizontal swim lanes grouped by any field</span>
+  </div>
+  <div class="section-body">
+    <div class="webpart-wrapper">
+      <div class="kanban-container">
+        <div class="kanban-lane">
+          <div class="kanban-lane-header" style="border-bottom-color:#107c10">
+            <h3>&#x2705; Published</h3>
+            <span class="count">3</span>
+          </div>
+          <div class="kanban-card">
+            <span class="new-badge" style="font-size:9px;padding:1px 5px;top:6px;right:6px">NEW</span>
+            <div class="kanban-card-title">Q4 Planning Document</div>
+            <div class="kanban-card-meta">Sarah Johnson &bull; Jan 28</div>
+          </div>
+          <div class="kanban-card">
+            <div class="kanban-card-title">Budget Analysis FY2026</div>
+            <div class="kanban-card-meta">Mike Chen &bull; Jan 25</div>
+          </div>
+          <div class="kanban-card">
+            <div class="kanban-card-title">Compliance Report</div>
+            <div class="kanban-card-meta">Lisa Wang &bull; Jan 15</div>
+          </div>
+        </div>
+        <div class="kanban-lane">
+          <div class="kanban-lane-header" style="border-bottom-color:#ffb900">
+            <h3>&#x1F4DD; In Review</h3>
+            <span class="count">2</span>
+          </div>
+          <div class="kanban-card">
+            <div class="kanban-card-title">Brand Guidelines 2026</div>
+            <div class="kanban-card-meta">Emily Rivera &bull; Jan 20</div>
+          </div>
+          <div class="kanban-card">
+            <div class="kanban-card-title">Onboarding Checklist</div>
+            <div class="kanban-card-meta">Tom Harris &bull; Jan 10</div>
+          </div>
+        </div>
+        <div class="kanban-lane">
+          <div class="kanban-lane-header" style="border-bottom-color:#0078d4">
+            <h3>&#x1F6A7; Draft</h3>
+            <span class="count">1</span>
+          </div>
+          <div class="kanban-card">
+            <span class="new-badge" style="font-size:9px;padding:1px 5px;top:6px;right:6px">NEW</span>
+            <div class="kanban-card-title">Engineering Roadmap</div>
+            <div class="kanban-card-meta">James Park &bull; Feb 1</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     LAYOUT 4: COMPACT LIST (NEW)
+     ================================================================ -->
+<div class="section">
+  <div class="section-header">
+    <span class="layout-number">4</span>
+    <h2>Compact List</h2>
+    <span class="tag tag-new">NEW</span>
+    <span class="description">Dense rows: file type icon + title + metadata. Like Omnia "Listing with Image"</span>
+  </div>
+  <div class="section-body">
+    <div class="webpart-wrapper">
+      <div class="list-layout">
+        <div class="list-row selected">
+          <div class="list-icon docx"><i class="ms-Icon ms-Icon--WordDocument"></i></div>
+          <div class="list-content">
+            <div class="list-title">Q4 Planning Document</div>
+            <div class="list-subtitle">Marketing Team Site &bull; Sarah Johnson</div>
+          </div>
+          <span class="list-meta">Jan 28, 2026</span>
+          <span class="list-type-badge">DOCX</span>
+          <span class="new-badge" style="position:static;font-size:9px;padding:1px 6px">NEW</span>
+        </div>
+        <div class="list-row">
+          <div class="list-icon xlsx"><i class="ms-Icon ms-Icon--ExcelDocument"></i></div>
+          <div class="list-content">
+            <div class="list-title">Budget Analysis FY2026</div>
+            <div class="list-subtitle">Finance Hub &bull; Mike Chen</div>
+          </div>
+          <span class="list-meta">Jan 25, 2026</span>
+          <span class="list-type-badge">XLSX</span>
+        </div>
+        <div class="list-row">
+          <div class="list-icon pptx"><i class="ms-Icon ms-Icon--PowerPointDocument"></i></div>
+          <div class="list-content">
+            <div class="list-title">Brand Guidelines 2026</div>
+            <div class="list-subtitle">Branding Team &bull; Emily Rivera</div>
+          </div>
+          <span class="list-meta">Jan 20, 2026</span>
+          <span class="list-type-badge">PPTX</span>
+        </div>
+        <div class="list-row">
+          <div class="list-icon page"><i class="ms-Icon ms-Icon--Page"></i></div>
+          <div class="list-content">
+            <div class="list-title">Engineering Roadmap</div>
+            <div class="list-subtitle">Engineering Wiki &bull; James Park</div>
+          </div>
+          <span class="list-meta">Feb 1, 2026</span>
+          <span class="list-type-badge">PAGE</span>
+          <span class="new-badge" style="position:static;font-size:9px;padding:1px 6px">NEW</span>
+        </div>
+        <div class="list-row">
+          <div class="list-icon pdf"><i class="ms-Icon ms-Icon--PDF"></i></div>
+          <div class="list-content">
+            <div class="list-title">Compliance Report</div>
+            <div class="list-subtitle">Legal & Compliance &bull; Lisa Wang</div>
+          </div>
+          <span class="list-meta">Jan 15, 2026</span>
+          <span class="list-type-badge">PDF</span>
+        </div>
+        <div class="list-row">
+          <div class="list-icon docx"><i class="ms-Icon ms-Icon--WordDocument"></i></div>
+          <div class="list-content">
+            <div class="list-title">Onboarding Checklist</div>
+            <div class="list-subtitle">HR Portal &bull; Tom Harris</div>
+          </div>
+          <span class="list-meta">Jan 10, 2026</span>
+          <span class="list-type-badge">DOCX</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     LAYOUT 5: CAROUSEL (NEW)
+     ================================================================ -->
+<div class="section">
+  <div class="section-header">
+    <span class="layout-number">5</span>
+    <h2>Carousel</h2>
+    <span class="tag tag-new">NEW</span>
+    <span class="description">Single-slide spotlight with arrows, dots, auto-play. Like Omnia "Dynamic Roller"</span>
+  </div>
+  <div class="section-body">
+    <div class="webpart-wrapper">
+      <div class="carousel-container">
+        <button class="carousel-arrow left"><i class="ms-Icon ms-Icon--ChevronLeft"></i></button>
+        <div class="carousel-slide">
+          <div class="carousel-thumb"><i class="ms-Icon ms-Icon--WordDocument"></i></div>
+          <div class="carousel-content">
+            <h3>Q4 Planning Document</h3>
+            <p>Strategic planning document for the Q4 initiative covering resource allocation, milestones, and risk assessment. Includes departmental breakdowns and timeline with key deliverables for each team.</p>
+            <div class="meta-row">
+              <span><i class="ms-Icon ms-Icon--Contact" style="margin-right:4px"></i>Sarah Johnson</span>
+              <span><i class="ms-Icon ms-Icon--Calendar" style="margin-right:4px"></i>Jan 28, 2026</span>
+              <span><i class="ms-Icon ms-Icon--Globe" style="margin-right:4px"></i>Marketing Team Site</span>
+              <span class="meta-badge">DOCX</span>
+            </div>
+          </div>
+          <span class="new-badge" style="top:16px;right:16px">NEW</span>
+        </div>
+        <button class="carousel-arrow right"><i class="ms-Icon ms-Icon--ChevronRight"></i></button>
+        <div class="carousel-dots">
+          <div class="carousel-dot active"></div>
+          <div class="carousel-dot"></div>
+          <div class="carousel-dot"></div>
+          <div class="carousel-dot"></div>
+          <div class="carousel-dot"></div>
+          <div class="carousel-dot"></div>
+        </div>
+        <div class="carousel-autoplay">
+          <i class="ms-Icon ms-Icon--Play" style="font-size:10px"></i> Auto-play: 5s
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     LAYOUT 6: FILMSTRIP (NEW)
+     ================================================================ -->
+<div class="section">
+  <div class="section-header">
+    <span class="layout-number">6</span>
+    <h2>Filmstrip</h2>
+    <span class="tag tag-new">NEW</span>
+    <span class="description">Horizontal scroll-snap strip, multiple visible at once. Like PnP "Slider" result type</span>
+  </div>
+  <div class="section-body">
+    <div class="webpart-wrapper">
+      <div class="filmstrip-container">
+        <button class="filmstrip-arrow left"><i class="ms-Icon ms-Icon--ChevronLeft"></i></button>
+        <div class="filmstrip-track">
+          <div class="filmstrip-card">
+            <span class="new-badge" style="top:128px;font-size:9px;padding:1px 5px">NEW</span>
+            <div class="filmstrip-card-image"><i class="ms-Icon ms-Icon--WordDocument"></i></div>
+            <div class="filmstrip-card-body">
+              <div class="filmstrip-card-title">Q4 Planning Document</div>
+              <div class="filmstrip-card-meta">Sarah Johnson &bull; Jan 28</div>
+            </div>
+          </div>
+          <div class="filmstrip-card">
+            <div class="filmstrip-card-image" style="background:linear-gradient(135deg,#d9ead3,#b6d7a8)"><i class="ms-Icon ms-Icon--ExcelDocument" style="color:#107c10"></i></div>
+            <div class="filmstrip-card-body">
+              <div class="filmstrip-card-title">Budget Analysis FY2026</div>
+              <div class="filmstrip-card-meta">Mike Chen &bull; Jan 25</div>
+            </div>
+          </div>
+          <div class="filmstrip-card">
+            <div class="filmstrip-card-image" style="background:linear-gradient(135deg,#fde8d4,#f7c594)"><i class="ms-Icon ms-Icon--PowerPointDocument" style="color:#ca5010"></i></div>
+            <div class="filmstrip-card-body">
+              <div class="filmstrip-card-title">Brand Guidelines 2026</div>
+              <div class="filmstrip-card-meta">Emily Rivera &bull; Jan 20</div>
+            </div>
+          </div>
+          <div class="filmstrip-card">
+            <div class="filmstrip-card-image"><i class="ms-Icon ms-Icon--Page"></i></div>
+            <div class="filmstrip-card-body">
+              <div class="filmstrip-card-title">Engineering Roadmap</div>
+              <div class="filmstrip-card-meta">James Park &bull; Feb 1</div>
+            </div>
+          </div>
+          <div class="filmstrip-card">
+            <div class="filmstrip-card-image" style="background:linear-gradient(135deg,#fdd,#f8b4b4)"><i class="ms-Icon ms-Icon--PDF" style="color:#d13438"></i></div>
+            <div class="filmstrip-card-body">
+              <div class="filmstrip-card-title">Compliance Report</div>
+              <div class="filmstrip-card-meta">Lisa Wang &bull; Jan 15</div>
+            </div>
+          </div>
+          <div class="filmstrip-card">
+            <div class="filmstrip-card-image"><i class="ms-Icon ms-Icon--WordDocument"></i></div>
+            <div class="filmstrip-card-body">
+              <div class="filmstrip-card-title">Onboarding Checklist</div>
+              <div class="filmstrip-card-meta">Tom Harris &bull; Jan 10</div>
+            </div>
+          </div>
+        </div>
+        <button class="filmstrip-arrow right"><i class="ms-Icon ms-Icon--ChevronRight"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     LAYOUT 7: GALLERY / MASONRY (NEW)
+     ================================================================ -->
+<div class="section">
+  <div class="section-header">
+    <span class="layout-number">7</span>
+    <h2>Gallery (Masonry)</h2>
+    <span class="tag tag-new">NEW</span>
+    <span class="description">Masonry thumbnails with overlay titles. Like Omnia "Navigation View"</span>
+  </div>
+  <div class="section-body">
+    <div class="webpart-wrapper">
+      <div class="gallery-container">
+        <div class="gallery-item">
+          <div class="gallery-thumb" style="height:200px"><i class="ms-Icon ms-Icon--WordDocument"></i></div>
+          <div class="gallery-overlay">
+            <h4>Q4 Planning Document</h4>
+            <span>Sarah Johnson &bull; Marketing</span>
+          </div>
+          <span class="new-badge">NEW</span>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-thumb" style="height:150px;background:linear-gradient(135deg,#d9ead3,#b6d7a8)"><i class="ms-Icon ms-Icon--ExcelDocument" style="color:#107c10"></i></div>
+          <div class="gallery-overlay">
+            <h4>Budget Analysis FY2026</h4>
+            <span>Mike Chen &bull; Finance</span>
+          </div>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-thumb" style="height:180px;background:linear-gradient(135deg,#fde8d4,#f7c594)"><i class="ms-Icon ms-Icon--PowerPointDocument" style="color:#ca5010"></i></div>
+          <div class="gallery-overlay">
+            <h4>Brand Guidelines 2026</h4>
+            <span>Emily Rivera &bull; Branding</span>
+          </div>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-thumb" style="height:160px"><i class="ms-Icon ms-Icon--Page"></i></div>
+          <div class="gallery-overlay">
+            <h4>Engineering Roadmap</h4>
+            <span>James Park &bull; Engineering</span>
+          </div>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-thumb" style="height:140px;background:linear-gradient(135deg,#fdd,#f8b4b4)"><i class="ms-Icon ms-Icon--PDF" style="color:#d13438"></i></div>
+          <div class="gallery-overlay">
+            <h4>Compliance Report</h4>
+            <span>Lisa Wang &bull; Legal</span>
+          </div>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-thumb" style="height:170px"><i class="ms-Icon ms-Icon--WordDocument"></i></div>
+          <div class="gallery-overlay">
+            <h4>Onboarding Checklist</h4>
+            <span>Tom Harris &bull; HR</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     LAYOUT 8: TIMELINE (NEW)
+     ================================================================ -->
+<div class="section">
+  <div class="section-header">
+    <span class="layout-number">8</span>
+    <h2>Timeline</h2>
+    <span class="tag tag-new">NEW</span>
+    <span class="description">Vertical alternating left/right cards. Items ordered by date. Unique to HyperRollup</span>
+  </div>
+  <div class="section-body">
+    <div class="webpart-wrapper">
+      <div class="timeline-container">
+        <div class="timeline-line"></div>
+
+        <!-- Date marker -->
+        <div style="text-align:center;margin-bottom:24px;position:relative;z-index:2">
+          <span class="timeline-date-marker">February 2026</span>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <span class="new-badge" style="font-size:9px;padding:1px 5px">NEW</span>
+            <div class="timeline-date">Feb 1, 2026</div>
+            <h4>Engineering Roadmap</h4>
+            <p>Technical roadmap covering infrastructure modernization, API platform, and cloud migration.</p>
+            <div class="card-meta">
+              <span>James Park</span>
+              <span class="meta-badge">PAGE</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Date marker -->
+        <div style="text-align:center;margin-bottom:24px;position:relative;z-index:2">
+          <span class="timeline-date-marker">January 2026</span>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <span class="new-badge" style="font-size:9px;padding:1px 5px">NEW</span>
+            <div class="timeline-date">Jan 28, 2026</div>
+            <h4>Q4 Planning Document</h4>
+            <p>Strategic planning for Q4 initiative covering resource allocation, milestones, and risk assessment.</p>
+            <div class="card-meta">
+              <span>Sarah Johnson</span>
+              <span class="meta-badge">DOCX</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-date">Jan 25, 2026</div>
+            <h4>Budget Analysis FY2026</h4>
+            <p>Comprehensive budget analysis with department breakdowns and quarterly projections.</p>
+            <div class="card-meta">
+              <span>Mike Chen</span>
+              <span class="meta-badge">XLSX</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-date">Jan 20, 2026</div>
+            <h4>Brand Guidelines 2026</h4>
+            <p>Updated brand guidelines including new logo usage, color palette, and typography standards.</p>
+            <div class="card-meta">
+              <span>Emily Rivera</span>
+              <span class="meta-badge">PPTX</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-date">Jan 15, 2026</div>
+            <h4>Compliance Report</h4>
+            <p>Annual compliance audit report including SOC2 findings and remediation plan.</p>
+            <div class="card-meta">
+              <span>Lisa Wang</span>
+              <span class="meta-badge">PDF</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     LAYOUT 9: CALENDAR (NEW)
+     ================================================================ -->
+<div class="section">
+  <div class="section-header">
+    <span class="layout-number">9</span>
+    <h2>Calendar</h2>
+    <span class="tag tag-new">NEW</span>
+    <span class="description">Month grid (7x6 CSS Grid), date-based items. Like Omnia "Calendar View"</span>
+  </div>
+  <div class="section-body">
+    <div class="webpart-wrapper">
+      <div class="calendar-container">
+        <div class="calendar-nav">
+          <button class="calendar-nav-btn"><i class="ms-Icon ms-Icon--ChevronLeft"></i></button>
+          <h3>February 2026</h3>
+          <button class="calendar-nav-btn"><i class="ms-Icon ms-Icon--ChevronRight"></i></button>
+        </div>
+        <div class="calendar-grid">
+          <!-- Day headers -->
+          <div class="calendar-day-header">Sun</div>
+          <div class="calendar-day-header">Mon</div>
+          <div class="calendar-day-header">Tue</div>
+          <div class="calendar-day-header">Wed</div>
+          <div class="calendar-day-header">Thu</div>
+          <div class="calendar-day-header">Fri</div>
+          <div class="calendar-day-header">Sat</div>
+
+          <!-- Week 1: Jan 25-31 -->
+          <div class="calendar-cell other-month"><span class="calendar-date">25</span></div>
+          <div class="calendar-cell other-month"><span class="calendar-date">26</span></div>
+          <div class="calendar-cell other-month"><span class="calendar-date">27</span></div>
+          <div class="calendar-cell other-month">
+            <span class="calendar-date">28</span>
+            <span class="calendar-chip doc">Q4 Planning Doc</span>
+          </div>
+          <div class="calendar-cell other-month"><span class="calendar-date">29</span></div>
+          <div class="calendar-cell other-month"><span class="calendar-date">30</span></div>
+          <div class="calendar-cell other-month"><span class="calendar-date">31</span></div>
+
+          <!-- Week 2: Feb 1-7 -->
+          <div class="calendar-cell">
+            <span class="calendar-date">1</span>
+            <span class="calendar-chip page">Eng Roadmap</span>
+          </div>
+          <div class="calendar-cell"><span class="calendar-date">2</span></div>
+          <div class="calendar-cell"><span class="calendar-date">3</span></div>
+          <div class="calendar-cell"><span class="calendar-date">4</span></div>
+          <div class="calendar-cell"><span class="calendar-date">5</span></div>
+          <div class="calendar-cell"><span class="calendar-date">6</span></div>
+          <div class="calendar-cell"><span class="calendar-date">7</span></div>
+
+          <!-- Week 3: Feb 8-14 -->
+          <div class="calendar-cell"><span class="calendar-date">8</span></div>
+          <div class="calendar-cell today">
+            <span class="calendar-date">9</span>
+            <span class="calendar-chip news">Team Update</span>
+            <span class="calendar-chip doc">Policy Rev.</span>
+          </div>
+          <div class="calendar-cell">
+            <span class="calendar-date">10</span>
+            <span class="calendar-chip doc">Onboarding</span>
+          </div>
+          <div class="calendar-cell"><span class="calendar-date">11</span></div>
+          <div class="calendar-cell"><span class="calendar-date">12</span></div>
+          <div class="calendar-cell"><span class="calendar-date">13</span></div>
+          <div class="calendar-cell"><span class="calendar-date">14</span></div>
+
+          <!-- Week 4: Feb 15-21 -->
+          <div class="calendar-cell"><span class="calendar-date">15</span></div>
+          <div class="calendar-cell"><span class="calendar-date">16</span></div>
+          <div class="calendar-cell"><span class="calendar-date">17</span></div>
+          <div class="calendar-cell">
+            <span class="calendar-date">18</span>
+            <span class="calendar-chip doc">Q1 Review</span>
+            <span class="calendar-chip page">Sprint Plan</span>
+            <span class="calendar-more">+2 more</span>
+          </div>
+          <div class="calendar-cell"><span class="calendar-date">19</span></div>
+          <div class="calendar-cell">
+            <span class="calendar-date">20</span>
+            <span class="calendar-chip news">Newsletter</span>
+          </div>
+          <div class="calendar-cell"><span class="calendar-date">21</span></div>
+
+          <!-- Week 5: Feb 22-28 -->
+          <div class="calendar-cell"><span class="calendar-date">22</span></div>
+          <div class="calendar-cell"><span class="calendar-date">23</span></div>
+          <div class="calendar-cell"><span class="calendar-date">24</span></div>
+          <div class="calendar-cell">
+            <span class="calendar-date">25</span>
+            <span class="calendar-chip doc">Budget Rev.</span>
+          </div>
+          <div class="calendar-cell"><span class="calendar-date">26</span></div>
+          <div class="calendar-cell"><span class="calendar-date">27</span></div>
+          <div class="calendar-cell"><span class="calendar-date">28</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     LAYOUT 10: MAGAZINE (NEW)
+     ================================================================ -->
+<div class="section">
+  <div class="section-header">
+    <span class="layout-number">10</span>
+    <h2>Magazine</h2>
+    <span class="tag tag-new">NEW</span>
+    <span class="description">Hero first item (large) + smaller grid below. Like Omnia "Newsletter/Card hybrid"</span>
+  </div>
+  <div class="section-body">
+    <div class="webpart-wrapper">
+      <div class="magazine-container">
+        <!-- Hero item -->
+        <div class="magazine-hero">
+          <div class="magazine-hero-image"><i class="ms-Icon ms-Icon--WordDocument"></i></div>
+          <div class="magazine-hero-content">
+            <h2>Q4 Planning Document</h2>
+            <p>Strategic planning document for the Q4 initiative covering resource allocation, milestones, and risk assessment. Includes departmental breakdowns and timeline with key deliverables for each team. This is the most recently modified item in your rollup.</p>
+            <div class="magazine-hero-meta">
+              <span><i class="ms-Icon ms-Icon--Contact" style="margin-right:4px"></i>Sarah Johnson</span>
+              <span><i class="ms-Icon ms-Icon--Calendar" style="margin-right:4px"></i>Jan 28, 2026</span>
+              <span><i class="ms-Icon ms-Icon--Globe" style="margin-right:4px"></i>Marketing Team Site</span>
+              <span class="meta-badge">DOCX</span>
+            </div>
+          </div>
+          <span class="new-badge" style="top:16px;right:16px;font-size:11px">NEW</span>
+        </div>
+
+        <!-- Smaller grid -->
+        <div class="magazine-grid">
+          <div class="magazine-small-card">
+            <div class="magazine-small-image" style="background:linear-gradient(135deg,#d9ead3,#b6d7a8)"><i class="ms-Icon ms-Icon--ExcelDocument" style="color:#107c10"></i></div>
+            <div class="magazine-small-body">
+              <h4>Budget Analysis FY2026</h4>
+              <p>Comprehensive budget analysis with department breakdowns and quarterly projections for the fiscal year.</p>
+              <div class="magazine-small-meta">
+                <span>Mike Chen</span>
+                <span>Jan 25</span>
+                <span class="meta-badge">XLSX</span>
+              </div>
+            </div>
+          </div>
+          <div class="magazine-small-card">
+            <div class="magazine-small-image" style="background:linear-gradient(135deg,#fde8d4,#f7c594)"><i class="ms-Icon ms-Icon--PowerPointDocument" style="color:#ca5010"></i></div>
+            <div class="magazine-small-body">
+              <h4>Brand Guidelines 2026</h4>
+              <p>Updated brand guidelines including new logo usage, color palette, typography standards, and social media templates.</p>
+              <div class="magazine-small-meta">
+                <span>Emily Rivera</span>
+                <span>Jan 20</span>
+                <span class="meta-badge">PPTX</span>
+              </div>
+            </div>
+          </div>
+          <div class="magazine-small-card">
+            <span class="new-badge" style="font-size:9px;padding:1px 5px">NEW</span>
+            <div class="magazine-small-image"><i class="ms-Icon ms-Icon--Page"></i></div>
+            <div class="magazine-small-body">
+              <h4>Engineering Roadmap</h4>
+              <p>Technical roadmap covering infrastructure modernization, API platform, and cloud migration initiatives.</p>
+              <div class="magazine-small-meta">
+                <span>James Park</span>
+                <span>Feb 1</span>
+                <span class="meta-badge">PAGE</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     CROSS-CUTTING FEATURES OVERVIEW
+     ================================================================ -->
+<div class="section">
+  <div class="section-header">
+    <span class="layout-number" style="background:var(--green)">+</span>
+    <h2>Cross-Cutting Features (All Views)</h2>
+    <span class="tag tag-new">NEW</span>
+  </div>
+  <div class="section-body">
+    <div class="features-grid">
+      <div class="feature-card">
+        <h3>
+          <span class="feature-icon blue"><i class="ms-Icon ms-Icon--Refresh"></i></span>
+          Auto-Refresh
+        </h3>
+        <p>Configurable polling interval (15s&ndash;5min). Green pulsing dot in toolbar. Manual refresh button. Pause on hover. Pattern from HyperCharts.</p>
+      </div>
+      <div class="feature-card">
+        <h3>
+          <span class="feature-icon green"><i class="ms-Icon ms-Icon--People"></i></span>
+          Audience Targeting
+        </h3>
+        <p>Per-item audience targeting via Azure AD group membership. Batch group check API. Fail-open for resilience. Pattern from HyperLinks.</p>
+      </div>
+      <div class="feature-card">
+        <h3>
+          <span class="feature-icon orange"><i class="ms-Icon ms-Icon--BarChartVertical"></i></span>
+          Click Analytics
+        </h3>
+        <p>Track view mode changes, item clicks, preview opens, searches, and exports. Stored in SP list. Pattern from HyperLinks analytics.</p>
+      </div>
+      <div class="feature-card">
+        <h3>
+          <span class="feature-icon red"><i class="ms-Icon ms-Icon--Starburst"></i></span>
+          "NEW" Badge
+        </h3>
+        <p>Orange pill badge on items modified within N days (configurable). Shows on all layouts. Computed via <code>isNewItem(item, days)</code>.</p>
+      </div>
+      <div class="feature-card">
+        <h3>
+          <span class="feature-icon orange"><i class="ms-Icon ms-Icon--TestCase"></i></span>
+          Demo Mode
+        </h3>
+        <p>5 sample data presets (Documents, News, Events, Projects, HR). Toggle bar outside edit mode. Preset selector dropdown. Great for demos!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     PROPERTY PANE MOCKUP
+     ================================================================ -->
+<div class="section">
+  <div class="section-header">
+    <span class="layout-number" style="background:var(--neutralSecondary)">P</span>
+    <h2>Property Pane — View Mode Dropdown (10 options)</h2>
+  </div>
+  <div class="section-body">
+    <div style="max-width:320px;padding:16px;background:var(--neutralLighterAlt);border-radius:6px;border:1px solid var(--neutralLight)">
+      <div style="font-size:13px;font-weight:600;color:var(--neutralPrimary);margin-bottom:12px">Layout & Display</div>
+      <div style="margin-bottom:16px">
+        <label style="font-size:12px;font-weight:600;color:var(--neutralSecondary);display:block;margin-bottom:4px">View Mode</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--neutralTertiaryAlt);border-radius:4px;font-size:13px;font-family:var(--font-family)">
+          <option selected>Card Grid</option>
+          <option>Data Table</option>
+          <option>Kanban Board</option>
+          <option>Compact List</option>
+          <option>Carousel</option>
+          <option>Filmstrip</option>
+          <option>Gallery (Masonry)</option>
+          <option>Timeline</option>
+          <option>Calendar</option>
+          <option>Magazine</option>
+        </select>
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="font-size:12px;font-weight:600;color:var(--neutralSecondary);display:block;margin-bottom:4px">Grid Columns</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--neutralTertiaryAlt);border-radius:4px;font-size:13px;font-family:var(--font-family)">
+          <option>2</option>
+          <option selected>3</option>
+          <option>4</option>
+          <option>5</option>
+          <option>6</option>
+        </select>
+        <span style="font-size:11px;color:var(--neutralTertiary)">Applies to Card Grid, Gallery, Magazine</span>
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="font-size:12px;font-weight:600;color:var(--neutralSecondary);display:block;margin-bottom:4px">Carousel Auto-Play</label>
+        <label style="font-size:12px;color:var(--neutralSecondary);display:flex;align-items:center;gap:6px">
+          <input type="checkbox" checked> Enable auto-play
+        </label>
+        <span style="font-size:11px;color:var(--neutralTertiary)">Only visible when View Mode = Carousel</span>
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="font-size:12px;font-weight:600;color:var(--neutralSecondary);display:block;margin-bottom:4px">Calendar Date Field</label>
+        <select style="width:100%;padding:6px 8px;border:1px solid var(--neutralTertiaryAlt);border-radius:4px;font-size:13px;font-family:var(--font-family)">
+          <option selected>Modified</option>
+          <option>Created</option>
+          <option>Event Date</option>
+        </select>
+        <span style="font-size:11px;color:var(--neutralTertiary)">Only visible when View Mode = Calendar or Timeline</span>
+      </div>
+
+      <div style="font-size:13px;font-weight:600;color:var(--neutralPrimary);margin-bottom:12px;margin-top:20px;padding-top:12px;border-top:1px solid var(--neutralLight)">Features</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <label style="font-size:12px;color:var(--neutralSecondary);display:flex;align-items:center;gap:6px"><input type="checkbox" checked> Enable Auto-Refresh</label>
+        <label style="font-size:12px;color:var(--neutralSecondary);display:flex;align-items:center;gap:6px"><input type="checkbox"> Enable Audience Targeting</label>
+        <label style="font-size:12px;color:var(--neutralSecondary);display:flex;align-items:center;gap:6px"><input type="checkbox" checked> Enable Analytics</label>
+        <label style="font-size:12px;color:var(--neutralSecondary);display:flex;align-items:center;gap:6px"><input type="checkbox" checked> Show "NEW" Badges</label>
+        <label style="font-size:12px;color:var(--neutralSecondary);display:flex;align-items:center;gap:6px"><input type="checkbox"> Enable Demo Mode</label>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     COMPARISON MATRIX
+     ================================================================ -->
+<div class="section">
+  <div class="section-header">
+    <span class="layout-number" style="background:var(--orange)">VS</span>
+    <h2>Competitive Comparison</h2>
+  </div>
+  <div class="section-body">
+    <div class="table-container">
+      <table class="data-table" style="font-size:12px">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th style="text-align:center;background:var(--themeLighterAlt);color:var(--themePrimary)">HyperRollup V2</th>
+            <th style="text-align:center">Omnia</th>
+            <th style="text-align:center">Lightning Conductor</th>
+            <th style="text-align:center">PnP Modern Search</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Total Views</strong></td>
+            <td style="text-align:center;background:var(--themeLighterAlt);font-weight:700;color:var(--themePrimary)">10</td>
+            <td style="text-align:center">9</td>
+            <td style="text-align:center">6+</td>
+            <td style="text-align:center">6</td>
+          </tr>
+          <tr><td>Card Grid</td><td style="text-align:center;background:var(--themeLighterAlt)">&#x2705;</td><td style="text-align:center">&#x2705;</td><td style="text-align:center">&#x2705;</td><td style="text-align:center">&#x2705;</td></tr>
+          <tr><td>Data Table</td><td style="text-align:center;background:var(--themeLighterAlt)">&#x2705;</td><td style="text-align:center">&#x2705;</td><td style="text-align:center">&#x2705;</td><td style="text-align:center">&#x2705;</td></tr>
+          <tr><td>Kanban Board</td><td style="text-align:center;background:var(--themeLighterAlt)">&#x2705;</td><td style="text-align:center">&#x274C;</td><td style="text-align:center">&#x274C;</td><td style="text-align:center">&#x274C;</td></tr>
+          <tr><td>Compact List</td><td style="text-align:center;background:var(--themeLighterAlt)">&#x2705;</td><td style="text-align:center">&#x2705;</td><td style="text-align:center">&#x2705;</td><td style="text-align:center">&#x2705;</td></tr>
+          <tr><td>Carousel</td><td style="text-align:center;background:var(--themeLighterAlt)">&#x2705;</td><td style="text-align:center">&#x2705;</td><td style="text-align:center">&#x2705;</td><td style="text-align:center">&#x274C;</td></tr>
+          <tr><td>Filmstrip</td><td style="text-align:center;background:var(--themeLighterAlt)">&#x2705;</td><td style="text-align:center">&#x274C;</td><td style="text-align:center">&#x274C;</td><td style="text-align:center">&#x2705;</td></tr>
+          <tr><td>Gallery / Masonry</td><td style="text-align:center;background:var(--themeLighterAlt)">&#x2705;</td><td style="text-align:center">&#x2705;</td><td style="text-align:center">&#x274C;</td><td style="text-align:center">&#x274C;</td></tr>
+          <tr><td>Timeline</td><td style="text-align:center;background:var(--themeLighterAlt)">&#x2705;</td><td style="text-align:center">&#x274C;</td><td style="text-align:center">&#x274C;</td><td style="text-align:center">&#x274C;</td></tr>
+          <tr><td>Calendar</td><td style="text-align:center;background:var(--themeLighterAlt)">&#x2705;</td><td style="text-align:center">&#x2705;</td><td style="text-align:center">&#x274C;</td><td style="text-align:center">&#x274C;</td></tr>
+          <tr><td>Magazine</td><td style="text-align:center;background:var(--themeLighterAlt)">&#x2705;</td><td style="text-align:center">&#x2705;</td><td style="text-align:center">&#x274C;</td><td style="text-align:center">&#x274C;</td></tr>
+          <tr style="border-top:2px solid var(--neutralLight)">
+            <td><strong>Auto-Refresh</strong></td>
+            <td style="text-align:center;background:var(--themeLighterAlt)">&#x2705;</td>
+            <td style="text-align:center">&#x274C;</td>
+            <td style="text-align:center">&#x274C;</td>
+            <td style="text-align:center">&#x274C;</td>
+          </tr>
+          <tr><td><strong>Audience Targeting</strong></td><td style="text-align:center;background:var(--themeLighterAlt)">&#x2705;</td><td style="text-align:center">&#x2705;</td><td style="text-align:center">&#x274C;</td><td style="text-align:center">&#x274C;</td></tr>
+          <tr><td><strong>Click Analytics</strong></td><td style="text-align:center;background:var(--themeLighterAlt)">&#x2705;</td><td style="text-align:center">&#x2705;</td><td style="text-align:center">&#x274C;</td><td style="text-align:center">&#x274C;</td></tr>
+          <tr><td><strong>"NEW" Badges</strong></td><td style="text-align:center;background:var(--themeLighterAlt)">&#x2705;</td><td style="text-align:center">&#x274C;</td><td style="text-align:center">&#x274C;</td><td style="text-align:center">&#x274C;</td></tr>
+          <tr><td><strong>Demo Mode</strong></td><td style="text-align:center;background:var(--themeLighterAlt)">&#x2705;</td><td style="text-align:center">&#x274C;</td><td style="text-align:center">&#x274C;</td><td style="text-align:center">&#x274C;</td></tr>
+          <tr><td><strong>Handlebars Templates</strong></td><td style="text-align:center;background:var(--themeLighterAlt)">&#x2705;</td><td style="text-align:center">&#x274C;</td><td style="text-align:center">&#x274C;</td><td style="text-align:center">&#x2705;</td></tr>
+          <tr><td><strong>Setup Wizard</strong></td><td style="text-align:center;background:var(--themeLighterAlt)">&#x2705;</td><td style="text-align:center">&#x274C;</td><td style="text-align:center">&#x274C;</td><td style="text-align:center">&#x274C;</td></tr>
+          <tr>
+            <td><strong>Price</strong></td>
+            <td style="text-align:center;background:var(--themeLighterAlt);font-weight:700;color:var(--green)">Included</td>
+            <td style="text-align:center">$$$</td>
+            <td style="text-align:center">$2,500</td>
+            <td style="text-align:center">Free (OSS)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<div style="text-align:center;padding:32px;color:var(--neutralSecondary);font-size:13px">
+  <p><strong>HyperRollup V2 Mockup</strong> &mdash; HyperParts Suite by DWx</p>
+  <p style="font-size:11px;margin-top:4px">10 layouts &bull; 5 features &bull; 0 new npm dependencies &bull; ~2,200 new lines</p>
+</div>
+
+</body>
+</html>

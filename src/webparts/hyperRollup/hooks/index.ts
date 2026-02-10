@@ -9,3 +9,9 @@ export type { UseRollupGroupingOptions, UseRollupGroupingResult } from "./useRol
 
 export { useRollupAggregation } from "./useRollupAggregation";
 export type { UseRollupAggregationOptions, UseRollupAggregationResult } from "./useRollupAggregation";
+
+export { useRollupAutoRefresh } from "./useRollupAutoRefresh";
+export type { IUseRollupAutoRefreshOptions } from "./useRollupAutoRefresh";
+
+export { useRollupAudienceFilter } from "./useRollupAudienceFilter";
+export type { IUseRollupAudienceFilterResult } from "./useRollupAudienceFilter";

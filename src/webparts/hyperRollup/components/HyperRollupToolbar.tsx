@@ -9,61 +9,153 @@ export interface IHyperRollupToolbarProps {
   enableSearch: boolean;
   enableExport: boolean;
   enableSavedViews: boolean;
+  enableAutoRefresh?: boolean;
   itemCount: number;
   activeFilterCount: number;
   onViewModeChange: (mode: ViewMode) => void;
   onSearchChange: (query: string) => void;
   onExport: () => void;
   onClearFilters: () => void;
+  onRefresh?: () => void;
+}
+
+/** Primary view modes shown as inline icon buttons */
+var PRIMARY_VIEWS: Array<{ mode: ViewMode; icon: string; label: string }> = [
+  { mode: "card", icon: "ms-Icon--GridViewMedium", label: "Card view" },
+  { mode: "table", icon: "ms-Icon--List", label: "Table view" },
+  { mode: "list", icon: "ms-Icon--AlignLeft", label: "List view" },
+  { mode: "kanban", icon: "ms-Icon--ViewAll2", label: "Kanban view" },
+];
+
+/** Overflow view modes shown in dropdown */
+var OVERFLOW_VIEWS: Array<{ mode: ViewMode; icon: string; label: string }> = [
+  { mode: "carousel", icon: "ms-Icon--Slideshow", label: "Carousel" },
+  { mode: "filmstrip", icon: "ms-Icon--Video", label: "Filmstrip" },
+  { mode: "gallery", icon: "ms-Icon--PictureFill", label: "Gallery" },
+  { mode: "timeline", icon: "ms-Icon--TimelineProgress", label: "Timeline" },
+  { mode: "calendar", icon: "ms-Icon--Calendar", label: "Calendar" },
+  { mode: "magazine", icon: "ms-Icon--ReadingMode", label: "Magazine" },
+  { mode: "top10", icon: "ms-Icon--Trophy2", label: "Top 10" },
+];
+
+/** Check if a mode is in the overflow set */
+function isOverflowMode(mode: ViewMode): boolean {
+  var found = false;
+  OVERFLOW_VIEWS.forEach(function (v) {
+    if (v.mode === mode) found = true;
+  });
+  return found;
 }
 
 const HyperRollupToolbarInner: React.FC<IHyperRollupToolbarProps> = (props) => {
-  const handleSearchInput = useCallback(function (e: React.ChangeEvent<HTMLInputElement>): void {
+  var moreMenuState = React.useState(false);
+  var isMoreOpen = moreMenuState[0];
+  var setMoreOpen = moreMenuState[1];
+
+  var handleSearchInput = useCallback(function (e: React.ChangeEvent<HTMLInputElement>): void {
     props.onSearchChange(e.target.value);
   }, [props.onSearchChange]);
 
-  const handleClearSearch = useCallback(function (): void {
+  var handleClearSearch = useCallback(function (): void {
     props.onSearchChange("");
   }, [props.onSearchChange]);
+
+  var handleToggleMore = useCallback(function (): void {
+    setMoreOpen(function (prev) { return !prev; });
+  }, []);
+
+  var handleOverflowSelect = useCallback(function (mode: ViewMode): void {
+    props.onViewModeChange(mode);
+    setMoreOpen(false);
+  }, [props.onViewModeChange]);
+
+  // Close overflow on outside click
+  React.useEffect(function () {
+    if (!isMoreOpen) return undefined;
+    function handleDocClick(): void {
+      setMoreOpen(false);
+    }
+    // Delay to avoid closing immediately
+    var id = window.setTimeout(function () {
+      document.addEventListener("click", handleDocClick);
+    }, 0);
+    return function () {
+      window.clearTimeout(id);
+      document.removeEventListener("click", handleDocClick);
+    };
+  }, [isMoreOpen]);
+
+  // Primary view buttons
+  var primaryButtons: React.ReactElement[] = [];
+  PRIMARY_VIEWS.forEach(function (view) {
+    primaryButtons.push(
+      React.createElement(
+        "button",
+        {
+          key: view.mode,
+          className: styles.viewButton + (props.viewMode === view.mode ? " " + styles.active : ""),
+          onClick: function () { props.onViewModeChange(view.mode); },
+          "aria-pressed": props.viewMode === view.mode,
+          title: view.label,
+        },
+        React.createElement("i", { className: "ms-Icon " + view.icon, "aria-hidden": "true" })
+      )
+    );
+  });
+
+  // More views dropdown
+  var overflowMenuItems: React.ReactElement[] = [];
+  OVERFLOW_VIEWS.forEach(function (view) {
+    overflowMenuItems.push(
+      React.createElement(
+        "button",
+        {
+          key: view.mode,
+          className: styles.overflowItem + (props.viewMode === view.mode ? " " + styles.overflowActive : ""),
+          onClick: function (e: React.MouseEvent) {
+            e.stopPropagation();
+            handleOverflowSelect(view.mode);
+          },
+        },
+        React.createElement("i", { className: "ms-Icon " + view.icon, "aria-hidden": "true" }),
+        React.createElement("span", undefined, view.label)
+      )
+    );
+  });
+
+  var moreButton = React.createElement(
+    "div",
+    { className: styles.moreViewsContainer },
+    React.createElement(
+      "button",
+      {
+        className: styles.viewButton + (isOverflowMode(props.viewMode) ? " " + styles.active : ""),
+        onClick: handleToggleMore,
+        "aria-expanded": isMoreOpen,
+        "aria-haspopup": "true",
+        title: "More views",
+      },
+      React.createElement("i", { className: "ms-Icon ms-Icon--More", "aria-hidden": "true" })
+    ),
+    isMoreOpen
+      ? React.createElement(
+          "div",
+          { className: styles.overflowMenu, role: "menu" },
+          overflowMenuItems
+        )
+      : undefined
+  );
 
   return React.createElement(
     "div",
     { className: styles.toolbar, role: "toolbar", "aria-label": "Content rollup toolbar" },
 
-    // View mode buttons
+    // View mode buttons (4 primary + more dropdown)
     React.createElement(
       "div",
       { className: styles.viewSwitcher, role: "radiogroup", "aria-label": "View mode" },
-      React.createElement(
-        "button",
-        {
-          className: styles.viewButton + (props.viewMode === "card" ? " " + styles.active : ""),
-          onClick: function () { props.onViewModeChange("card"); },
-          "aria-pressed": props.viewMode === "card",
-          title: "Card view",
-        },
-        React.createElement("i", { className: "ms-Icon ms-Icon--GridViewMedium", "aria-hidden": "true" })
-      ),
-      React.createElement(
-        "button",
-        {
-          className: styles.viewButton + (props.viewMode === "table" ? " " + styles.active : ""),
-          onClick: function () { props.onViewModeChange("table"); },
-          "aria-pressed": props.viewMode === "table",
-          title: "Table view",
-        },
-        React.createElement("i", { className: "ms-Icon ms-Icon--List", "aria-hidden": "true" })
-      ),
-      React.createElement(
-        "button",
-        {
-          className: styles.viewButton + (props.viewMode === "kanban" ? " " + styles.active : ""),
-          onClick: function () { props.onViewModeChange("kanban"); },
-          "aria-pressed": props.viewMode === "kanban",
-          title: "Kanban view",
-        },
-        React.createElement("i", { className: "ms-Icon ms-Icon--ViewAll2", "aria-hidden": "true" })
-      )
+      primaryButtons,
+      moreButton
     ),
 
     // Search bar
@@ -123,6 +215,16 @@ const HyperRollupToolbarInner: React.FC<IHyperRollupToolbarProps> = (props) => {
             { className: styles.actionButton, onClick: props.onExport, title: "Export to CSV" },
             React.createElement("i", { className: "ms-Icon ms-Icon--Download", "aria-hidden": "true" }),
             " Export"
+          )
+        : undefined,
+
+      // Manual refresh button (shown when auto-refresh is enabled)
+      props.enableAutoRefresh && props.onRefresh
+        ? React.createElement(
+            "button",
+            { className: styles.actionButton, onClick: props.onRefresh, title: "Refresh data now" },
+            React.createElement("i", { className: "ms-Icon ms-Icon--Refresh", "aria-hidden": "true" }),
+            " Refresh"
           )
         : undefined
     )

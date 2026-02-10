@@ -31,6 +31,23 @@ declare interface IHyperRollupWebPartStrings {
   CustomTemplateLabel: string;
   CacheEnabledLabel: string;
   CacheDurationLabel: string;
+  CarouselAutoPlayLabel: string;
+  CarouselIntervalLabel: string;
+  GalleryColumnsLabel: string;
+  DateFieldLabel: string;
+  Top10RankFieldLabel: string;
+  Top10RankDirectionLabel: string;
+  Top10MaxItemsLabel: string;
+  LayoutGroupName: string;
+  AdvancedGroupName: string;
+  EnableAutoRefreshLabel: string;
+  AutoRefreshIntervalLabel: string;
+  EnableAudienceTargetingLabel: string;
+  AudienceTargetFieldLabel: string;
+  EnableAnalyticsLabel: string;
+  NewBadgeDaysLabel: string;
+  EnableDemoModeLabel: string;
+  DemoPresetLabel: string;
 }
 
 declare module "HyperRollupWebPartStrings" {

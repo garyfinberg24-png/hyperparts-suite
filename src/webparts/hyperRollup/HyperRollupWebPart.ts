@@ -100,6 +100,51 @@ export default class HyperRollupWebPart extends BaseHyperWebPart<IHyperRollupWeb
     if (this.properties.cacheDuration === undefined) {
       this.properties.cacheDuration = 300000;
     }
+    if (this.properties.carouselAutoPlay === undefined) {
+      this.properties.carouselAutoPlay = false;
+    }
+    if (this.properties.carouselInterval === undefined) {
+      this.properties.carouselInterval = 5000;
+    }
+    if (this.properties.galleryColumns === undefined) {
+      this.properties.galleryColumns = 3;
+    }
+    if (this.properties.dateField === undefined) {
+      this.properties.dateField = "modified";
+    }
+    if (this.properties.top10RankField === undefined) {
+      this.properties.top10RankField = "modified";
+    }
+    if (this.properties.top10RankDirection === undefined) {
+      this.properties.top10RankDirection = "desc";
+    }
+    if (this.properties.top10MaxItems === undefined) {
+      this.properties.top10MaxItems = 10;
+    }
+    if (this.properties.enableAutoRefresh === undefined) {
+      this.properties.enableAutoRefresh = false;
+    }
+    if (this.properties.autoRefreshInterval === undefined) {
+      this.properties.autoRefreshInterval = 60;
+    }
+    if (this.properties.enableAudienceTargeting === undefined) {
+      this.properties.enableAudienceTargeting = false;
+    }
+    if (this.properties.audienceTargetField === undefined) {
+      this.properties.audienceTargetField = "";
+    }
+    if (this.properties.enableAnalytics === undefined) {
+      this.properties.enableAnalytics = false;
+    }
+    if (this.properties.newBadgeDays === undefined) {
+      this.properties.newBadgeDays = 0;
+    }
+    if (this.properties.enableDemoMode === undefined) {
+      this.properties.enableDemoMode = false;
+    }
+    if (this.properties.demoPresetId === undefined) {
+      this.properties.demoPresetId = "documents";
+    }
 
     // Defaults — JSON strings
     if (!this.properties.sources) {
@@ -149,6 +194,14 @@ export default class HyperRollupWebPart extends BaseHyperWebPart<IHyperRollupWeb
                     { key: "card", text: "Card Grid" },
                     { key: "table", text: "Data Table" },
                     { key: "kanban", text: "Kanban Board" },
+                    { key: "list", text: "Compact List" },
+                    { key: "carousel", text: "Carousel" },
+                    { key: "filmstrip", text: "Filmstrip" },
+                    { key: "gallery", text: "Gallery" },
+                    { key: "timeline", text: "Timeline" },
+                    { key: "calendar", text: "Calendar" },
+                    { key: "magazine", text: "Magazine" },
+                    { key: "top10", text: "Top 10" },
                   ],
                 }),
                 PropertyPaneSlider("cardColumns", {
@@ -156,7 +209,7 @@ export default class HyperRollupWebPart extends BaseHyperWebPart<IHyperRollupWeb
                   min: 1,
                   max: 6,
                   step: 1,
-                  disabled: this.properties.viewMode !== "card",
+                  disabled: this.properties.viewMode !== "card" && this.properties.viewMode !== "magazine",
                 }),
                 PropertyPaneToggle("tableCompact", {
                   label: strings.TableCompactFieldLabel,
@@ -179,6 +232,52 @@ export default class HyperRollupWebPart extends BaseHyperWebPart<IHyperRollupWeb
                     { key: "infinite", text: "Infinite Scroll" },
                     { key: "loadMore", text: "Load More Button" },
                   ],
+                }),
+              ],
+            },
+            {
+              groupName: strings.LayoutGroupName,
+              groupFields: [
+                PropertyPaneToggle("carouselAutoPlay", {
+                  label: strings.CarouselAutoPlayLabel,
+                  disabled: this.properties.viewMode !== "carousel",
+                }),
+                PropertyPaneSlider("carouselInterval", {
+                  label: strings.CarouselIntervalLabel,
+                  min: 2,
+                  max: 30,
+                  step: 1,
+                  disabled: this.properties.viewMode !== "carousel" || !this.properties.carouselAutoPlay,
+                }),
+                PropertyPaneSlider("galleryColumns", {
+                  label: strings.GalleryColumnsLabel,
+                  min: 2,
+                  max: 5,
+                  step: 1,
+                  disabled: this.properties.viewMode !== "gallery",
+                }),
+                PropertyPaneTextField("dateField", {
+                  label: strings.DateFieldLabel,
+                  disabled: this.properties.viewMode !== "timeline" && this.properties.viewMode !== "calendar",
+                }),
+                PropertyPaneTextField("top10RankField", {
+                  label: strings.Top10RankFieldLabel,
+                  disabled: this.properties.viewMode !== "top10",
+                }),
+                PropertyPaneDropdown("top10RankDirection", {
+                  label: strings.Top10RankDirectionLabel,
+                  disabled: this.properties.viewMode !== "top10",
+                  options: [
+                    { key: "desc", text: "Highest First" },
+                    { key: "asc", text: "Lowest First" },
+                  ],
+                }),
+                PropertyPaneSlider("top10MaxItems", {
+                  label: strings.Top10MaxItemsLabel,
+                  min: 3,
+                  max: 25,
+                  step: 1,
+                  disabled: this.properties.viewMode !== "top10",
                 }),
               ],
             },
@@ -235,6 +334,51 @@ export default class HyperRollupWebPart extends BaseHyperWebPart<IHyperRollupWeb
                 }),
                 PropertyPaneToggle("enableSavedViews", {
                   label: strings.EnableSavedViewsLabel,
+                }),
+              ],
+            },
+            {
+              groupName: strings.AdvancedGroupName,
+              groupFields: [
+                PropertyPaneToggle("enableAutoRefresh", {
+                  label: strings.EnableAutoRefreshLabel,
+                }),
+                PropertyPaneSlider("autoRefreshInterval", {
+                  label: strings.AutoRefreshIntervalLabel,
+                  min: 10,
+                  max: 600,
+                  step: 10,
+                  disabled: !this.properties.enableAutoRefresh,
+                }),
+                PropertyPaneToggle("enableAudienceTargeting", {
+                  label: strings.EnableAudienceTargetingLabel,
+                }),
+                PropertyPaneTextField("audienceTargetField", {
+                  label: strings.AudienceTargetFieldLabel,
+                  disabled: !this.properties.enableAudienceTargeting,
+                }),
+                PropertyPaneToggle("enableAnalytics", {
+                  label: strings.EnableAnalyticsLabel,
+                }),
+                PropertyPaneSlider("newBadgeDays", {
+                  label: strings.NewBadgeDaysLabel,
+                  min: 0,
+                  max: 90,
+                  step: 1,
+                }),
+                PropertyPaneToggle("enableDemoMode", {
+                  label: strings.EnableDemoModeLabel,
+                }),
+                PropertyPaneDropdown("demoPresetId", {
+                  label: strings.DemoPresetLabel,
+                  disabled: !this.properties.enableDemoMode,
+                  options: [
+                    { key: "documents", text: "Documents (12 items)" },
+                    { key: "news", text: "News Articles (10 items)" },
+                    { key: "events", text: "Events (8 items)" },
+                    { key: "projects", text: "Projects (10 items)" },
+                    { key: "policies", text: "HR Policies (8 items)" },
+                  ],
                 }),
               ],
             },

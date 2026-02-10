@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { ViewMode } from "../models";
 import type { IHyperRollupFacetSelection } from "../models";
+import type { DemoPresetId } from "../utils/sampleData";
 
 /** Runtime state for HyperRollup */
 export interface IHyperRollupStoreState {
@@ -30,6 +31,16 @@ export interface IHyperRollupStoreState {
   editingFields: Record<string, unknown>;
   /** Currently active saved view ID */
   activeViewId: string | undefined;
+  /** Calendar view: current year */
+  calendarYear: number;
+  /** Calendar view: current month (0-11) */
+  calendarMonth: number;
+  /** Carousel: current slide index */
+  carouselIndex: number;
+  /** Demo mode: active state */
+  isDemoMode: boolean;
+  /** Demo mode: current preset ID */
+  demoPresetId: DemoPresetId;
 }
 
 /** Actions to mutate HyperRollup runtime state */
@@ -64,6 +75,13 @@ export interface IHyperRollupStoreActions {
 
   setActiveView: (viewId: string | undefined) => void;
 
+  navigateMonth: (year: number, month: number) => void;
+  setCarouselIndex: (index: number) => void;
+
+  toggleDemoMode: () => void;
+  setDemoMode: (enabled: boolean) => void;
+  setDemoPreset: (presetId: DemoPresetId) => void;
+
   reset: () => void;
 }
 
@@ -83,6 +101,11 @@ const initialState: IHyperRollupStoreState = {
   isEditingItem: false,
   editingFields: {},
   activeViewId: undefined,
+  calendarYear: new Date().getFullYear(),
+  calendarMonth: new Date().getMonth(),
+  carouselIndex: 0,
+  isDemoMode: false,
+  demoPresetId: "documents" as DemoPresetId,
 };
 
 export const useHyperRollupStore = create<IHyperRollupStore>((set) => ({
@@ -230,6 +253,28 @@ export const useHyperRollupStore = create<IHyperRollupStore>((set) => ({
 
   setActiveView: (viewId: string | undefined): void => {
     set({ activeViewId: viewId });
+  },
+
+  navigateMonth: (year: number, month: number): void => {
+    set({ calendarYear: year, calendarMonth: month });
+  },
+
+  setCarouselIndex: (index: number): void => {
+    set({ carouselIndex: index });
+  },
+
+  toggleDemoMode: (): void => {
+    set(function (state) {
+      return { isDemoMode: !state.isDemoMode };
+    });
+  },
+
+  setDemoMode: (enabled: boolean): void => {
+    set({ isDemoMode: enabled });
+  },
+
+  setDemoPreset: (presetId: DemoPresetId): void => {
+    set({ demoPresetId: presetId, currentPage: 1 });
   },
 
   reset: (): void => {

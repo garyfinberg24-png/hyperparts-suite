@@ -1,0 +1,159 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.calendarContainer {
+  padding: 16px;
+}
+
+.calendarNav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.navButton {
+  width: 32px;
+  height: 32px;
+  border: 1px solid "[theme:neutralLight, default: #edebe9]";
+  border-radius: 4px;
+  background: "[theme:white, default: #ffffff]";
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: "[theme:neutralLighter, default: #f3f2f1]";
+    color: "[theme:themePrimary, default: #0078d4]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default: #0078d4]";
+    outline-offset: 2px;
+  }
+}
+
+.navTitle {
+  font-size: $ms-font-size-18;
+  font-weight: $ms-font-weight-semibold;
+  color: "[theme:neutralPrimary, default: #323130]";
+  margin: 0;
+  flex: 1;
+  text-align: center;
+}
+
+.todayButton {
+  padding: 4px 12px;
+  border: 1px solid "[theme:themePrimary, default: #0078d4]";
+  border-radius: 4px;
+  background: transparent;
+  color: "[theme:themePrimary, default: #0078d4]";
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  cursor: pointer;
+
+  &:hover {
+    background: "[theme:themePrimary, default: #0078d4]";
+    color: "[theme:white, default: #ffffff]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default: #0078d4]";
+    outline-offset: 2px;
+  }
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: "[theme:neutralLight, default: #edebe9]";
+}
+
+.dayHeader {
+  padding: 8px 4px;
+  text-align: center;
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  background: "[theme:neutralLighterAlt, default: #faf9f8]";
+}
+
+.dayCell {
+  min-height: 80px;
+  padding: 4px;
+  background: "[theme:white, default: #ffffff]";
+  position: relative;
+}
+
+.otherMonth {
+  background: "[theme:neutralLighterAlt, default: #faf9f8]";
+  opacity: 0.5;
+}
+
+.today {
+  background: "[theme:themeLighterAlt, default: #eff6fc]";
+}
+
+.dayNumber {
+  display: block;
+  font-size: $ms-font-size-12;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  margin-bottom: 2px;
+}
+
+.todayNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: "[theme:themePrimary, default: #0078d4]";
+  color: "[theme:white, default: #ffffff]";
+  font-weight: $ms-font-weight-semibold;
+}
+
+.chipContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.eventChip {
+  display: block;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 10px;
+  background: "[theme:themeLighter, default: #deecf9]";
+  color: "[theme:themeDarker, default: #004578]";
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: border-color 0.15s;
+
+  &:hover {
+    background: "[theme:themeLight, default: #c7e0f4]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default: #0078d4]";
+    outline-offset: 1px;
+  }
+}
+
+.chipSelected {
+  border-color: "[theme:themePrimary, default: #0078d4]";
+  background: "[theme:themeLight, default: #c7e0f4]";
+  font-weight: $ms-font-weight-semibold;
+}
+
+.moreChip {
+  font-size: 10px;
+  color: "[theme:neutralTertiary, default: #a19f9d]";
+  padding: 1px 4px;
+  font-style: italic;
+}

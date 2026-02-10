@@ -1,0 +1,110 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.demoBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: "[theme:themeLight, default: #c7e0f4]";
+  border: 1px solid "[theme:themeTertiary, default: #71afe5]";
+  border-radius: 6px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.demoInfo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.demoIcon {
+  font-size: $ms-font-size-16;
+}
+
+.demoLabel {
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  color: "[theme:themeDark, default: #004578]";
+}
+
+.demoHint {
+  font-size: $ms-font-size-12;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+}
+
+.demoPresets {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.presetButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border: 1px solid "[theme:neutralTertiaryAlt, default: #c8c6c4]";
+  border-radius: 14px;
+  background: "[theme:white, default: #ffffff]";
+  color: "[theme:neutralPrimary, default: #323130]";
+  font-size: $ms-font-size-12;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+
+  &:hover {
+    background: "[theme:neutralLighter, default: #f3f2f1]";
+    border-color: "[theme:themePrimary, default: #0078d4]";
+  }
+
+  &.presetActive {
+    background: "[theme:themePrimary, default: #0078d4]";
+    color: "[theme:white, default: #ffffff]";
+    border-color: "[theme:themePrimary, default: #0078d4]";
+  }
+}
+
+.presetIcon {
+  font-size: $ms-font-size-14;
+}
+
+.demoActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.connectButton {
+  padding: 4px 12px;
+  border: 1px solid "[theme:themePrimary, default: #0078d4]";
+  border-radius: 4px;
+  background: "[theme:white, default: #ffffff]";
+  color: "[theme:themePrimary, default: #0078d4]";
+  font-size: $ms-font-size-12;
+  font-weight: $ms-font-weight-semibold;
+  cursor: pointer;
+
+  &:hover {
+    background: "[theme:themeLighter, default: #deecf9]";
+  }
+}
+
+.exitButton {
+  padding: 4px 12px;
+  border: 1px solid "[theme:neutralTertiaryAlt, default: #c8c6c4]";
+  border-radius: 4px;
+  background: "[theme:white, default: #ffffff]";
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  font-size: $ms-font-size-12;
+  cursor: pointer;
+
+  &:hover {
+    background: "[theme:neutralLighter, default: #f3f2f1]";
+  }
+}

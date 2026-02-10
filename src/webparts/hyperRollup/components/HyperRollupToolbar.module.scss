@@ -15,7 +15,8 @@
   gap: 2px;
   border: 1px solid "[theme:neutralLight, default: #edebe9]";
   border-radius: 4px;
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
 }
 
 .viewButton {
@@ -134,4 +135,46 @@
   &:hover {
     background: "[theme:neutralLighter, default: #f3f2f1]";
   }
+}
+
+.moreViewsContainer {
+  position: relative;
+}
+
+.overflowMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  min-width: 180px;
+  background: "[theme:white, default: #ffffff]";
+  border: 1px solid "[theme:neutralLight, default: #edebe9]";
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  z-index: 10;
+  padding: 4px 0;
+}
+
+.overflowItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  color: "[theme:neutralPrimary, default: #323130]";
+  font-size: $ms-font-size-14;
+  cursor: pointer;
+  text-align: left;
+
+  &:hover {
+    background: "[theme:neutralLighter, default: #f3f2f1]";
+  }
+}
+
+.overflowActive {
+  background: "[theme:themeLighterAlt, default: #eff6fc]";
+  color: "[theme:themePrimary, default: #0078d4]";
+  font-weight: $ms-font-weight-semibold;
 }

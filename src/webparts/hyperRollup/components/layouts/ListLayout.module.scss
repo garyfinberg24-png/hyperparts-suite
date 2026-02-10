@@ -1,0 +1,110 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.listLayout {
+  width: 100%;
+}
+
+.listRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid "[theme:neutralLighter, default: #f3f2f1]";
+  cursor: pointer;
+  transition: background 0.1s;
+
+  &:hover {
+    background: "[theme:neutralLighterAlt, default: #faf9f8]";
+  }
+
+  &.selected {
+    background: "[theme:themeLighterAlt, default: #eff6fc]";
+    border-left: 3px solid "[theme:themePrimary, default: #0078d4]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default: #0078d4]";
+    outline-offset: -2px;
+  }
+}
+
+.listIcon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  flex-shrink: 0;
+  font-size: $ms-font-size-16;
+  background: "[theme:neutralLighter, default: #f3f2f1]";
+  color: "[theme:neutralSecondary, default: #605e5c]";
+}
+
+.iconDocx {
+  background: #d4e6f9;
+  color: #185abd;
+}
+
+.iconXlsx {
+  background: #d9ead3;
+  color: #107c10;
+}
+
+.iconPptx {
+  background: #fde8d4;
+  color: #ca5010;
+}
+
+.iconPdf {
+  background: #fdd;
+  color: #d13438;
+}
+
+.iconPage {
+  background: "[theme:themeLighterAlt, default: #eff6fc]";
+  color: "[theme:themePrimary, default: #0078d4]";
+}
+
+.listContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.listTitle {
+  font-size: $ms-font-size-14;
+  font-weight: $ms-font-weight-semibold;
+  color: "[theme:neutralPrimary, default: #323130]";
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.listSubtitle {
+  font-size: $ms-font-size-12;
+  color: "[theme:neutralTertiary, default: #a19f9d]";
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.listMeta {
+  font-size: $ms-font-size-12;
+  color: "[theme:neutralTertiary, default: #a19f9d]";
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.listTypeBadge {
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: "[theme:neutralLighter, default: #f3f2f1]";
+  font-size: $ms-font-size-10;
+  font-weight: $ms-font-weight-semibold;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  flex-shrink: 0;
+}
+
+.groupSection {
+  margin-bottom: 8px;
+}

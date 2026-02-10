@@ -15,6 +15,7 @@ export interface ICardLayoutProps {
   onSelectItem: (itemId: string) => void;
   onPreviewItem?: (itemId: string) => void;
   onToggleGroup: (groupKey: string) => void;
+  newBadgeDays?: number;
 }
 
 const CardLayoutInner: React.FC<ICardLayoutProps> = (props) => {
@@ -40,6 +41,7 @@ const CardLayoutInner: React.FC<ICardLayoutProps> = (props) => {
           isSelected: props.selectedItemId === item.id,
           onSelect: props.onSelectItem,
           onPreview: props.onPreviewItem,
+          newBadgeDays: props.newBadgeDays,
         });
       })
     );

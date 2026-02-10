@@ -31,6 +31,23 @@ define([], function () {
     SelectedTemplateLabel: "Built-in Template",
     CustomTemplateLabel: "Custom Handlebars Template",
     CacheEnabledLabel: "Enable Caching",
-    CacheDurationLabel: "Cache Duration (seconds)"
+    CacheDurationLabel: "Cache Duration (seconds)",
+    CarouselAutoPlayLabel: "Auto-play Carousel",
+    CarouselIntervalLabel: "Auto-play Interval (seconds)",
+    GalleryColumnsLabel: "Gallery Columns",
+    DateFieldLabel: "Date Field Name",
+    Top10RankFieldLabel: "Rank By Field",
+    Top10RankDirectionLabel: "Rank Direction",
+    Top10MaxItemsLabel: "Maximum Items",
+    LayoutGroupName: "Layout Options",
+    AdvancedGroupName: "Advanced Features",
+    EnableAutoRefreshLabel: "Enable Auto-Refresh",
+    AutoRefreshIntervalLabel: "Refresh Interval (seconds)",
+    EnableAudienceTargetingLabel: "Enable Audience Targeting",
+    AudienceTargetFieldLabel: "Audience Target Field",
+    EnableAnalyticsLabel: "Enable Analytics Tracking",
+    NewBadgeDaysLabel: "NEW Badge Threshold (days)",
+    EnableDemoModeLabel: "Enable Demo Mode",
+    DemoPresetLabel: "Demo Data Preset"
   };
 });

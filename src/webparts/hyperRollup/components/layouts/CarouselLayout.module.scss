@@ -1,0 +1,132 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.carouselContainer {
+  position: relative;
+  padding: 16px;
+  min-height: 240px;
+}
+
+.carouselSlide {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  padding: 24px;
+  border: 1px solid "[theme:neutralLight, default: #edebe9]";
+  border-radius: 8px;
+  background: "[theme:white, default: #ffffff]";
+  min-height: 180px;
+}
+
+.carouselThumb {
+  width: 160px;
+  height: 120px;
+  border-radius: 6px;
+  background: "[theme:themeLighterAlt, default: #eff6fc]";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: "[theme:themePrimary, default: #0078d4]";
+}
+
+.carouselContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.carouselTitle {
+  font-size: $ms-font-size-20;
+  font-weight: $ms-font-weight-semibold;
+  color: "[theme:neutralPrimary, default: #323130]";
+  margin-bottom: 8px;
+}
+
+.carouselDesc {
+  font-size: $ms-font-size-14;
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.carouselMeta {
+  display: flex;
+  gap: 16px;
+  font-size: $ms-font-size-12;
+  color: "[theme:neutralTertiary, default: #a19f9d]";
+  flex-wrap: wrap;
+}
+
+.metaBadge {
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: "[theme:neutralLighter, default: #f3f2f1]";
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  font-size: $ms-font-size-10;
+  font-weight: $ms-font-weight-semibold;
+}
+
+.carouselArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid "[theme:neutralLight, default: #edebe9]";
+  background: "[theme:white, default: #ffffff]";
+  color: "[theme:neutralSecondary, default: #605e5c]";
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+
+  &:hover {
+    background: "[theme:neutralLighter, default: #f3f2f1]";
+    color: "[theme:themePrimary, default: #0078d4]";
+  }
+
+  &:focus {
+    outline: 2px solid "[theme:themePrimary, default: #0078d4]";
+    outline-offset: 2px;
+  }
+}
+
+.arrowLeft { left: 4px; }
+.arrowRight { right: 4px; }
+
+.carouselDots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 16px;
+}
+
+.carouselDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: "[theme:neutralTertiaryAlt, default: #c8c6c4]";
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s, width 0.15s;
+
+  &.activeDot {
+    background: "[theme:themePrimary, default: #0078d4]";
+    width: 20px;
+    border-radius: 4px;
+  }
+}
+
+.autoPlayIndicator {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  font-size: $ms-font-size-10;
+  color: "[theme:neutralTertiary, default: #a19f9d]";
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}

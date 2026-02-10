@@ -1,7 +1,18 @@
 import type { IBaseHyperWebPartProps } from "../../../common/BaseHyperWebPart";
 
-/** Layout view modes */
-export type ViewMode = "card" | "table" | "kanban";
+/** Layout view modes (11 total) */
+export type ViewMode =
+  | "card"
+  | "table"
+  | "kanban"
+  | "list"
+  | "carousel"
+  | "filmstrip"
+  | "gallery"
+  | "timeline"
+  | "calendar"
+  | "magazine"
+  | "top10";
 
 /** Pagination display modes */
 export type PaginationMode = "paged" | "infinite" | "loadMore";
@@ -37,6 +48,28 @@ export interface IHyperRollupWebPartProps extends IBaseHyperWebPartProps {
   kanbanGroupField: string;
   /** Whether table view uses compact row height */
   tableCompact: boolean;
+
+  // ─── Carousel ───
+  /** Enable carousel auto-play */
+  carouselAutoPlay: boolean;
+  /** Carousel auto-play interval in milliseconds */
+  carouselInterval: number;
+
+  // ─── Gallery ───
+  /** Number of masonry columns for gallery view (2-5) */
+  galleryColumns: number;
+
+  // ─── Timeline / Calendar ───
+  /** Date field used for timeline ordering and calendar placement */
+  dateField: string;
+
+  // ─── Top 10 ───
+  /** Field used to rank items in Top 10 view */
+  top10RankField: string;
+  /** Sort direction for Top 10 ranking */
+  top10RankDirection: "asc" | "desc";
+  /** Maximum items shown in Top 10 view */
+  top10MaxItems: number;
 
   // ─── Feature Toggles ───
   /** Show faceted filter panel */
@@ -87,6 +120,32 @@ export interface IHyperRollupWebPartProps extends IBaseHyperWebPartProps {
   cacheEnabled: boolean;
   /** Cache TTL in milliseconds */
   cacheDuration: number;
+
+  // ─── Auto-Refresh ───
+  /** Enable automatic data refresh at a configurable interval */
+  enableAutoRefresh: boolean;
+  /** Auto-refresh interval in seconds (0 = disabled) */
+  autoRefreshInterval: number;
+
+  // ─── Audience Targeting ───
+  /** Enable per-item audience targeting filter */
+  enableAudienceTargeting: boolean;
+  /** Field name containing comma-separated audience group IDs */
+  audienceTargetField: string;
+
+  // ─── Analytics ───
+  /** Enable analytics tracking for user interactions */
+  enableAnalytics: boolean;
+
+  // ─── NEW Badge ───
+  /** Show "NEW" badge on items modified within N days (0 = disabled) */
+  newBadgeDays: number;
+
+  // ─── Demo Mode ───
+  /** Enable demo mode with sample data */
+  enableDemoMode: boolean;
+  /** Active demo preset ID */
+  demoPresetId: string;
 }
 
 /**
