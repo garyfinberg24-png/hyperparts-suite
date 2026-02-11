@@ -15,11 +15,14 @@ import HyperPollStacked from "./HyperPollStacked";
 import HyperPollDemoBar from "./HyperPollDemoBar";
 import type { ChartType } from "../models";
 import type { PollLayout } from "../models/IHyperPollWizardState";
+import WelcomeStep from "./wizard/WelcomeStep";
 import styles from "./HyperPoll.module.scss";
 
 export interface IHyperPollComponentProps extends IHyperPollWebPartProps {
   instanceId: string;
   isEditMode?: boolean;
+  /** Callback when the wizard "Get Started" is clicked (marks wizard as completed) */
+  onWizardComplete?: () => void;
   /** Callback from web part class to persist wizard result */
   onWizardApply?: (result: Partial<IHyperPollWebPartProps>) => void;
 }
@@ -48,6 +51,30 @@ function shouldShowResults(
 const HyperPollInner: React.FC<IHyperPollComponentProps> = function (props) {
   const store = useHyperPollStore();
 
+  // ── Wizard state (show splash when first added in edit mode) ──
+  var wizardLocalState = React.useState(false);
+  var showWizardSplash = wizardLocalState[0];
+  var setShowWizardSplash = wizardLocalState[1];
+
+  React.useEffect(function () {
+    if (props.isEditMode && !props.wizardCompleted) {
+      setShowWizardSplash(true);
+    }
+  }, [props.isEditMode, props.wizardCompleted]);
+
+  // Show the DWx splash screen when wizard not yet completed
+  if (showWizardSplash) {
+    return React.createElement(WelcomeStep, {
+      onGetStarted: function (): void {
+        if (props.onWizardComplete) {
+          props.onWizardComplete();
+        }
+        setShowWizardSplash(false);
+        store.openWizard();
+      },
+    });
+  }
+
   // Demo mode overrides
   var demoChartTypeState = React.useState<ChartType>(props.defaultChartType || "bar");
   var demoChartType = demoChartTypeState[0];
@@ -69,14 +96,6 @@ const HyperPollInner: React.FC<IHyperPollComponentProps> = function (props) {
   React.useEffect(function () {
     if (props.defaultChartType && store.activeChartType !== props.defaultChartType) {
       store.setActiveChartType(props.defaultChartType);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Auto-open wizard on first load when showWizardOnInit and no polls configured
-  React.useEffect(function () {
-    if (props.showWizardOnInit && (!props.polls || props.polls === "" || props.polls === "[]") && !props.useSampleData) {
-      store.openWizard();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

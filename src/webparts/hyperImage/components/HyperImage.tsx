@@ -6,6 +6,7 @@ import {
   DEFAULT_BORDER_CONFIG,
   DEFAULT_LAYOUT_CONFIG,
   FILTER_PRESETS,
+  BORDER_STYLE_PRESETS,
   ImageLayout,
   TextPlacement,
 } from "../models";
@@ -26,12 +27,21 @@ import type { IEditorChanges } from "./editor";
 // Cross-web-part import: HyperImageBrowser from HyperHero shared components (pitfall #29)
 import { HyperImageBrowser } from "../../hyperHero/components/shared/HyperImageBrowser";
 import type { IHyperImageBrowserProps } from "../../hyperHero/components/shared/HyperImageBrowser";
+import HyperImageLayoutGallery from "./HyperImageLayoutGallery";
+import type { IPresetLayout } from "../models/IHyperImagePresetLayout";
+import WelcomeStep from "./wizard/WelcomeStep";
 import styles from "./HyperImage.module.scss";
 
 export interface IHyperImageComponentProps extends IHyperImageWebPartProps {
   instanceId: string;
+  /** Whether the web part is in edit mode (displayMode === 2) */
+  isEditMode?: boolean;
+  /** Callback when the wizard "Get Started" is clicked */
+  onWizardComplete?: () => void;
   /** Callback when user selects an image from the browser */
   onImageSelect?: (imageUrl: string) => void;
+  /** Callback when user selects a preset layout from the gallery */
+  onLayoutSelect?: (preset: IPresetLayout) => void;
 }
 
 /** Safely parse a JSON string with a fallback default */
@@ -51,6 +61,34 @@ function capitalize(s: string): string {
 }
 
 var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
+  // ── Wizard state ──
+  var wizardState = React.useState(false);
+  var showWizard = wizardState[0];
+  var setShowWizard = wizardState[1];
+
+  React.useEffect(function () {
+    if (props.isEditMode && !props.wizardCompleted) {
+      setShowWizard(true);
+    }
+  }, [props.isEditMode, props.wizardCompleted]);
+
+  // ── Show wizard if not completed ──
+  if (showWizard) {
+    return React.createElement(WelcomeStep, {
+      onGetStarted: function (): void {
+        if (props.onWizardComplete) {
+          props.onWizardComplete();
+        }
+        setShowWizard(false);
+      },
+    });
+  }
+
+  // ── Flip effect state ──
+  var flipState = React.useState(false);
+  var isFlipped = flipState[0];
+  var setIsFlipped = flipState[1];
+
   // ── Parse JSON props ──
   var textOverlay = parseJson<ITextOverlay>(props.textOverlayJson, DEFAULT_TEXT_OVERLAY);
   var borderConfig = parseJson<IBorderConfig>(props.borderConfigJson, DEFAULT_BORDER_CONFIG);
@@ -62,12 +100,26 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
   var demoLayout = useHyperImageStore(function (s) { return s.demoLayout; });
   var demoFilter = useHyperImageStore(function (s) { return s.demoFilter; });
   var demoHover = useHyperImageStore(function (s) { return s.demoHover; });
+  var demoBorderPreset = useHyperImageStore(function (s) { return s.demoBorderPreset; });
 
   // Apply demo overrides (undefined means "use prop value")
   var effectiveShape: ShapeMask = props.demoMode && demoShape !== undefined ? demoShape : props.shape;
   var effectiveLayout: ImageLayout = props.demoMode && demoLayout !== undefined ? demoLayout : props.imageLayout;
   var effectiveFilterPreset: FilterPreset = props.demoMode && demoFilter !== undefined ? demoFilter : props.filterPreset;
   var effectiveHover: HoverEffect = props.demoMode && demoHover !== undefined ? demoHover : props.hoverEffect;
+
+  // Apply demo border preset override
+  if (props.demoMode && demoBorderPreset !== undefined && BORDER_STYLE_PRESETS[demoBorderPreset]) {
+    var presetConfig = BORDER_STYLE_PRESETS[demoBorderPreset];
+    borderConfig = {
+      width: presetConfig.width,
+      color: presetConfig.color,
+      style: presetConfig.style,
+      radius: presetConfig.radius,
+      padding: presetConfig.padding,
+      paddingBottom: presetConfig.paddingBottom,
+    };
+  }
 
   // When demo mode changes layout to multi, provide sample additional images
   var effectiveAdditional = additionalImages;
@@ -94,18 +146,62 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
   var isVisible = viewport.isVisible;
   var containerRef = viewport.ref;
 
+  // ── Effective shadow preset (demo border preset may override) ──
+  var effectiveShadowPreset = props.shadowPreset;
+  var demoBorderShadow: string | undefined;
+  if (props.demoMode && demoBorderPreset !== undefined && BORDER_STYLE_PRESETS[demoBorderPreset]) {
+    var presetShadow = BORDER_STYLE_PRESETS[demoBorderPreset].shadow;
+    if (presetShadow) {
+      demoBorderShadow = presetShadow;
+    }
+  }
+
   // ── Computed styles ──
   var computedStyles = useHyperImageStyles({
     shape: effectiveShape,
     customClipPath: props.customClipPath,
     filterConfig: filterConfig,
     borderConfig: borderConfig,
-    shadowPreset: props.shadowPreset,
+    shadowPreset: effectiveShadowPreset,
     objectFit: props.objectFit,
     maxWidth: props.maxWidth,
     maxHeight: props.maxHeight,
     aspectRatio: props.aspectRatio,
   });
+
+  // Override figure style with demo border preset shadow and paddingBottom
+  if (props.demoMode && demoBorderPreset !== undefined && BORDER_STYLE_PRESETS[demoBorderPreset]) {
+    if (demoBorderShadow) {
+      computedStyles = {
+        containerStyle: computedStyles.containerStyle,
+        imageStyle: computedStyles.imageStyle,
+        figureStyle: (function (): React.CSSProperties {
+          var result: React.CSSProperties = {};
+          var keys = Object.keys(computedStyles.figureStyle);
+          keys.forEach(function (k) {
+            (result as Record<string, unknown>)[k] = (computedStyles.figureStyle as Record<string, unknown>)[k];
+          });
+          result.boxShadow = demoBorderShadow;
+          return result;
+        })(),
+      };
+    }
+    if (borderConfig.paddingBottom !== undefined && borderConfig.paddingBottom > 0) {
+      computedStyles = {
+        containerStyle: computedStyles.containerStyle,
+        imageStyle: computedStyles.imageStyle,
+        figureStyle: (function (): React.CSSProperties {
+          var result: React.CSSProperties = {};
+          var keys = Object.keys(computedStyles.figureStyle);
+          keys.forEach(function (k) {
+            (result as Record<string, unknown>)[k] = (computedStyles.figureStyle as Record<string, unknown>)[k];
+          });
+          result.paddingBottom = borderConfig.paddingBottom + "px";
+          return result;
+        })(),
+      };
+    }
+  }
 
   // ── Empty state: no image configured ──
   if (!imageUrl) {
@@ -115,9 +211,12 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
     });
   }
 
-  // ── Hover effect class ──
+  // ── Flip mode check ──
+  var isFlipMode = effectiveHover === "flip";
+
+  // ── Hover effect class (skip for flip — handled separately) ──
   var hoverClass = "";
-  if (effectiveHover && effectiveHover !== "none") {
+  if (effectiveHover && effectiveHover !== "none" && !isFlipMode) {
     hoverClass = (styles as Record<string, string>)["hover" + capitalize(effectiveHover)] || "";
   }
 
@@ -164,9 +263,39 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
     figureChildren
   );
 
-  // ── Wrap in link or lightbox button ──
+  // ── Wrap in flip container, link, or lightbox button ──
   var wrappedFigure: React.ReactNode;
-  if (props.openLightbox) {
+  if (isFlipMode) {
+    // Flip effect: click toggles front/back
+    var flipBackBg = props.flipBackBgColor || "#f3f2f1";
+    var flipInnerClass = styles.flipInner + (isFlipped ? " " + styles.flipInnerFlipped : "");
+    wrappedFigure = React.createElement("div", {
+      className: styles.flipContainer,
+      onClick: function () { setIsFlipped(!isFlipped); },
+      onKeyDown: function (e: React.KeyboardEvent): void {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          setIsFlipped(!isFlipped);
+        }
+      },
+      role: "button",
+      tabIndex: 0,
+      "aria-label": isFlipped ? "Click to show image" : "Click to show details",
+    },
+      React.createElement("div", { className: flipInnerClass },
+        // Front face: the image figure
+        React.createElement("div", { className: styles.flipFront }, figureElement),
+        // Back face: title + text
+        React.createElement("div", {
+          className: styles.flipBack,
+          style: { backgroundColor: flipBackBg },
+        },
+          props.flipBackTitle ? React.createElement("h3", { className: styles.flipBackTitle }, props.flipBackTitle) : undefined,
+          props.flipBackText ? React.createElement("p", { className: styles.flipBackText }, props.flipBackText) : undefined
+        )
+      )
+    );
+  } else if (props.openLightbox) {
     wrappedFigure = React.createElement("button", {
       className: styles.imageLinkButton,
       onClick: function () { openLightbox(); },
@@ -338,12 +467,14 @@ function _renderMultiImageLayout(
   );
 }
 
-// ── Lightbox + Editor + Browser modals (rendered as siblings) ──
+// ── Lightbox + Editor + Browser + Layout Gallery modals (rendered as siblings) ──
 var HyperImageWithLightbox: React.FC<IHyperImageComponentProps> = function (props) {
   var lightboxOpen = useHyperImageStore(function (s) { return s.lightboxOpen; });
   var closeLightbox = useHyperImageStore(function (s) { return s.closeLightbox; });
   var isBrowserOpen = useHyperImageStore(function (s) { return s.isBrowserOpen; });
   var closeBrowser = useHyperImageStore(function (s) { return s.closeBrowser; });
+  var isLayoutGalleryOpen = useHyperImageStore(function (s) { return s.isLayoutGalleryOpen; });
+  var closeLayoutGallery = useHyperImageStore(function (s) { return s.closeLayoutGallery; });
   var imageUrl = props.useSampleData ? getSampleImageUrl() : props.imageUrl;
 
   /** Called when the visual editor "Apply" button is clicked */
@@ -358,6 +489,14 @@ var HyperImageWithLightbox: React.FC<IHyperImageComponentProps> = function (prop
     closeBrowser();
     if (props.onImageSelect) {
       props.onImageSelect(selectedUrl);
+    }
+  }
+
+  /** Called when user selects a preset layout from the gallery */
+  function handleLayoutSelect(preset: IPresetLayout): void {
+    closeLayoutGallery();
+    if (props.onLayoutSelect) {
+      props.onLayoutSelect(preset);
     }
   }
 
@@ -401,8 +540,15 @@ var HyperImageWithLightbox: React.FC<IHyperImageComponentProps> = function (prop
       isOpen: isBrowserOpen,
       onClose: function () { closeBrowser(); },
       onSelect: handleBrowserSelect,
-      size: "panel",
-    } as IHyperImageBrowserProps)
+      size: "large",
+    } as IHyperImageBrowserProps),
+    // Layout Gallery modal
+    React.createElement(HyperImageLayoutGallery, {
+      isOpen: isLayoutGalleryOpen,
+      onClose: function () { closeLayoutGallery(); },
+      onSelectLayout: handleLayoutSelect,
+      currentLayout: props.imageLayout,
+    })
   );
 };
 

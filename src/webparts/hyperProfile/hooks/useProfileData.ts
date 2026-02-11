@@ -37,8 +37,28 @@ export function useProfileData(userId?: string, cacheTTL?: number): IProfileData
       setLoading(true);
       setError(undefined);
 
+      // Safety check: ensure PnPjs context is initialized
+      let ctx;
       try {
-        const ctx = getContext();
+        ctx = getContext();
+      } catch {
+        if (!cancelled) {
+          setError(new Error("SharePoint context not available. Enable Demo Mode to preview with sample data."));
+          setLoading(false);
+        }
+        return;
+      }
+
+      // Safety check: ensure Graph client factory is available
+      if (!ctx || !ctx.msGraphClientFactory) {
+        if (!cancelled) {
+          setError(new Error("Microsoft Graph client not available. Enable Demo Mode to preview with sample data."));
+          setLoading(false);
+        }
+        return;
+      }
+
+      try {
 
         // Check cache first (async)
         const cachedProfile = await hyperCache.get<IHyperProfileUser>(cacheKeyBase + "_profile");

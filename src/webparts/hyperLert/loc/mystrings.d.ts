@@ -163,6 +163,10 @@ declare interface IHyperLertWebPartStrings {
   V2QuietStartLabel: string;
   V2QuietEndLabel: string;
   V2DigestLabel: string;
+
+  // Wizard
+  ShowWizardOnInitLabel: string;
+  WizardCompletedLabel: string;
 }
 
 declare module "HyperLertWebPartStrings" {

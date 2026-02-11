@@ -40,7 +40,7 @@ export interface IHyperNewsStoreActions {
 
 export type IHyperNewsStore = IHyperNewsStoreState & IHyperNewsStoreActions;
 
-var DEFAULT_DISPLAY_TOGGLES: Record<string, boolean> = {
+const DEFAULT_DISPLAY_TOGGLES: Record<string, boolean> = {
   showImages: true,
   showDescription: true,
   showAuthor: true,
@@ -106,8 +106,8 @@ export const useHyperNewsStore = create<IHyperNewsStore>((set) => ({
 
   toggleDemoDisplay: (key: string): void => {
     set(function (state) {
-      var updated: Record<string, boolean> = {};
-      var keys = Object.keys(state.demoDisplayToggles);
+      const updated: Record<string, boolean> = {};
+      const keys = Object.keys(state.demoDisplayToggles);
       keys.forEach(function (k) {
         updated[k] = state.demoDisplayToggles[k];
       });

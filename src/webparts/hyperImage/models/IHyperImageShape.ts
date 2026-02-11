@@ -23,6 +23,8 @@ export enum ShapeMask {
   Leaf = "leaf",
   Heart = "heart",
   Shield = "shield",
+  CornerCutLeft = "cornerCutLeft",
+  CornerCutRight = "cornerCutRight",
   Custom = "custom",
 }
 
@@ -55,6 +57,8 @@ export const SHAPE_REGISTRY: IShapeDefinition[] = [
   { id: ShapeMask.Leaf, label: "Leaf", clipPath: "polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%)" },
   { id: ShapeMask.Heart, label: "Heart", clipPath: "polygon(50% 15%, 65% 0%, 85% 0%, 100% 15%, 100% 40%, 50% 100%, 0% 40%, 0% 15%, 15% 0%, 35% 0%)" },
   { id: ShapeMask.Shield, label: "Shield", clipPath: "polygon(50% 0%, 100% 15%, 95% 65%, 50% 100%, 5% 65%, 0% 15%)" },
+  { id: ShapeMask.CornerCutLeft, label: "Corner Cut (Left)", clipPath: "polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 15%)" },
+  { id: ShapeMask.CornerCutRight, label: "Corner Cut (Right)", clipPath: "polygon(0% 0%, 85% 0%, 100% 15%, 100% 100%, 0% 100%)" },
   { id: ShapeMask.Custom, label: "Custom", clipPath: "none" },
 ];
 

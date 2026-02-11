@@ -31,7 +31,18 @@ export function usePresence(
 
     try {
       setLoading(true);
-      const ctx = getContext();
+      let ctx;
+      try {
+        ctx = getContext();
+      } catch {
+        // Context not available -- silently skip presence fetch
+        setLoading(false);
+        return;
+      }
+      if (!ctx || !ctx.msGraphClientFactory) {
+        setLoading(false);
+        return;
+      }
       const client = await ctx.msGraphClientFactory.getClient("3");
       const raw = await client.api("/users/" + userId + "/presence").get();
 

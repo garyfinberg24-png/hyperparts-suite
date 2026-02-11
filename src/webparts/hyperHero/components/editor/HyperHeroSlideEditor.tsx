@@ -16,8 +16,10 @@ import type {
   ISlideElementAnimations,
   EntranceEffect,
   ContentMode,
+  IHyperHeroRotation,
+  TransitionEffect,
 } from "../../models";
-import { DEFAULT_GRADIENT, DEFAULT_ELEMENT_ANIMATION, DEFAULT_FONT_SETTINGS } from "../../models";
+import { DEFAULT_GRADIENT, DEFAULT_ELEMENT_ANIMATION, DEFAULT_FONT_SETTINGS, DEFAULT_ROTATION } from "../../models";
 import { HyperHeroSlide } from "../HyperHeroSlide";
 import { HyperHeroLayerEditor } from "../canvas/HyperHeroLayerEditor";
 import { HyperImageBrowser } from "../shared/HyperImageBrowser";
@@ -42,6 +44,9 @@ export interface IHyperHeroSlideEditorProps {
   onDeleteSlide?: (slideId: string) => void;
   onOpenSliderLibrary?: () => void;
   initialViewMode?: "editor" | "manager";
+  // Slider settings (rotation) props
+  rotation?: IHyperHeroRotation;
+  onRotationChange?: (rotation: IHyperHeroRotation) => void;
 }
 
 type TabId = "background" | "content" | "ctas" | "advanced" | "animations" | "typography" | "accessibility";
@@ -271,8 +276,11 @@ const HyperHeroSlideEditorInner: React.FC<IHyperHeroSlideEditorProps> = function
   const replayKey = replayKeyState[0];
   const setReplayKey = replayKeyState[1];
 
-  // Accordion expand/collapse state — all sections default to collapsed
-  const accordionState = React.useState<AccordionState>({});
+  // Accordion expand/collapse state — key sections expanded by default
+  const accordionState = React.useState<AccordionState>({
+    "bg-color-gradient": true,
+    "bg-image-overlay": true,
+  });
   const expandedSections = accordionState[0];
   const setExpandedSections = accordionState[1];
 
@@ -283,6 +291,11 @@ const HyperHeroSlideEditorInner: React.FC<IHyperHeroSlideEditorProps> = function
       setActiveTab("background");
       undoStackRef.current = [];
       redoStackRef.current = [];
+      // Reset accordion sections to expanded defaults
+      setExpandedSections({
+        "bg-color-gradient": true,
+        "bg-image-overlay": true,
+      });
     }
   }, [isOpen, slide]);
 
@@ -577,8 +590,8 @@ const HyperHeroSlideEditorInner: React.FC<IHyperHeroSlideEditorProps> = function
       },
         React.createElement("span", { className: styles.managerSlideName }, s.heading || "Untitled"),
         React.createElement("div", { className: styles.managerSlideStatus },
-          isLocked ? React.createElement("span", { className: styles.managerStatusIcon, title: "Locked", "aria-label": "Locked" }, "\uD83D\uDD12") : undefined,
-          isHidden ? React.createElement("span", { className: styles.managerStatusIcon, title: "Hidden", "aria-label": "Hidden" }, "\uD83D\uDE48") : undefined
+          isLocked ? React.createElement("span", { className: styles.managerStatusIcon, title: "Locked", "aria-label": "Locked" }, React.createElement("i", { className: "ms-Icon ms-Icon--LockSolid", style: { fontSize: "12px" }, "aria-hidden": "true" })) : undefined,
+          isHidden ? React.createElement("span", { className: styles.managerStatusIcon, title: "Hidden", "aria-label": "Hidden" }, React.createElement("i", { className: "ms-Icon ms-Icon--Hide3", style: { fontSize: "12px" }, "aria-hidden": "true" })) : undefined
         )
       ),
       // Actions
@@ -604,7 +617,7 @@ const HyperHeroSlideEditorInner: React.FC<IHyperHeroSlideEditorProps> = function
               type: "button",
               "aria-label": "Move up",
               disabled: isLocked || idx === 0,
-            }, "\u2191"),
+            }, React.createElement("i", { className: "ms-Icon ms-Icon--ChevronUp", "aria-hidden": "true" })),
             // Move Down
             React.createElement("button", {
               className: isLocked || idx === (allSlides ? allSlides.length - 1 : 0) ? styles.managerActionBtnDisabled : styles.managerActionBtn,
@@ -612,21 +625,21 @@ const HyperHeroSlideEditorInner: React.FC<IHyperHeroSlideEditorProps> = function
               type: "button",
               "aria-label": "Move down",
               disabled: isLocked || idx === (allSlides ? allSlides.length - 1 : 0),
-            }, "\u2193"),
+            }, React.createElement("i", { className: "ms-Icon ms-Icon--ChevronDown", "aria-hidden": "true" })),
             // Lock / Unlock
             React.createElement("button", {
               className: styles.managerActionBtn,
               onClick: function (e: React.MouseEvent) { e.stopPropagation(); handleManagerToggleLock(s.id); },
               type: "button",
               "aria-label": isLocked ? "Unlock slide" : "Lock slide",
-            }, isLocked ? "\uD83D\uDD13" : "\uD83D\uDD12"),
+            }, React.createElement("i", { className: isLocked ? "ms-Icon ms-Icon--Unlock" : "ms-Icon ms-Icon--Lock", "aria-hidden": "true" })),
             // Show / Hide
             React.createElement("button", {
               className: styles.managerActionBtn,
               onClick: function (e: React.MouseEvent) { e.stopPropagation(); handleManagerToggleEnabled(s.id); },
               type: "button",
               "aria-label": isHidden ? "Show slide" : "Hide slide",
-            }, isHidden ? "\uD83D\uDC41\uFE0F" : "\uD83D\uDE48"),
+            }, React.createElement("i", { className: isHidden ? "ms-Icon ms-Icon--View" : "ms-Icon ms-Icon--Hide3", "aria-hidden": "true" })),
             // Duplicate
             React.createElement("button", {
               className: isLocked ? styles.managerActionBtnDisabled : styles.managerActionBtn,
@@ -634,7 +647,7 @@ const HyperHeroSlideEditorInner: React.FC<IHyperHeroSlideEditorProps> = function
               type: "button",
               "aria-label": "Duplicate slide",
               disabled: isLocked,
-            }, "\uD83D\uDCCB"),
+            }, React.createElement("i", { className: "ms-Icon ms-Icon--Copy", "aria-hidden": "true" })),
             // Delete
             React.createElement("button", {
               className: isLocked ? styles.managerActionBtnDisabled : styles.managerActionBtnDanger,
@@ -642,7 +655,7 @@ const HyperHeroSlideEditorInner: React.FC<IHyperHeroSlideEditorProps> = function
               type: "button",
               "aria-label": "Delete slide",
               disabled: isLocked,
-            }, "\uD83D\uDDD1\uFE0F")
+            }, React.createElement("i", { className: "ms-Icon ms-Icon--Delete", "aria-hidden": "true" }))
           )
     );
   };
@@ -790,7 +803,7 @@ const HyperHeroSlideEditorInner: React.FC<IHyperHeroSlideEditorProps> = function
     isOpen: isOpen,
     onClose: onClose,
     title: modalTitle,
-    size: "xlarge",
+    size: "fullscreen",
     footer: footer,
   },
   // View toggle bar
@@ -868,6 +881,129 @@ const HyperHeroSlideEditorInner: React.FC<IHyperHeroSlideEditorProps> = function
         })
       )
     ),
+
+    // Slider Settings bar (visible in both simple and hyper modes)
+    (function (): React.ReactElement {
+      var rot = props.rotation || DEFAULT_ROTATION;
+      var onRotChange = props.onRotationChange;
+      var TRANSITION_CHIPS: Array<{ value: TransitionEffect; label: string }> = [
+        { value: "fade", label: "Fade" },
+        { value: "slide", label: "Slide" },
+        { value: "zoom", label: "Zoom" },
+        { value: "kenBurns", label: "Ken Burns" },
+        { value: "none", label: "None" },
+      ];
+      return React.createElement("div", { className: styles.sliderSettingsBar },
+        React.createElement("div", { className: styles.sliderSettingsHeader },
+          React.createElement("span", { className: styles.sliderSettingsIcon, "aria-hidden": "true" }, "\u23F1\uFE0F"),
+          React.createElement("span", { className: styles.sliderSettingsTitle }, "Slider Settings")
+        ),
+        React.createElement("div", { className: styles.sliderSettingsRow },
+          // Auto-Rotate toggle
+          React.createElement("label", { className: styles.sliderSettingsToggle },
+            React.createElement("input", {
+              type: "checkbox",
+              checked: rot.enabled,
+              onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
+                if (onRotChange) {
+                  var updated: IHyperHeroRotation = {
+                    enabled: e.target.checked,
+                    intervalMs: rot.intervalMs,
+                    effect: rot.effect,
+                    transitionDurationMs: rot.transitionDurationMs,
+                    pauseOnHover: rot.pauseOnHover,
+                    showDots: rot.showDots,
+                    showArrows: rot.showArrows,
+                  };
+                  onRotChange(updated);
+                }
+              },
+            }),
+            "Auto-Rotate"
+          ),
+          // Duration slider (only when enabled)
+          rot.enabled
+            ? React.createElement(React.Fragment, undefined,
+                React.createElement("span", { className: styles.sliderSettingsLabel }, "Duration"),
+                React.createElement("input", {
+                  type: "range",
+                  min: 2000,
+                  max: 15000,
+                  step: 500,
+                  value: rot.intervalMs,
+                  className: styles.sliderSettingsSlider,
+                  "aria-label": "Slide duration in seconds",
+                  onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
+                    if (onRotChange) {
+                      var updated: IHyperHeroRotation = {
+                        enabled: rot.enabled,
+                        intervalMs: parseInt(e.target.value, 10),
+                        effect: rot.effect,
+                        transitionDurationMs: rot.transitionDurationMs,
+                        pauseOnHover: rot.pauseOnHover,
+                        showDots: rot.showDots,
+                        showArrows: rot.showArrows,
+                      };
+                      onRotChange(updated);
+                    }
+                  },
+                }),
+                React.createElement("span", { className: styles.sliderSettingsValue }, Math.round(rot.intervalMs / 1000) + "s"),
+                // Transition chips
+                React.createElement("span", { className: styles.sliderSettingsLabel }, "Transition"),
+                React.createElement("div", { className: styles.sliderSettingsChipGroup },
+                  TRANSITION_CHIPS.map(function (chip) {
+                    var isActive = rot.effect === chip.value;
+                    return React.createElement("button", {
+                      key: chip.value,
+                      className: isActive ? styles.sliderSettingsChipActive : styles.sliderSettingsChip,
+                      type: "button",
+                      "aria-label": chip.label + " transition",
+                      "aria-pressed": isActive ? "true" : "false",
+                      onClick: function (): void {
+                        if (onRotChange) {
+                          var updated: IHyperHeroRotation = {
+                            enabled: rot.enabled,
+                            intervalMs: rot.intervalMs,
+                            effect: chip.value,
+                            transitionDurationMs: rot.transitionDurationMs,
+                            pauseOnHover: rot.pauseOnHover,
+                            showDots: rot.showDots,
+                            showArrows: rot.showArrows,
+                          };
+                          onRotChange(updated);
+                        }
+                      },
+                    }, chip.label);
+                  })
+                ),
+                // Pause on Hover toggle
+                React.createElement("label", { className: styles.sliderSettingsToggle },
+                  React.createElement("input", {
+                    type: "checkbox",
+                    checked: rot.pauseOnHover,
+                    onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
+                      if (onRotChange) {
+                        var updated: IHyperHeroRotation = {
+                          enabled: rot.enabled,
+                          intervalMs: rot.intervalMs,
+                          effect: rot.effect,
+                          transitionDurationMs: rot.transitionDurationMs,
+                          pauseOnHover: e.target.checked,
+                          showDots: rot.showDots,
+                          showArrows: rot.showArrows,
+                        };
+                        onRotChange(updated);
+                      }
+                    },
+                  }),
+                  "Pause on Hover"
+                )
+              )
+            : undefined
+        )
+      );
+    })(),
 
     // Tab bar
     React.createElement("div", { className: styles.tabBar, role: "tablist" },
@@ -1110,6 +1246,15 @@ function renderBackgroundTab(
             className: styles.typeCard + (isSelected ? " " + styles.typeCardSelected : ""),
             onClick: function (): void {
               updateBackground("type", opt.type);
+              // Auto-expand the Image & Overlay section when switching to image/video/lottie
+              if (opt.type === "image" || opt.type === "video" || opt.type === "lottie") {
+                setExpandedSections(function (prev) {
+                  var updated: AccordionState = {};
+                  Object.keys(prev).forEach(function (k) { updated[k] = prev[k]; });
+                  updated["bg-image-overlay"] = true;
+                  return updated;
+                });
+              }
             },
             type: "button",
           },
@@ -1658,6 +1803,103 @@ function renderCtasTab(
                   { value: "rounded", label: "Rounded" },
                   { value: "outline", label: "Line" },
                   { value: "block", label: "Block" },
+                ].map(function (opt) {
+                  return React.createElement("option", { key: opt.value, value: opt.value }, opt.label);
+                })
+              )
+            )
+          ),
+          // 2nd row: Color + Size + Animation
+          React.createElement("div", { className: styles.ctaRow3Col },
+            // Colors
+            React.createElement("div", undefined,
+              React.createElement("label", { className: styles.fieldLabel }, "Button Color"),
+              React.createElement("div", { style: { display: "flex", gap: "6px", alignItems: "center" } },
+                React.createElement("input", {
+                  type: "color",
+                  value: cta.backgroundColor || "#0078d4",
+                  className: styles.colorInput,
+                  title: "Background color",
+                  onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
+                    onUpdate(cta.id, "backgroundColor", e.target.value);
+                  },
+                }),
+                React.createElement("input", {
+                  type: "color",
+                  value: cta.textColor || "#ffffff",
+                  className: styles.colorInput,
+                  title: "Text color",
+                  onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
+                    onUpdate(cta.id, "textColor", e.target.value);
+                  },
+                }),
+                (cta.backgroundColor || cta.textColor)
+                  ? React.createElement("button", {
+                      type: "button",
+                      className: styles.ctaResetBtn,
+                      onClick: function (): void {
+                        onUpdate(cta.id, "backgroundColor", undefined);
+                        onUpdate(cta.id, "textColor", undefined);
+                      },
+                      title: "Reset to default",
+                    }, "\u21BA")
+                  : undefined
+              )
+            ),
+            // Padding
+            React.createElement("div", undefined,
+              React.createElement("label", { className: styles.fieldLabel }, "Padding"),
+              React.createElement("div", { style: { display: "flex", gap: "4px", alignItems: "center" } },
+                React.createElement("input", {
+                  type: "number",
+                  className: styles.numberInputSmall,
+                  min: 4,
+                  max: 60,
+                  step: 2,
+                  value: cta.paddingX !== undefined ? cta.paddingX : "",
+                  placeholder: "H",
+                  title: "Horizontal padding (px)",
+                  onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
+                    const val = e.target.value === "" ? undefined : parseInt(e.target.value, 10);
+                    onUpdate(cta.id, "paddingX", val);
+                  },
+                }),
+                React.createElement("span", { style: { fontSize: "11px", color: "#605e5c" } }, "\u00D7"),
+                React.createElement("input", {
+                  type: "number",
+                  className: styles.numberInputSmall,
+                  min: 2,
+                  max: 40,
+                  step: 2,
+                  value: cta.paddingY !== undefined ? cta.paddingY : "",
+                  placeholder: "V",
+                  title: "Vertical padding (px)",
+                  onChange: function (e: React.ChangeEvent<HTMLInputElement>): void {
+                    const val = e.target.value === "" ? undefined : parseInt(e.target.value, 10);
+                    onUpdate(cta.id, "paddingY", val);
+                  },
+                })
+              )
+            ),
+            // Animation
+            React.createElement("div", undefined,
+              React.createElement("label", { className: styles.fieldLabel }, "Animation"),
+              React.createElement("select", {
+                className: styles.selectInput,
+                value: cta.animation || "none",
+                onChange: function (e: React.ChangeEvent<HTMLSelectElement>): void {
+                  onUpdate(cta.id, "animation", e.target.value);
+                },
+              },
+                [
+                  { value: "none", label: "None" },
+                  { value: "fadeIn", label: "Fade In" },
+                  { value: "bounceIn", label: "Bounce In" },
+                  { value: "slideUp", label: "Slide Up" },
+                  { value: "slideLeft", label: "Slide Left" },
+                  { value: "pulse", label: "Pulse" },
+                  { value: "shake", label: "Shake" },
+                  { value: "glow", label: "Glow" },
                 ].map(function (opt) {
                   return React.createElement("option", { key: opt.value, value: opt.value }, opt.label);
                 })

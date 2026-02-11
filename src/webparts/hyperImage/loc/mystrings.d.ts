@@ -40,6 +40,14 @@ declare interface IHyperImageWebPartStrings {
   /* ── Hover ── */
   HoverEffectLabel: string;
 
+  /* ── Flip Back ── */
+  FlipBackTitleLabel: string;
+  FlipBackTextLabel: string;
+  FlipBackBgColorLabel: string;
+
+  /* ── Layout Gallery ── */
+  BrowseLayoutGalleryLabel: string;
+
   /* ── Text / Caption ── */
   TextEnabledLabel: string;
   TextPlacementLabel: string;
@@ -57,6 +65,7 @@ declare interface IHyperImageWebPartStrings {
   TextBgColorLabel: string;
   TextBgOpacityLabel: string;
   TextEntranceLabel: string;
+  TextAlignLabel: string;
 
   /* ── Border & Shadow ── */
   BorderWidthLabel: string;

@@ -9,7 +9,11 @@ export interface IHyperImageTextOverlayProps {
 
 /**
  * Renders title, subtitle, and body text either as an overlay on the image
- * or as a caption callout box below the image.
+ * or as a structured caption callout box below the image.
+ *
+ * When placement is "below", the callout has a left accent border and
+ * distinct styling for title (h3, large+bold), subtitle (h4, lighter),
+ * and body (p, standard).
  */
 var HyperImageTextOverlay: React.FC<IHyperImageTextOverlayProps> = function (props) {
   var c = props.config;
@@ -23,6 +27,9 @@ var HyperImageTextOverlay: React.FC<IHyperImageTextOverlayProps> = function (pro
 
   var isOverlay = c.placement === TextPlacement.Overlay;
 
+  // Text alignment — default to "left" if not set
+  var textAlign: React.CSSProperties["textAlign"] = (c.textAlign || "left") as React.CSSProperties["textAlign"];
+
   // Build inline styles for text
   var textStyle: React.CSSProperties = {
     fontFamily: c.fontFamily !== "inherit" ? c.fontFamily : undefined,
@@ -31,79 +38,141 @@ var HyperImageTextOverlay: React.FC<IHyperImageTextOverlayProps> = function (pro
     textShadow: c.textShadow ? "0 1px 3px rgba(0,0,0,0.6)" : undefined,
   };
 
-  // Background for overlay mode
-  var bgStyle: React.CSSProperties | undefined;
-  if (isOverlay && c.bgOpacity > 0) {
-    var r = parseInt(c.bgColor.substring(1, 3), 16) || 0;
-    var g = parseInt(c.bgColor.substring(3, 5), 16) || 0;
-    var b = parseInt(c.bgColor.substring(5, 7), 16) || 0;
-    bgStyle = {
-      backgroundColor: "rgba(" + r + "," + g + "," + b + "," + (c.bgOpacity / 100) + ")",
-      padding: "12px 16px",
-      borderRadius: "4px",
-    };
+  // Helper: parse hex color to rgba
+  function hexToRgba(hex: string, opacity: number, fallbackR: number, fallbackG: number, fallbackB: number): string {
+    var rVal = parseInt(hex.substring(1, 3), 16);
+    var gVal = parseInt(hex.substring(3, 5), 16);
+    var bVal = parseInt(hex.substring(5, 7), 16);
+    if (isNaN(rVal)) rVal = fallbackR;
+    if (isNaN(gVal)) gVal = fallbackG;
+    if (isNaN(bVal)) bVal = fallbackB;
+    return "rgba(" + rVal + "," + gVal + "," + bVal + "," + (opacity / 100) + ")";
   }
 
-  // Caption below-image mode: callout box styling
-  var captionStyle: React.CSSProperties | undefined;
-  if (!isOverlay) {
-    var cr = parseInt(c.bgColor.substring(1, 3), 16) || 255;
-    var cg = parseInt(c.bgColor.substring(3, 5), 16) || 255;
-    var cb = parseInt(c.bgColor.substring(5, 7), 16) || 255;
-    captionStyle = {
-      backgroundColor: "rgba(" + cr + "," + cg + "," + cb + "," + (c.bgOpacity / 100) + ")",
-      padding: "16px 20px",
-      borderRadius: "0 0 8px 8px",
-    };
+  // ── Overlay mode ──
+  if (isOverlay) {
+    var bgStyle: React.CSSProperties | undefined;
+    if (c.bgOpacity > 0) {
+      bgStyle = {
+        backgroundColor: hexToRgba(c.bgColor, c.bgOpacity, 0, 0, 0),
+        padding: "12px 16px",
+        borderRadius: "4px",
+        textAlign: textAlign,
+      };
+    } else {
+      bgStyle = {
+        textAlign: textAlign,
+      };
+    }
+
+    // Position class for overlay mode
+    var positionClass = (styles as Record<string, string>)["textPos" + c.position.charAt(0).toUpperCase() + c.position.substring(1)] || "";
+
+    // Entrance animation class
+    var entranceClass = c.entrance !== "none"
+      ? (styles as Record<string, string>)["textEntrance" + c.entrance.charAt(0).toUpperCase() + c.entrance.substring(1)] || ""
+      : "";
+
+    var overlayClass = styles.textOverlay + " " + positionClass + " " + entranceClass;
+
+    var overlayChildren: React.ReactElement[] = [];
+
+    if (hasTitle) {
+      overlayChildren.push(React.createElement("h3", {
+        key: "title",
+        className: styles.textTitle,
+        style: { fontSize: c.titleFontSize + "px", fontFamily: textStyle.fontFamily, fontWeight: textStyle.fontWeight, color: textStyle.color, textShadow: textStyle.textShadow },
+      }, c.title));
+    }
+
+    if (hasSubtitle) {
+      overlayChildren.push(React.createElement("h4", {
+        key: "subtitle",
+        className: styles.textSubtitle,
+        style: { fontSize: c.subtitleFontSize + "px", fontFamily: textStyle.fontFamily, color: textStyle.color, textShadow: textStyle.textShadow },
+      }, c.subtitle));
+    }
+
+    if (hasBody) {
+      overlayChildren.push(React.createElement("p", {
+        key: "body",
+        className: styles.textBody,
+        style: { fontSize: c.bodyFontSize + "px", fontFamily: textStyle.fontFamily, color: textStyle.color, textShadow: textStyle.textShadow },
+      }, c.bodyText));
+    }
+
+    return React.createElement(
+      "div",
+      {
+        className: overlayClass,
+        style: bgStyle,
+      },
+      overlayChildren
+    );
   }
 
-  // Position class for overlay mode
-  var positionClass = isOverlay
-    ? (styles as Record<string, string>)["textPos" + c.position.charAt(0).toUpperCase() + c.position.substring(1)] || ""
-    : "";
+  // ── Below mode: structured callout with left accent border ──
+  var captionBg = hexToRgba(c.bgColor, c.bgOpacity, 255, 255, 255);
 
-  // Entrance animation class
-  var entranceClass = c.entrance !== "none"
+  var captionEntranceClass = c.entrance !== "none"
     ? (styles as Record<string, string>)["textEntrance" + c.entrance.charAt(0).toUpperCase() + c.entrance.substring(1)] || ""
     : "";
 
-  var containerClass = isOverlay
-    ? styles.textOverlay + " " + positionClass + " " + entranceClass
-    : styles.textCaption + " " + entranceClass;
+  var captionContainerClass = styles.textCaptionBelow + " " + captionEntranceClass;
 
-  var children: React.ReactElement[] = [];
+  var captionStyle: React.CSSProperties = {
+    backgroundColor: captionBg,
+    textAlign: textAlign,
+  };
+
+  var captionChildren: React.ReactElement[] = [];
 
   if (hasTitle) {
-    children.push(React.createElement("h3", {
+    captionChildren.push(React.createElement("h3", {
       key: "title",
-      className: styles.textTitle,
-      style: { fontSize: c.titleFontSize + "px", fontFamily: textStyle.fontFamily, fontWeight: textStyle.fontWeight, color: textStyle.color, textShadow: textStyle.textShadow },
+      className: styles.textCaptionBelowTitle,
+      style: {
+        fontSize: c.titleFontSize + "px",
+        fontFamily: textStyle.fontFamily,
+        color: textStyle.color,
+        textShadow: textStyle.textShadow,
+      },
     }, c.title));
   }
 
   if (hasSubtitle) {
-    children.push(React.createElement("h4", {
+    captionChildren.push(React.createElement("h4", {
       key: "subtitle",
-      className: styles.textSubtitle,
-      style: { fontSize: c.subtitleFontSize + "px", fontFamily: textStyle.fontFamily, color: textStyle.color, textShadow: textStyle.textShadow },
+      className: styles.textCaptionBelowSubtitle,
+      style: {
+        fontSize: c.subtitleFontSize + "px",
+        fontFamily: textStyle.fontFamily,
+        color: textStyle.color,
+        textShadow: textStyle.textShadow,
+      },
     }, c.subtitle));
   }
 
   if (hasBody) {
-    children.push(React.createElement("p", {
+    captionChildren.push(React.createElement("p", {
       key: "body",
-      className: styles.textBody,
-      style: { fontSize: c.bodyFontSize + "px", fontFamily: textStyle.fontFamily, color: textStyle.color, textShadow: textStyle.textShadow },
+      className: styles.textCaptionBelowBody,
+      style: {
+        fontSize: c.bodyFontSize + "px",
+        fontFamily: textStyle.fontFamily,
+        color: textStyle.color,
+        textShadow: textStyle.textShadow,
+      },
     }, c.bodyText));
   }
 
   return React.createElement(
     "div",
     {
-      className: containerClass,
-      style: isOverlay ? bgStyle : captionStyle,
+      className: captionContainerClass,
+      style: captionStyle,
     },
-    children
+    captionChildren
   );
 };
 

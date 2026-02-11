@@ -8,6 +8,7 @@ import {
   getFaqTemplateDisplayName,
   getAccordionStyleDisplayName,
 } from "../models/IHyperFaqEnums";
+import { getFaqTemplateById } from "../models/IHyperFaqTemplate";
 import styles from "./HyperFaqDemoBar.module.scss";
 
 export interface IHyperFaqDemoBarProps {
@@ -21,120 +22,111 @@ export interface IHyperFaqDemoBarProps {
   onExitDemo: () => void;
 }
 
-const HyperFaqDemoBar: React.FC<IHyperFaqDemoBarProps> = function (props) {
-  const handleLayoutChange = React.useCallback(function (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ): void {
-    props.onLayoutChange(e.target.value as FaqLayout);
-  }, [props.onLayoutChange]);
+var HyperFaqDemoBar: React.FC<IHyperFaqDemoBarProps> = function (props) {
 
-  const handleTemplateChange = React.useCallback(function (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ): void {
-    props.onTemplateChange(e.target.value as FaqTemplateId);
-  }, [props.onTemplateChange]);
-
-  // Build template options
-  const templateOptions: React.ReactNode[] = [];
-  ALL_FAQ_TEMPLATE_IDS.forEach(function (templateId) {
-    templateOptions.push(
-      React.createElement("option", { key: templateId, value: templateId }, getFaqTemplateDisplayName(templateId))
-    );
-  });
-
-  // Build layout options
-  const layoutOptions: React.ReactNode[] = [];
+  // ── Layout chips ──
+  var layoutChips: React.ReactNode[] = [];
   ALL_FAQ_LAYOUTS.forEach(function (layout) {
-    layoutOptions.push(
-      React.createElement("option", { key: layout, value: layout }, getFaqLayoutDisplayName(layout))
+    var isActive = props.currentLayout === layout;
+    var chipClass = isActive
+      ? styles.chip + " " + styles.chipActive
+      : styles.chip;
+
+    layoutChips.push(
+      React.createElement("button", {
+        key: layout,
+        className: chipClass,
+        type: "button",
+        onClick: function (): void { props.onLayoutChange(layout); },
+        "aria-pressed": isActive,
+      }, getFaqLayoutDisplayName(layout))
     );
   });
 
-  // Build accordion style chips (only shown when layout is accordion)
-  const accordionChips: React.ReactNode[] = [];
-  if (props.currentLayout === "accordion") {
-    ALL_ACCORDION_STYLES.forEach(function (style) {
-      const isActive = props.currentAccordionStyle === style;
-      const chipClass = isActive
-        ? styles.styleChip + " " + styles.styleChipActive
-        : styles.styleChip;
+  // ── Template chips with color swatch ──
+  var templateChips: React.ReactNode[] = [];
+  ALL_FAQ_TEMPLATE_IDS.forEach(function (templateId) {
+    var isActive = props.currentTemplate === templateId;
+    var template = getFaqTemplateById(templateId);
+    var primaryColor = template ? template.colors.primary : "#0078D4";
+    var chipClass = isActive
+      ? styles.templateChip + " " + styles.templateChipActive
+      : styles.templateChip;
 
-      accordionChips.push(
-        React.createElement(
-          "button",
-          {
-            key: style,
-            className: chipClass,
-            type: "button",
-            onClick: function (): void { props.onAccordionStyleChange(style); },
-            "aria-pressed": isActive,
-          },
-          getAccordionStyleDisplayName(style)
-        )
-      );
-    });
-  }
+    templateChips.push(
+      React.createElement("button", {
+        key: templateId,
+        className: chipClass,
+        type: "button",
+        onClick: function (): void { props.onTemplateChange(templateId); },
+        "aria-pressed": isActive,
+      },
+        React.createElement("span", {
+          className: styles.templateSwatch,
+          style: { backgroundColor: primaryColor },
+        }),
+        getFaqTemplateDisplayName(templateId)
+      )
+    );
+  });
 
-  return React.createElement(
-    "div",
-    { className: styles.demoBar, role: "toolbar", "aria-label": "Demo controls" },
-    // DEMO badge
-    React.createElement("span", { className: styles.demoBadge }, "DEMO"),
-    // Template dropdown
-    React.createElement(
-      "label",
-      { className: styles.demoLabel },
-      "Template:",
-      React.createElement(
-        "select",
-        {
-          className: styles.demoSelect,
-          value: props.currentTemplate,
-          onChange: handleTemplateChange,
-        },
-        templateOptions
-      )
-    ),
-    // Layout dropdown
-    React.createElement(
-      "label",
-      { className: styles.demoLabel },
-      "Layout:",
-      React.createElement(
-        "select",
-        {
-          className: styles.demoSelect,
-          value: props.currentLayout,
-          onChange: handleLayoutChange,
-        },
-        layoutOptions
-      )
-    ),
-    // Accordion style chips
-    accordionChips.length > 0
-      ? React.createElement(
-          "div",
-          { className: styles.styleChips },
-          React.createElement("span", { className: styles.styleChipsLabel }, "Style:"),
-          accordionChips
-        )
-      : undefined,
-    // Item count badge
-    React.createElement(
-      "span",
-      { className: styles.itemCountBadge },
-      String(props.itemCount) + " items"
-    ),
-    // Exit Demo button
-    React.createElement(
-      "button",
-      {
+  // ── Accordion style chips (always shown) ──
+  var accordionChips: React.ReactNode[] = [];
+  ALL_ACCORDION_STYLES.forEach(function (style) {
+    var isActive = props.currentAccordionStyle === style;
+    var chipClass = isActive
+      ? styles.chip + " " + styles.chipActive
+      : styles.chip;
+
+    accordionChips.push(
+      React.createElement("button", {
+        key: style,
+        className: chipClass,
+        type: "button",
+        onClick: function (): void { props.onAccordionStyleChange(style); },
+        "aria-pressed": isActive,
+      }, getAccordionStyleDisplayName(style))
+    );
+  });
+
+  return React.createElement("div", {
+    className: styles.demoBar,
+    role: "toolbar",
+    "aria-label": "FAQ demo controls",
+  },
+    // ── Top row: badge + title + item count + exit ──
+    React.createElement("div", { className: styles.demoBarTopRow },
+      React.createElement("span", { className: styles.demoBadge }, "DEMO"),
+      React.createElement("span", { className: styles.demoTitle }, "HyperFAQ Demo Panel"),
+      React.createElement("span", { className: styles.itemCountBadge },
+        String(props.itemCount) + " items"
+      ),
+      React.createElement("button", {
         className: styles.exitButton,
         type: "button",
         onClick: props.onExitDemo,
       },
-      React.createElement("i", { className: "ms-Icon ms-Icon--Cancel", "aria-hidden": "true" }),
-      " Exit Demo"
+        React.createElement("i", { className: "ms-Icon ms-Icon--Cancel", "aria-hidden": "true" }),
+        " Exit Demo"
+      )
+    ),
+
+    // ── Layout section ──
+    React.createElement("div", { className: styles.demoSection },
+      React.createElement("span", { className: styles.sectionLabel }, "Layout:"),
+      React.createElement("div", { className: styles.chipGroup }, layoutChips)
+    ),
+
+    // ── Template section ──
+    React.createElement("div", { className: styles.demoSection },
+      React.createElement("span", { className: styles.sectionLabel }, "Theme:"),
+      React.createElement("div", { className: styles.chipGroup }, templateChips)
+    ),
+
+    // ── Accordion style section ──
+    React.createElement("div", { className: styles.demoSection },
+      React.createElement("span", { className: styles.sectionLabel }, "Style:"),
+      React.createElement("div", { className: styles.chipGroup }, accordionChips)
     )
   );
 };

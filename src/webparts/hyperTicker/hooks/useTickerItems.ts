@@ -39,10 +39,12 @@ export function useTickerItems(options: UseTickerItemsOptions): UseTickerItemsRe
   // Manual items from web part properties
   const manualItems = parseTickerItems(options.manualItemsJson);
 
-  // SP list items
+  // SP list items — only fetch when a real list name is configured.
+  // Passing a dummy name like "__disabled__" would trigger a real SP API call
+  // that fails with 404 and can cause "Something went wrong" on the page.
   const listEnabled = options.listName.length > 0;
   const listResult = useListItems({
-    listName: listEnabled ? options.listName : "__disabled__",
+    listName: listEnabled ? options.listName : "",
     filter: options.listFilter || undefined,
     top: 50,
     cacheTTL: 60,
@@ -50,7 +52,7 @@ export function useTickerItems(options: UseTickerItemsOptions): UseTickerItemsRe
 
   // Map SP list items to ticker items
   const listTickerItems: ITickerItem[] = [];
-  if (listEnabled && !listResult.loading) {
+  if (listEnabled && !listResult.loading && !listResult.error) {
     listResult.items.forEach(function (item) {
       listTickerItems.push(mapListItemToTickerItem(
         item as unknown as Record<string, unknown>,

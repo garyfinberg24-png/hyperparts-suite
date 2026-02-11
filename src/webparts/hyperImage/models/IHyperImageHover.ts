@@ -15,6 +15,7 @@ export enum HoverEffect {
   SlideReveal = "slideReveal",
   ShineSweep = "shineSweep",
   Tilt3d = "tilt3d",
+  Flip = "flip",
 }
 
 /** Property pane dropdown options */
@@ -32,4 +33,5 @@ export var HOVER_EFFECT_OPTIONS = [
   { key: HoverEffect.SlideReveal, text: "Slide Reveal" },
   { key: HoverEffect.ShineSweep, text: "Shine Sweep" },
   { key: HoverEffect.Tilt3d, text: "Tilt 3D" },
+  { key: HoverEffect.Flip, text: "Flip (Click)" },
 ];

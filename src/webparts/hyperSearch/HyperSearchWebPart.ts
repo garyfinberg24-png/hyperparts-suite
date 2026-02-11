@@ -64,6 +64,14 @@ export default class HyperSearchWebPart extends BaseHyperWebPart<IHyperSearchWeb
       ...this.properties,
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
+      onWizardComplete: (result: Record<string, unknown>): void => {
+        // Apply wizard result to web part properties
+        var propsRecord = this.properties as unknown as Record<string, unknown>;
+        Object.keys(result).forEach((key: string): void => {
+          propsRecord[key] = result[key];
+        });
+        this.render();
+      },
     };
     var element: React.ReactElement<IHyperSearchComponentProps> =
       React.createElement(HyperSearch, componentProps);

@@ -139,8 +139,24 @@ export default class HyperBirthdaysWebPart extends BaseHyperWebPart<IHyperBirthd
     if (this.properties.photoSize === undefined) {
       this.properties.photoSize = 48;
     }
+    if (this.properties.useSampleData === undefined) {
+      this.properties.useSampleData = true;
+    }
     if (this.properties.showWizardOnInit === undefined) {
       this.properties.showWizardOnInit = true;
+    }
+
+    // When sample data is on, enable all celebration types by default
+    if (this.properties.useSampleData) {
+      if (this.properties.enableWeddings === false && this.properties.enableChildBirth === false
+        && this.properties.enableGraduation === false && this.properties.enableRetirement === false
+        && this.properties.enablePromotion === false) {
+        this.properties.enableWeddings = true;
+        this.properties.enableChildBirth = true;
+        this.properties.enableGraduation = true;
+        this.properties.enableRetirement = true;
+        this.properties.enablePromotion = true;
+      }
     }
   }
 
@@ -185,6 +201,9 @@ export default class HyperBirthdaysWebPart extends BaseHyperWebPart<IHyperBirthd
                     { key: "thisMonth", text: "This Month" },
                     { key: "thisQuarter", text: "This Quarter" },
                   ],
+                }),
+                PropertyPaneToggle("useSampleData", {
+                  label: strings.UseSampleDataFieldLabel,
                 }),
                 PropertyPaneToggle("enableEntraId", {
                   label: strings.EnableEntraIdFieldLabel,

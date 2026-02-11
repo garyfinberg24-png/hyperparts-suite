@@ -1,16 +1,23 @@
-/* HyperProfile Demo Bar — light gray control panel above the web part */
+/* HyperProfile Demo Bar -- chip-style control panel above the web part */
 
 .demoBar {
   display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 8px 16px;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 16px;
   background: #f5f5f5;
   border: 1px solid #e0e0e0;
   border-radius: 6px 6px 0 0;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 13px;
   color: #333;
+}
+
+/* ── Header row: badge + mini profile + exit ── */
+.demoBarHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
@@ -37,44 +44,61 @@
   letter-spacing: 0.5px;
 }
 
-.controls {
+/* ── Mini profile preview ── */
+.miniProfile {
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex: 1;
-  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.controlLabel {
+.miniAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #0078d4;
+  color: #fff;
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
   font-size: 12px;
   font-weight: 600;
-  color: #555;
-  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.controlSelect {
-  padding: 4px 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 12px;
-  font-family: inherit;
-  background: #fff;
-  color: #333;
-  min-width: 160px;
-  cursor: pointer;
+.miniInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
 
-  &:focus {
-    outline: 2px solid #0078d4;
-    outline-offset: -1px;
-    border-color: #0078d4;
-  }
+.miniName {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323130;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
-  &:hover {
-    border-color: #999;
-  }
+.miniTitle {
+  font-size: 11px;
+  color: #605e5c;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.miniDept {
+  font-size: 11px;
+  color: #8a8886;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.headerSpacer {
+  flex: 1;
 }
 
 .exitButton {
@@ -98,5 +122,63 @@
   &:focus {
     outline: 2px solid #d13438;
     outline-offset: 2px;
+  }
+}
+
+/* ── Chip sections (Person, Template) ── */
+.chipSection {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chipSectionTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  white-space: nowrap;
+  min-width: 60px;
+}
+
+.chipGroup {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  padding: 3px 10px;
+  border: 1px solid #ccc;
+  border-radius: 14px;
+  background: #fff;
+  color: #333;
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+
+  &:hover {
+    border-color: #0078d4;
+    color: #0078d4;
+  }
+
+  &:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: -1px;
+  }
+}
+
+.chipActive {
+  background: #0078d4;
+  border-color: #0078d4;
+  color: #fff;
+  font-weight: 600;
+
+  &:hover {
+    background: #106ebe;
+    border-color: #106ebe;
+    color: #fff;
   }
 }

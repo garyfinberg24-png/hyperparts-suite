@@ -315,6 +315,65 @@
   font-size: 16px;
 }
 
+// ── CTA Button Animations ──
+:global {
+  @keyframes hyperCtaFadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @keyframes hyperCtaBounceIn {
+    0% { opacity: 0; transform: scale(0.3); }
+    50% { opacity: 1; transform: scale(1.05); }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+  }
+  @keyframes hyperCtaSlideUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes hyperCtaSlideLeft {
+    0% { opacity: 0; transform: translateX(-20px); }
+    100% { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes hyperCtaPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+  @keyframes hyperCtaShake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+    20%, 40%, 60%, 80% { transform: translateX(4px); }
+  }
+  @keyframes hyperCtaGlow {
+    0% { box-shadow: 0 0 5px rgba(0, 120, 212, 0.2); }
+    50% { box-shadow: 0 0 20px rgba(0, 120, 212, 0.6); }
+    100% { box-shadow: 0 0 5px rgba(0, 120, 212, 0.2); }
+  }
+}
+
+.ctaAnimFadeIn {
+  animation: hyperCtaFadeIn 0.6s ease both;
+}
+.ctaAnimBounceIn {
+  animation: hyperCtaBounceIn 0.8s ease both;
+}
+.ctaAnimSlideUp {
+  animation: hyperCtaSlideUp 0.5s ease both;
+}
+.ctaAnimSlideLeft {
+  animation: hyperCtaSlideLeft 0.5s ease both;
+}
+.ctaAnimPulse {
+  animation: hyperCtaPulse 2s ease infinite;
+}
+.ctaAnimShake {
+  animation: hyperCtaShake 0.5s ease both;
+}
+.ctaAnimGlow {
+  animation: hyperCtaGlow 2s ease infinite;
+}
+
 // ============================================================
 // COUNTDOWN (Step 2b)
 // ============================================================

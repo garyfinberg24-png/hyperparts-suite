@@ -24,6 +24,7 @@ import HyperBirthdaysGreetingCard from "./HyperBirthdaysGreetingCard";
 import HyperBirthdaysSelfService from "./HyperBirthdaysSelfService";
 import { getShiftedDate } from "../utils/weekendShift";
 import { getNextOccurrence } from "../utils/dateHelpers";
+import { SAMPLE_CELEBRATIONS } from "../utils/sampleData";
 import styles from "./HyperBirthdays.module.scss";
 
 export interface IHyperBirthdaysComponentProps extends IHyperBirthdaysWebPartProps {
@@ -108,23 +109,28 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Data source: sample data or live API
+  var useSample = props.useSampleData === true;
+
   const celebrationData = useCelebrationData({
-    enableEntraId: props.enableEntraId,
-    enableSpList: props.enableSpList,
-    spListName: props.spListName || "",
+    enableEntraId: useSample ? false : props.enableEntraId,
+    enableSpList: useSample ? false : props.enableSpList,
+    spListName: useSample ? "" : (props.spListName || ""),
     enabledTypes: enabledTypes,
     maxItems: props.maxItems || 50,
     cacheDuration: props.cacheDuration || 300,
   });
 
   const privacyOptOut = usePrivacyOptOut(
-    props.enablePrivacyOptOut,
+    useSample ? false : props.enablePrivacyOptOut,
     props.optOutListName || ""
   );
 
-  const visibleCelebrations = props.enablePrivacyOptOut
+  var liveCelebrations = props.enablePrivacyOptOut && !useSample
     ? privacyOptOut.filterOptedOut(celebrationData.celebrations)
     : celebrationData.celebrations;
+
+  const visibleCelebrations = useSample ? SAMPLE_CELEBRATIONS : liveCelebrations;
 
   // Weekend shift: adjust dates for celebrations on weekends
   const displayCelebrations = React.useMemo(function () {
@@ -165,7 +171,7 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
     return getUpcomingCelebrations(displayCelebrations, props.timeRange || "thisMonth");
   }, [displayCelebrations, props.timeRange]);
 
-  const isLoading = celebrationData.loading || privacyOptOut.loading;
+  const isLoading = !useSample && (celebrationData.loading || privacyOptOut.loading);
 
   // Wizard element — rendered in ALL code paths
   var wizardElement = React.createElement(HyperWizard, {
@@ -333,9 +339,26 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
       }, "\uD83D\uDCC5 " + strings.MyDatesLabel)
     : undefined;
 
+  // Sample data banner
+  var sampleBanner = useSample
+    ? React.createElement("div", {
+        style: {
+          background: "#fff3cd",
+          border: "1px solid #ffc107",
+          borderRadius: "4px",
+          padding: "6px 12px",
+          marginBottom: "8px",
+          fontSize: "12px",
+          color: "#856404",
+          textAlign: "center" as "center",
+        },
+      }, "Sample Data Mode \u2014 Showing 20 South African demo celebrations. Disable in web part settings.")
+    : undefined;
+
   return React.createElement(
     "div",
     { className: styles.birthdaysContainer },
+    sampleBanner,
     animationOverlay,
     React.createElement(HyperBirthdaysToolbar, {
       title: props.title || "Celebrations",

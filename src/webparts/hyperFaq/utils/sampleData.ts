@@ -1180,5 +1180,103 @@ export function getSampleFaqItems(): IFaqItem[] {
       modified: "2025-02-07T09:00:00Z",
       created: "2024-07-22T10:00:00Z",
     },
+    // ════════════════════════════════════════
+    // Rich Content Showcase (IDs 31-32) — demonstrates rich HTML formatting
+    // ════════════════════════════════════════
+    {
+      id: 31,
+      question: "What are the IT support SLA response times? (Rich Content Demo)",
+      answer: "<h3>Service Level Agreement Overview</h3>" +
+        "<p>The IT Help Desk operates under strict response time commitments based on <strong>ticket severity</strong>:</p>" +
+        "<table>" +
+        "<tr><th>Severity</th><th>Definition</th><th>Response Time</th><th>Resolution Target</th><th>Example</th></tr>" +
+        "<tr><td style=\"color:#c50f1f;font-weight:bold\">P1 - Critical</td><td>Complete business outage</td><td>15 minutes</td><td>2 hours</td><td>Email down for entire company</td></tr>" +
+        "<tr><td style=\"color:#d83b01;font-weight:bold\">P2 - High</td><td>Major feature impaired</td><td>30 minutes</td><td>4 hours</td><td>VPN not connecting for a department</td></tr>" +
+        "<tr><td style=\"color:#ffb900;font-weight:bold\">P3 - Medium</td><td>Minor feature impaired</td><td>2 hours</td><td>1 business day</td><td>Printer not working</td></tr>" +
+        "<tr><td style=\"color:#107c10;font-weight:bold\">P4 - Low</td><td>Cosmetic or informational</td><td>4 hours</td><td>3 business days</td><td>Software feature request</td></tr>" +
+        "</table>" +
+        "<h3>Monthly Performance Dashboard</h3>" +
+        "<p>Our IT team consistently exceeds targets. Here are the latest metrics:</p>" +
+        "<table>" +
+        "<tr><th>Metric</th><th>Target</th><th>Actual (Jan 2025)</th><th>Status</th></tr>" +
+        "<tr><td>First Response Time (P1)</td><td>&lt; 15 min</td><td>8 min avg</td><td>&#x2705; Exceeds</td></tr>" +
+        "<tr><td>First Response Time (P2)</td><td>&lt; 30 min</td><td>22 min avg</td><td>&#x2705; Meets</td></tr>" +
+        "<tr><td>Ticket Resolution Rate</td><td>&gt; 95%</td><td>97.3%</td><td>&#x2705; Exceeds</td></tr>" +
+        "<tr><td>Customer Satisfaction (CSAT)</td><td>&gt; 4.5/5.0</td><td>4.7/5.0</td><td>&#x2705; Exceeds</td></tr>" +
+        "<tr><td>First Call Resolution</td><td>&gt; 70%</td><td>74%</td><td>&#x2705; Meets</td></tr>" +
+        "</table>" +
+        "<blockquote><strong>Did you know?</strong> You can track the status of your support tickets in real-time at <a href=\"#\">https://serviceportal.contoso.com/my-tickets</a>. Enable email notifications to get updates as your ticket progresses.</blockquote>" +
+        "<h3>Escalation Path</h3>" +
+        "<p>If you feel your ticket is not being addressed in a timely manner:</p>" +
+        "<ol>" +
+        "<li><strong>Level 1:</strong> Contact your assigned technician directly (listed on your ticket)</li>" +
+        "<li><strong>Level 2:</strong> Email the IT Manager at <a href=\"#\">itmanager@contoso.com</a></li>" +
+        "<li><strong>Level 3:</strong> Contact the CTO office at <a href=\"#\">cto-office@contoso.com</a> (for P1/P2 only)</li>" +
+        "</ol>" +
+        "<hr>" +
+        "<p><em>Last updated: February 2025. SLA metrics are reviewed quarterly by the IT Governance Board.</em></p>",
+      category: "IT Support",
+      viewCount: 412,
+      helpfulYes: 56,
+      helpfulNo: 2,
+      relatedIds: [1, 4],
+      tags: "SLA, support, response time, ticket, help desk, metrics",
+      modified: "2025-02-08T10:00:00Z",
+      created: "2025-01-15T09:00:00Z",
+    },
+    {
+      id: 32,
+      question: "What is the company's travel and expense policy? (Rich Content Demo)",
+      answer: "<h3>Travel Booking Process</h3>" +
+        "<p>All business travel must be booked through our corporate travel platform, <strong>Concur</strong>:</p>" +
+        "<ol>" +
+        "<li>Log in at <a href=\"#\">https://concur.contoso.com</a></li>" +
+        "<li>Create a <strong>Travel Request</strong> with estimated costs (required for trips over $500)</li>" +
+        "<li>Get manager approval before booking</li>" +
+        "<li>Book through Concur to access negotiated corporate rates</li>" +
+        "</ol>" +
+        "<h3>Expense Limits by Category</h3>" +
+        "<table>" +
+        "<tr><th>Category</th><th>Domestic (per day)</th><th>International (per day)</th><th>Receipts Required?</th></tr>" +
+        "<tr><td>Airfare</td><td>Economy class</td><td>Economy (Business for 6+ hrs)</td><td>Yes, always</td></tr>" +
+        "<tr><td>Hotel</td><td>$200/night</td><td>$300/night</td><td>Yes, always</td></tr>" +
+        "<tr><td>Meals</td><td>$75/day</td><td>$100/day</td><td>Yes, over $25</td></tr>" +
+        "<tr><td>Ground Transport</td><td>$50/day</td><td>$75/day</td><td>Yes, over $25</td></tr>" +
+        "<tr><td>Incidentals</td><td>$25/day</td><td>$35/day</td><td>No</td></tr>" +
+        "</table>" +
+        "<blockquote><strong>Pro tip:</strong> Book hotels and flights at least <strong>14 days in advance</strong> to get the best rates. Late bookings require VP-level approval if they exceed the standard limits by more than 25%.</blockquote>" +
+        "<h3>Expense Report Submission</h3>" +
+        "<ol>" +
+        "<li>Submit expense reports within <strong>10 business days</strong> of trip completion</li>" +
+        "<li>Attach all required receipts (photo or scan)</li>" +
+        "<li>Categorize each expense correctly in Concur</li>" +
+        "<li>Add a brief business purpose for each line item</li>" +
+        "<li>Submit for manager approval</li>" +
+        "</ol>" +
+        "<h3>Reimbursement Timeline</h3>" +
+        "<ul>" +
+        "<li><strong>Corporate card charges:</strong> Automatically reconciled, no reimbursement needed</li>" +
+        "<li><strong>Out-of-pocket expenses:</strong> Reimbursed within <strong>5 business days</strong> of approval</li>" +
+        "<li><strong>Mileage reimbursement:</strong> $0.67/mile (2025 IRS rate), submitted via Concur mileage tracker</li>" +
+        "</ul>" +
+        "<h3>Non-Reimbursable Expenses</h3>" +
+        "<ul>" +
+        "<li>Alcohol (unless at a client dinner approved by VP)</li>" +
+        "<li>Personal entertainment or sightseeing</li>" +
+        "<li>Spouse or partner travel expenses</li>" +
+        "<li>First-class airfare (without pre-approval)</li>" +
+        "<li>Parking or traffic fines</li>" +
+        "</ul>" +
+        "<hr>" +
+        "<p><em>For questions about travel policy exceptions, contact Finance at <a href=\"#\">finance@contoso.com</a> or your department's Finance Business Partner.</em></p>",
+      category: "Benefits",
+      viewCount: 623,
+      helpfulYes: 84,
+      helpfulNo: 3,
+      relatedIds: [18, 20],
+      tags: "travel, expense, Concur, reimbursement, hotel, airfare, policy",
+      modified: "2025-02-06T14:00:00Z",
+      created: "2025-01-10T09:00:00Z",
+    },
   ];
 }

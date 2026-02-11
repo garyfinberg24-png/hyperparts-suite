@@ -7,6 +7,7 @@ export interface IBorderConfig {
   style: string;
   radius: number;
   padding: number;
+  paddingBottom?: number;
 }
 
 /** Shadow presets */
@@ -55,4 +56,52 @@ export var BORDER_STYLE_OPTIONS = [
   { key: "double", text: "Double" },
   { key: "groove", text: "Groove" },
   { key: "ridge", text: "Ridge" },
+];
+
+/* ── Border Style Presets ── */
+
+/** Predefined border style combinations */
+export enum BorderStylePreset {
+  None = "none",
+  ThinSolid = "thinSolid",
+  ThickSolid = "thickSolid",
+  Rounded = "rounded",
+  Shadow = "shadow",
+  Polaroid = "polaroid",
+  Film = "film",
+  Frame = "frame",
+  Outline = "outline",
+  DoubleFrame = "doubleFrame",
+}
+
+/** Border preset config including optional shadow and paddingBottom overrides */
+export interface IBorderPresetConfig extends IBorderConfig {
+  shadow?: string;
+}
+
+/** Preset registry mapping each preset to its border config */
+export var BORDER_STYLE_PRESETS: Record<string, IBorderPresetConfig> = {};
+BORDER_STYLE_PRESETS[BorderStylePreset.None] = { width: 0, color: "#e1e1e1", style: "solid", radius: 0, padding: 0 };
+BORDER_STYLE_PRESETS[BorderStylePreset.ThinSolid] = { width: 1, color: "#e1e1e1", style: "solid", radius: 0, padding: 0 };
+BORDER_STYLE_PRESETS[BorderStylePreset.ThickSolid] = { width: 4, color: "#323130", style: "solid", radius: 0, padding: 0 };
+BORDER_STYLE_PRESETS[BorderStylePreset.Rounded] = { width: 2, color: "#e1e1e1", style: "solid", radius: 16, padding: 0 };
+BORDER_STYLE_PRESETS[BorderStylePreset.Shadow] = { width: 0, color: "#e1e1e1", style: "solid", radius: 8, padding: 0, shadow: "0 4px 16px rgba(0,0,0,0.15)" };
+BORDER_STYLE_PRESETS[BorderStylePreset.Polaroid] = { width: 0, color: "#ffffff", style: "solid", radius: 2, padding: 12, paddingBottom: 40 };
+BORDER_STYLE_PRESETS[BorderStylePreset.Film] = { width: 3, color: "#000000", style: "solid", radius: 0, padding: 8 };
+BORDER_STYLE_PRESETS[BorderStylePreset.Frame] = { width: 6, color: "#8b7355", style: "ridge", radius: 0, padding: 4 };
+BORDER_STYLE_PRESETS[BorderStylePreset.Outline] = { width: 2, color: "#0078d4", style: "dashed", radius: 8, padding: 0 };
+BORDER_STYLE_PRESETS[BorderStylePreset.DoubleFrame] = { width: 4, color: "#323130", style: "double", radius: 0, padding: 0 };
+
+/** Property pane dropdown: border style presets */
+export var BORDER_STYLE_PRESET_OPTIONS = [
+  { key: BorderStylePreset.None, text: "None" },
+  { key: BorderStylePreset.ThinSolid, text: "Thin Solid" },
+  { key: BorderStylePreset.ThickSolid, text: "Thick Solid" },
+  { key: BorderStylePreset.Rounded, text: "Rounded" },
+  { key: BorderStylePreset.Shadow, text: "Shadow" },
+  { key: BorderStylePreset.Polaroid, text: "Polaroid" },
+  { key: BorderStylePreset.Film, text: "Film" },
+  { key: BorderStylePreset.Frame, text: "Frame" },
+  { key: BorderStylePreset.Outline, text: "Outline" },
+  { key: BorderStylePreset.DoubleFrame, text: "Double Frame" },
 ];

@@ -10,6 +10,9 @@ import type { ImageLayout } from "./IHyperImageLayout";
 
 export interface IHyperImageWebPartProps extends IBaseHyperWebPartProps {
 
+  /* ── Wizard ── */
+  wizardCompleted: boolean;
+
   /* ── Sample Data ── */
   useSampleData: boolean;
 
@@ -39,6 +42,11 @@ export interface IHyperImageWebPartProps extends IBaseHyperWebPartProps {
 
   /* ── Hover ── */
   hoverEffect: HoverEffect;
+
+  /* ── Flip Back (only when hoverEffect === "flip") ── */
+  flipBackTitle: string;
+  flipBackText: string;
+  flipBackBgColor: string;
 
   /* ── Text / Caption ── */
   /** JSON-serialized ITextOverlay (placement: overlay or below) */

@@ -1,8 +1,17 @@
 @import "~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss";
 
 .faqContainer {
-  padding: 16px;
+  padding: 20px;
   font-family: $ms-font-family-fallbacks;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+// ── Themed container: uses CSS custom properties from template ──
+.faqThemed {
+  background-color: var(--faq-background, #ffffff);
+  color: var(--faq-text, $ms-color-neutralPrimary);
+  font-family: var(--faq-font-family, $ms-font-family-fallbacks);
+  border-radius: var(--faq-border-radius, 0);
 }
 
 .faqTitle {
@@ -10,6 +19,10 @@
   font-weight: $ms-font-weight-semibold;
   color: $ms-color-neutralPrimary;
   margin: 0 0 16px 0;
+}
+
+.faqThemed .faqTitle {
+  color: var(--faq-text, $ms-color-neutralPrimary);
 }
 
 .toolbar {
@@ -76,6 +89,7 @@
 
 .faqList {
   margin-top: 8px;
+  counter-reset: faqCounter;
 }
 
 // ── Edit Bar ──
@@ -215,59 +229,7 @@
   }
 }
 
-// ── Demo Bar ──
-
-.demoBar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 10px 20px;
-  background: #1b1b1b;
-  color: $ms-color-white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  z-index: 10000;
-  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.demoBarLabel {
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.demoBarSelect {
-  padding: 4px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  color: $ms-color-white;
-  font-size: 12px;
-  cursor: pointer;
-  outline: none;
-  &:focus {
-    border-color: $ms-color-themePrimary;
-  }
-}
-
-.demoBarBtn {
-  padding: 6px 16px;
-  border: 1px solid $ms-color-white;
-  border-radius: 4px;
-  background: transparent;
-  color: $ms-color-white;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s;
-  &:hover {
-    background: rgba(255, 255, 255, 0.15);
-  }
-}
+// (Demo bar styles are in HyperFaqDemoBar.module.scss)
 
 // ── Chevron (shared) ──
 
@@ -961,6 +923,199 @@
   transition: background 0.15s;
   &:hover {
     background: $ms-color-themeDark;
+  }
+}
+
+// ════════════════════════════════════════
+// TEMPLATE THEME OVERRIDES (CSS custom properties)
+// ════════════════════════════════════════
+
+.faqThemed {
+  // ── Toolbar ──
+  .askGuruButton {
+    background-color: var(--faq-primary, $ms-color-themePrimary);
+    &:hover { filter: brightness(0.9); }
+  }
+
+  .expandAllBtn {
+    border-color: var(--faq-border, $ms-color-neutralTertiaryAlt);
+    color: var(--faq-text, $ms-color-neutralPrimary);
+    &:hover {
+      border-color: var(--faq-primary, $ms-color-themePrimary);
+      color: var(--faq-primary, $ms-color-themePrimary);
+    }
+  }
+
+  // ── Cards ──
+  .faqCard {
+    background: var(--faq-surface, $ms-color-white);
+    border-color: var(--faq-border, $ms-color-neutralLight);
+    border-radius: var(--faq-border-radius, 8px);
+    box-shadow: var(--faq-card-shadow, none);
+    &:hover { border-color: var(--faq-primary, $ms-color-themePrimary); }
+  }
+
+  .faqCardExpanded {
+    background: var(--faq-surface, $ms-color-white);
+    border-color: var(--faq-primary, $ms-color-themePrimary);
+    box-shadow: var(--faq-card-shadow, 0 4px 20px rgba(0, 0, 0, 0.1));
+  }
+
+  .faqCardCategory {
+    background: var(--faq-surface, $ms-color-themeLighter);
+    color: var(--faq-primary, $ms-color-themeDark);
+  }
+
+  .faqCardQuestion {
+    color: var(--faq-text, $ms-color-neutralPrimary);
+  }
+
+  .faqCardPreview, .faqCardViews {
+    color: var(--faq-text-secondary, $ms-color-neutralSecondary);
+  }
+
+  .faqCardAnswer {
+    color: var(--faq-text, $ms-color-neutralPrimary);
+    border-top-color: var(--faq-border, $ms-color-neutralLight);
+  }
+
+  // ── Tabs ──
+  .tabBar {
+    border-bottom-color: var(--faq-border, $ms-color-neutralLight);
+  }
+
+  .tab {
+    color: var(--faq-text-secondary, $ms-color-neutralSecondary);
+    &:hover { color: var(--faq-primary, $ms-color-themePrimary); }
+  }
+
+  .tabActive {
+    color: var(--faq-primary, $ms-color-themePrimary);
+    border-bottom-color: var(--faq-primary, $ms-color-themePrimary);
+  }
+
+  // ── Compact ──
+  .compactLayout {
+    border-color: var(--faq-border, $ms-color-neutralLight);
+  }
+
+  .compactQuestion {
+    color: var(--faq-text, $ms-color-neutralPrimary);
+  }
+
+  .compactCategory {
+    background: var(--faq-surface, $ms-color-neutralLighter);
+    color: var(--faq-text-secondary, $ms-color-neutralSecondary);
+  }
+
+  // ── Timeline ──
+  .timelineLine {
+    background: var(--faq-border, $ms-color-themeLighter);
+  }
+
+  .timelineDot {
+    background: var(--faq-primary, $ms-color-themePrimary);
+    box-shadow: 0 0 0 2px var(--faq-primary, $ms-color-themePrimary);
+  }
+
+  .timelineCard {
+    background: var(--faq-surface, $ms-color-white);
+    border-color: var(--faq-border, $ms-color-neutralLight);
+    &:hover { border-color: var(--faq-primary, $ms-color-themePrimary); }
+  }
+
+  .timelineCardExpanded {
+    background: var(--faq-surface, $ms-color-white);
+    border-color: var(--faq-primary, $ms-color-themePrimary);
+  }
+
+  .timelineCategory {
+    background: var(--faq-surface, $ms-color-themeLighter);
+    color: var(--faq-primary, $ms-color-themeDark);
+  }
+
+  .timelineQuestion, .timelineAnswer {
+    color: var(--faq-text, $ms-color-neutralPrimary);
+  }
+
+  // ── Masonry ──
+  .masonryCard {
+    background: var(--faq-surface, $ms-color-white);
+    border-color: var(--faq-border, $ms-color-neutralLight);
+    border-radius: var(--faq-border-radius, 8px);
+    &:hover { border-color: var(--faq-primary, $ms-color-themePrimary); }
+  }
+
+  .masonryCategory {
+    background: var(--faq-surface, $ms-color-themeLighter);
+    color: var(--faq-primary, $ms-color-themeDark);
+  }
+
+  .masonryQuestion {
+    color: var(--faq-text, $ms-color-neutralPrimary);
+  }
+
+  .masonryPreview {
+    color: var(--faq-text-secondary, $ms-color-neutralSecondary);
+  }
+
+  .masonryAnswer {
+    color: var(--faq-text, $ms-color-neutralPrimary);
+    border-top-color: var(--faq-border, $ms-color-neutralLight);
+  }
+
+  // ── Magazine ──
+  .magHero {
+    background: linear-gradient(135deg, var(--faq-primary, #667eea) 0%, var(--faq-secondary, #764ba2) 100%);
+  }
+
+  .magCard {
+    background: var(--faq-surface, $ms-color-white);
+    border-color: var(--faq-border, $ms-color-neutralLight);
+    border-radius: var(--faq-border-radius, 8px);
+    &:hover { border-color: var(--faq-primary, $ms-color-themePrimary); }
+  }
+
+  .magCardCategory {
+    background: var(--faq-surface, $ms-color-themeLighter);
+    color: var(--faq-primary, $ms-color-themeDark);
+  }
+
+  .magCardQuestion {
+    color: var(--faq-text, $ms-color-neutralPrimary);
+  }
+
+  .magCardPreview {
+    color: var(--faq-text-secondary, $ms-color-neutralSecondary);
+  }
+
+  // ── Knowledge Base ──
+  .kbSidebar, .kbPopularCard {
+    background: var(--faq-surface, $ms-color-white);
+    border-color: var(--faq-border, $ms-color-neutralLight);
+  }
+
+  .kbNavItemActive {
+    background: var(--faq-surface, $ms-color-themeLighterAlt);
+    color: var(--faq-primary, $ms-color-themePrimary);
+    border-left-color: var(--faq-primary, $ms-color-themePrimary);
+  }
+
+  .kbSectionTitle {
+    color: var(--faq-text, $ms-color-neutralPrimary);
+    border-bottom-color: var(--faq-border, $ms-color-neutralLight);
+  }
+
+  .kbContactBtn {
+    background: var(--faq-primary, $ms-color-themePrimary);
+    &:hover { filter: brightness(0.9); }
+  }
+
+  // ── Sample banner ──
+  .sampleBanner {
+    background: var(--faq-surface, #fff8e1);
+    border-color: var(--faq-border, #ffe082);
+    color: var(--faq-text-secondary, #795548);
   }
 }
 

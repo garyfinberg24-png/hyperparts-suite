@@ -164,5 +164,9 @@ define([], function () {
     V2QuietStartLabel: "Quiet Hours Start (HH:mm)",
     V2QuietEndLabel: "Quiet Hours End (HH:mm)",
     V2DigestLabel: "Digest Frequency",
+
+    // Wizard
+    ShowWizardOnInitLabel: "Show Setup Wizard on Init",
+    WizardCompletedLabel: "Wizard Completed",
   };
 });

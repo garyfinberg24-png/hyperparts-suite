@@ -44,6 +44,14 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
       isEditMode: this.displayMode === DisplayMode.Edit,
       siteUrl: this.context.pageContext.web.absoluteUrl,
       onConfigure: (): void => { this.context.propertyPane.open(); },
+      onWizardComplete: (result: Record<string, unknown>): void => {
+        this.properties.wizardCompleted = true;
+        // Apply wizard result props
+        Object.keys(result).forEach((key: string): void => {
+          (this.properties as unknown as Record<string, unknown>)[key] = result[key];
+        });
+        this.render();
+      },
     };
     var element: React.ReactElement<IHyperNavComponentProps> =
       React.createElement(HyperNav, props);

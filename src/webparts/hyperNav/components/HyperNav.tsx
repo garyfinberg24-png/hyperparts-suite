@@ -23,6 +23,7 @@ import { HyperNavSearchBar } from "./HyperNavSearchBar";
 import { HyperNavPinnedSection } from "./HyperNavPinnedSection";
 import { HyperNavGroupSection } from "./HyperNavGroupSection";
 import { HyperNavDemoBar } from "./HyperNavDemoBar";
+import WelcomeStep from "./wizard/WelcomeStep";
 import {
   CompactLayout,
   TilesLayout,
@@ -137,6 +138,29 @@ function groupLinks(
 
 const HyperNavInner: React.FC<IHyperNavComponentProps> = function (props) {
   var store = useHyperNavStore();
+
+  // ── Wizard state ──
+  var wizardState = React.useState(false);
+  var showWizard = wizardState[0];
+  var setShowWizard = wizardState[1];
+
+  React.useEffect(function () {
+    if (props.isEditMode && !props.wizardCompleted) {
+      setShowWizard(true);
+    }
+  }, [props.isEditMode, props.wizardCompleted]);
+
+  // Show wizard if not completed
+  if (showWizard) {
+    return React.createElement(WelcomeStep, {
+      onGetStarted: function (): void {
+        if (props.onWizardComplete) {
+          props.onWizardComplete({});
+        }
+        setShowWizard(false);
+      },
+    });
+  }
 
   // V2: Demo mode local overrides
   var demoLayoutState = React.useState<HyperNavLayoutMode>(props.layoutMode);

@@ -1,5 +1,12 @@
 import * as React from "react";
-import type { IHyperLinksWebPartProps, HyperLinksLayoutMode, HyperLinksBackgroundMode, IHyperLink } from "../models";
+import type {
+  IHyperLinksWebPartProps,
+  HyperLinksLayoutMode,
+  HyperLinksHoverEffect,
+  HyperLinksBorderRadius,
+  HyperLinksBackgroundMode,
+  IHyperLink,
+} from "../models";
 import { SAMPLE_LINKS } from "../models";
 import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton } from "../../../common/components";
 import { HyperWizard } from "../../../common/components/wizard/HyperWizard";
@@ -11,7 +18,9 @@ import { trackLinkClick } from "../utils/analyticsTracker";
 import { getPresetLinksById } from "../utils/linkPresets";
 import { stringifyLinks, stringifyGroups } from "../utils/linkParser";
 import { LINKS_WIZARD_CONFIG, buildStateFromProps } from "./wizard/linksWizardConfig";
+import WelcomeStep from "./wizard/WelcomeStep";
 import HyperLinksSearchBar from "./HyperLinksSearchBar";
+import HyperLinksDemoBar from "./HyperLinksDemoBar";
 import { HyperLinksGroupSection } from "./HyperLinksGroupSection";
 import {
   CompactLayout,
@@ -47,11 +56,13 @@ function getLayoutComponent(mode: HyperLinksLayoutMode): React.FC<ILinksLayoutPr
   }
 }
 
-/** Build shared layout props */
+/** Build shared layout props — uses effective values that account for runtime overrides */
 function buildLayoutProps(
   displayLinks: IHyperLink[],
   handleLinkClick: (link: IHyperLink) => void,
-  props: IHyperLinksComponentProps
+  props: IHyperLinksComponentProps,
+  effectiveHoverEffect: HyperLinksHoverEffect,
+  effectiveBorderRadius: HyperLinksBorderRadius
 ): ILinksLayoutProps {
   return {
     links: displayLinks,
@@ -62,8 +73,8 @@ function buildLayoutProps(
     iconSize: props.iconSize || "medium",
     tileSize: props.tileSize || "medium",
     gridColumns: props.gridColumns || 4,
-    hoverEffect: props.hoverEffect || "lift",
-    borderRadius: props.borderRadius || "medium",
+    hoverEffect: effectiveHoverEffect,
+    borderRadius: effectiveBorderRadius,
     compactAlignment: props.compactAlignment || "left",
     enableColorCustomization: props.enableColorCustomization,
     textColor: props.textColor || undefined,
@@ -141,11 +152,22 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
   // Store for group expand/collapse + wizard + demo mode
   const isDemoMode = useHyperLinksStore(function (s) { return s.isDemoMode; });
   const toggleDemoMode = useHyperLinksStore(function (s) { return s.toggleDemoMode; });
+  const setDemoMode = useHyperLinksStore(function (s) { return s.setDemoMode; });
   const expandedGroupIds = useHyperLinksStore(function (s) { return s.expandedGroupIds; });
   const toggleGroup = useHyperLinksStore(function (s) { return s.toggleGroup; });
   const isWizardOpen = useHyperLinksStore(function (s) { return s.isWizardOpen; });
   const openWizard = useHyperLinksStore(function (s) { return s.openWizard; });
   const closeWizard = useHyperLinksStore(function (s) { return s.closeWizard; });
+
+  // Runtime overrides from DemoBar
+  const runtimeLayout = useHyperLinksStore(function (s) { return s.runtimeLayout; });
+  const runtimeHoverEffect = useHyperLinksStore(function (s) { return s.runtimeHoverEffect; });
+  const runtimeBorderRadius = useHyperLinksStore(function (s) { return s.runtimeBorderRadius; });
+
+  // Compute effective values: runtime override > prop value > default
+  var effectiveLayout: HyperLinksLayoutMode = runtimeLayout || props.layoutMode || "grid";
+  var effectiveHoverEffect: HyperLinksHoverEffect = runtimeHoverEffect || props.hoverEffect || "lift";
+  var effectiveBorderRadius: HyperLinksBorderRadius = runtimeBorderRadius || props.borderRadius || "medium";
 
   // Resolve effective links/groups (considering demo mode and presets)
   var effectiveLinksJson = resolveLinksJson(
@@ -237,10 +259,10 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
     initialStateOverride: wizardStateOverride,
   });
 
-  // Demo mode toolbar: visible when useSampleData is enabled
-  var demoToolbar: React.ReactElement | undefined;
-  if (props.useSampleData) {
-    demoToolbar = React.createElement("div", {
+  // Demo mode toggle: small button to activate demo when useSampleData is enabled
+  var demoToggle: React.ReactElement | undefined;
+  if (props.useSampleData && !isDemoMode) {
+    demoToggle = React.createElement("div", {
       style: {
         display: "flex",
         alignItems: "center",
@@ -248,42 +270,59 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
         marginBottom: "4px",
       },
     },
-      // Demo mode toggle button
       React.createElement("button", {
-        onClick: toggleDemoMode,
+        onClick: function () { toggleDemoMode(); },
+        type: "button",
         style: {
           display: "inline-flex",
           alignItems: "center",
           gap: "6px",
           padding: "4px 12px",
-          border: isDemoMode ? "1px solid #0078d4" : "1px solid #c8c6c4",
+          border: "1px solid #c8c6c4",
           borderRadius: "4px",
-          background: isDemoMode ? "#e1effa" : "#ffffff",
-          color: isDemoMode ? "#0078d4" : "#605e5c",
+          background: "#ffffff",
+          color: "#605e5c",
           fontSize: "12px",
           fontWeight: 600,
           cursor: "pointer",
           transition: "all 0.15s ease",
         },
-      }, isDemoMode ? "\uD83C\uDFAD Demo ON" : "\uD83C\uDFAD Demo"),
-      // Demo mode indicator
-      isDemoMode
-        ? React.createElement("span", {
-            style: {
-              fontSize: "11px",
-              color: "#0078d4",
-              fontStyle: "italic",
-            },
-          }, "Showing sample data")
-        : undefined,
-      // Spacer
+      }, "\uD83C\uDFAD Demo"),
       React.createElement("span", { style: { flex: 1 } }),
-      // Configure button (visible outside edit mode when demo is enabled)
       React.createElement("button", {
         onClick: handleConfigureClick,
         className: styles.configureButton,
+        type: "button",
         style: { padding: "4px 12px", fontSize: "12px" },
       }, "\u2699\uFE0F Configure")
+    );
+  }
+
+  // DemoBar component: shown when demo mode is active
+  // Note: linkCount uses audienceLinks which is computed earlier in the render
+  var demoBarElement: React.ReactElement | undefined;
+  if (isDemoMode) {
+    demoBarElement = React.createElement(HyperLinksDemoBar, {
+      currentLayout: effectiveLayout,
+      currentHoverEffect: effectiveHoverEffect,
+      currentBorderRadius: effectiveBorderRadius,
+      linkCount: audienceLinks.length,
+      onExitDemo: function () { setDemoMode(false); },
+    });
+  }
+
+  // Toolbar to render: either the full DemoBar or the small toggle
+  var demoToolbar: React.ReactElement | undefined = demoBarElement || demoToggle;
+
+  // WelcomeStep: show on first add when in edit mode and wizard hasn't been completed
+  if (props.isEditMode && props.showWizardOnInit && !isWizardOpen) {
+    return React.createElement(
+      "div",
+      { className: styles.hyperLinks },
+      React.createElement(WelcomeStep, {
+        onGetStarted: function () { openWizard(); },
+      }),
+      wizardElement
     );
   }
 
@@ -324,7 +363,7 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
     );
   }
 
-  const LayoutComponent = getLayoutComponent(props.layoutMode);
+  const LayoutComponent = getLayoutComponent(effectiveLayout);
 
   // Background wrapper helper
   var bgMode = props.backgroundMode || "none";
@@ -403,7 +442,7 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
           },
           React.createElement(
             LayoutComponent,
-            buildLayoutProps(visibleLinks, handleLinkClick, props)
+            buildLayoutProps(visibleLinks, handleLinkClick, props, effectiveHoverEffect, effectiveBorderRadius)
           )
         )
       );
@@ -446,7 +485,7 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
   var layoutContent = React.createElement(
     "div",
     { className: styles.content },
-    React.createElement(LayoutComponent, buildLayoutProps(displayLinks, handleLinkClick, props))
+    React.createElement(LayoutComponent, buildLayoutProps(displayLinks, handleLinkClick, props, effectiveHoverEffect, effectiveBorderRadius))
   );
 
   // Wrap in background container if needed

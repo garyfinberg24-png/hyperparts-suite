@@ -18,10 +18,17 @@ import { VIEW_MODE_OPTIONS, SORT_MODE_OPTIONS, PREVIEW_MODE_OPTIONS } from "./mo
 export default class HyperExplorerWebPart extends BaseHyperWebPart<IHyperExplorerWebPartProps> {
 
   public render(): void {
+    const self = this;
     const props: IHyperExplorerComponentProps = {
       ...this.properties,
       instanceId: this.instanceId,
       isEditMode: this.displayMode === 2,
+      onWizardApply: function (result: Partial<IHyperExplorerWebPartProps>): void {
+        Object.keys(result).forEach(function (key: string): void {
+          (self.properties as unknown as Record<string, unknown>)[key] = (result as unknown as Record<string, unknown>)[key];
+        });
+        self.render();
+      },
     };
     const element: React.ReactElement<IHyperExplorerComponentProps> =
       React.createElement(HyperExplorer, props);

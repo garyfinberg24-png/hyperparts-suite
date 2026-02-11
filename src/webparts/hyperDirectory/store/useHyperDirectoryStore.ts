@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { IHyperDirectoryFilter, IDirectoryFilterOptions } from "../models";
+import type { IHyperDirectoryFilter, IDirectoryFilterOptions, DirectoryLayoutMode, DirectoryCardStyle } from "../models";
 import { DEFAULT_FILTER, DEFAULT_FILTER_OPTIONS } from "../models";
 
 interface IHyperDirectoryStoreState {
@@ -14,6 +14,11 @@ interface IHyperDirectoryStoreState {
   rollerDexAngle: number;
   rollerDexActiveIndex: number;
   isWizardOpen: boolean;
+
+  // Demo bar runtime overrides
+  demoLayoutMode: DirectoryLayoutMode | undefined;
+  demoCardStyle: DirectoryCardStyle | undefined;
+  demoShowPresence: boolean | undefined;
 }
 
 interface IHyperDirectoryStoreActions {
@@ -35,6 +40,11 @@ interface IHyperDirectoryStoreActions {
   openWizard: () => void;
   closeWizard: () => void;
   reset: () => void;
+
+  // Demo bar actions
+  setDemoLayoutMode: (mode: DirectoryLayoutMode) => void;
+  setDemoCardStyle: (style: DirectoryCardStyle) => void;
+  toggleDemoShowPresence: () => void;
 }
 
 type IHyperDirectoryStore = IHyperDirectoryStoreState & IHyperDirectoryStoreActions;
@@ -51,6 +61,9 @@ const initialState: IHyperDirectoryStoreState = {
   rollerDexAngle: 0,
   rollerDexActiveIndex: 0,
   isWizardOpen: false,
+  demoLayoutMode: undefined,
+  demoCardStyle: undefined,
+  demoShowPresence: undefined,
 };
 
 export const useHyperDirectoryStore = create<IHyperDirectoryStore>(function (set) {
@@ -152,6 +165,22 @@ export const useHyperDirectoryStore = create<IHyperDirectoryStore>(function (set
 
     closeWizard: function (): void {
       set({ isWizardOpen: false });
+    },
+
+    // Demo bar actions
+    setDemoLayoutMode: function (mode: DirectoryLayoutMode): void {
+      set({ demoLayoutMode: mode });
+    },
+
+    setDemoCardStyle: function (style: DirectoryCardStyle): void {
+      set({ demoCardStyle: style });
+    },
+
+    toggleDemoShowPresence: function (): void {
+      set(function (state) {
+        var current = state.demoShowPresence;
+        return { demoShowPresence: current === undefined ? false : !current };
+      });
     },
 
     reset: function (): void {

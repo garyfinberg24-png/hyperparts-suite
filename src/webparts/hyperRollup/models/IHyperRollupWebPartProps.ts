@@ -146,6 +146,10 @@ export interface IHyperRollupWebPartProps extends IBaseHyperWebPartProps {
   enableDemoMode: boolean;
   /** Active demo preset ID */
   demoPresetId: string;
+
+  // ─── Wizard ───
+  /** Whether the setup wizard has been completed */
+  wizardCompleted: boolean;
 }
 
 /**

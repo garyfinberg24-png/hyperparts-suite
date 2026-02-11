@@ -8,7 +8,7 @@ export interface IHyperTickerKeyboardNavProps {
   role?: string;
   ariaLabel?: string;
   className?: string;
-  children?: React.ReactNode;
+  // children is provided by React.FC's PropsWithChildren wrapper in React 17
 }
 
 /**

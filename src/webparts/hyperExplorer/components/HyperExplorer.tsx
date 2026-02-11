@@ -22,26 +22,58 @@ import HyperExplorerNamingConvention from "./HyperExplorerNamingConvention";
 import FilePlanDashboard from "./filePlan/FilePlanDashboard";
 import RetentionLabelPicker from "./filePlan/RetentionLabelPicker";
 import { HyperWizard } from "../../../common/components/wizard/HyperWizard";
+import { EXPLORER_WIZARD_CONFIG, buildStateFromProps } from "./wizard/explorerWizardConfig";
 import { filePlanWizardConfig } from "./filePlan/wizard/FilePlanWizardConfig";
 import { GridLayout, ListLayout, MasonryLayout, FilmstripLayout, TilesLayout } from "./layouts";
-import WelcomeStep from "./wizard/WelcomeStep";
+import HyperExplorerDemoBar from "./HyperExplorerDemoBar";
 import styles from "./HyperExplorer.module.scss";
 
 export interface IHyperExplorerComponentProps extends IHyperExplorerWebPartProps {
   instanceId: string;
   isEditMode: boolean;
+  /** Callback from web part class to persist wizard result */
+  onWizardApply?: (result: Partial<IHyperExplorerWebPartProps>) => void;
 }
 
 var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
-  // Wizard state — show splash if showWizardOnInit and user hasn't dismissed
-  var wizardDismissedRef = React.useRef<boolean>(false);
-  var forceUpdateState = React.useState(0);
-  var _forceUpdate = forceUpdateState[1];
-
-  var showWizard = !!props.showWizardOnInit && !wizardDismissedRef.current;
-
   // Store
   var store = useHyperExplorerStore();
+
+  // Auto-open wizard on first load when showWizardOnInit and no library configured
+  React.useEffect(function () {
+    if (props.showWizardOnInit) {
+      store.openWizard();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Build wizard state override from current props (for re-editing)
+  var wizardStateOverride = React.useMemo(function () {
+    return buildStateFromProps(props);
+  }, [props.viewMode, props.sortMode, props.sortDirection, props.itemsPerPage,
+      props.showFolders, props.enablePreview, props.previewMode, props.enableLightbox,
+      props.enableVideoPlaylist, props.showThumbnails, props.thumbnailSize,
+      props.enableUpload, props.enableQuickActions, props.enableFolderTree,
+      props.enableBreadcrumbs, props.enableCompare, props.enableWatermark,
+      props.enableRecentFiles, props.enableFilePlan, props.useSampleData,
+      props.cacheEnabled, props.cacheDuration, props.showWizardOnInit]);
+  // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Handle wizard apply
+  var handleWizardApply = React.useCallback(function (result: Partial<IHyperExplorerWebPartProps>): void {
+    if (props.onWizardApply) {
+      props.onWizardApply(result);
+    }
+    store.closeWizard();
+  }, [props.onWizardApply, store]);
+
+  // Demo bar: folder tree + preview toggles
+  var demoFolderTreeState = React.useState(true);
+  var demoShowFolderTree = demoFolderTreeState[0];
+  var setDemoShowFolderTree = demoFolderTreeState[1];
+  var demoPreviewState = React.useState(true);
+  var demoShowPreview = demoPreviewState[0];
+  var setDemoShowPreview = demoPreviewState[1];
 
   // Initialize data on mount (or when sample data / folder changes)
   var useSample = !!props.useSampleData;
@@ -207,11 +239,8 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
     }
   }, [store.sortMode]);
 
-  // Wizard dismiss
-  var handleWizardDismiss = React.useCallback(function (): void {
-    wizardDismissedRef.current = true;
-    _forceUpdate(function (n: number) { return n + 1; });
-  }, [_forceUpdate]);
+  // Demo bar: show when sample data is active and not in edit mode
+  var showDemoBar = !!props.useSampleData && !props.isEditMode;
 
   // Close context menu on outside click
   React.useEffect(function () {
@@ -366,13 +395,6 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
     };
   }, []);
 
-  // ── Render wizard if active ──
-  if (showWizard) {
-    return React.createElement(WelcomeStep, {
-      onGetStarted: handleWizardDismiss,
-    });
-  }
-
   // ── Shared layout props ──
   var gridProps = {
     files: store.filteredFiles,
@@ -426,6 +448,34 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
 
   // ── Assemble main component ──
   var children: React.ReactNode[] = [];
+
+  // ── Main wizard (always rendered, controlled by store) ──
+  children.push(
+    React.createElement(HyperWizard, {
+      key: "wizard",
+      config: EXPLORER_WIZARD_CONFIG,
+      isOpen: store.isWizardOpen,
+      onClose: store.closeWizard,
+      onApply: handleWizardApply,
+      initialStateOverride: wizardStateOverride,
+    })
+  );
+
+  // Demo bar (rendered above everything when demo mode is on)
+  if (showDemoBar) {
+    children.push(
+      React.createElement(HyperExplorerDemoBar, {
+        key: "demobar",
+        viewMode: store.viewMode,
+        showFolderTree: demoShowFolderTree,
+        showPreview: demoShowPreview,
+        onViewModeChange: store.setViewMode,
+        onFolderTreeToggle: function () { setDemoShowFolderTree(function (v: boolean) { return !v; }); },
+        onPreviewToggle: function () { setDemoShowPreview(function (v: boolean) { return !v; }); },
+        onOpenWizard: store.openWizard,
+      })
+    );
+  }
 
   // Title
   if (props.title) {
@@ -540,8 +590,9 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
   // Content area (sidebar + main + preview)
   var contentChildren: React.ReactNode[] = [];
 
-  // Folder tree sidebar (hidden when collapsed)
-  if (props.enableFolderTree !== false && store.folders.length > 0 && !store.sidebarCollapsed) {
+  // Folder tree sidebar (hidden when collapsed or demo bar toggled off)
+  var effectiveFolderTree = showDemoBar ? demoShowFolderTree : true;
+  if (props.enableFolderTree !== false && store.folders.length > 0 && !store.sidebarCollapsed && effectiveFolderTree) {
     contentChildren.push(
       React.createElement(HyperExplorerFolderTree, {
         key: "folder-tree",

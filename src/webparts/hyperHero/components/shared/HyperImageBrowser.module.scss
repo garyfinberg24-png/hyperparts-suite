@@ -3,7 +3,7 @@
 .browserLayout {
   display: flex;
   flex-direction: row;
-  min-height: 450px;
+  min-height: 520px;
 }
 
 .sidebar {
@@ -73,8 +73,8 @@
 
 .thumbnailGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
 }
 
 .thumbnailCard {
@@ -356,10 +356,10 @@
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 4px 6px;
+  padding: 6px 8px;
   background: rgba(0, 0, 0, 0.55);
   color: #ffffff;
-  font-size: 11px;
+  font-size: 12px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

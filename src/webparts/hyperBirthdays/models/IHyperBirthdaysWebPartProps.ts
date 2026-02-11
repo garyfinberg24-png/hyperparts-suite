@@ -51,6 +51,9 @@ export interface IHyperBirthdaysWebPartProps extends IBaseHyperWebPartProps {
   cacheDuration: number;
   photoSize: number;
 
+  // Sample data
+  useSampleData: boolean;
+
   // Wizard
   showWizardOnInit: boolean;
 }

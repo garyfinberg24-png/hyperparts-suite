@@ -11,6 +11,8 @@ import { useHyperFaqStore } from "../store/useHyperFaqStore";
 import { incrementViewCount } from "../utils/faqUtils";
 import { getSampleFaqItems } from "../utils/sampleData";
 import { getSP } from "../../../common/services/HyperPnP";
+import { getFaqTemplateById } from "../models/IHyperFaqTemplate";
+import type { IFaqTemplate } from "../models/IHyperFaqTemplate";
 import HyperFaqSearchBar from "./HyperFaqSearchBar";
 import HyperFaqCategorySection from "./HyperFaqCategorySection";
 import HyperFaqAccordionItem from "./HyperFaqAccordionItem";
@@ -83,9 +85,35 @@ var HyperFaqInner: React.FC<IHyperFaqComponentProps> = function (props) {
     return faqData.items;
   }, [usingSampleData, faqData.items]);
 
-  // Active layout: runtime (demo bar) overrides props
-  var activeLayout: FaqLayout = isDemoMode ? runtimeLayout : (props.layout || "accordion");
-  var activeAccordionStyle: FaqAccordionStyle = isDemoMode ? runtimeAccordionStyle : (props.accordionStyle || "clean");
+  // Demo bar visible when: explicitly toggled, or published + sample data
+  var demoBarActive = isDemoMode || (!!props.useSampleData && !props.isEditMode);
+
+  // Active layout: runtime (demo bar) overrides props when demo bar is active
+  var activeLayout: FaqLayout = demoBarActive ? runtimeLayout : (props.layout || "accordion");
+  var activeAccordionStyle: FaqAccordionStyle = demoBarActive ? runtimeAccordionStyle : (props.accordionStyle || "clean");
+
+  // Active template: runtime overrides props when demo bar is active
+  var activeTemplateId = demoBarActive ? runtimeTemplate : (props.selectedTemplate || "corporate-clean");
+
+  // Resolve template colors and build CSS custom properties
+  var activeTemplate: IFaqTemplate | undefined = getFaqTemplateById(activeTemplateId);
+  var templateStyle = React.useMemo(function (): Record<string, string> {
+    if (!activeTemplate) return {};
+    var c = activeTemplate.colors;
+    var s: Record<string, string> = {};
+    s["--faq-primary"] = c.primary;
+    s["--faq-secondary"] = c.secondary;
+    s["--faq-accent"] = c.accent;
+    s["--faq-background"] = c.background;
+    s["--faq-surface"] = c.surface;
+    s["--faq-text"] = c.text;
+    s["--faq-text-secondary"] = c.textSecondary;
+    s["--faq-border"] = c.border;
+    s["--faq-border-radius"] = String(activeTemplate.borderRadius) + "px";
+    s["--faq-font-family"] = activeTemplate.fontFamily;
+    s["--faq-card-shadow"] = activeTemplate.cardShadow;
+    return s;
+  }, [activeTemplate]);
 
   // Sync runtime state from props on mount
   React.useEffect(function () {
@@ -363,8 +391,11 @@ var HyperFaqInner: React.FC<IHyperFaqComponentProps> = function (props) {
       }, "Expand All")
     : undefined;
 
-  // ── Demo mode toggle ──
-  var demoToggle = props.useSampleData
+  // ── Demo mode: auto-show when published with sample data ──
+  var showDemoBar = demoBarActive;
+
+  // ── Demo mode toggle (only show when sample data but NOT already in auto-demo) ──
+  var demoToggle = props.useSampleData && props.isEditMode
     ? React.createElement("button", {
         className: isDemoMode ? styles.demoToggleActive : styles.demoToggle,
         onClick: function () { setDemoMode(!isDemoMode); },
@@ -372,8 +403,8 @@ var HyperFaqInner: React.FC<IHyperFaqComponentProps> = function (props) {
       }, isDemoMode ? "Exit Demo" : "Demo Mode")
     : undefined;
 
-  // ── Demo bar (when demo mode is active) ──
-  var demoBar = isDemoMode
+  // ── Demo bar (rendered ABOVE web part content when active) ──
+  var demoBar = showDemoBar
     ? React.createElement(HyperFaqDemoBar, {
         currentLayout: runtimeLayout,
         currentTemplate: runtimeTemplate,
@@ -442,17 +473,21 @@ var HyperFaqInner: React.FC<IHyperFaqComponentProps> = function (props) {
       })
     : undefined;
 
-  // ── Sample data banner ──
-  var sampleBanner = usingSampleData && !isDemoMode
+  // ── Sample data banner (hide when demo bar is active) ──
+  var sampleBanner = usingSampleData && !demoBarActive
     ? React.createElement("div", { className: styles.sampleBanner },
         React.createElement("i", { className: "ms-Icon ms-Icon--TestBeaker", "aria-hidden": "true" }),
         " Using sample data. Connect a SharePoint list in the property pane for live data."
       )
     : undefined;
 
+  // Build themed class — add themed class when template is active
+  var containerClass = styles.faqContainer + (activeTemplate ? " " + styles.faqThemed : "");
+
   return React.createElement(
     "div",
-    { className: styles.faqContainer },
+    { className: containerClass, style: templateStyle as unknown as React.CSSProperties },
+    demoBar,
     editBar,
     wizardModal,
     sampleBanner,
@@ -474,8 +509,7 @@ var HyperFaqInner: React.FC<IHyperFaqComponentProps> = function (props) {
       { className: styles.faqList, role: "list" },
       faqListContent
     ),
-    submitModal,
-    demoBar
+    submitModal
   );
 };
 

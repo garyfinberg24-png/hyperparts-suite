@@ -224,9 +224,24 @@ const HyperHeroSlideInner: React.FC<IHyperHeroSlideProps> = (props) => {
       canvasChildren
     );
   } else {
+    // If no per-element animations are set, add a default content fade-in
+    // so the Replay button always produces visible feedback
+    var hasAnyAnimation = anims && (
+      (anims.heading && anims.heading.effect !== "none") ||
+      (anims.subheading && anims.subheading.effect !== "none") ||
+      (anims.description && anims.description.effect !== "none") ||
+      (anims.ctas && anims.ctas.effect !== "none")
+    );
+    var contentStyle: React.CSSProperties = { ...overlayStyle };
+    if (!hasAnyAnimation) {
+      contentStyle.animationName = "hyperFadeInAnim";
+      contentStyle.animationDuration = "500ms";
+      contentStyle.animationFillMode = "forwards";
+      contentStyle.animationTimingFunction = "ease-out";
+    }
     contentLayer = React.createElement(
       "div",
-      { className: styles.contentLayer, style: overlayStyle },
+      { className: styles.contentLayer, style: contentStyle },
       countdownEl,
       headingEl,
       subheadingEl,

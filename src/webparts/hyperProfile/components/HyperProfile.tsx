@@ -7,6 +7,7 @@ import type { IProfileBadge } from "../models/IHyperProfileBadge";
 import type { IProfilePersonal } from "../models/IHyperProfilePersonal";
 import type { IProfileOrgNode } from "../models/IHyperProfileOrgNode";
 import type { ICalendarDay } from "../models/IHyperProfileCalendar";
+import type { DemoPersonId } from "../models/IHyperProfileDemoConfig";
 import { HyperErrorBoundary } from "../../../common/components";
 import { HyperSkeleton } from "../../../common/components";
 import { HyperEmptyState } from "../../../common/components";
@@ -16,21 +17,56 @@ import { useHyperProfileStore } from "../store/useHyperProfileStore";
 import { getSamplePerson } from "../utils/sampleData";
 import { getTemplateComponent } from "./templates";
 import HyperProfileDemoBar from "./HyperProfileDemoBar";
+import WelcomeStep from "./wizard/WelcomeStep";
 import styles from "./HyperProfile.module.scss";
 
 export interface IHyperProfileComponentProps extends IHyperProfileWebPartProps {
   instanceId: string;
+  /** Whether the web part is in edit mode (displayMode === 2) */
+  isEditMode?: boolean;
+  /** Callback when the wizard "Get Started" is clicked */
+  onWizardComplete?: () => void;
+  /** Callback to toggle demo mode from within the component */
+  onDemoModeChange?: (enabled: boolean) => void;
 }
 
 const HyperProfileInner: React.FC<IHyperProfileComponentProps> = function (props) {
   const store = useHyperProfileStore();
+
+  // ── Wizard state ──
+  const wizardState = React.useState(false);
+  const showWizard = wizardState[0];
+  const setShowWizard = wizardState[1];
+
+  React.useEffect(function () {
+    if (props.isEditMode && !props.wizardCompleted) {
+      setShowWizard(true);
+    }
+  }, [props.isEditMode, props.wizardCompleted]);
+
+  // Show wizard if not completed and in edit mode
+  if (showWizard) {
+    return React.createElement(WelcomeStep, {
+      onGetStarted: function (): void {
+        if (props.onWizardComplete) {
+          props.onWizardComplete();
+        }
+        setShowWizard(false);
+        // Auto-enable demo mode so the user sees sample data immediately
+        store.setDemoMode(true);
+        if (props.onDemoModeChange) {
+          props.onDemoModeChange(true);
+        }
+      },
+    });
+  }
 
   // Determine template
   const templateId: TemplateType = props.selectedTemplate || store.selectedTemplateId || "standard";
 
   // Demo mode data
   const isDemoMode = store.isDemoMode || props.enableDemoMode;
-  const demoPersonId = store.demoPersonId || props.demoPersonId || "sarah";
+  const demoPersonId: DemoPersonId = store.demoPersonId || props.demoPersonId || "sarah";
   const demoPerson = isDemoMode ? getSamplePerson(demoPersonId) : undefined;
 
   // Real data (skip fetch in demo mode)
@@ -72,33 +108,55 @@ const HyperProfileInner: React.FC<IHyperProfileComponentProps> = function (props
     );
   }
 
-  // Error state
+  // Error state -- in edit mode, offer to switch to demo mode
   if (error) {
+    let errorDescription = error.message || "An error occurred loading profile data.";
+    if (props.isEditMode) {
+      errorDescription = errorDescription + " Try enabling Demo Mode in the property pane to preview the web part.";
+    }
     return React.createElement(
       "div",
       { className: styles.hyperProfile + " " + styles.standard, role: "region", "aria-label": "User Profile" },
       React.createElement(HyperEmptyState, {
         iconName: "Error",
         title: "Unable to load profile",
-        description: error.message,
+        description: errorDescription,
+        actionLabel: props.isEditMode ? "Enable Demo Mode" : undefined,
+        onAction: props.isEditMode ? function (): void {
+          store.setDemoMode(true);
+          if (props.onDemoModeChange) {
+            props.onDemoModeChange(true);
+          }
+        } : undefined,
       })
     );
   }
 
   // No profile
   if (!profile) {
+    let emptyDescription = "Could not find user profile data.";
+    if (props.isEditMode) {
+      emptyDescription = "No profile data available. Enable Demo Mode to preview with sample data.";
+    }
     return React.createElement(
       "div",
       { className: styles.hyperProfile + " " + styles.standard, role: "region", "aria-label": "User Profile" },
       React.createElement(HyperEmptyState, {
         iconName: "Contact",
         title: "No profile found",
-        description: "Could not find user profile data.",
+        description: emptyDescription,
+        actionLabel: props.isEditMode ? "Enable Demo Mode" : undefined,
+        onAction: props.isEditMode ? function (): void {
+          store.setDemoMode(true);
+          if (props.onDemoModeChange) {
+            props.onDemoModeChange(true);
+          }
+        } : undefined,
       })
     );
   }
 
-  // Build template props — in demo mode, enable all features so sample data is visible
+  // Build template props -- in demo mode, enable all features so sample data is visible
   const templateProps: IProfileTemplateProps = {
     profile: profile,
     manager: manager || undefined,
@@ -142,18 +200,20 @@ const HyperProfileInner: React.FC<IHyperProfileComponentProps> = function (props
       height: props.headerHeight,
     },
     animation: store.currentAnimation || props.animation || "none",
-    onActionClick: function (actionId: string) {
-      // eslint-disable-next-line no-void
-      void actionId;
+    onActionClick: function (actionId: string): void {
+      // Action click handler -- placeholder
+      const _used = actionId.length > 0;
+      if (_used) { /* consumed */ }
     },
-    onSkillClick: function (skillName: string) {
-      // eslint-disable-next-line no-void
-      void skillName;
+    onSkillClick: function (skillName: string): void {
+      // Skill click handler -- placeholder
+      const _used = skillName.length > 0;
+      if (_used) { /* consumed */ }
     },
-    onOrgNodeClick: function (nodeId: string) {
+    onOrgNodeClick: function (nodeId: string): void {
       store.setExpandedOrgNode(nodeId);
     },
-    onFlip: function () {
+    onFlip: function (): void {
       store.triggerFlip();
     },
     instanceId: props.instanceId,
@@ -169,9 +229,14 @@ const HyperProfileInner: React.FC<IHyperProfileComponentProps> = function (props
       React.createElement(HyperProfileDemoBar, {
         selectedPersonId: demoPersonId,
         selectedTemplateId: templateId,
-        onPersonChange: function (id) { store.setDemoPersonId(id); },
-        onTemplateChange: function (id) { store.setSelectedTemplate(id); },
-        onExitDemo: function () { store.setDemoMode(false); },
+        onPersonChange: function (id: DemoPersonId): void { store.setDemoPersonId(id); },
+        onTemplateChange: function (id: TemplateType): void { store.setSelectedTemplate(id); },
+        onExitDemo: function (): void {
+          store.setDemoMode(false);
+          if (props.onDemoModeChange) {
+            props.onDemoModeChange(false);
+          }
+        },
       }),
       templateEl
     );

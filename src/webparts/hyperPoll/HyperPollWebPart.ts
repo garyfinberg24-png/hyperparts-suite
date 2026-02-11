@@ -80,12 +80,17 @@ export default class HyperPollWebPart extends BaseHyperWebPart<IHyperPollWebPart
       ...this.properties,
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
+      onWizardComplete: function (): void {
+        self.properties.wizardCompleted = true;
+        self.render();
+      },
       onWizardApply: function (result: Partial<IHyperPollWebPartProps>): void {
         var keys = Object.keys(result);
         keys.forEach(function (key) {
           (self.properties as unknown as Record<string, unknown>)[key] =
             (result as unknown as Record<string, unknown>)[key];
         });
+        self.properties.wizardCompleted = true;
         self.render();
         self.context.propertyPane.refresh();
       },
@@ -133,6 +138,9 @@ export default class HyperPollWebPart extends BaseHyperWebPart<IHyperPollWebPart
     }
     if (this.properties.enableDemoMode === undefined) {
       this.properties.enableDemoMode = false;
+    }
+    if (this.properties.wizardCompleted === undefined) {
+      this.properties.wizardCompleted = false;
     }
   }
 

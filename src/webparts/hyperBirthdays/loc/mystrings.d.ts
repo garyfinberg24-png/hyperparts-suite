@@ -9,6 +9,7 @@ declare interface IHyperBirthdaysWebPartStrings {
   TitleFieldLabel: string;
   ViewModeFieldLabel: string;
   TimeRangeFieldLabel: string;
+  UseSampleDataFieldLabel: string;
   EnableEntraIdFieldLabel: string;
   EnableSpListFieldLabel: string;
   SpListNameFieldLabel: string;

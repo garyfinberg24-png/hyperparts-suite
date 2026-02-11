@@ -29,13 +29,14 @@ const RollerDexLayoutInner: React.FC<IRollerDexLayoutProps> = function (props) {
   const isHoveredRef = React.useRef(false);
 
   const numVisible = visibleCards || 5;
-  const autoSpeed = (speed || 5) * 1000;
+  const autoSpeed = (speed || 8) * 1000; // Default 8s — more realistic browsing speed
   const totalUsers = users.length;
 
-  // Card geometry: angle per card on the cylinder
-  const angleStep = 360 / Math.max(numVisible, 3);
-  // Radius of the cylinder based on card height
-  const radius = 180;
+  // Card geometry: tighter angle so adjacent cards are more visible
+  // Using a smaller angle (25-30deg) gives a gentle tilt, making prev/next very readable
+  const angleStep = Math.min(30, 360 / Math.max(numVisible, 5));
+  // Larger radius pushes cards further from center — more visual depth
+  const radius = 260;
 
   // Navigate to a specific index
   const goToIndex = React.useCallback(function (index: number): void {
@@ -137,14 +138,19 @@ const RollerDexLayoutInner: React.FC<IRollerDexLayoutProps> = function (props) {
     const isActive = offset === 0;
 
     // 3D transform: rotate on X axis, translate out on Z
-    const transform = "rotateX(" + angle + "deg) translateZ(" + radius + "px) translateX(-50%) translateY(-50%)";
-    const opacity = 1 - Math.abs(offset) * 0.15;
-    const zIndex = numVisible - Math.abs(offset);
+    // Active card is full scale; adjacent cards scale down gently for depth
+    var absOffset = Math.abs(offset);
+    var scale = absOffset === 0 ? 1.0 : Math.max(0.75, 1 - absOffset * 0.08);
+    const transform = "rotateX(" + angle + "deg) translateZ(" + radius + "px) translateX(-50%) translateY(-50%) scale(" + scale + ")";
+    // Adjacent cards stay highly visible (0.85 for +/-1, fading gently beyond)
+    const opacity = absOffset === 0 ? 1 : Math.max(0.4, 1 - absOffset * 0.15);
+    const zIndex = numVisible - absOffset;
 
     const cardStyle: React.CSSProperties = {
       transform: transform,
-      opacity: Math.max(0.3, opacity),
+      opacity: opacity,
       zIndex: zIndex,
+      transition: "transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.4s ease",
     };
 
     cardElements.push(

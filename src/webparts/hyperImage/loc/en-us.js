@@ -41,6 +41,14 @@ define([], function () {
     /* ── Hover ── */
     HoverEffectLabel: "Hover Effect",
 
+    /* ── Flip Back ── */
+    FlipBackTitleLabel: "Flip Back Title",
+    FlipBackTextLabel: "Flip Back Text",
+    FlipBackBgColorLabel: "Flip Back Background Color",
+
+    /* ── Layout Gallery ── */
+    BrowseLayoutGalleryLabel: "Browse Layout Gallery",
+
     /* ── Text / Caption ── */
     TextEnabledLabel: "Show Text / Caption",
     TextPlacementLabel: "Text Placement",
@@ -58,6 +66,7 @@ define([], function () {
     TextBgColorLabel: "Background Color",
     TextBgOpacityLabel: "Background Opacity (%)",
     TextEntranceLabel: "Text Entrance Animation",
+    TextAlignLabel: "Text Alignment",
 
     /* ── Border & Shadow ── */
     BorderWidthLabel: "Border Width (px)",

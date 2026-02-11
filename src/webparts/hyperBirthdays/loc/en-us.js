@@ -12,6 +12,7 @@ define([], function () {
     TitleFieldLabel: "Title",
     ViewModeFieldLabel: "View Mode",
     TimeRangeFieldLabel: "Time Range",
+    UseSampleDataFieldLabel: "Use Sample Data (SA Demo)",
     EnableEntraIdFieldLabel: "Enable Entra ID (Graph)",
     EnableSpListFieldLabel: "Enable SharePoint List",
     SpListNameFieldLabel: "Celebrations List Name",

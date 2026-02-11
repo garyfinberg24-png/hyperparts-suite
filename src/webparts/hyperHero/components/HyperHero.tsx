@@ -6,6 +6,7 @@ import type {
   IHyperHeroCta,
   IHyperHeroGridLayout,
   IHyperHeroResponsiveLayouts,
+  IHyperHeroRotation,
 } from "../models";
 import {
   DEFAULT_SLIDE,
@@ -462,6 +463,13 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
         onDuplicateSlide: handleDuplicateSlide,
         onDeleteSlide: handleDeleteSlide,
         onOpenSliderLibrary: handleOpenSliderManager,
+        // Slider settings (rotation) props
+        rotation: rotation,
+        onRotationChange: function (newRotation: IHyperHeroRotation): void {
+          if (onSettingsChange) {
+            onSettingsChange({ rotation: newRotation });
+          }
+        },
       })
     );
 

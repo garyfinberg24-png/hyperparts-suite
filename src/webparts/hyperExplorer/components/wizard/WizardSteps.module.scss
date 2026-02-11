@@ -1,0 +1,79 @@
+// ============================================================
+// HyperExplorer Wizard Steps — Shared Styles
+// ============================================================
+
+.stepContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sectionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #323130;
+  margin: 0 0 8px 0;
+}
+
+.fieldRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #edebe9;
+}
+
+.fieldLabel {
+  font-size: 13px;
+  color: #323130;
+}
+
+.fieldHint {
+  font-size: 11px;
+  color: #605e5c;
+  margin-top: 2px;
+}
+
+.fieldSelect {
+  padding: 6px 10px;
+  border: 1px solid #8a8886;
+  border-radius: 4px;
+  font-size: 13px;
+  background: #fff;
+  min-width: 140px;
+}
+
+.fieldSlider {
+  width: 120px;
+}
+
+.toggleSwitch {
+  appearance: auto;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #0078d4;
+}
+
+.chipGroup {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  padding: 6px 14px;
+  border: 1px solid #8a8886;
+  border-radius: 16px;
+  background: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.chipActive {
+  composes: chip;
+  background: #0078d4;
+  color: #fff;
+  border-color: #0078d4;
+}

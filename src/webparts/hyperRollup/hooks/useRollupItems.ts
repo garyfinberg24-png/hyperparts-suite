@@ -11,6 +11,8 @@ export interface UseRollupItemsOptions {
   pageSize: number;
   cacheEnabled: boolean;
   cacheDuration: number;
+  /** When true, skip all SP/API calls entirely (demo mode) */
+  skipFetch?: boolean;
 }
 
 export interface UseRollupItemsResult {
@@ -44,7 +46,7 @@ async function fetchFromList(
       .getByTitle(listName)
       .items
       .select(
-        "Id", "Title", "Description", "Created", "Modified",
+        "Id", "Title", "Created", "Modified",
         "FileRef", "FileLeafRef", "File_x0020_Type", "ContentType/Name",
         "Author/Id", "Author/Title", "Author/EMail",
         "Editor/Id", "Editor/Title"
@@ -63,10 +65,17 @@ async function fetchFromList(
 
     listQuery = listQuery.orderBy("Modified", false);
 
-    const results = await listQuery();
+    let results: Array<Record<string, unknown>>;
+    try {
+      results = (await listQuery()) as Array<Record<string, unknown>>;
+    } catch (fetchError) {
+      // If the query fails (e.g., missing fields), return empty array
+      // instead of crashing the entire web part
+      return [];
+    }
     const items: IHyperRollupItem[] = [];
 
-    (results as Array<Record<string, unknown>>).forEach(function (raw) {
+    results.forEach(function (raw) {
       const author = raw.Author as Record<string, unknown> | undefined;
       const editor = raw.Editor as Record<string, unknown> | undefined;
       const ct = raw.ContentType as Record<string, unknown> | undefined;
@@ -76,7 +85,7 @@ async function fetchFromList(
         id: listName + ":" + String(itemId),
         itemId: itemId,
         title: (raw.Title as string) || "",
-        description: (raw.Description as string) || undefined,
+        description: undefined,
         author: author ? (author.Title as string) : undefined,
         authorEmail: author ? (author.EMail as string) : undefined,
         editor: editor ? (editor.Title as string) : undefined,
@@ -102,17 +111,23 @@ async function fetchFromList(
   const spHttpClient = ctx.spHttpClient;
   const endpoint = siteUrl +
     "/_api/web/lists/getByTitle('" + encodeURIComponent(listName) + "')/items" +
-    "?$select=Id,Title,Description,Created,Modified,FileRef,FileLeafRef,File_x0020_Type" +
+    "?$select=Id,Title,Created,Modified,FileRef,FileLeafRef,File_x0020_Type" +
     "&$top=" + String(pageSize) +
     "&$orderby=Modified desc";
 
-  const response = await spHttpClient.get(
-    endpoint,
-    // SPFx SPHttpClient configuration enum value 1 = SPHttpClientConfiguration v1
-    1 as unknown as import("@microsoft/sp-http").SPHttpClientConfiguration
-  );
-  const json = await response.json();
-  const rawItems = (json.value || []) as Array<Record<string, unknown>>;
+  let rawItems: Array<Record<string, unknown>>;
+  try {
+    const response = await spHttpClient.get(
+      endpoint,
+      // SPFx SPHttpClient configuration enum value 1 = SPHttpClientConfiguration v1
+      1 as unknown as import("@microsoft/sp-http").SPHttpClientConfiguration
+    );
+    const json = await response.json();
+    rawItems = (json.value || []) as Array<Record<string, unknown>>;
+  } catch (fetchError) {
+    // If the request fails, return empty array instead of crashing
+    return [];
+  }
   const items: IHyperRollupItem[] = [];
 
   rawItems.forEach(function (raw) {
@@ -121,7 +136,7 @@ async function fetchFromList(
       id: listName + ":" + String(itemId),
       itemId: itemId,
       title: (raw.Title as string) || "",
-      description: (raw.Description as string) || undefined,
+      description: undefined,
       author: undefined,
       authorEmail: undefined,
       editor: undefined,
@@ -231,6 +246,14 @@ export function useRollupItems(options: UseRollupItemsOptions): UseRollupItemsRe
   useEffect(function () {
     let cancelled = false;
 
+    // Skip all SP/API calls when in demo mode
+    if (options.skipFetch) {
+      setItems([]);
+      setTotalCount(0);
+      setLoading(false);
+      return undefined;
+    }
+
     const fetchData = async function (): Promise<void> {
       const cacheKey = "rollupItems:" + JSON.stringify(options.sources) + ":" + String(page);
 
@@ -327,7 +350,7 @@ export function useRollupItems(options: UseRollupItemsOptions): UseRollupItemsRe
     fetchData().catch(function () { /* handled above */ });
 
     return function () { cancelled = true; };
-  }, [options.sources, options.query, options.pageSize, options.cacheEnabled, options.cacheDuration, page, refreshKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [options.sources, options.query, options.pageSize, options.cacheEnabled, options.cacheDuration, options.skipFetch, page, refreshKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return {
     items: items,

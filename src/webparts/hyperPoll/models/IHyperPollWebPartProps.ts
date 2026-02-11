@@ -28,4 +28,6 @@ export interface IHyperPollWebPartProps extends IBaseHyperWebPartProps {
   useSampleData: boolean;
   /** Enable demo control bar when published */
   enableDemoMode: boolean;
+  /** Whether the wizard has been completed (used to auto-show wizard on first add) */
+  wizardCompleted: boolean;
 }

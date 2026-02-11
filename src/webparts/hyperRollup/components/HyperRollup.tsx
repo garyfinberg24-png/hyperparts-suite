@@ -46,10 +46,13 @@ import {
   MagazineLayout,
   Top10Layout,
 } from "./layouts";
+import WelcomeStep from "./wizard/WelcomeStep";
 import styles from "./HyperRollup.module.scss";
 
 export interface IHyperRollupComponentProps extends IHyperRollupWebPartProps {
   instanceId: string;
+  isEditMode?: boolean;
+  onWizardComplete?: () => void;
 }
 
 const HyperRollupInner: React.FC<IHyperRollupComponentProps> = (props) => {
@@ -65,11 +68,15 @@ const HyperRollupInner: React.FC<IHyperRollupComponentProps> = (props) => {
     }
   }, [props.enableDemoMode, props.demoPresetId]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Track whether demo mode is effectively active (props OR store)
+  // Using props.enableDemoMode as fallback ensures first render works before effect syncs
+  var effectiveDemoMode = store.isDemoMode || props.enableDemoMode;
+
   // Generate demo data when in demo mode
   var demoItems = React.useMemo(function (): IHyperRollupItem[] {
-    if (!store.isDemoMode) return [];
-    return getSampleData(store.demoPresetId);
-  }, [store.isDemoMode, store.demoPresetId]);
+    if (!effectiveDemoMode) return [];
+    return getSampleData(store.demoPresetId || (props.demoPresetId as DemoPresetId) || "documents");
+  }, [effectiveDemoMode, store.demoPresetId, props.demoPresetId]);
 
   // Parse JSON string properties
   const sources = React.useMemo(function () {
@@ -110,31 +117,32 @@ const HyperRollupInner: React.FC<IHyperRollupComponentProps> = (props) => {
     ? (props.kanbanGroupField || "contentType")
     : (props.enableGrouping ? store.groupByField || props.groupByField : "");
 
-  // Fetch items from sources
+  // Fetch items from sources (skip when demo mode is active)
   const { items, loading, error, hasMore, loadMore, refresh } = useRollupItems({
     sources: sources,
     query: query,
     pageSize: props.pageSize,
     cacheEnabled: props.cacheEnabled,
     cacheDuration: props.cacheDuration,
+    skipFetch: effectiveDemoMode,
   });
 
   // Auto-refresh timer (disabled in demo mode)
   useRollupAutoRefresh({
-    enabled: props.enableAutoRefresh && !store.isDemoMode,
+    enabled: props.enableAutoRefresh && !effectiveDemoMode,
     interval: props.autoRefreshInterval || 0,
     onRefresh: refresh,
   });
 
   // Effective items: demo data or fetched data
-  var effectiveItems = store.isDemoMode ? demoItems : items;
-  var effectiveLoading = store.isDemoMode ? false : loading;
-  var effectiveError = store.isDemoMode ? undefined : error;
+  var effectiveItems = effectiveDemoMode ? demoItems : items;
+  var effectiveLoading = effectiveDemoMode ? false : loading;
+  var effectiveError = effectiveDemoMode ? undefined : error;
 
   // Audience targeting filter (between fetch and faceted filters, disabled in demo mode)
   var { filteredItems: audienceFilteredItems, loading: audienceLoading } = useRollupAudienceFilter(
     effectiveItems,
-    props.enableAudienceTargeting && !store.isDemoMode,
+    props.enableAudienceTargeting && !effectiveDemoMode,
     props.audienceTargetField || ""
   );
 
@@ -564,8 +572,8 @@ const HyperRollupInner: React.FC<IHyperRollupComponentProps> = (props) => {
 
     // Demo mode bar
     React.createElement(HyperRollupDemoBar, {
-      isDemoMode: store.isDemoMode,
-      activePresetId: store.demoPresetId,
+      isDemoMode: effectiveDemoMode,
+      activePresetId: store.demoPresetId || (props.demoPresetId as DemoPresetId) || "documents",
       onToggleDemo: handleToggleDemo,
       onSelectPreset: handleSelectPreset,
     }),
@@ -703,6 +711,20 @@ const HyperRollupInner: React.FC<IHyperRollupComponentProps> = (props) => {
 };
 
 const HyperRollup: React.FC<IHyperRollupComponentProps> = (props) => {
+  // Show wizard/splash when in edit mode and wizard has not been completed
+  if (props.isEditMode && !props.wizardCompleted) {
+    var handleGetStarted = function (): void {
+      if (props.onWizardComplete) {
+        props.onWizardComplete();
+      }
+    };
+    return React.createElement(
+      HyperErrorBoundary,
+      undefined,
+      React.createElement(WelcomeStep, { onGetStarted: handleGetStarted })
+    );
+  }
+
   return React.createElement(
     HyperErrorBoundary,
     undefined,

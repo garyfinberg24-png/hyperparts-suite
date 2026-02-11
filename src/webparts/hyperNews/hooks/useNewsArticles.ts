@@ -26,24 +26,24 @@ export interface UseNewsArticlesResult {
 }
 
 export function useNewsArticles(options: UseNewsArticlesOptions): UseNewsArticlesResult {
-  var sourcesJson = options.sourcesJson;
-  var externalJson = options.externalArticlesJson;
-  var manualJson = options.manualArticlesJson;
-  var pageSize = options.pageSize;
-  var cacheTTL = options.cacheTTL || 300000;
+  const sourcesJson = options.sourcesJson;
+  const externalJson = options.externalArticlesJson;
+  const manualJson = options.manualArticlesJson;
+  const pageSize = options.pageSize;
+  const cacheTTL = options.cacheTTL || 300000;
 
-  var [articles, setArticles] = useState<IHyperNewsArticle[]>([]);
-  var [loading, setLoading] = useState<boolean>(true);
-  var [error, setError] = useState<Error | undefined>(undefined);
-  var [page, setPage] = useState<number>(1);
-  var [hasMore, setHasMore] = useState<boolean>(true);
-  var [refreshKey, setRefreshKey] = useState<number>(0);
+  const [articles, setArticles] = useState<IHyperNewsArticle[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | undefined>(undefined);
+  const [page, setPage] = useState<number>(1);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [refreshKey, setRefreshKey] = useState<number>(0);
 
-  var loadMore = useCallback(function (): void {
+  const loadMore = useCallback(function (): void {
     setPage(function (prev) { return prev + 1; });
   }, []);
 
-  var refresh = useCallback(function (): void {
+  const refresh = useCallback(function (): void {
     setPage(1);
     setArticles([]);
     setHasMore(true);
@@ -51,10 +51,10 @@ export function useNewsArticles(options: UseNewsArticlesOptions): UseNewsArticle
   }, []);
 
   useEffect(function () {
-    var cancelled = false;
+    let cancelled = false;
 
-    var fetchArticles = async function (): Promise<void> {
-      var sources = parseSources(sourcesJson);
+    const fetchArticles = async function (): Promise<void> {
+      let sources = parseSources(sourcesJson);
 
       // Default to current site SP News when no sources configured
       if (sources.length === 0) {
@@ -69,14 +69,14 @@ export function useNewsArticles(options: UseNewsArticlesOptions): UseNewsArticle
         } as ISpNewsSource];
       }
 
-      var cacheKey = "newsArticlesV2:" + sourcesJson + ":" + String(page);
+      const cacheKey = "newsArticlesV2:" + sourcesJson + ":" + String(page);
 
       try {
         // Try cache first (skip on manual refresh)
         if (refreshKey === 0) {
-          var cached = await hyperCache.get<IHyperNewsArticle[]>(cacheKey);
+          const cached = await hyperCache.get<IHyperNewsArticle[]>(cacheKey);
           if (cached && !cancelled) {
-            var cachedItems = cached;
+            const cachedItems = cached;
             setArticles(function (prev) { return page === 1 ? cachedItems : prev.concat(cachedItems); });
             setHasMore(cached.length >= pageSize);
             setLoading(false);
@@ -84,8 +84,8 @@ export function useNewsArticles(options: UseNewsArticlesOptions): UseNewsArticle
           }
         }
 
-        var allItems: IHyperNewsArticle[] = [];
-        var fetchPromises: Array<Promise<void>> = [];
+        const allItems: IHyperNewsArticle[] = [];
+        const fetchPromises: Array<Promise<void>> = [];
 
         // Dispatch API-based sources
         sources.forEach(function (source) {
@@ -111,8 +111,8 @@ export function useNewsArticles(options: UseNewsArticlesOptions): UseNewsArticle
         });
 
         // Merge external link articles (stored inline, no API)
-        var extArticles = parseArticles(externalJson);
-        var now = Date.now();
+        const extArticles = parseArticles(externalJson);
+        const now = Date.now();
         extArticles.forEach(function (ext, idx) {
           if (ext.publishDate && new Date(ext.publishDate).getTime() > now) return;
           if (ext.unpublishDate && new Date(ext.unpublishDate).getTime() < now) return;

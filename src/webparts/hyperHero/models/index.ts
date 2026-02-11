@@ -1,6 +1,7 @@
 export type {
   IHyperHeroCta,
   CtaVariant,
+  CtaAnimation,
 } from "./IHyperHeroCta";
 
 export type {

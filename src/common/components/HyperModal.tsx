@@ -79,10 +79,11 @@ export const HyperModal: React.FC<IHyperModalProps> = (props) => {
         overflow: "hidden",
       } : {
         backgroundColor: "#ffffff",
-        borderRadius: "8px",
+        borderRadius: size === "fullscreen" ? "4px" : "8px",
         boxShadow: "0 8px 24px rgba(0,0,0,0.14)",
-        width: "90%",
+        width: size === "fullscreen" ? "95vw" : "90%",
         maxWidth: sizeMap[size],
+        height: size === "fullscreen" ? "90vh" : undefined,
         maxHeight: "90vh",
         display: "flex",
         flexDirection: "column" as const,

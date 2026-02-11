@@ -34,6 +34,14 @@ export const useListItems = (options: UseListItemsOptions): UseListItemsResult =
   useEffect(() => {
     let cancelled = false;
 
+    // Skip fetch if no list name is configured — return empty immediately
+    if (!options.listName) {
+      setItems([]);
+      setLoading(false);
+      setError(undefined);
+      return () => { cancelled = true; };
+    }
+
     const fetchItems = async (): Promise<void> => {
       const cacheKey = `listItems:${options.listName}:${options.filter ?? ""}:${options.orderBy ?? ""}:${options.top ?? ""}`;
 

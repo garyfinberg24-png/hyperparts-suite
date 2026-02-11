@@ -47,6 +47,8 @@ export interface ITextOverlay {
   bgColor: string;
   bgOpacity: number;
   entrance: TextEntrance;
+  /** Text alignment for caption/overlay */
+  textAlign: "left" | "center" | "right";
 }
 
 /** Default text config */
@@ -67,6 +69,7 @@ export var DEFAULT_TEXT_OVERLAY: ITextOverlay = {
   bgColor: "#ffffff",
   bgOpacity: 100,
   entrance: TextEntrance.None,
+  textAlign: "left",
 };
 
 /** Property pane dropdown: text position */
@@ -95,6 +98,13 @@ export var TEXT_ENTRANCE_OPTIONS = [
 export var TEXT_PLACEMENT_OPTIONS = [
   { key: TextPlacement.Below, text: "Below Image (Caption)" },
   { key: TextPlacement.Overlay, text: "Over Image (Overlay)" },
+];
+
+/** Property pane dropdown: text alignment */
+export var TEXT_ALIGN_OPTIONS = [
+  { key: "left", text: "Left" },
+  { key: "center", text: "Center" },
+  { key: "right", text: "Right" },
 ];
 
 /** Web-safe font options for property pane */

@@ -14,13 +14,32 @@ import type { IHyperProfileWebPartProps } from "./models";
 import type { IHyperTemplate } from "./models";
 import { TEMPLATES, getTemplateById } from "./constants/templates";
 import HyperProfile from "./components/HyperProfile";
+import type { IHyperProfileComponentProps } from "./components/HyperProfile";
 
 export default class HyperProfileWebPart extends BaseHyperWebPart<IHyperProfileWebPartProps> {
+
+  /** Callback: wizard completed -- persisted to web part properties */
+  private _onWizardComplete = (): void => {
+    this.properties.wizardCompleted = true;
+    this.render();
+  };
+
+  /** Callback: toggle demo mode from component */
+  private _onDemoModeChange = (enabled: boolean): void => {
+    this.properties.enableDemoMode = enabled;
+    this.render();
+  };
+
   public render(): void {
-    const element = React.createElement(HyperProfile, {
+    const props: IHyperProfileComponentProps = {
       ...this.properties,
       instanceId: this.instanceId,
-    });
+      isEditMode: this.displayMode === 2,
+      wizardCompleted: this.properties.wizardCompleted,
+      onWizardComplete: this._onWizardComplete,
+      onDemoModeChange: this._onDemoModeChange,
+    };
+    const element = React.createElement(HyperProfile, props);
     ReactDom.render(element, this.domElement);
   }
 

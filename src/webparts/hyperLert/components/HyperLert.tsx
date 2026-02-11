@@ -29,12 +29,14 @@ import HyperLertRuleBuilder from "./ruleBuilder/HyperLertRuleBuilder";
 import HyperLertEmailPreview from "./HyperLertEmailPreview";
 import HyperLertDemoBar from "./HyperLertDemoBar";
 import HyperLertKpiBar from "./HyperLertKpiBar";
+import WelcomeStep from "./wizard/WelcomeStep";
 import styles from "./HyperLert.module.scss";
 
 export interface IHyperLertComponentProps extends IHyperLertWebPartProps {
   instanceId: string;
   isEditMode?: boolean;
   onRulesChange?: (rulesJson: string) => void;
+  onWizardComplete?: () => void;
 }
 
 // ── KPI computation helper ──
@@ -129,6 +131,25 @@ var LAYOUT_MAP: Record<string, React.FC<ILertLayoutProps>> = {
 // ── Main inner component ──
 
 var HyperLertInner: React.FC<IHyperLertComponentProps> = function (props) {
+  // Wizard state
+  var wizardState = React.useState<boolean>(false);
+  var showWizard = wizardState[0];
+  var setShowWizard = wizardState[1];
+
+  // Show wizard on first load if in edit mode and not yet completed
+  React.useEffect(function () {
+    if (props.isEditMode && props.showWizardOnInit && !props.wizardCompleted) {
+      setShowWizard(true);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  var handleWizardGetStarted = React.useCallback(function (): void {
+    setShowWizard(false);
+    if (props.onWizardComplete) {
+      props.onWizardComplete();
+    }
+  }, [props.onWizardComplete]);
+
   var rules = parseRules(props.rules);
   var activeBanners = useHyperLertStore(function (s) { return s.activeBanners; });
   var refreshTick = useHyperLertStore(function (s) { return s.refreshTick; });
@@ -328,6 +349,13 @@ var HyperLertInner: React.FC<IHyperLertComponentProps> = function (props) {
     setDemoMode(false);
     setAlerts([]);
   }, [setDemoMode, setAlerts]);
+
+  // ── Wizard: show WelcomeStep splash before main content ──
+  if (showWizard) {
+    return React.createElement(WelcomeStep, {
+      onGetStarted: handleWizardGetStarted,
+    });
+  }
 
   // Active (enabled) rule count
   var activeCount = 0;

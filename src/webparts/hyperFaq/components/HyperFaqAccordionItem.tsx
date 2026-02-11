@@ -13,16 +13,15 @@ export interface IHyperFaqAccordionItemProps {
 }
 
 function getStyleClass(accordionStyle: FaqAccordionStyle): string {
-  const stylesMap = styles as Record<string, string>;
-  const map: Record<FaqAccordionStyle, string> = {
+  var map: Record<FaqAccordionStyle, string> = {
     clean: styles.styleClean,
     boxed: styles.styleBoxed,
     bordered: styles.styleBordered,
     minimal: styles.styleMinimal,
-    card: stylesMap.styleCard || styles.styleClean,
-    gradient: stylesMap.styleGradient || styles.styleClean,
-    numbered: stylesMap.styleNumbered || styles.styleClean,
-    iconAccent: stylesMap.styleIconAccent || styles.styleClean,
+    card: styles.styleCard,
+    gradient: styles.styleGradient,
+    numbered: styles.styleNumbered,
+    iconAccent: styles.styleIconAccent,
   };
   return map[accordionStyle] || styles.styleClean;
 }

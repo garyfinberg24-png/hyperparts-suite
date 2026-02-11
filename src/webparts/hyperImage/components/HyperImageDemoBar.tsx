@@ -4,6 +4,7 @@ import { ShapeMask } from "../models/IHyperImageShape";
 import { ImageLayout } from "../models/IHyperImageLayout";
 import { FilterPreset } from "../models/IHyperImageFilter";
 import { HoverEffect } from "../models/IHyperImageHover";
+import { BorderStylePreset } from "../models/IHyperImageBorder";
 import styles from "./HyperImageDemoBar.module.scss";
 
 /* ── Quick-pick options for each category ── */
@@ -54,6 +55,19 @@ var DEMO_HOVERS: Array<{ key: HoverEffect; label: string }> = [
   { key: HoverEffect.Darken, label: "Darken" },
 ];
 
+var DEMO_BORDERS: Array<{ key: BorderStylePreset; label: string }> = [
+  { key: BorderStylePreset.None, label: "None" },
+  { key: BorderStylePreset.ThinSolid, label: "Thin" },
+  { key: BorderStylePreset.ThickSolid, label: "Thick" },
+  { key: BorderStylePreset.Rounded, label: "Rounded" },
+  { key: BorderStylePreset.Shadow, label: "Shadow" },
+  { key: BorderStylePreset.Polaroid, label: "Polaroid" },
+  { key: BorderStylePreset.Film, label: "Film" },
+  { key: BorderStylePreset.Frame, label: "Frame" },
+  { key: BorderStylePreset.Outline, label: "Outline" },
+  { key: BorderStylePreset.DoubleFrame, label: "Double" },
+];
+
 /* ── Component ── */
 
 interface IDemoBarSectionProps {
@@ -87,15 +101,24 @@ var HyperImageDemoBar: React.FC = function () {
   var demoLayout = useHyperImageStore(function (s) { return s.demoLayout; });
   var demoFilter = useHyperImageStore(function (s) { return s.demoFilter; });
   var demoHover = useHyperImageStore(function (s) { return s.demoHover; });
+  var demoBorderPreset = useHyperImageStore(function (s) { return s.demoBorderPreset; });
   var setDemoShape = useHyperImageStore(function (s) { return s.setDemoShape; });
   var setDemoLayout = useHyperImageStore(function (s) { return s.setDemoLayout; });
   var setDemoFilter = useHyperImageStore(function (s) { return s.setDemoFilter; });
   var setDemoHover = useHyperImageStore(function (s) { return s.setDemoHover; });
+  var setDemoBorderPreset = useHyperImageStore(function (s) { return s.setDemoBorderPreset; });
   var resetDemo = useHyperImageStore(function (s) { return s.resetDemo; });
+  var openLayoutGallery = useHyperImageStore(function (s) { return s.openLayoutGallery; });
 
   return React.createElement("div", { className: styles.demoBar, role: "toolbar", "aria-label": "Demo mode controls" },
     React.createElement("div", { className: styles.demoBarHeader },
       React.createElement("span", { className: styles.demoBarTitle }, "Demo Mode"),
+      React.createElement("button", {
+        className: styles.demoResetBtn,
+        type: "button",
+        onClick: function () { openLayoutGallery(); },
+        "aria-label": "Browse layout gallery",
+      }, "Layouts"),
       React.createElement("button", {
         className: styles.demoResetBtn,
         type: "button",
@@ -127,6 +150,12 @@ var HyperImageDemoBar: React.FC = function () {
         activeKey: demoHover,
         items: DEMO_HOVERS,
         onSelect: function (key) { setDemoHover(key as HoverEffect); },
+      }),
+      React.createElement(DemoBarSection, {
+        title: "Border",
+        activeKey: demoBorderPreset,
+        items: DEMO_BORDERS,
+        onSelect: function (key) { setDemoBorderPreset(key as BorderStylePreset); },
       })
     )
   );

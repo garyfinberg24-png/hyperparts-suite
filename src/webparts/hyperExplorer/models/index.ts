@@ -58,6 +58,20 @@ export {
 } from "./IHyperExplorerWebPartProps";
 
 export type {
+  IExplorerWizardState,
+  IExplorerWizardLayoutDisplay,
+  IExplorerWizardPreviewFeatures,
+  IExplorerWizardAdvanced,
+} from "./IHyperExplorerWizardState";
+
+export {
+  DEFAULT_EXPLORER_WIZARD_STATE,
+  getViewModeDisplayName,
+  getSortModeDisplayName,
+  getPreviewModeDisplayName,
+} from "./IHyperExplorerWizardState";
+
+export type {
   IRetentionLabel,
   RetentionAction,
   RetentionBehavior,

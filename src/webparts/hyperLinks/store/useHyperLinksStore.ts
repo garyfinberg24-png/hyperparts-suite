@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import type { HyperLinksLayoutMode, HyperLinksHoverEffect, HyperLinksBorderRadius } from "../models";
 
 export interface IHyperLinksStoreState {
   hoveredLinkId: string | undefined;
@@ -7,6 +8,12 @@ export interface IHyperLinksStoreState {
   isWizardOpen: boolean;
   /** Demo mode: show sample data without entering edit mode */
   isDemoMode: boolean;
+  /** Runtime layout override (used by DemoBar) */
+  runtimeLayout: HyperLinksLayoutMode | undefined;
+  /** Runtime hover effect override (used by DemoBar) */
+  runtimeHoverEffect: HyperLinksHoverEffect | undefined;
+  /** Runtime border radius override (used by DemoBar) */
+  runtimeBorderRadius: HyperLinksBorderRadius | undefined;
 }
 
 export interface IHyperLinksStoreActions {
@@ -18,6 +25,11 @@ export interface IHyperLinksStoreActions {
   openWizard: () => void;
   closeWizard: () => void;
   toggleDemoMode: () => void;
+  setDemoMode: (active: boolean) => void;
+  setRuntimeLayout: (layout: HyperLinksLayoutMode) => void;
+  setRuntimeHoverEffect: (effect: HyperLinksHoverEffect) => void;
+  setRuntimeBorderRadius: (radius: HyperLinksBorderRadius) => void;
+  resetDemo: () => void;
   reset: () => void;
 }
 
@@ -29,6 +41,9 @@ const initialState: IHyperLinksStoreState = {
   filmstripScrollIndex: 0,
   isWizardOpen: false,
   isDemoMode: false,
+  runtimeLayout: undefined,
+  runtimeHoverEffect: undefined,
+  runtimeBorderRadius: undefined,
 };
 
 export const useHyperLinksStore = create<IHyperLinksStore>(function (set) {
@@ -79,6 +94,30 @@ export const useHyperLinksStore = create<IHyperLinksStore>(function (set) {
     toggleDemoMode: function (): void {
       set(function (state) {
         return { isDemoMode: !state.isDemoMode };
+      });
+    },
+
+    setDemoMode: function (active: boolean): void {
+      set({ isDemoMode: active });
+    },
+
+    setRuntimeLayout: function (layout: HyperLinksLayoutMode): void {
+      set({ runtimeLayout: layout });
+    },
+
+    setRuntimeHoverEffect: function (effect: HyperLinksHoverEffect): void {
+      set({ runtimeHoverEffect: effect });
+    },
+
+    setRuntimeBorderRadius: function (radius: HyperLinksBorderRadius): void {
+      set({ runtimeBorderRadius: radius });
+    },
+
+    resetDemo: function (): void {
+      set({
+        runtimeLayout: undefined,
+        runtimeHoverEffect: undefined,
+        runtimeBorderRadius: undefined,
       });
     },
 

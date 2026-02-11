@@ -31,6 +31,7 @@ import {
   TEXT_POSITION_OPTIONS,
   TEXT_ENTRANCE_OPTIONS,
   FONT_FAMILY_OPTIONS,
+  TEXT_ALIGN_OPTIONS,
   DEFAULT_TEXT_OVERLAY,
   DEFAULT_BORDER_CONFIG,
   DEFAULT_FILTER_CONFIG,
@@ -38,6 +39,7 @@ import {
 } from "./models";
 import HyperImage from "./components/HyperImage";
 import type { IHyperImageComponentProps } from "./components/HyperImage";
+import type { IPresetLayout } from "./models/IHyperImagePresetLayout";
 
 export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPartProps> {
 
@@ -48,6 +50,9 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
     await super.onInit();
 
     var p = this.properties;
+
+    // Wizard
+    if (p.wizardCompleted === undefined) p.wizardCompleted = false;
 
     // Sample data — on by default so the web part renders immediately
     if (p.useSampleData === undefined) p.useSampleData = true;
@@ -75,6 +80,11 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
 
     // Hover
     if (p.hoverEffect === undefined) p.hoverEffect = HoverEffect.None;
+
+    // Flip back
+    if (p.flipBackTitle === undefined) p.flipBackTitle = "";
+    if (p.flipBackText === undefined) p.flipBackText = "";
+    if (p.flipBackBgColor === undefined) p.flipBackBgColor = "#f3f2f1";
 
     // Text / Caption
     if (p.textOverlayJson === undefined) p.textOverlayJson = JSON.stringify(DEFAULT_TEXT_OVERLAY);
@@ -116,9 +126,25 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
     var props: IHyperImageComponentProps = {
       ...this.properties,
       instanceId: this.instanceId,
+      wizardCompleted: this.properties.wizardCompleted,
+      isEditMode: this.displayMode === 2,
+      onWizardComplete: (): void => {
+        this.properties.wizardCompleted = true;
+        this.render();
+      },
       onImageSelect: (imageUrl: string): void => {
         this.properties.imageUrl = imageUrl;
         this.properties.useSampleData = false;
+        this.render();
+      },
+      onLayoutSelect: (preset: IPresetLayout): void => {
+        this.properties.imageLayout = preset.layout as ImageLayout;
+        this.properties.layoutConfigJson = JSON.stringify({
+          columns: preset.columns,
+          rows: preset.rows,
+          gap: preset.gap,
+          equalHeight: true,
+        });
         this.render();
       },
     };
@@ -155,6 +181,7 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     var isMultiImage = this.properties.imageLayout !== ImageLayout.Single;
     var isOverlay = this._textOverlay.placement === "overlay";
+    var isFlipHover = this.properties.hoverEffect === HoverEffect.Flip;
 
     return {
       pages: [
@@ -196,6 +223,11 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
               groupName: strings.LayoutGroupName,
               groupFields: [
                 PropertyPaneDropdown("imageLayout", { label: strings.ImageLayoutLabel, options: IMAGE_LAYOUT_OPTIONS }),
+                PropertyPaneButton("_openLayoutGallery", {
+                  text: strings.BrowseLayoutGalleryLabel,
+                  buttonType: PropertyPaneButtonType.Normal,
+                  onClick: this._onOpenLayoutGallery.bind(this),
+                }),
                 PropertyPaneSlider("_layoutColumns", {
                   label: strings.LayoutColumnsLabel,
                   min: 1, max: 6, step: 1,
@@ -237,6 +269,20 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
               groupFields: [
                 PropertyPaneDropdown("filterPreset", { label: strings.FilterPresetLabel, options: FILTER_PRESET_OPTIONS }),
                 PropertyPaneDropdown("hoverEffect", { label: strings.HoverEffectLabel, options: HOVER_EFFECT_OPTIONS }),
+                PropertyPaneTextField("flipBackTitle", {
+                  label: strings.FlipBackTitleLabel,
+                  disabled: !isFlipHover,
+                }),
+                PropertyPaneTextField("flipBackText", {
+                  label: strings.FlipBackTextLabel,
+                  multiline: true,
+                  rows: 3,
+                  disabled: !isFlipHover,
+                }),
+                PropertyPaneTextField("flipBackBgColor", {
+                  label: strings.FlipBackBgColorLabel,
+                  disabled: !isFlipHover,
+                }),
                 PropertyPaneDropdown("entranceAnimation", { label: strings.EntranceAnimationLabel, options: ENTRANCE_ANIMATION_OPTIONS }),
               ],
             },
@@ -310,6 +356,11 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
                 PropertyPaneDropdown("_textEntrance", {
                   label: strings.TextEntranceLabel,
                   options: TEXT_ENTRANCE_OPTIONS,
+                  disabled: !this._textOverlay.enabled,
+                }),
+                PropertyPaneDropdown("_textAlign", {
+                  label: strings.TextAlignLabel,
+                  options: TEXT_ALIGN_OPTIONS,
                   disabled: !this._textOverlay.enabled,
                 }),
               ],
@@ -432,6 +483,15 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
     var store = require("./store/useHyperImageStore");
     if (store && store.useHyperImageStore) {
       store.useHyperImageStore.getState().openBrowser();
+    }
+  }
+
+  /** Open the layout gallery modal */
+  private _onOpenLayoutGallery(): void {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    var store = require("./store/useHyperImageStore");
+    if (store && store.useHyperImageStore) {
+      store.useHyperImageStore.getState().openLayoutGallery();
     }
   }
 

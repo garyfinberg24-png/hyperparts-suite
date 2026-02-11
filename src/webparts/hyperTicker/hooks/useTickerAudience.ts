@@ -19,7 +19,8 @@ export function useTickerAudience(
   const uniqueGroups: string[] = [];
   if (enabled) {
     items.forEach(function (item) {
-      item.audienceGroups.forEach(function (group) {
+      const groups = item.audienceGroups || [];
+      groups.forEach(function (group) {
         if (group && uniqueGroups.indexOf(group) === -1) {
           uniqueGroups.push(group);
         }
@@ -78,14 +79,15 @@ export function useTickerAudience(
 
   const filtered: ITickerItem[] = [];
   items.forEach(function (item) {
+    const groups = item.audienceGroups || [];
     // Items with no audience groups are visible to everyone
-    if (item.audienceGroups.length === 0) {
+    if (groups.length === 0) {
       filtered.push(item);
       return;
     }
     // Check if user is member of at least one required group
     let isMember = false;
-    item.audienceGroups.forEach(function (group) {
+    groups.forEach(function (group) {
       if (memberGroups.indexOf(group) !== -1) {
         isMember = true;
       }

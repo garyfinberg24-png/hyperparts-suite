@@ -24,12 +24,18 @@ export default class HyperLertWebPart extends BaseHyperWebPart<IHyperLertWebPart
     this.render();
   };
 
+  private _onWizardComplete = (): void => {
+    this.properties.wizardCompleted = true;
+    this.render();
+  };
+
   public render(): void {
     var props: IHyperLertComponentProps = {
       ...this.properties,
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
       onRulesChange: this._onRulesChange,
+      onWizardComplete: this._onWizardComplete,
     };
     var element: React.ReactElement<IHyperLertComponentProps> =
       React.createElement(HyperLert, props);
@@ -134,6 +140,14 @@ export default class HyperLertWebPart extends BaseHyperWebPart<IHyperLertWebPart
     }
     if (this.properties.useSampleData === undefined) {
       this.properties.useSampleData = true;
+    }
+
+    // Wizard defaults
+    if (this.properties.showWizardOnInit === undefined) {
+      this.properties.showWizardOnInit = true;
+    }
+    if (this.properties.wizardCompleted === undefined) {
+      this.properties.wizardCompleted = false;
     }
   }
 
@@ -325,6 +339,9 @@ export default class HyperLertWebPart extends BaseHyperWebPart<IHyperLertWebPart
                 }),
                 PropertyPaneToggle("autoCreateList", {
                   label: strings.AutoCreateListLabel,
+                }),
+                PropertyPaneToggle("showWizardOnInit", {
+                  label: strings.ShowWizardOnInitLabel,
                 }),
               ],
             },

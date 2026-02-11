@@ -85,6 +85,9 @@ export interface IHyperExplorerState {
   metadataUploadOpen: boolean;
   metadataUploadState: IMetadataUploadState;
 
+  /** Main wizard */
+  isWizardOpen: boolean;
+
   /** UI Panels */
   keyboardShortcutsOpen: boolean;
   demoMode: boolean;
@@ -156,6 +159,10 @@ export interface IHyperExplorerState {
   closeMetadataUpload: () => void;
   setMetadataUploadState: (state: IMetadataUploadState) => void;
   resetMetadataUpload: () => void;
+  /** Main wizard */
+  openWizard: () => void;
+  closeWizard: () => void;
+
   /** UI Panels */
   toggleKeyboardShortcuts: () => void;
   toggleDemoMode: () => void;
@@ -320,6 +327,7 @@ const INITIAL_STATE = {
   namingConvention: DEFAULT_NAMING_CONVENTION,
   metadataUploadOpen: false,
   metadataUploadState: DEFAULT_METADATA_UPLOAD_STATE,
+  isWizardOpen: false,
   keyboardShortcutsOpen: false,
   demoMode: true,
   bannerDismissed: false,
@@ -658,6 +666,14 @@ export const useHyperExplorerStore = create<IHyperExplorerState>(function (set, 
 
     resetMetadataUpload: function (): void {
       set({ metadataUploadState: DEFAULT_METADATA_UPLOAD_STATE, metadataUploadOpen: false });
+    },
+
+    openWizard: function (): void {
+      set({ isWizardOpen: true });
+    },
+
+    closeWizard: function (): void {
+      set({ isWizardOpen: false });
     },
 
     toggleKeyboardShortcuts: function (): void {

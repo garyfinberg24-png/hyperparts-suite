@@ -34,7 +34,9 @@
         "emailFromName": "HyperLert",
         "defaultEmailTemplate": "",
         "maxHistoryItems": 100,
-        "autoCreateList": true
+        "autoCreateList": true,
+        "showWizardOnInit": true,
+        "wizardCompleted": false
       }
     }
   ]

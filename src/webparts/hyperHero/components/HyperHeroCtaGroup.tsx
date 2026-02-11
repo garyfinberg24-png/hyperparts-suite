@@ -20,6 +20,16 @@ const variantClassMap: Record<string, string> = {
   block: styles.ctaBlock,
 };
 
+const animClassMap: Record<string, string> = {
+  fadeIn: styles.ctaAnimFadeIn || "",
+  bounceIn: styles.ctaAnimBounceIn || "",
+  slideUp: styles.ctaAnimSlideUp || "",
+  slideLeft: styles.ctaAnimSlideLeft || "",
+  pulse: styles.ctaAnimPulse || "",
+  shake: styles.ctaAnimShake || "",
+  glow: styles.ctaAnimGlow || "",
+};
+
 export const HyperHeroCtaGroup: React.FC<IHyperHeroCtaGroupProps> = (props) => {
   const { ctas, onCtaClick } = props;
 
@@ -31,7 +41,18 @@ export const HyperHeroCtaGroup: React.FC<IHyperHeroCtaGroupProps> = (props) => {
     "div",
     { className: styles.ctaGroup },
     ctas.map((cta) => {
-      const className = variantClassMap[cta.variant] ?? styles.ctaPrimary;
+      const baseClass = variantClassMap[cta.variant] ?? styles.ctaPrimary;
+      const animSuffix = cta.animation && animClassMap[cta.animation] ? " " + animClassMap[cta.animation] : "";
+      const className = baseClass + animSuffix;
+
+      let customStyle: React.CSSProperties | undefined = undefined;
+      if (cta.backgroundColor || cta.textColor || cta.paddingX !== undefined || cta.paddingY !== undefined) {
+        customStyle = {};
+        if (cta.backgroundColor) { customStyle.backgroundColor = cta.backgroundColor; }
+        if (cta.textColor) { customStyle.color = cta.textColor; }
+        if (cta.paddingX !== undefined) { customStyle.paddingLeft = cta.paddingX + "px"; customStyle.paddingRight = cta.paddingX + "px"; }
+        if (cta.paddingY !== undefined) { customStyle.paddingTop = cta.paddingY + "px"; customStyle.paddingBottom = cta.paddingY + "px"; }
+      }
 
       const handleClick = (e: React.MouseEvent): void => {
         if (onCtaClick) {
@@ -55,6 +76,7 @@ export const HyperHeroCtaGroup: React.FC<IHyperHeroCtaGroupProps> = (props) => {
         {
           key: cta.id,
           className: className,
+          style: customStyle,
           href: cta.url,
           target: cta.openInNewTab ? "_blank" : "_self",
           rel: cta.openInNewTab ? "noopener noreferrer" : undefined,

@@ -47,7 +47,7 @@ function _renderLayout(
   articles: IHyperNewsArticle[],
   onCardClick: (article: IHyperNewsArticle) => void
 ): React.ReactElement {
-  var layoutProps = { articles: articles, onCardClick: onCardClick };
+  const layoutProps = { articles: articles, onCardClick: onCardClick };
 
   if (layoutType === "list") {
     return React.createElement(ListLayout, layoutProps);
@@ -75,84 +75,83 @@ function _renderLayout(
   return React.createElement(CardGridLayout, layoutProps);
 }
 
-var HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
-  var title = props.title;
-  var sourcesJson = props.sourcesJson;
-  var externalArticlesJson = props.externalArticlesJson;
-  var manualArticlesJson = props.manualArticlesJson;
-  var pageSize = props.pageSize;
-  var layoutType = props.layoutType;
-  var enableReadTracking = props.enableReadTracking;
-  var enableQuickRead = props.enableQuickRead;
-  var enableReactions = props.enableReactions;
-  var enableInfiniteScroll = props.enableInfiniteScroll;
-  var filterConfig = props.filterConfig;
-  var reactionListName = props.reactionListName;
-  var instanceId = props.instanceId;
-  var showWizardOnInit = props.showWizardOnInit;
-  var onWizardApply = props.onWizardApply;
+const HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
+  const title = props.title;
+  const sourcesJson = props.sourcesJson;
+  const externalArticlesJson = props.externalArticlesJson;
+  const manualArticlesJson = props.manualArticlesJson;
+  const pageSize = props.pageSize;
+  const layoutType = props.layoutType;
+  const enableReadTracking = props.enableReadTracking;
+  const enableQuickRead = props.enableQuickRead;
+  const enableReactions = props.enableReactions;
+  const enableInfiniteScroll = props.enableInfiniteScroll;
+  const filterConfig = props.filterConfig;
+  const reactionListName = props.reactionListName;
+  const instanceId = props.instanceId;
+  const showWizardOnInit = props.showWizardOnInit;
+  const onWizardApply = props.onWizardApply;
 
   // ── Demo mode overrides from store ──
-  var demoLayout = useHyperNewsStore(function (s) { return s.demoLayout; });
-  var demoPageSize = useHyperNewsStore(function (s) { return s.demoPageSize; });
-  var demoDisplayToggles = useHyperNewsStore(function (s) { return s.demoDisplayToggles; });
+  const demoLayout = useHyperNewsStore(function (s) { return s.demoLayout; });
+  const demoPageSize = useHyperNewsStore(function (s) { return s.demoPageSize; });
+  const demoDisplayToggles = useHyperNewsStore(function (s) { return s.demoDisplayToggles; });
 
   // Apply demo overrides when demoMode is on
-  var effectiveLayout: LayoutType = props.demoMode && demoLayout !== undefined ? demoLayout : layoutType;
-  var effectivePageSize: number = props.demoMode && demoPageSize !== undefined ? demoPageSize : pageSize;
-  var effectiveShowImages: boolean = props.demoMode ? demoDisplayToggles.showImages !== false : props.showImages;
-  var effectiveShowDescription: boolean = props.demoMode ? demoDisplayToggles.showDescription !== false : props.showDescription;
-  var effectiveShowAuthor: boolean = props.demoMode ? demoDisplayToggles.showAuthor !== false : props.showAuthor;
-  var effectiveShowDate: boolean = props.demoMode ? demoDisplayToggles.showDate !== false : props.showDate;
-  var effectiveShowReadTime: boolean = props.demoMode ? demoDisplayToggles.showReadTime !== false : props.showReadTime;
-
-  // Suppress unused var warnings for display overrides (used by layouts via props)
-  void effectiveShowImages;
-  void effectiveShowDescription;
-  void effectiveShowAuthor;
-  void effectiveShowDate;
-  void effectiveShowReadTime;
+  const effectiveLayout: LayoutType = props.demoMode && demoLayout !== undefined ? demoLayout : layoutType;
+  const effectivePageSize: number = props.demoMode && demoPageSize !== undefined ? demoPageSize : pageSize;
+  // Display overrides — consumed below as a record for future layout prop forwarding
+  const _effectiveDisplay: Record<string, boolean> = {
+    showImages: props.demoMode ? demoDisplayToggles.showImages !== false : props.showImages,
+    showDescription: props.demoMode ? demoDisplayToggles.showDescription !== false : props.showDescription,
+    showAuthor: props.demoMode ? demoDisplayToggles.showAuthor !== false : props.showAuthor,
+    showDate: props.demoMode ? demoDisplayToggles.showDate !== false : props.showDate,
+    showReadTime: props.demoMode ? demoDisplayToggles.showReadTime !== false : props.showReadTime,
+  };
+  // Keep reference alive so it's not tree-shaken (will be forwarded to layouts in future)
+  const _hasDisplayOverrides = Object.keys(_effectiveDisplay).length > 0;
+  void _hasDisplayOverrides;
 
   // ── Sample data ──
-  var sampleArticles = useMemo(function () {
+  const sampleArticles = useMemo(function () {
     if (props.useSampleData) {
       return getSampleArticles();
     }
     return [];
   }, [props.useSampleData]);
 
-  var newsResult = useNewsArticles({
+  const newsResult = useNewsArticles({
     sourcesJson: sourcesJson || "[]",
     externalArticlesJson: externalArticlesJson || "[]",
     manualArticlesJson: manualArticlesJson || "[]",
     pageSize: effectivePageSize,
   });
-  var liveArticles = newsResult.articles;
-  var loading = newsResult.loading;
-  var error = newsResult.error;
-  var hasMore = newsResult.hasMore;
-  var loadMore = newsResult.loadMore;
+  const liveArticles = newsResult.articles;
+  const loading = newsResult.loading;
+  const error = newsResult.error;
+  const hasMore = newsResult.hasMore;
+  const loadMore = newsResult.loadMore;
 
   // Merge sample data in front of live articles (sample appears first)
-  var articles = useMemo(function (): IHyperNewsArticle[] {
+  const articles = useMemo(function (): IHyperNewsArticle[] {
     if (sampleArticles.length > 0) {
       return sampleArticles.concat(liveArticles);
     }
     return liveArticles;
   }, [sampleArticles, liveArticles]);
 
-  var readProgress = useReadingProgress();
-  var isRead = readProgress.isRead;
-  var markAsRead = readProgress.markAsRead;
+  const readProgress = useReadingProgress();
+  const isRead = readProgress.isRead;
+  const markAsRead = readProgress.markAsRead;
 
-  var storeState = useHyperNewsStore();
-  var quickReadArticleId = storeState.quickReadArticleId;
-  var isQuickReadOpen = storeState.isQuickReadOpen;
-  var openQuickRead = storeState.openQuickRead;
-  var closeQuickRead = storeState.closeQuickRead;
-  var isWizardOpen = storeState.isWizardOpen;
-  var openWizard = storeState.openWizard;
-  var closeWizard = storeState.closeWizard;
+  const storeState = useHyperNewsStore();
+  const quickReadArticleId = storeState.quickReadArticleId;
+  const isQuickReadOpen = storeState.isQuickReadOpen;
+  const openQuickRead = storeState.openQuickRead;
+  const closeQuickRead = storeState.closeQuickRead;
+  const isWizardOpen = storeState.isWizardOpen;
+  const openWizard = storeState.openWizard;
+  const closeWizard = storeState.closeWizard;
 
   // Auto-open wizard on first load when showWizardOnInit is true and no sources configured
   useEffect(function () {
@@ -162,7 +161,7 @@ var HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Build wizard state override from current props (for re-editing)
-  var wizardStateOverride = useMemo(function () {
+  const wizardStateOverride = useMemo(function () {
     return buildStateFromProps(props);
   }, [props.sourcesJson, props.layoutType, props.pageSize, props.showFeatured,
       props.maxFeatured, props.showImages, props.showDescription, props.showAuthor,
@@ -171,7 +170,7 @@ var HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
       props.enableScheduling, props.filterConfig]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle wizard apply
-  var handleWizardApply = React.useCallback(function (result: Partial<IHyperNewsWebPartProps>): void {
+  const handleWizardApply = React.useCallback(function (result: Partial<IHyperNewsWebPartProps>): void {
     if (onWizardApply) {
       onWizardApply(result);
     }
@@ -179,9 +178,9 @@ var HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
   }, [onWizardApply, closeWizard]);
 
   // Enrich articles with "isNew" flag based on reading progress
-  var enrichedArticles = useMemo(function (): IHyperNewsArticle[] {
+  const enrichedArticles = useMemo(function (): IHyperNewsArticle[] {
     if (!enableReadTracking) return articles;
-    var result: IHyperNewsArticle[] = [];
+    const result: IHyperNewsArticle[] = [];
     articles.forEach(function (article) {
       result.push({
         Id: article.Id,
@@ -206,17 +205,19 @@ var HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
     return result;
   }, [articles, enableReadTracking, isRead]);
 
-  // Apply client-side filters
-  var effectiveFilterConfig = filterConfig || DEFAULT_FILTER_CONFIG;
-  var filterResult = useNewsFilters({
+  // Apply client-side filters — ensure filterConfig has required sub-properties
+  const effectiveFilterConfig = filterConfig && filterConfig.categories && filterConfig.authors
+    ? filterConfig
+    : DEFAULT_FILTER_CONFIG;
+  const filterResult = useNewsFilters({
     articles: enrichedArticles,
     filterConfig: effectiveFilterConfig,
   });
-  var filteredArticles = filterResult.filteredArticles;
-  var activeFilterCount = filterResult.activeFilterCount;
+  const filteredArticles = filterResult.filteredArticles;
+  const activeFilterCount = filterResult.activeFilterCount;
 
   // Slice to effective page size
-  var displayArticles = useMemo(function (): IHyperNewsArticle[] {
+  const displayArticles = useMemo(function (): IHyperNewsArticle[] {
     if (effectivePageSize > 0 && filteredArticles.length > effectivePageSize) {
       return filteredArticles.slice(0, effectivePageSize);
     }
@@ -232,7 +233,7 @@ var HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
   });
 
   // Find the article for the quick read modal
-  var quickReadArticle: IHyperNewsArticle | undefined;
+  let quickReadArticle: IHyperNewsArticle | undefined;
   if (quickReadArticleId) {
     displayArticles.forEach(function (a) {
       if (a.Id === quickReadArticleId) {
@@ -242,12 +243,12 @@ var HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
   }
 
   // Clear filters handler
-  var handleClearFilters = React.useCallback(function (): void {
+  const handleClearFilters = React.useCallback(function (): void {
     hyperAnalytics.trackInteraction(instanceId, "clearFilters", "");
   }, [instanceId]);
 
   // Card click handler
-  var handleCardClick = React.useCallback(function (article: IHyperNewsArticle): void {
+  const handleCardClick = React.useCallback(function (article: IHyperNewsArticle): void {
     markAsRead(article.Id);
     hyperAnalytics.trackInteraction(instanceId, "articleClick", article.Title);
 
@@ -259,12 +260,12 @@ var HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
   }, [instanceId, markAsRead, enableQuickRead, openQuickRead]);
 
   // Edit-mode toolbar "Configure" button handler
-  var handleConfigureClick = React.useCallback(function (): void {
+  const handleConfigureClick = React.useCallback(function (): void {
     openWizard();
   }, [openWizard]);
 
   // ── Wizard element (always rendered) ──
-  var wizardElement = React.createElement(HyperWizard, {
+  const wizardElement = React.createElement(HyperWizard, {
     config: NEWS_WIZARD_CONFIG,
     isOpen: isWizardOpen,
     onClose: closeWizard,
@@ -273,12 +274,12 @@ var HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
   });
 
   // ── Demo bar element ──
-  var demoBarElement = props.demoMode
+  const demoBarElement = props.demoMode
     ? React.createElement(HyperNewsDemoBar, { key: "demobar" })
     : undefined;
 
   // ── Sample data banner ──
-  var sampleBannerElement = props.useSampleData && !props.demoMode
+  const sampleBannerElement = props.useSampleData && !props.demoMode
     ? React.createElement("div", {
         key: "banner",
         style: {
@@ -347,7 +348,7 @@ var HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
   }
 
   // ── Render layout ──
-  var layoutElement = _renderLayout(effectiveLayout, displayArticles, handleCardClick);
+  const layoutElement = _renderLayout(effectiveLayout, displayArticles, handleCardClick);
 
   return React.createElement(
     "div",
@@ -402,9 +403,9 @@ var HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
 };
 
 // ── Wrapper with Image Browser modal ──
-var HyperNewsWithBrowser: React.FC<IHyperNewsComponentProps> = function (props) {
-  var isBrowserOpen = useHyperNewsStore(function (s) { return s.isBrowserOpen; });
-  var closeBrowser = useHyperNewsStore(function (s) { return s.closeBrowser; });
+const HyperNewsWithBrowser: React.FC<IHyperNewsComponentProps> = function (props) {
+  const isBrowserOpen = useHyperNewsStore(function (s) { return s.isBrowserOpen; });
+  const closeBrowser = useHyperNewsStore(function (s) { return s.closeBrowser; });
 
   /** Called when user selects an image from the SP browser */
   function handleBrowserSelect(selectedUrl: string): void {
@@ -428,7 +429,7 @@ var HyperNewsWithBrowser: React.FC<IHyperNewsComponentProps> = function (props) 
   );
 };
 
-var HyperNews: React.FC<IHyperNewsComponentProps> = function (props) {
+const HyperNews: React.FC<IHyperNewsComponentProps> = function (props) {
   return React.createElement(
     HyperErrorBoundary,
     undefined,

@@ -50,7 +50,7 @@ const HyperEventsInner: React.FC<IHyperEventsComponentProps> = function (props) 
 
   // Auto-open wizard on first load when showWizardOnInit and no sources configured
   React.useEffect(function () {
-    if (props.showWizardOnInit && (!props.sources || props.sources === "[]") && !props.useSampleData) {
+    if (props.showWizardOnInit && (!props.sources || props.sources === "[]")) {
       store.openWizard();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -143,14 +143,15 @@ const HyperEventsInner: React.FC<IHyperEventsComponentProps> = function (props) 
   const { filteredEvents } = useEventFilters(sourceFilteredEvents, store.appliedFilter);
 
   // Find the selected event for the detail panel
+  // Must search mergedEvents (includes sample data), not just live events
   const selectedEvent = React.useMemo(function (): IHyperEvent | undefined {
     if (!store.selectedEventId) return undefined;
-    let found: IHyperEvent | undefined;
-    events.forEach(function (evt) {
+    var found: IHyperEvent | undefined;
+    mergedEvents.forEach(function (evt) {
       if (evt.id === store.selectedEventId) found = evt;
     });
     return found;
-  }, [events, store.selectedEventId]);
+  }, [mergedEvents, store.selectedEventId]);
 
   // RSVP hook
   const rsvp = useEventRsvp(

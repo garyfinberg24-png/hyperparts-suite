@@ -23,8 +23,8 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
 
   /** Callback: wizard applies config → persist to web part properties */
   private _onWizardApply = (result: Partial<IHyperNewsWebPartProps>): void => {
-    var keys = Object.keys(result);
-    var self = this;
+    const keys = Object.keys(result);
+    const self = this;
     keys.forEach(function (key) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (self.properties as Record<string, any>)[key] = (result as Record<string, any>)[key];
@@ -43,17 +43,16 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
   };
 
   public render(): void {
-    var props: IHyperNewsComponentProps = {
+    const props: IHyperNewsComponentProps = {
       ...this.properties,
       instanceId: this.instanceId,
       onWizardApply: this._onWizardApply,
       onOpenWizard: this._onOpenWizard,
-      onImageSelect: (imageUrl: string): void => {
+      onImageSelect: (_imageUrl: string): void => {
         // Future: persist selected image URL for manual article editing
-        void imageUrl;
       },
     };
-    var element: React.ReactElement<IHyperNewsComponentProps> =
+    const element: React.ReactElement<IHyperNewsComponentProps> =
       React.createElement(HyperNews, props);
     ReactDom.render(element, this.domElement);
   }
@@ -156,15 +155,15 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
 
   /** Build a human-readable summary of configured sources */
   private _getSourcesSummary(): string {
-    var sources = parseSources(this.properties.sourcesJson);
+    const sources = parseSources(this.properties.sourcesJson);
     if (sources.length === 0) return "No sources configured. Use the wizard to add sources.";
-    var counts: Record<string, number> = {};
+    const counts: Record<string, number> = {};
     sources.forEach(function (s) {
-      var label = SOURCE_TYPE_LABELS[s.type];
+      const label = SOURCE_TYPE_LABELS[s.type];
       counts[label] = (counts[label] || 0) + 1;
     });
-    var parts: string[] = [];
-    var keys = Object.keys(counts);
+    const parts: string[] = [];
+    const keys = Object.keys(counts);
     keys.forEach(function (label) {
       parts.push(String(counts[label]) + " " + label);
     });
@@ -172,7 +171,7 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
   }
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
-    var self = this;
+    const self = this;
 
     return {
       pages: [
@@ -188,7 +187,7 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
                   buttonType: PropertyPaneButtonType.Hero,
                   onClick: function () {
                     // Import the store and open the wizard
-                    var storeModule = require("./store/useHyperNewsStore"); // eslint-disable-line @typescript-eslint/no-var-requires
+                    const storeModule = require("./store/useHyperNewsStore"); // eslint-disable-line @typescript-eslint/no-var-requires
                     storeModule.useHyperNewsStore.getState().openWizard();
                     self.render();
                   },
@@ -351,7 +350,7 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
   /** Open the SharePoint image browser panel */
   private _onOpenImageBrowser(): void {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    var store = require("./store/useHyperNewsStore");
+    const store = require("./store/useHyperNewsStore");
     if (store && store.useHyperNewsStore) {
       store.useHyperNewsStore.getState().openBrowser();
     }

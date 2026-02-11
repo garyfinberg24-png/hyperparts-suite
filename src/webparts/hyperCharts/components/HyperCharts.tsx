@@ -299,7 +299,7 @@ const HyperChartsInner: React.FC<IHyperChartsComponentProps> = function (props) 
 
   // Auto-open wizard on first load when showWizardOnInit and no charts configured
   React.useEffect(function () {
-    if (props.showWizardOnInit && (!props.charts || props.charts === "" || props.charts === "[]") && !props.useSampleData) {
+    if (props.showWizardOnInit && (!props.charts || props.charts === "" || props.charts === "[]")) {
       store.openWizard();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

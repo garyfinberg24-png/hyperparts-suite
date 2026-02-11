@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactDom from "react-dom";
-import { Version } from "@microsoft/sp-core-library";
+import { Version, DisplayMode } from "@microsoft/sp-core-library";
 import {
   type IPropertyPaneConfiguration,
   PropertyPaneTextField,
@@ -17,10 +17,17 @@ import type { IHyperRollupWebPartProps } from "./models";
 
 export default class HyperRollupWebPart extends BaseHyperWebPart<IHyperRollupWebPartProps> {
 
+  private _onWizardComplete = (): void => {
+    this.properties.wizardCompleted = true;
+    this.render();
+  };
+
   public render(): void {
     const props: IHyperRollupComponentProps = {
       ...this.properties,
       instanceId: this.instanceId,
+      isEditMode: this.displayMode === DisplayMode.Edit,
+      onWizardComplete: this._onWizardComplete,
     };
     const element: React.ReactElement<IHyperRollupComponentProps> =
       React.createElement(HyperRollup, props);
@@ -140,10 +147,13 @@ export default class HyperRollupWebPart extends BaseHyperWebPart<IHyperRollupWeb
       this.properties.newBadgeDays = 0;
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = false;
+      this.properties.enableDemoMode = true;
     }
     if (this.properties.demoPresetId === undefined) {
       this.properties.demoPresetId = "documents";
+    }
+    if (this.properties.wizardCompleted === undefined) {
+      this.properties.wizardCompleted = false;
     }
 
     // Defaults — JSON strings

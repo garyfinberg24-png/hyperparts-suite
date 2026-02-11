@@ -20,6 +20,8 @@ import HyperDirectoryPagination from "./HyperDirectoryPagination";
 import { GridLayout, ListLayout, CompactLayout, CardLayout, RollerDexLayout, MasonryLayout, OrgChartLayout } from "./layouts";
 import type { IDirectoryLayoutProps } from "./layouts";
 import HyperDirectoryProfileCard from "./HyperDirectoryProfileCard";
+import HyperDirectoryDemoBar from "./HyperDirectoryDemoBar";
+import type { DirectoryLayoutMode, DirectoryCardStyle } from "../models";
 import styles from "./HyperDirectory.module.scss";
 
 export interface IHyperDirectoryComponentProps extends IHyperDirectoryWebPartProps {
@@ -83,6 +85,22 @@ const HyperDirectoryInner: React.FC<IHyperDirectoryComponentProps> = function (p
   var isWizardOpen = useHyperDirectoryStore(function (s) { return s.isWizardOpen; });
   var openWizard = useHyperDirectoryStore(function (s) { return s.openWizard; });
   var closeWizard = useHyperDirectoryStore(function (s) { return s.closeWizard; });
+
+  // Demo bar store selectors
+  var demoLayoutMode = useHyperDirectoryStore(function (s) { return s.demoLayoutMode; });
+  var demoCardStyle = useHyperDirectoryStore(function (s) { return s.demoCardStyle; });
+  var demoShowPresence = useHyperDirectoryStore(function (s) { return s.demoShowPresence; });
+  var setDemoLayoutMode = useHyperDirectoryStore(function (s) { return s.setDemoLayoutMode; });
+  var setDemoCardStyle = useHyperDirectoryStore(function (s) { return s.setDemoCardStyle; });
+  var toggleDemoShowPresence = useHyperDirectoryStore(function (s) { return s.toggleDemoShowPresence; });
+
+  // Effective layout/card/presence (demo bar overrides property pane values)
+  var effectiveLayoutMode: DirectoryLayoutMode = demoLayoutMode || layoutMode;
+  var effectiveCardStyle: DirectoryCardStyle = demoCardStyle || cardStyle;
+  var effectiveShowPresence: boolean = demoShowPresence !== undefined ? demoShowPresence : showPresence;
+
+  // Show demo bar when sample data is active AND not in edit mode
+  var showDemoBar = !!props.useSampleData && !props.isEditMode;
 
   // Auto-open wizard on first load when not yet configured
   React.useEffect(function () {
@@ -267,14 +285,14 @@ const HyperDirectoryInner: React.FC<IHyperDirectoryComponentProps> = function (p
     );
   }
 
-  // Build shared layout props
+  // Build shared layout props (use demo bar overrides when active)
   const layoutProps: IDirectoryLayoutProps = {
     users: pagedUsers,
     photoMap: photoMap,
     presenceMap: presenceMap,
-    cardStyle: cardStyle,
+    cardStyle: effectiveCardStyle,
     photoSize: photoSize,
-    showPresence: showPresence,
+    showPresence: effectiveShowPresence,
     showQuickActions: showQuickActions,
     enabledActions: parsedActions,
     showPhotoPlaceholder: showPhotoPlaceholder,
@@ -283,26 +301,26 @@ const HyperDirectoryInner: React.FC<IHyperDirectoryComponentProps> = function (p
     onVCardExport: handleVCardExport,
   };
 
-  // Select layout
+  // Select layout (using effective layout from demo bar or property pane)
   var layoutElement: React.ReactElement;
-  if (layoutMode === "list") {
+  if (effectiveLayoutMode === "list") {
     layoutElement = React.createElement(ListLayout, layoutProps);
-  } else if (layoutMode === "compact") {
+  } else if (effectiveLayoutMode === "compact") {
     layoutElement = React.createElement(CompactLayout, layoutProps);
-  } else if (layoutMode === "card") {
+  } else if (effectiveLayoutMode === "card") {
     layoutElement = React.createElement(CardLayout, layoutProps);
-  } else if (layoutMode === "rollerDex") {
+  } else if (effectiveLayoutMode === "rollerDex") {
     layoutElement = React.createElement(RollerDexLayout, {
       ...layoutProps,
       visibleCards: props.rollerDexVisibleCards,
       speed: props.rollerDexSpeed,
     });
-  } else if (layoutMode === "masonry") {
+  } else if (effectiveLayoutMode === "masonry") {
     layoutElement = React.createElement(MasonryLayout, {
       ...layoutProps,
       masonryColumns: props.masonryColumns,
     });
-  } else if (layoutMode === "orgChart") {
+  } else if (effectiveLayoutMode === "orgChart") {
     layoutElement = React.createElement(OrgChartLayout, layoutProps);
   } else {
     // Default: grid
@@ -387,6 +405,17 @@ const HyperDirectoryInner: React.FC<IHyperDirectoryComponentProps> = function (p
 
   return React.createElement("div", { className: styles.hyperDirectory },
     title ? React.createElement("h2", { className: styles.title }, title) : undefined,
+    showDemoBar
+      ? React.createElement(HyperDirectoryDemoBar, {
+          layoutMode: effectiveLayoutMode,
+          cardStyle: effectiveCardStyle,
+          showPresence: effectiveShowPresence,
+          onLayoutChange: setDemoLayoutMode,
+          onCardStyleChange: setDemoCardStyle,
+          onPresenceToggle: toggleDemoShowPresence,
+          onOpenWizard: openWizard,
+        })
+      : undefined,
     usingSampleData
       ? React.createElement("div", {
           className: styles.sampleDataBanner,

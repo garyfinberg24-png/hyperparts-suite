@@ -46,6 +46,7 @@ var LazyHyperWizard = React.lazy(getHyperWizard);
 export interface IHyperSearchComponentProps extends IHyperSearchWebPartProps {
   instanceId: string;
   isEditMode: boolean;
+  onWizardComplete?: (result: Record<string, unknown>) => void;
 }
 
 /** Parse JSON-stored V2 features */
@@ -333,7 +334,10 @@ var HyperSearchInner: React.FC<IHyperSearchComponentProps> = function (props) {
             config: require("./wizard/searchWizardConfig").SEARCH_WIZARD_CONFIG,
             isOpen: true,
             onClose: handleCloseWizard,
-            onApply: function (_result: Record<string, unknown>) {
+            onApply: function (result: Record<string, unknown>) {
+              if (props.onWizardComplete) {
+                props.onWizardComplete(result);
+              }
               handleCloseWizard();
             },
           })

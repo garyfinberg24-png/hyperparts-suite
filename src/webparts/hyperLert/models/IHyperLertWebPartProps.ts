@@ -106,4 +106,13 @@ export interface IHyperLertWebPartProps extends IBaseHyperWebPartProps {
 
   /** Use sample data for demo/preview purposes */
   useSampleData: boolean;
+
+  // -------------------------------------------------------------------------
+  // Wizard
+  // -------------------------------------------------------------------------
+
+  /** Show the setup wizard on init when in edit mode and not yet completed */
+  showWizardOnInit: boolean;
+  /** Whether the setup wizard has been completed at least once */
+  wizardCompleted: boolean;
 }
