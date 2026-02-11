@@ -144,6 +144,8 @@ gulp package-solution --ship  # Create .sppkg
 - [x] HyperWizard (Pattern B) — 2-panel modal setup wizard for all 20 web parts
 - [x] DemoBar Rich Panel — Shared collapsible toolbar for all 20 web parts (shared SCSS)
 - [x] Sample Data — Realistic sample data wired for all applicable web parts (useSampleData=true)
+- [x] enableDemoMode=true default — Demo panel active by default across all 20 web parts
+- [x] Property standardization — wizardCompleted and enableDemoMode naming unified across all 20 web parts
 - [x] HyperSlider removed — functionality superseded by HyperHero
 
 ### Future
@@ -183,6 +185,7 @@ gulp package-solution --ship  # Create .sppkg
 | 0.0.19  | February 9, 2026  | HyperImage + HyperStyle + HyperProfile V2 + HyperSearch V2 + HyperLert V2                   |
 | 0.0.20  | February 9, 2026  | Bug fixes + new features across 17 web parts (82 files)                                     |
 | 0.0.21  | February 11, 2026 | DemoBar Rich Panel 20/20, wizard Pattern B 20/20, HyperSlider removed, sample data wired    |
+| 0.0.22  | February 11, 2026 | enableDemoMode=true default 20/20, wizardCompleted standardized, demoMode renamed           |
 
 ## References
 
