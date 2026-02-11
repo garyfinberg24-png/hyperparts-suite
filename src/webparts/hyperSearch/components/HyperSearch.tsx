@@ -28,6 +28,9 @@ import HyperSearchZeroQuery from "./HyperSearchZeroQuery";
 import HyperSearchV2Results from "./HyperSearchV2Results";
 import HyperSearchV2FilterPanel from "./HyperSearchV2FilterPanel";
 
+// Demo bar
+import HyperSearchDemoBar from "./HyperSearchDemoBar";
+
 import styles from "./HyperSearch.module.scss";
 
 // ── Lazy-load wizard ──
@@ -83,11 +86,35 @@ function parseScopes(json: string): SearchScopeType[] {
 var HyperSearchInner: React.FC<IHyperSearchComponentProps> = function (props) {
   var store = useHyperSearchStore();
 
+  // ── Demo mode local state ──
+  var demoScopeState = React.useState<SearchScopeType>(props.defaultScope || "everything");
+  var demoScope = demoScopeState[0];
+  var setDemoScope = demoScopeState[1];
+
+  var demoLayoutState = React.useState<ResultLayoutMode>((props.resultLayout || "listRich") as ResultLayoutMode);
+  var demoLayout = demoLayoutState[0];
+  var setDemoLayout = demoLayoutState[1];
+
+  var demoShowRefinersState = React.useState<boolean>(props.enableRefiners !== false);
+  var demoShowRefiners = demoShowRefinersState[0];
+  var setDemoShowRefiners = demoShowRefinersState[1];
+
+  var demoShowPromotedState = React.useState<boolean>(true);
+  var demoShowPromoted = demoShowPromotedState[0];
+  var setDemoShowPromoted = demoShowPromotedState[1];
+
+  var demoShowPreviewState = React.useState<boolean>(props.enableResultPreviews !== false);
+  var demoShowPreview = demoShowPreviewState[0];
+  var setDemoShowPreview = demoShowPreviewState[1];
+
   // Parse V2 config from props
   var features = React.useMemo(function () { return parseFeatures(props.v2Features); }, [props.v2Features]);
   var filters = React.useMemo(function () { return parseFilters(props.v2Filters); }, [props.v2Filters]);
   var activeScopes = React.useMemo(function () { return parseScopes(props.activeScopes); }, [props.activeScopes]);
   var resultLayout = (props.resultLayout || "listRich") as ResultLayoutMode;
+
+  // ── Effective values: demo overrides when demo mode is on ──
+  var effectiveLayout = props.enableDemoMode ? demoLayout : resultLayout;
 
   // Initialize store defaults from props
   React.useEffect(function () {
@@ -229,6 +256,28 @@ var HyperSearchInner: React.FC<IHyperSearchComponentProps> = function (props) {
     className: styles.hyperSearch,
     style: { "--search-accent": accentColor, "--search-radius": String(props.borderRadius || 8) + "px" } as React.CSSProperties,
   },
+    // Demo bar (when demo mode is enabled)
+    props.enableDemoMode
+      ? React.createElement(HyperSearchDemoBar, {
+          currentScope: demoScope,
+          currentLayout: demoLayout,
+          showRefiners: demoShowRefiners,
+          showPromoted: demoShowPromoted,
+          showPreview: demoShowPreview,
+          resultCount: store.results.length,
+          onScopeChange: function (scope: SearchScopeType): void { setDemoScope(scope); },
+          onLayoutChange: function (layout: ResultLayoutMode): void { setDemoLayout(layout); },
+          onToggleRefiners: function (): void { setDemoShowRefiners(!demoShowRefiners); },
+          onTogglePromoted: function (): void { setDemoShowPromoted(!demoShowPromoted); },
+          onTogglePreview: function (): void { setDemoShowPreview(!demoShowPreview); },
+          onExitDemo: function (): void {
+            if (props.onWizardComplete) {
+              props.onWizardComplete({ enableDemoMode: false });
+            }
+          },
+        })
+      : undefined,
+
     // Title + Configure button (in edit mode)
     props.title || props.isEditMode
       ? React.createElement("div", { className: styles.titleRow },
@@ -306,7 +355,7 @@ var HyperSearchInner: React.FC<IHyperSearchComponentProps> = function (props) {
           promotedResults: matchedPromoted,
           enablePreviews: props.enableResultPreviews || features.inlinePreview,
           enableAnalytics: props.enableAnalytics,
-          resultLayout: resultLayout,
+          resultLayout: effectiveLayout,
           enableQuickActions: features.quickActions,
           enableHitHighlight: features.hitHighlight,
           enableThumbnailPreviews: features.thumbnailPreviews,

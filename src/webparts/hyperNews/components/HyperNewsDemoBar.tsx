@@ -1,9 +1,9 @@
 import * as React from "react";
 import { useHyperNewsStore } from "../store/useHyperNewsStore";
 import type { LayoutType } from "../models";
-import styles from "./HyperNewsDemoBar.module.scss";
+import styles from "../../../common/components/demoBar/DemoBarRichPanel.module.scss";
 
-/* ── Quick-pick options for each category ── */
+/* -- Quick-pick options for each category -- */
 
 var DEMO_LAYOUTS: Array<{ key: LayoutType; label: string }> = [
   { key: "cardGrid", label: "Card Grid" },
@@ -35,61 +35,15 @@ var DEMO_DISPLAY_TOGGLES: Array<{ key: string; label: string }> = [
   { key: "showReadTime", label: "Read Time" },
 ];
 
-/* ── Sub-components ── */
-
-interface IDemoBarSectionProps {
-  title: string;
-  activeKey: string | undefined;
-  items: Array<{ key: string; label: string }>;
-  onSelect: (key: string) => void;
+function getLayoutLabel(key: LayoutType): string {
+  var label = "";
+  DEMO_LAYOUTS.forEach(function (item) {
+    if (item.key === key) { label = item.label; }
+  });
+  return label || String(key);
 }
 
-var DemoBarSection: React.FC<IDemoBarSectionProps> = function (props) {
-  var buttons = props.items.map(function (item) {
-    var isActive = props.activeKey === item.key;
-    var cls = styles.demoBtn + (isActive ? " " + styles.demoBtnActive : "");
-    return React.createElement("button", {
-      key: item.key,
-      className: cls,
-      type: "button",
-      onClick: function () { props.onSelect(item.key); },
-      "aria-pressed": isActive ? "true" : "false",
-    }, item.label);
-  });
-
-  return React.createElement("div", { className: styles.demoSection },
-    React.createElement("span", { className: styles.demoSectionTitle }, props.title),
-    React.createElement("div", { className: styles.demoBtnGroup }, buttons)
-  );
-};
-
-interface IDemoToggleSectionProps {
-  title: string;
-  items: Array<{ key: string; label: string }>;
-  activeKeys: Record<string, boolean>;
-  onToggle: (key: string) => void;
-}
-
-var DemoToggleSection: React.FC<IDemoToggleSectionProps> = function (props) {
-  var buttons = props.items.map(function (item) {
-    var isActive = props.activeKeys[item.key] !== false;
-    var cls = styles.demoBtn + (isActive ? " " + styles.demoBtnActive : "");
-    return React.createElement("button", {
-      key: item.key,
-      className: cls,
-      type: "button",
-      onClick: function () { props.onToggle(item.key); },
-      "aria-pressed": isActive ? "true" : "false",
-    }, item.label);
-  });
-
-  return React.createElement("div", { className: styles.demoSection },
-    React.createElement("span", { className: styles.demoSectionTitle }, props.title),
-    React.createElement("div", { className: styles.demoBtnGroup }, buttons)
-  );
-};
-
-/* ── Main Component ── */
+/* -- Main Component -- */
 
 var HyperNewsDemoBar: React.FC = function () {
   var demoLayout = useHyperNewsStore(function (s) { return s.demoLayout; });
@@ -100,35 +54,131 @@ var HyperNewsDemoBar: React.FC = function () {
   var toggleDemoDisplay = useHyperNewsStore(function (s) { return s.toggleDemoDisplay; });
   var resetDemo = useHyperNewsStore(function (s) { return s.resetDemo; });
 
-  return React.createElement("div", { className: styles.demoBar, role: "toolbar", "aria-label": "Demo mode controls" },
-    React.createElement("div", { className: styles.demoBarHeader },
-      React.createElement("span", { className: styles.demoBarTitle }, "Demo Mode"),
+  var expandedState = React.useState(false);
+  var isExpanded = expandedState[0];
+  var setExpanded = expandedState[1];
+
+  // -- Build collapsed summary --
+  var summary = (demoLayout ? getLayoutLabel(demoLayout) : "Default") +
+    " | " + (demoPageSize !== undefined ? demoPageSize + " items" : "Default");
+
+  // -- Layout chips --
+  var layoutChips: React.ReactNode[] = [];
+  DEMO_LAYOUTS.forEach(function (item) {
+    var isActive = demoLayout === item.key;
+    var chipClass = isActive
+      ? styles.chip + " " + styles.chipActive
+      : styles.chip;
+
+    layoutChips.push(
       React.createElement("button", {
-        className: styles.demoResetBtn,
+        key: item.key,
+        className: chipClass,
         type: "button",
-        onClick: function () { resetDemo(); },
-        "aria-label": "Reset demo overrides",
-      }, "Reset")
+        onClick: function (): void { setDemoLayout(item.key as LayoutType); },
+        "aria-pressed": isActive ? "true" : "false",
+      }, item.label)
+    );
+  });
+
+  // -- Page size chips --
+  var pageSizeChips: React.ReactNode[] = [];
+  DEMO_PAGE_SIZES.forEach(function (item) {
+    var isActive = demoPageSize === item.key;
+    var chipClass = isActive
+      ? styles.chip + " " + styles.chipActive
+      : styles.chip;
+
+    pageSizeChips.push(
+      React.createElement("button", {
+        key: String(item.key),
+        className: chipClass,
+        type: "button",
+        onClick: function (): void { setDemoPageSize(item.key); },
+        "aria-pressed": isActive ? "true" : "false",
+      }, item.label)
+    );
+  });
+
+  // -- Display toggle chips --
+  var toggleChips: React.ReactNode[] = [];
+  DEMO_DISPLAY_TOGGLES.forEach(function (item) {
+    var isActive = demoDisplayToggles[item.key] !== false;
+    var chipClass = isActive
+      ? styles.toggleChip + " " + styles.toggleChipActive
+      : styles.toggleChip;
+    var dotClass = isActive
+      ? styles.toggleDot + " " + styles.toggleDotActive
+      : styles.toggleDot;
+
+    toggleChips.push(
+      React.createElement("button", {
+        key: item.key,
+        className: chipClass,
+        type: "button",
+        onClick: function (): void { toggleDemoDisplay(item.key); },
+        "aria-pressed": isActive ? "true" : "false",
+      },
+        React.createElement("span", { className: dotClass }),
+        item.label
+      )
+    );
+  });
+
+  // -- Expanded panel class --
+  var panelClass = isExpanded
+    ? styles.expandPanel + " " + styles.expandPanelOpen
+    : styles.expandPanel;
+
+  return React.createElement("div", {
+    className: styles.demoBar,
+    role: "toolbar",
+    "aria-label": "Demo mode controls",
+  },
+    // ---- Header row (always visible) ----
+    React.createElement("div", { className: styles.headerRow },
+      React.createElement("span", { className: styles.demoBadge }, "DEMO"),
+      React.createElement("span", { className: styles.wpName }, "HyperNews Preview"),
+      !isExpanded ? React.createElement("span", { className: styles.collapsedSummary }, summary) : undefined,
+      React.createElement("span", { className: styles.spacer }),
+      React.createElement("button", {
+        className: styles.expandToggle,
+        type: "button",
+        onClick: function (): void { setExpanded(!isExpanded); },
+        "aria-expanded": isExpanded ? "true" : "false",
+      },
+        isExpanded ? "Collapse" : "Customize",
+        React.createElement("span", {
+          className: styles.chevron + (isExpanded ? " " + styles.chevronExpanded : ""),
+        }, "\u25BC")
+      ),
+      React.createElement("button", {
+        className: styles.exitButton,
+        type: "button",
+        onClick: function (): void { resetDemo(); },
+        "aria-label": "Exit demo mode",
+      }, "\u2715 Exit Demo")
     ),
-    React.createElement("div", { className: styles.demoSections },
-      React.createElement(DemoBarSection, {
-        title: "Layout",
-        activeKey: demoLayout,
-        items: DEMO_LAYOUTS,
-        onSelect: function (key) { setDemoLayout(key as LayoutType); },
-      }),
-      React.createElement(DemoBarSection, {
-        title: "Items",
-        activeKey: demoPageSize !== undefined ? String(demoPageSize) : undefined,
-        items: DEMO_PAGE_SIZES.map(function (p) { return { key: String(p.key), label: p.label }; }),
-        onSelect: function (key) { setDemoPageSize(Number(key)); },
-      }),
-      React.createElement(DemoToggleSection, {
-        title: "Show",
-        items: DEMO_DISPLAY_TOGGLES,
-        activeKeys: demoDisplayToggles,
-        onToggle: function (key) { toggleDemoDisplay(key); },
-      })
+
+    // ---- Expandable panel ----
+    React.createElement("div", { className: panelClass },
+      // Layout row
+      React.createElement("div", { className: styles.chipRow },
+        React.createElement("span", { className: styles.chipRowLabel }, "Layout:"),
+        React.createElement("div", { className: styles.chipGroup }, layoutChips)
+      ),
+
+      // Items per page row
+      React.createElement("div", { className: styles.chipRow },
+        React.createElement("span", { className: styles.chipRowLabel }, "Items:"),
+        React.createElement("div", { className: styles.chipGroup }, pageSizeChips)
+      ),
+
+      // Display toggles row
+      React.createElement("div", { className: styles.chipRow },
+        React.createElement("span", { className: styles.chipRowLabel }, "Show:"),
+        React.createElement("div", { className: styles.chipGroup }, toggleChips)
+      )
     )
   );
 };

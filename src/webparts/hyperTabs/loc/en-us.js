@@ -28,6 +28,7 @@ define([], function() {
     "AccordionMultiExpandLabel": "Allow Multiple Expanded Panels",
     "AccordionExpandAllLabel": "Expand All by Default",
     "WizardShowProgressLabel": "Show Progress Indicator",
-    "WizardLinearModeLabel": "Require Sequential Completion"
+    "WizardLinearModeLabel": "Require Sequential Completion",
+    "EnableDemoModeLabel": "Enable Demo Mode"
   };
 });

@@ -1,12 +1,11 @@
 import * as React from "react";
 import type { DirectoryLayoutMode, DirectoryCardStyle } from "../models";
-import styles from "./HyperDirectoryDemoBar.module.scss";
+import styles from "../../../common/components/demoBar/DemoBarRichPanel.module.scss";
 
 // ============================================================
-// HyperDirectory Demo Bar
-// Displayed above the web part in published/view mode so that
-// stakeholders can switch layouts, card styles, and features
-// without opening edit mode.
+// HyperDirectory Demo Bar — Rich Panel (Variation 3)
+// Collapsed by default: DEMO badge + title + summary + Customize + Exit
+// Expanded: chip rows for Layout, Card Style, Presence toggle
 // ============================================================
 
 var LAYOUT_OPTIONS: Array<{ key: DirectoryLayoutMode; label: string }> = [
@@ -25,6 +24,22 @@ var CARD_STYLE_OPTIONS: Array<{ key: DirectoryCardStyle; label: string }> = [
   { key: "compact", label: "Compact" },
 ];
 
+function getLayoutLabel(key: DirectoryLayoutMode): string {
+  var label = "";
+  LAYOUT_OPTIONS.forEach(function (opt) {
+    if (opt.key === key) { label = opt.label; }
+  });
+  return label || String(key);
+}
+
+function getCardStyleLabel(key: DirectoryCardStyle): string {
+  var label = "";
+  CARD_STYLE_OPTIONS.forEach(function (opt) {
+    if (opt.key === key) { label = opt.label; }
+  });
+  return label || String(key);
+}
+
 export interface IHyperDirectoryDemoBarProps {
   layoutMode: DirectoryLayoutMode;
   cardStyle: DirectoryCardStyle;
@@ -33,62 +48,135 @@ export interface IHyperDirectoryDemoBarProps {
   onCardStyleChange: (style: DirectoryCardStyle) => void;
   onPresenceToggle: () => void;
   onOpenWizard: () => void;
+  onExitDemo: () => void;
 }
 
 var HyperDirectoryDemoBar: React.FC<IHyperDirectoryDemoBarProps> = function (props) {
-  var layoutButtons = LAYOUT_OPTIONS.map(function (opt) {
+  var expandedState = React.useState(false);
+  var isExpanded = expandedState[0];
+  var setExpanded = expandedState[1];
+
+  // -- Build collapsed summary --
+  var summary = getLayoutLabel(props.layoutMode) +
+    " | " + getCardStyleLabel(props.cardStyle) +
+    (props.showPresence ? " | Presence" : "");
+
+  // -- Layout chips --
+  var layoutChips: React.ReactNode[] = [];
+  LAYOUT_OPTIONS.forEach(function (opt) {
     var isActive = props.layoutMode === opt.key;
-    return React.createElement("button", {
-      key: opt.key,
-      className: isActive ? styles.demoLayoutBtnActive : styles.demoLayoutBtn,
-      onClick: function () { props.onLayoutChange(opt.key); },
-      type: "button",
-      "aria-pressed": isActive,
-    }, opt.label);
+    var chipClass = isActive
+      ? styles.chip + " " + styles.chipActive
+      : styles.chip;
+
+    layoutChips.push(
+      React.createElement("button", {
+        key: opt.key,
+        className: chipClass,
+        type: "button",
+        onClick: function (): void { props.onLayoutChange(opt.key); },
+        "aria-pressed": isActive ? "true" : "false",
+      }, opt.label)
+    );
   });
 
-  var cardStyleButtons = CARD_STYLE_OPTIONS.map(function (opt) {
+  // -- Card style chips --
+  var cardStyleChips: React.ReactNode[] = [];
+  CARD_STYLE_OPTIONS.forEach(function (opt) {
     var isActive = props.cardStyle === opt.key;
-    return React.createElement("button", {
-      key: opt.key,
-      className: isActive ? styles.demoCardBtnActive : styles.demoCardBtn,
-      onClick: function () { props.onCardStyleChange(opt.key); },
-      type: "button",
-      "aria-pressed": isActive,
-    }, opt.label);
+    var chipClass = isActive
+      ? styles.chip + " " + styles.chipActive
+      : styles.chip;
+
+    cardStyleChips.push(
+      React.createElement("button", {
+        key: opt.key,
+        className: chipClass,
+        type: "button",
+        onClick: function (): void { props.onCardStyleChange(opt.key); },
+        "aria-pressed": isActive ? "true" : "false",
+      }, opt.label)
+    );
   });
 
-  return React.createElement("div", { className: styles.demoBar, role: "toolbar", "aria-label": "Demo controls" },
-    React.createElement("span", { className: styles.demoLabel }, "\uD83D\uDC65 Demo Mode"),
-    React.createElement("span", { className: styles.demoDivider }),
+  // -- Presence toggle chip --
+  var presenceToggleClass = props.showPresence
+    ? styles.toggleChip + " " + styles.toggleChipActive
+    : styles.toggleChip;
+  var presenceDotClass = props.showPresence
+    ? styles.toggleDot + " " + styles.toggleDotActive
+    : styles.toggleDot;
 
-    // Layout switcher
-    React.createElement("span", { className: styles.demoGroupLabel }, "Layout:"),
-    React.createElement("div", { className: styles.demoLayoutGroup }, layoutButtons),
-    React.createElement("span", { className: styles.demoDivider }),
+  // -- Expanded panel class --
+  var panelClass = isExpanded
+    ? styles.expandPanel + " " + styles.expandPanelOpen
+    : styles.expandPanel;
 
-    // Card style switcher
-    React.createElement("span", { className: styles.demoGroupLabel }, "Cards:"),
-    React.createElement("div", { className: styles.demoCardStyleGroup }, cardStyleButtons),
-    React.createElement("span", { className: styles.demoDivider }),
-
-    // Presence toggle
-    React.createElement("label", { className: styles.demoToggle },
-      React.createElement("input", {
-        type: "checkbox",
-        checked: props.showPresence,
-        onChange: function () { props.onPresenceToggle(); },
-      }),
-      " Presence"
+  return React.createElement("div", {
+    className: styles.demoBar,
+    role: "toolbar",
+    "aria-label": "Demo mode controls",
+  },
+    // ---- Header row (always visible) ----
+    React.createElement("div", { className: styles.headerRow },
+      React.createElement("span", { className: styles.demoBadge }, "DEMO"),
+      React.createElement("span", { className: styles.wpName }, "HyperDirectory Preview"),
+      !isExpanded ? React.createElement("span", { className: styles.collapsedSummary }, summary) : undefined,
+      React.createElement("span", { className: styles.spacer }),
+      React.createElement("button", {
+        className: styles.expandToggle,
+        type: "button",
+        onClick: function (): void { setExpanded(!isExpanded); },
+        "aria-expanded": isExpanded ? "true" : "false",
+      },
+        isExpanded ? "Collapse" : "Customize",
+        React.createElement("span", {
+          className: styles.chevron + (isExpanded ? " " + styles.chevronExpanded : ""),
+        }, "\u25BC")
+      ),
+      React.createElement("button", {
+        className: styles.exitButton,
+        type: "button",
+        onClick: props.onExitDemo,
+        "aria-label": "Exit demo mode",
+      }, "\u2715 Exit Demo")
     ),
-    React.createElement("span", { className: styles.demoDivider }),
 
-    // Wizard button
-    React.createElement("button", {
-      className: styles.demoWizardBtn,
-      onClick: function () { props.onOpenWizard(); },
-      type: "button",
-    }, "\u2699 Wizard")
+    // ---- Expandable panel ----
+    React.createElement("div", { className: panelClass },
+      // Layout row
+      React.createElement("div", { className: styles.chipRow },
+        React.createElement("span", { className: styles.chipRowLabel }, "Layout:"),
+        React.createElement("div", { className: styles.chipGroup }, layoutChips)
+      ),
+
+      // Card style row
+      React.createElement("div", { className: styles.chipRow },
+        React.createElement("span", { className: styles.chipRowLabel }, "Cards:"),
+        React.createElement("div", { className: styles.chipGroup }, cardStyleChips)
+      ),
+
+      // Features row
+      React.createElement("div", { className: styles.chipRow },
+        React.createElement("span", { className: styles.chipRowLabel }, "Features:"),
+        React.createElement("div", { className: styles.chipGroup },
+          React.createElement("button", {
+            className: presenceToggleClass,
+            type: "button",
+            onClick: function (): void { props.onPresenceToggle(); },
+            "aria-pressed": props.showPresence ? "true" : "false",
+          },
+            React.createElement("span", { className: presenceDotClass }),
+            "Presence"
+          ),
+          React.createElement("button", {
+            className: styles.chip,
+            type: "button",
+            onClick: function (): void { props.onOpenWizard(); },
+          }, "\u2699 Wizard")
+        )
+      )
+    )
   );
 };
 

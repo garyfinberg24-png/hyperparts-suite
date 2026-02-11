@@ -34,38 +34,45 @@ const HyperProfileInner: React.FC<IHyperProfileComponentProps> = function (props
   const store = useHyperProfileStore();
 
   // ── Wizard state ──
-  const wizardState = React.useState(false);
-  const showWizard = wizardState[0];
-  const setShowWizard = wizardState[1];
+  var wizardOpenState = React.useState(false);
+  var wizardOpen = wizardOpenState[0];
+  var setWizardOpen = wizardOpenState[1];
 
   React.useEffect(function () {
     if (props.isEditMode && !props.wizardCompleted) {
-      setShowWizard(true);
+      setWizardOpen(true);
     }
   }, [props.isEditMode, props.wizardCompleted]);
 
-  // Show wizard if not completed and in edit mode
-  if (showWizard) {
-    return React.createElement(WelcomeStep, {
-      onGetStarted: function (): void {
-        if (props.onWizardComplete) {
-          props.onWizardComplete();
-        }
-        setShowWizard(false);
-        // Auto-enable demo mode so the user sees sample data immediately
-        store.setDemoMode(true);
-        if (props.onDemoModeChange) {
-          props.onDemoModeChange(true);
-        }
-      },
-    });
-  }
+  var handleWizardApply = function (_result: Partial<IHyperProfileWebPartProps>): void {
+    if (props.onWizardComplete) {
+      props.onWizardComplete();
+    }
+    setWizardOpen(false);
+    // Auto-enable demo mode so the user sees sample data immediately
+    store.setDemoMode(true);
+    if (props.onDemoModeChange) {
+      props.onDemoModeChange(true);
+    }
+  };
+
+  var handleWizardClose = function (): void {
+    setWizardOpen(false);
+  };
+
+  // Wizard element — rendered as modal alongside content
+  var wizardElement = React.createElement(WelcomeStep, {
+    isOpen: wizardOpen,
+    onClose: handleWizardClose,
+    onApply: handleWizardApply,
+    currentProps: props.wizardCompleted ? props as IHyperProfileWebPartProps : undefined,
+  });
 
   // Determine template
   const templateId: TemplateType = props.selectedTemplate || store.selectedTemplateId || "standard";
 
-  // Demo mode data
-  const isDemoMode = store.isDemoMode || props.enableDemoMode;
+  // Demo mode data — useSampleData activates demo mode
+  const isDemoMode = store.isDemoMode || props.enableDemoMode || props.useSampleData;
   const demoPersonId: DemoPersonId = store.demoPersonId || props.demoPersonId || "sarah";
   const demoPerson = isDemoMode ? getSamplePerson(demoPersonId) : undefined;
 
@@ -104,7 +111,8 @@ const HyperProfileInner: React.FC<IHyperProfileComponentProps> = function (props
       { className: styles.hyperProfile + " " + styles.standard, role: "region", "aria-label": "User Profile" },
       React.createElement("div", { className: styles.loadingContainer },
         React.createElement(HyperSkeleton, { count: 3 })
-      )
+      ),
+      wizardElement
     );
   }
 
@@ -128,7 +136,8 @@ const HyperProfileInner: React.FC<IHyperProfileComponentProps> = function (props
             props.onDemoModeChange(true);
           }
         } : undefined,
-      })
+      }),
+      wizardElement
     );
   }
 
@@ -152,7 +161,8 @@ const HyperProfileInner: React.FC<IHyperProfileComponentProps> = function (props
             props.onDemoModeChange(true);
           }
         } : undefined,
-      })
+      }),
+      wizardElement
     );
   }
 
@@ -223,9 +233,27 @@ const HyperProfileInner: React.FC<IHyperProfileComponentProps> = function (props
   const TemplateComponent = getTemplateComponent(templateId);
   const templateEl = React.createElement(TemplateComponent, templateProps);
 
+  // Yellow sample data banner when useSampleData prop is active
+  var sampleBanner: React.ReactElement | undefined;
+  if (props.useSampleData && isDemoMode) {
+    sampleBanner = React.createElement("div", {
+      style: {
+        background: "#fff4ce",
+        border: "1px solid #ffb900",
+        borderRadius: "4px",
+        padding: "8px 12px",
+        marginBottom: "8px",
+        fontSize: "13px",
+        color: "#323130",
+      },
+      role: "status",
+    }, "Sample data active \u2014 connect a real data source in the property pane.");
+  }
+
   // In demo mode, wrap with demo bar above the template
   if (isDemoMode) {
     return React.createElement("div", { className: styles.demoWrapper },
+      sampleBanner,
       React.createElement(HyperProfileDemoBar, {
         selectedPersonId: demoPersonId,
         selectedTemplateId: templateId,
@@ -238,11 +266,12 @@ const HyperProfileInner: React.FC<IHyperProfileComponentProps> = function (props
           }
         },
       }),
-      templateEl
+      templateEl,
+      wizardElement
     );
   }
 
-  return templateEl;
+  return React.createElement(React.Fragment, undefined, templateEl, wizardElement);
 };
 
 const HyperProfile: React.FC<IHyperProfileComponentProps> = function (props) {

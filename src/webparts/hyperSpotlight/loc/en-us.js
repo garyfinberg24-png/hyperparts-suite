@@ -74,6 +74,9 @@ define([], function () {
     // Sample data
     UseSampleDataLabel: "Use Sample Data",
 
+    // Demo mode
+    EnableDemoModeLabel: "Enable Demo Mode",
+
     // Advanced labels
     DebugModeLabel: "Debug Mode"
   };

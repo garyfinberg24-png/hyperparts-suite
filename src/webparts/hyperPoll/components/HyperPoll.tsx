@@ -52,28 +52,27 @@ const HyperPollInner: React.FC<IHyperPollComponentProps> = function (props) {
   const store = useHyperPollStore();
 
   // ── Wizard state (show splash when first added in edit mode) ──
-  var wizardLocalState = React.useState(false);
-  var showWizardSplash = wizardLocalState[0];
-  var setShowWizardSplash = wizardLocalState[1];
+  var wizardOpenState = React.useState(false);
+  var wizardOpen = wizardOpenState[0];
+  var setWizardOpen = wizardOpenState[1];
 
   React.useEffect(function () {
     if (props.isEditMode && !props.wizardCompleted) {
-      setShowWizardSplash(true);
+      setWizardOpen(true);
     }
   }, [props.isEditMode, props.wizardCompleted]);
 
-  // Show the DWx splash screen when wizard not yet completed
-  if (showWizardSplash) {
-    return React.createElement(WelcomeStep, {
-      onGetStarted: function (): void {
-        if (props.onWizardComplete) {
-          props.onWizardComplete();
-        }
-        setShowWizardSplash(false);
-        store.openWizard();
-      },
-    });
-  }
+  var handleWelcomeApply = function (result: Partial<IHyperPollWebPartProps>): void {
+    if (props.onWizardComplete) {
+      props.onWizardComplete();
+    }
+    setWizardOpen(false);
+    store.openWizard();
+  };
+
+  var handleWelcomeClose = function (): void {
+    setWizardOpen(false);
+  };
 
   // Demo mode overrides
   var demoChartTypeState = React.useState<ChartType>(props.defaultChartType || "bar");
@@ -149,6 +148,17 @@ const HyperPollInner: React.FC<IHyperPollComponentProps> = function (props) {
       isOpen: store.isWizardOpen,
       onClose: store.closeWizard,
       onApply: handleWizardApply,
+    })
+  );
+
+  // ── WelcomeStep splash modal (always rendered, controlled by wizardOpen) ──
+  contentChildren.push(
+    React.createElement(WelcomeStep, {
+      key: "welcome",
+      isOpen: wizardOpen,
+      onClose: handleWelcomeClose,
+      onApply: handleWelcomeApply,
+      currentProps: props.wizardCompleted ? props as any : undefined,
     })
   );
 

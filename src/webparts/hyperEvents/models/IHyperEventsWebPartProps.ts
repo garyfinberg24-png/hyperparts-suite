@@ -55,4 +55,6 @@ export interface IHyperEventsWebPartProps extends IBaseHyperWebPartProps {
   useSampleData: boolean;
   /** Show demo bar on published page for stakeholder previews */
   demoMode: boolean;
+  /** Whether wizard has been completed */
+  wizardCompleted: boolean;
 }

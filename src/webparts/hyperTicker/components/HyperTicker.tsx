@@ -185,7 +185,8 @@ const HyperTickerInner: React.FC<IHyperTickerComponentProps> = function (props) 
   }, [store.clearEmergency]);
 
   // Demo mode: use sample data instead of real data
-  const isDemoMode = props.enableDemoMode || store.isDemoMode;
+  // useSampleData also activates demo mode
+  const isDemoMode = props.enableDemoMode || props.useSampleData || store.isDemoMode;
   const demoPresetId = store.demoPresetId || (props.demoPresetId as DemoTickerPresetId) || "companyNews";
 
   let demoItems: ITickerItem[] | undefined;
@@ -343,6 +344,25 @@ const HyperTickerInner: React.FC<IHyperTickerComponentProps> = function (props) 
 
   // Build children array
   const children: React.ReactElement[] = [];
+
+  // Yellow sample data banner when useSampleData prop is active
+  if (props.useSampleData && isDemoMode) {
+    children.push(
+      React.createElement("div", {
+        key: "sample-banner",
+        style: {
+          background: "#fff4ce",
+          border: "1px solid #ffb900",
+          borderRadius: "4px",
+          padding: "8px 12px",
+          marginBottom: "8px",
+          fontSize: "13px",
+          color: "#323130",
+        },
+        role: "status",
+      }, "Sample data active \u2014 connect a real data source in the property pane.")
+    );
+  }
 
   // Demo bar
   if (isDemoMode) {

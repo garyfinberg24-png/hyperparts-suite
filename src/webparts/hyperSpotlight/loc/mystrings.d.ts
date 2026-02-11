@@ -51,6 +51,7 @@ declare interface IHyperSpotlightWebPartStrings {
   ShowRuntimeDepartmentFilterLabel: string;
   SpListTitleLabel: string;
   UseSampleDataLabel: string;
+  EnableDemoModeLabel: string;
   DebugModeLabel: string;
 }
 

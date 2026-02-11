@@ -24,6 +24,11 @@ import {
 
 export default class HyperStyleWebPart extends BaseHyperWebPart<IHyperStyleWebPartProps> {
 
+  private _onDemoModeChange = (enabled: boolean): void => {
+    this.properties.enableDemoMode = enabled;
+    this.render();
+  };
+
   private _onWizardApply = (result: Partial<IHyperStyleWebPartProps>): void => {
     var props = this.properties;
     var keys = Object.keys(result);
@@ -42,6 +47,7 @@ export default class HyperStyleWebPart extends BaseHyperWebPart<IHyperStyleWebPa
       // Spread all web part properties
       wizardCompleted: this.properties.wizardCompleted,
       showWizardOnInit: this.properties.showWizardOnInit,
+      enableDemoMode: this.properties.enableDemoMode,
       selectedTemplate: this.properties.selectedTemplate,
       logoUrl: this.properties.logoUrl,
       brandTitle: this.properties.brandTitle,
@@ -109,6 +115,7 @@ export default class HyperStyleWebPart extends BaseHyperWebPart<IHyperStyleWebPa
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
       onWizardApply: this._onWizardApply,
+      onDemoModeChange: this._onDemoModeChange,
     };
     var element: React.ReactElement<IHyperStyleProps> =
       React.createElement(HyperStyle, componentProps);
@@ -122,6 +129,7 @@ export default class HyperStyleWebPart extends BaseHyperWebPart<IHyperStyleWebPa
     // Wizard state
     if (p.wizardCompleted === undefined) { p.wizardCompleted = false; }
     if (p.showWizardOnInit === undefined) { p.showWizardOnInit = true; }
+    if (p.enableDemoMode === undefined) { p.enableDemoMode = false; }
     // Template
     if (p.selectedTemplate === undefined) { p.selectedTemplate = ""; }
     // Branding
@@ -505,6 +513,9 @@ export default class HyperStyleWebPart extends BaseHyperWebPart<IHyperStyleWebPa
                 }),
                 PropertyPaneTextField("gradientTextColor2", {
                   label: "Gradient Color 2",
+                }),
+                PropertyPaneToggle("enableDemoMode", {
+                  label: "Enable Demo Mode",
                 }),
                 PropertyPaneToggle("showWizardOnInit", {
                   label: "Show Wizard on First Load",

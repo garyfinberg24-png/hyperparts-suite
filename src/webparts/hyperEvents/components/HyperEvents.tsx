@@ -21,6 +21,7 @@ import HyperEventsPastArchive from "./HyperEventsPastArchive";
 import HyperEventsRegistrationForm from "./HyperEventsRegistrationForm";
 import HyperEventsOverlayLegend from "./HyperEventsOverlayLegend";
 import HyperEventsDemoBar from "./HyperEventsDemoBar";
+import WelcomeStep from "./wizard/WelcomeStep";
 import { MonthView, WeekView, DayView, AgendaView, TimelineView, CardGridView } from "./views";
 import styles from "./HyperEvents.module.scss";
 
@@ -30,6 +31,8 @@ export interface IHyperEventsComponentProps extends IHyperEventsWebPartProps {
   siteUrl?: string;
   /** Callback from web part class to persist wizard result */
   onWizardApply?: (result: Partial<IHyperEventsWebPartProps>) => void;
+  /** Callback from web part class to persist wizard completion */
+  onWizardComplete?: (result: Record<string, unknown>) => void;
 }
 
 /**
@@ -399,10 +402,38 @@ const HyperEventsInner: React.FC<IHyperEventsComponentProps> = function (props) 
 };
 
 const HyperEvents: React.FC<IHyperEventsComponentProps> = function (props) {
+  // ── Wizard gate ──
+  var wizardOpenState = React.useState(false);
+  var wizardOpen = wizardOpenState[0];
+  var setWizardOpen = wizardOpenState[1];
+
+  React.useEffect(function () {
+    if (props.isEditMode && !props.wizardCompleted) {
+      setWizardOpen(true);
+    }
+  }, [props.isEditMode, props.wizardCompleted]);
+
+  var handleWizardApply = function (result: Partial<IHyperEventsWebPartProps>): void {
+    if (props.onWizardComplete) {
+      props.onWizardComplete(result as Record<string, unknown>);
+    }
+    setWizardOpen(false);
+  };
+
+  var handleWizardClose = function (): void {
+    setWizardOpen(false);
+  };
+
   return React.createElement(
     HyperErrorBoundary,
     undefined,
-    React.createElement(HyperEventsInner, props)
+    React.createElement(HyperEventsInner, props),
+    React.createElement(WelcomeStep, {
+      isOpen: wizardOpen,
+      onClose: handleWizardClose,
+      onApply: handleWizardApply,
+      currentProps: props.wizardCompleted ? props as any : undefined,
+    })
   );
 };
 

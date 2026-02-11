@@ -70,7 +70,8 @@ const HyperRollupInner: React.FC<IHyperRollupComponentProps> = (props) => {
 
   // Track whether demo mode is effectively active (props OR store)
   // Using props.enableDemoMode as fallback ensures first render works before effect syncs
-  var effectiveDemoMode = store.isDemoMode || props.enableDemoMode;
+  // useSampleData also activates demo mode
+  var effectiveDemoMode = store.isDemoMode || props.enableDemoMode || props.useSampleData;
 
   // Generate demo data when in demo mode
   var demoItems = React.useMemo(function (): IHyperRollupItem[] {
@@ -570,6 +571,22 @@ const HyperRollupInner: React.FC<IHyperRollupComponentProps> = (props) => {
       ? React.createElement("h2", { className: styles.rollupTitle }, props.title)
       : undefined,
 
+    // Yellow sample data banner when useSampleData prop is active
+    props.useSampleData && effectiveDemoMode
+      ? React.createElement("div", {
+          style: {
+            background: "#fff4ce",
+            border: "1px solid #ffb900",
+            borderRadius: "4px",
+            padding: "8px 12px",
+            marginBottom: "8px",
+            fontSize: "13px",
+            color: "#323130",
+          },
+          role: "status",
+        }, "Sample data active \u2014 connect a real data source in the property pane.")
+      : undefined,
+
     // Demo mode bar
     React.createElement(HyperRollupDemoBar, {
       isDemoMode: effectiveDemoMode,
@@ -710,25 +727,43 @@ const HyperRollupInner: React.FC<IHyperRollupComponentProps> = (props) => {
   );
 };
 
-const HyperRollup: React.FC<IHyperRollupComponentProps> = (props) => {
-  // Show wizard/splash when in edit mode and wizard has not been completed
-  if (props.isEditMode && !props.wizardCompleted) {
-    var handleGetStarted = function (): void {
-      if (props.onWizardComplete) {
-        props.onWizardComplete();
-      }
-    };
-    return React.createElement(
-      HyperErrorBoundary,
-      undefined,
-      React.createElement(WelcomeStep, { onGetStarted: handleGetStarted })
-    );
-  }
+var HyperRollup: React.FC<IHyperRollupComponentProps> = function (props) {
+  // Wizard state
+  var wizardOpenState = React.useState(false);
+  var wizardOpen = wizardOpenState[0];
+  var setWizardOpen = wizardOpenState[1];
+
+  // Auto-open wizard on first load if in edit mode and not yet completed
+  React.useEffect(function () {
+    if (props.isEditMode && !props.wizardCompleted) {
+      setWizardOpen(true);
+    }
+  }, [props.isEditMode, props.wizardCompleted]);
+
+  var handleWizardApply = function (_result: Partial<IHyperRollupWebPartProps>): void {
+    if (props.onWizardComplete) {
+      props.onWizardComplete();
+    }
+    setWizardOpen(false);
+  };
+
+  var handleWizardClose = function (): void {
+    setWizardOpen(false);
+  };
+
+  // Wizard element — rendered as modal alongside content
+  var wizardElement = React.createElement(WelcomeStep, {
+    isOpen: wizardOpen,
+    onClose: handleWizardClose,
+    onApply: handleWizardApply,
+    currentProps: props.wizardCompleted ? props as IHyperRollupWebPartProps : undefined,
+  });
 
   return React.createElement(
     HyperErrorBoundary,
     undefined,
-    React.createElement(HyperRollupInner, props)
+    React.createElement(HyperRollupInner, props),
+    wizardElement
   );
 };
 

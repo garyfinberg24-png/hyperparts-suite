@@ -28,6 +28,8 @@ export interface IHyperTickerWebPartProps extends IBaseHyperWebPartProps {
   enableExpand: boolean;
   enableCopy: boolean;
   enableDemoMode: boolean;
+  /** Alias for enableDemoMode -- when true, the web part displays sample data */
+  useSampleData: boolean;
   demoPresetId: string;
   enableEmergencyMode: boolean;
   enableAnalytics: boolean;

@@ -1,90 +1,36 @@
 import * as React from "react";
-import styles from "./WelcomeStep.module.scss";
+import { HyperWizard } from "../../../../common/components/wizard/HyperWizard";
+import type { IHyperExplorerWebPartProps } from "../../models";
+import { EXPLORER_WIZARD_CONFIG, buildStateFromProps } from "./explorerWizardConfig";
 
 export interface IWelcomeStepProps {
-  onGetStarted: () => void;
+  /** Whether the wizard modal is open */
+  isOpen: boolean;
+  /** Close callback */
+  onClose: () => void;
+  /** Apply callback — receives partial web part props from wizard */
+  onApply: (result: Partial<IHyperExplorerWebPartProps>) => void;
+  /** Existing web part props for re-editing (undefined for first-time setup) */
+  currentProps?: IHyperExplorerWebPartProps;
 }
 
 var WelcomeStep: React.FC<IWelcomeStepProps> = function (props) {
-  return React.createElement("div", undefined,
+  var initialStateOverride = React.useMemo(function () {
+    if (props.currentProps) {
+      return buildStateFromProps(props.currentProps);
+    }
+    return undefined;
+  }, [props.currentProps]);
 
-    // ── DWx Brand Strip ──
-    React.createElement("div", { className: styles.brandStrip },
-      React.createElement("div", { className: styles.brandLeft },
-        React.createElement("div", { className: styles.brandNameBlock },
-          React.createElement("span", { className: styles.brandDwx },
-            "DW",
-            React.createElement("span", { className: styles.brandDwxAccent }, "x")
-          ),
-          React.createElement("span", { className: styles.brandSub }, "Digital Workplace Excellence")
-        )
-      ),
-      React.createElement("span", { className: styles.brandBadge },
-        React.createElement("span", { className: styles.brandBadgeStar, "aria-hidden": "true" }, "\u2B50"),
-        " HyperParts Suite"
-      )
-    ),
-
-    // ── Hero Banner ──
-    React.createElement("div", { className: styles.splashHero },
-      React.createElement("div", { className: styles.splashHeroBrand },
-        React.createElement("div", { className: styles.splashLogoRow },
-          React.createElement("span", { className: styles.splashBolt, "aria-hidden": "true" }, "\uD83D\uDCC2"),
-          React.createElement("span", { className: styles.splashHyperText }, "Hyper"),
-          React.createElement("span", { className: styles.splashPartText }, "Explorer")
-        ),
-        React.createElement("div", { className: styles.splashTagline },
-          React.createElement("span", { className: styles.splashTaglineStrong }, "Browse, preview, and manage files"),
-          " all within one web part.",
-          React.createElement("br"),
-          "5 layouts, ",
-          React.createElement("span", { className: styles.splashTaglineStrong }, "lightbox gallery"),
-          ", drag & drop upload."
-        )
-      )
-    ),
-
-    // ── Body: Feature Cards + CTA ──
-    React.createElement("div", { className: styles.splashBody },
-      React.createElement("div", { className: styles.splashCards },
-        // Card 1: 5 Layouts
-        React.createElement("div", { className: styles.splashCard },
-          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83C\uDFB2"),
-          React.createElement("div", { className: styles.splashCardTitle }, "5 Layouts"),
-          React.createElement("div", { className: styles.splashCardDesc }, "Grid, masonry, list, filmstrip & tiles")
-        ),
-        // Card 2: Multi-Preview
-        React.createElement("div", { className: styles.splashCard },
-          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDC41\uFE0F"),
-          React.createElement("div", { className: styles.splashCardTitle }, "Multi-Preview"),
-          React.createElement("div", { className: styles.splashCardDesc }, "Tabbed or split-screen file preview")
-        ),
-        // Card 3: Lightbox Gallery
-        React.createElement("div", { className: styles.splashCard },
-          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDDBC\uFE0F"),
-          React.createElement("div", { className: styles.splashCardTitle }, "Lightbox Gallery"),
-          React.createElement("div", { className: styles.splashCardDesc }, "Full-screen zoom, pan & slideshow")
-        ),
-        // Card 4: Drag & Drop
-        React.createElement("div", { className: styles.splashCard },
-          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDCE4"),
-          React.createElement("div", { className: styles.splashCardTitle }, "Drag & Drop"),
-          React.createElement("div", { className: styles.splashCardDesc }, "Upload files directly to SharePoint")
-        )
-      ),
-
-      // CTA Button
-      React.createElement("button", {
-        className: styles.splashCta,
-        onClick: props.onGetStarted,
-        type: "button",
-      }, "Get Started"),
-
-      // Hint
-      React.createElement("div", { className: styles.splashHint },
-        "Connects to any SharePoint document library"
-      )
-    )
+  return React.createElement(
+    HyperWizard,
+    {
+      config: EXPLORER_WIZARD_CONFIG,
+      isOpen: props.isOpen,
+      onClose: props.onClose,
+      onApply: props.onApply,
+      initialStateOverride: initialStateOverride,
+    }
   );
 };
 

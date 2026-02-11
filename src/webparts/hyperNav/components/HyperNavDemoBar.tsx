@@ -1,6 +1,6 @@
 import * as React from "react";
 import type { HyperNavLayoutMode, HyperNavHoverEffect, HyperNavTheme } from "../models";
-import styles from "./HyperNavDemoBar.module.scss";
+import styles from "../../../common/components/demoBar/DemoBarRichPanel.module.scss";
 
 export interface IHyperNavDemoBarProps {
   layoutMode: HyperNavLayoutMode;
@@ -17,6 +17,7 @@ export interface IHyperNavDemoBarProps {
   onToggleGrouping: () => void;
   onToggleTooltips: () => void;
   onToggleStickyNav: () => void;
+  onExitDemo?: () => void;
 }
 
 var LAYOUT_KEYS: HyperNavLayoutMode[] = [
@@ -30,101 +31,192 @@ var HOVER_KEYS: HyperNavHoverEffect[] = [
 
 var THEME_KEYS: HyperNavTheme[] = ["light", "dark", "auto"];
 
-export const HyperNavDemoBar: React.FC<IHyperNavDemoBarProps> = function (props) {
-  var collapsed = React.useState(false);
-  var isCollapsed = collapsed[0];
-  var setCollapsed = collapsed[1];
-
-  if (isCollapsed) {
-    return React.createElement("div", { className: styles.demoBarCollapsed },
-      React.createElement("button", {
-        className: styles.demoToggle,
-        onClick: function () { setCollapsed(false); },
-        type: "button",
-        "aria-label": "Expand demo controls",
-      }, "\u2699\uFE0F Demo Controls")
-    );
+function getLayoutLabel(key: HyperNavLayoutMode): string {
+  switch (key) {
+    case "topbar": return "Top Bar";
+    case "megaMenu": return "Mega Menu";
+    case "sidebar": return "Sidebar";
+    case "tiles": return "Tiles";
+    case "grid": return "Grid";
+    case "card": return "Card";
+    case "list": return "List";
+    case "compact": return "Compact";
+    case "iconOnly": return "Icon Only";
+    case "dropdown": return "Dropdown";
+    case "tabbar": return "Tab Bar";
+    case "hamburger": return "Hamburger";
+    case "breadcrumb": return "Breadcrumb";
+    case "cmdPalette": return "Cmd Palette";
+    case "fab": return "FAB";
+    default: return String(key);
   }
+}
 
-  return React.createElement("div", { className: styles.demoBar },
-    // Header
-    React.createElement("div", { className: styles.demoHeader },
-      React.createElement("span", { className: styles.demoTitle }, "\u2699\uFE0F HyperNav Demo Controls"),
+function getHoverLabel(key: HyperNavHoverEffect): string {
+  return key.charAt(0).toUpperCase() + key.substring(1);
+}
+
+function getThemeLabel(key: HyperNavTheme): string {
+  return key.charAt(0).toUpperCase() + key.substring(1);
+}
+
+export var HyperNavDemoBar: React.FC<IHyperNavDemoBarProps> = function (props) {
+  var expandedState = React.useState(false);
+  var isExpanded = expandedState[0];
+  var setExpanded = expandedState[1];
+
+  // -- Build collapsed summary --
+  var summary = getLayoutLabel(props.layoutMode) +
+    " | " + getHoverLabel(props.hoverEffect) +
+    " | " + getThemeLabel(props.navTheme);
+
+  // -- Layout chips --
+  var layoutChips: React.ReactNode[] = [];
+  LAYOUT_KEYS.forEach(function (key) {
+    var isActive = props.layoutMode === key;
+    var chipClass = isActive
+      ? styles.chip + " " + styles.chipActive
+      : styles.chip;
+
+    layoutChips.push(
       React.createElement("button", {
-        className: styles.demoCollapse,
-        onClick: function () { setCollapsed(true); },
+        key: key,
+        className: chipClass,
         type: "button",
-        "aria-label": "Collapse demo controls",
-      }, "\u2715")
-    ),
+        onClick: function (): void { props.onLayoutChange(key); },
+        "aria-pressed": isActive ? "true" : "false",
+      }, getLayoutLabel(key))
+    );
+  });
 
-    // Layout selector
-    React.createElement("div", { className: styles.demoSection },
-      React.createElement("span", { className: styles.demoLabel }, "Layout"),
-      React.createElement("select", {
-        className: styles.demoSelect,
-        value: props.layoutMode,
-        onChange: function (e: React.ChangeEvent<HTMLSelectElement>) {
-          props.onLayoutChange(e.target.value as HyperNavLayoutMode);
-        },
+  // -- Hover effect chips --
+  var hoverChips: React.ReactNode[] = [];
+  HOVER_KEYS.forEach(function (key) {
+    var isActive = props.hoverEffect === key;
+    var chipClass = isActive
+      ? styles.chip + " " + styles.chipActive
+      : styles.chip;
+
+    hoverChips.push(
+      React.createElement("button", {
+        key: key,
+        className: chipClass,
+        type: "button",
+        onClick: function (): void { props.onHoverChange(key); },
+        "aria-pressed": isActive ? "true" : "false",
+      }, getHoverLabel(key))
+    );
+  });
+
+  // -- Theme chips --
+  var themeChips: React.ReactNode[] = [];
+  THEME_KEYS.forEach(function (key) {
+    var isActive = props.navTheme === key;
+    var chipClass = isActive
+      ? styles.chip + " " + styles.chipActive
+      : styles.chip;
+
+    themeChips.push(
+      React.createElement("button", {
+        key: key,
+        className: chipClass,
+        type: "button",
+        onClick: function (): void { props.onThemeChange(key); },
+        "aria-pressed": isActive ? "true" : "false",
+      }, getThemeLabel(key))
+    );
+  });
+
+  // -- Feature toggle chips --
+  var featureToggles: Array<{ label: string; active: boolean; onToggle: () => void }> = [
+    { label: "Search", active: props.showSearch, onToggle: props.onToggleSearch },
+    { label: "Grouping", active: props.enableGrouping, onToggle: props.onToggleGrouping },
+    { label: "Tooltips", active: props.enableTooltips, onToggle: props.onToggleTooltips },
+    { label: "Sticky", active: props.enableStickyNav, onToggle: props.onToggleStickyNav },
+  ];
+
+  var toggleChips: React.ReactNode[] = [];
+  featureToggles.forEach(function (toggle) {
+    var chipClass = toggle.active
+      ? styles.toggleChip + " " + styles.toggleChipActive
+      : styles.toggleChip;
+    var dotClass = toggle.active
+      ? styles.toggleDot + " " + styles.toggleDotActive
+      : styles.toggleDot;
+
+    toggleChips.push(
+      React.createElement("button", {
+        key: toggle.label,
+        className: chipClass,
+        type: "button",
+        onClick: toggle.onToggle,
+        "aria-pressed": toggle.active ? "true" : "false",
       },
-        LAYOUT_KEYS.map(function (key) {
-          return React.createElement("option", { key: key, value: key }, key);
-        })
+        React.createElement("span", { className: dotClass }),
+        toggle.label
       )
-    ),
+    );
+  });
 
-    // Hover effect selector
-    React.createElement("div", { className: styles.demoSection },
-      React.createElement("span", { className: styles.demoLabel }, "Hover"),
-      React.createElement("select", {
-        className: styles.demoSelect,
-        value: props.hoverEffect,
-        onChange: function (e: React.ChangeEvent<HTMLSelectElement>) {
-          props.onHoverChange(e.target.value as HyperNavHoverEffect);
-        },
+  // -- Expanded panel class --
+  var panelClass = isExpanded
+    ? styles.expandPanel + " " + styles.expandPanelOpen
+    : styles.expandPanel;
+
+  return React.createElement("div", {
+    className: styles.demoBar,
+    role: "toolbar",
+    "aria-label": "Demo mode controls",
+  },
+    // ---- Header row (always visible) ----
+    React.createElement("div", { className: styles.headerRow },
+      React.createElement("span", { className: styles.demoBadge }, "DEMO"),
+      React.createElement("span", { className: styles.wpName }, "HyperNav Preview"),
+      !isExpanded ? React.createElement("span", { className: styles.collapsedSummary }, summary) : undefined,
+      React.createElement("span", { className: styles.spacer }),
+      React.createElement("button", {
+        className: styles.expandToggle,
+        type: "button",
+        onClick: function (): void { setExpanded(!isExpanded); },
+        "aria-expanded": isExpanded ? "true" : "false",
       },
-        HOVER_KEYS.map(function (key) {
-          return React.createElement("option", { key: key, value: key }, key);
-        })
-      )
+        isExpanded ? "Collapse" : "Customize",
+        React.createElement("span", {
+          className: styles.chevron + (isExpanded ? " " + styles.chevronExpanded : ""),
+        }, "\u25BC")
+      ),
+      React.createElement("button", {
+        className: styles.exitButton,
+        type: "button",
+        onClick: function (): void { if (props.onExitDemo) { props.onExitDemo(); } },
+        "aria-label": "Exit demo mode",
+      }, "\u2715 Exit Demo")
     ),
 
-    // Theme selector
-    React.createElement("div", { className: styles.demoSection },
-      React.createElement("span", { className: styles.demoLabel }, "Theme"),
-      React.createElement("div", { className: styles.demoChips },
-        THEME_KEYS.map(function (key) {
-          return React.createElement("button", {
-            key: key,
-            className: styles.demoChip + (props.navTheme === key ? " " + styles.demoChipActive : ""),
-            onClick: function () { props.onThemeChange(key); },
-            type: "button",
-          }, key);
-        })
-      )
-    ),
+    // ---- Expandable panel ----
+    React.createElement("div", { className: panelClass },
+      // Layout row
+      React.createElement("div", { className: styles.chipRow },
+        React.createElement("span", { className: styles.chipRowLabel }, "Layout:"),
+        React.createElement("div", { className: styles.chipGroup }, layoutChips)
+      ),
 
-    // Feature toggles
-    React.createElement("div", { className: styles.demoSection },
-      React.createElement("span", { className: styles.demoLabel }, "Features"),
-      React.createElement("div", { className: styles.demoToggles },
-        React.createElement("label", { className: styles.demoToggleLabel },
-          React.createElement("input", { type: "checkbox", checked: props.showSearch, onChange: props.onToggleSearch }),
-          " Search"
-        ),
-        React.createElement("label", { className: styles.demoToggleLabel },
-          React.createElement("input", { type: "checkbox", checked: props.enableGrouping, onChange: props.onToggleGrouping }),
-          " Grouping"
-        ),
-        React.createElement("label", { className: styles.demoToggleLabel },
-          React.createElement("input", { type: "checkbox", checked: props.enableTooltips, onChange: props.onToggleTooltips }),
-          " Tooltips"
-        ),
-        React.createElement("label", { className: styles.demoToggleLabel },
-          React.createElement("input", { type: "checkbox", checked: props.enableStickyNav, onChange: props.onToggleStickyNav }),
-          " Sticky"
-        )
+      // Hover effect row
+      React.createElement("div", { className: styles.chipRow },
+        React.createElement("span", { className: styles.chipRowLabel }, "Hover:"),
+        React.createElement("div", { className: styles.chipGroup }, hoverChips)
+      ),
+
+      // Theme row
+      React.createElement("div", { className: styles.chipRow },
+        React.createElement("span", { className: styles.chipRowLabel }, "Theme:"),
+        React.createElement("div", { className: styles.chipGroup }, themeChips)
+      ),
+
+      // Features row
+      React.createElement("div", { className: styles.chipRow },
+        React.createElement("span", { className: styles.chipRowLabel }, "Features:"),
+        React.createElement("div", { className: styles.chipGroup }, toggleChips)
       )
     )
   );

@@ -28,6 +28,7 @@ declare interface IHyperTabsWebPartStrings {
   AccordionExpandAllLabel: string;
   WizardShowProgressLabel: string;
   WizardLinearModeLabel: string;
+  EnableDemoModeLabel: string;
 }
 
 declare module "HyperTabsWebPartStrings" {

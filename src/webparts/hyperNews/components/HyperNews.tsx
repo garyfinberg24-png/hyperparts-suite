@@ -24,6 +24,7 @@ import {
 import { HyperNewsQuickReadModal } from "./HyperNewsQuickReadModal";
 import { HyperNewsFilterBar } from "./HyperNewsFilterBar";
 import HyperNewsDemoBar from "./HyperNewsDemoBar";
+import WelcomeStep from "./wizard/WelcomeStep";
 import { HyperWizard } from "../../../common/components/wizard/HyperWizard";
 import { NEWS_WIZARD_CONFIG, buildStateFromProps } from "./wizard/newsWizardConfig";
 // Cross-web-part import: HyperImageBrowser from HyperHero shared components (pitfall #29)
@@ -33,6 +34,10 @@ import styles from "./HyperNews.module.scss";
 
 export interface IHyperNewsComponentProps extends IHyperNewsWebPartProps {
   instanceId: string;
+  /** Whether the web part is in edit mode (displayMode === 2) */
+  isEditMode?: boolean;
+  /** Callback when the WelcomeStep splash is completed */
+  onWizardComplete?: () => void;
   /** Callback from web part class to persist wizard result */
   onWizardApply?: (result: Partial<IHyperNewsWebPartProps>) => void;
   /** Callback from web part class to trigger wizard open */
@@ -76,6 +81,28 @@ function _renderLayout(
 }
 
 const HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
+  // ── WelcomeStep splash state ──
+  var wizardOpenState = React.useState(false);
+  var wizardOpen = wizardOpenState[0];
+  var setWizardOpen = wizardOpenState[1];
+
+  React.useEffect(function () {
+    if (props.isEditMode && !props.wizardCompleted) {
+      setWizardOpen(true);
+    }
+  }, [props.isEditMode, props.wizardCompleted]);
+
+  var handleWelcomeApply = function (result: Partial<IHyperNewsWebPartProps>): void {
+    if (props.onWizardComplete) {
+      props.onWizardComplete();
+    }
+    setWizardOpen(false);
+  };
+
+  var handleWelcomeClose = function (): void {
+    setWizardOpen(false);
+  };
+
   const title = props.title;
   const sourcesJson = props.sourcesJson;
   const externalArticlesJson = props.externalArticlesJson;
@@ -264,6 +291,14 @@ const HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
     openWizard();
   }, [openWizard]);
 
+  // ── WelcomeStep splash element (always rendered, controlled by wizardOpen) ──
+  var welcomeElement = React.createElement(WelcomeStep, {
+    isOpen: wizardOpen,
+    onClose: handleWelcomeClose,
+    onApply: handleWelcomeApply,
+    currentProps: props.wizardCompleted ? props as any : undefined,
+  });
+
   // ── Wizard element (always rendered) ──
   const wizardElement = React.createElement(HyperWizard, {
     config: NEWS_WIZARD_CONFIG,
@@ -304,7 +339,8 @@ const HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
         ? React.createElement("h2", { className: styles.newsTitle }, title)
         : undefined,
       React.createElement(HyperSkeleton, { count: 3, height: 200, variant: "rectangular" }),
-      wizardElement
+      wizardElement,
+      welcomeElement
     );
   }
 
@@ -321,7 +357,8 @@ const HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
         title: "Failed to load news",
         description: error.message,
       }),
-      wizardElement
+      wizardElement,
+      welcomeElement
     );
   }
 
@@ -343,7 +380,8 @@ const HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
             title: "No news articles found",
             description: "Use the Configure button or property pane to set up content sources.",
           }),
-      wizardElement
+      wizardElement,
+      welcomeElement
     );
   }
 
@@ -398,7 +436,9 @@ const HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
       enableReactions: enableReactions,
     }),
     // Setup wizard modal (always rendered, controlled by store)
-    wizardElement
+    wizardElement,
+    // WelcomeStep splash modal (always rendered, controlled by wizardOpen)
+    welcomeElement
   );
 };
 

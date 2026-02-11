@@ -144,6 +144,8 @@ export interface IHyperRollupWebPartProps extends IBaseHyperWebPartProps {
   // ─── Demo Mode ───
   /** Enable demo mode with sample data */
   enableDemoMode: boolean;
+  /** Alias for enableDemoMode — when true, the web part displays sample data */
+  useSampleData: boolean;
   /** Active demo preset ID */
   demoPresetId: string;
 

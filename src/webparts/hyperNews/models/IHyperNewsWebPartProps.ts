@@ -44,6 +44,9 @@ export interface IHyperNewsWebPartProps extends IBaseHyperWebPartProps {
   /** Whether to show wizard on first load (true until user completes wizard) */
   showWizardOnInit: boolean;
 
+  /** Whether the initial WelcomeStep splash has been completed */
+  wizardCompleted: boolean;
+
   /** Show sample data (inline articles with SVG banners) */
   useSampleData: boolean;
 

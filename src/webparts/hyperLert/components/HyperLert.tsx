@@ -132,23 +132,27 @@ var LAYOUT_MAP: Record<string, React.FC<ILertLayoutProps>> = {
 
 var HyperLertInner: React.FC<IHyperLertComponentProps> = function (props) {
   // Wizard state
-  var wizardState = React.useState<boolean>(false);
-  var showWizard = wizardState[0];
-  var setShowWizard = wizardState[1];
+  var wizardOpenState = React.useState<boolean>(false);
+  var wizardOpen = wizardOpenState[0];
+  var setWizardOpen = wizardOpenState[1];
 
-  // Show wizard on first load if in edit mode and not yet completed
+  // Auto-open wizard on first load if in edit mode and not yet completed
   React.useEffect(function () {
-    if (props.isEditMode && props.showWizardOnInit && !props.wizardCompleted) {
-      setShowWizard(true);
+    if (props.isEditMode && !props.wizardCompleted) {
+      setWizardOpen(true);
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [props.isEditMode, props.wizardCompleted]);
 
-  var handleWizardGetStarted = React.useCallback(function (): void {
-    setShowWizard(false);
+  var handleWizardApply = function (_result: Partial<IHyperLertWebPartProps>): void {
     if (props.onWizardComplete) {
       props.onWizardComplete();
     }
-  }, [props.onWizardComplete]);
+    setWizardOpen(false);
+  };
+
+  var handleWizardClose = function (): void {
+    setWizardOpen(false);
+  };
 
   var rules = parseRules(props.rules);
   var activeBanners = useHyperLertStore(function (s) { return s.activeBanners; });
@@ -350,12 +354,13 @@ var HyperLertInner: React.FC<IHyperLertComponentProps> = function (props) {
     setAlerts([]);
   }, [setDemoMode, setAlerts]);
 
-  // ── Wizard: show WelcomeStep splash before main content ──
-  if (showWizard) {
-    return React.createElement(WelcomeStep, {
-      onGetStarted: handleWizardGetStarted,
-    });
-  }
+  // Wizard element — rendered as modal alongside content
+  var wizardElement = React.createElement(WelcomeStep, {
+    isOpen: wizardOpen,
+    onClose: handleWizardClose,
+    onApply: handleWizardApply,
+    currentProps: props.wizardCompleted ? props as IHyperLertWebPartProps : undefined,
+  });
 
   // Active (enabled) rule count
   var activeCount = 0;
@@ -447,7 +452,9 @@ var HyperLertInner: React.FC<IHyperLertComponentProps> = function (props) {
       // Email preview modal
       React.createElement(HyperLertEmailPreview, {
         defaultEmailTemplate: props.defaultEmailTemplate || "",
-      })
+      }),
+      // Wizard modal
+      wizardElement
     );
   }
 
@@ -480,7 +487,9 @@ var HyperLertInner: React.FC<IHyperLertComponentProps> = function (props) {
       }),
       React.createElement(HyperLertEmailPreview, {
         defaultEmailTemplate: props.defaultEmailTemplate || "",
-      })
+      }),
+      // Wizard modal
+      wizardElement
     );
   }
 
@@ -538,7 +547,9 @@ var HyperLertInner: React.FC<IHyperLertComponentProps> = function (props) {
     // Email preview modal
     React.createElement(HyperLertEmailPreview, {
       defaultEmailTemplate: props.defaultEmailTemplate || "",
-    })
+    }),
+    // Wizard modal
+    wizardElement
   );
 };
 

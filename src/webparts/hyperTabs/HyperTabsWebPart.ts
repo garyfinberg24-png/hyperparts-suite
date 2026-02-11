@@ -31,10 +31,21 @@ import {
 
 export default class HyperTabsWebPart extends BaseHyperWebPart<IHyperTabsWebPartProps> {
 
+  /** Callback: WelcomeStep splash completed */
+  private _onWizardComplete = (result: Record<string, unknown>): void => {
+    this.properties.wizardCompleted = true;
+    Object.keys(result).forEach((key: string): void => {
+      (this.properties as unknown as Record<string, unknown>)[key] = result[key];
+    });
+    this.render();
+  };
+
   public render(): void {
     const props: IHyperTabsComponentProps = {
       ...this.properties,
       instanceId: this.instanceId,
+      isEditMode: this.displayMode === 2,
+      onWizardComplete: this._onWizardComplete,
     };
     const element: React.ReactElement<IHyperTabsComponentProps> =
       React.createElement(HyperTabs, props);
@@ -85,6 +96,12 @@ export default class HyperTabsWebPart extends BaseHyperWebPart<IHyperTabsWebPart
     }
     if (this.properties.animationEnabled === undefined) {
       this.properties.animationEnabled = true;
+    }
+    if (this.properties.enableDemoMode === undefined) {
+      this.properties.enableDemoMode = false;
+    }
+    if (this.properties.wizardCompleted === undefined) {
+      this.properties.wizardCompleted = false;
     }
   }
 
@@ -368,6 +385,9 @@ export default class HyperTabsWebPart extends BaseHyperWebPart<IHyperTabsWebPart
                 PropertyPaneToggle("wizardLinearMode", {
                   label: strings.WizardLinearModeLabel,
                   disabled: this.properties.displayMode !== "wizard",
+                }),
+                PropertyPaneToggle("enableDemoMode", {
+                  label: strings.EnableDemoModeLabel,
                 }),
               ],
             },

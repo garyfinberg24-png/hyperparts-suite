@@ -4,7 +4,7 @@ import type { TemplateType } from "../models/IHyperProfileTemplate";
 import { DEMO_PEOPLE_IDS } from "../models/IHyperProfileDemoConfig";
 import { TEMPLATE_LIST } from "../models/IHyperProfileTemplate";
 import { getSamplePeople } from "../utils/sampleData";
-import styles from "./HyperProfileDemoBar.module.scss";
+import styles from "../../../common/components/demoBar/DemoBarRichPanel.module.scss";
 
 export interface IHyperProfileDemoBarProps {
   selectedPersonId: DemoPersonId;
@@ -14,153 +14,131 @@ export interface IHyperProfileDemoBarProps {
   onExitDemo: () => void;
 }
 
-/** Chip button row for a category of options */
-interface IDemoChipSectionProps {
-  title: string;
-  activeKey: string;
-  items: Array<{ key: string; label: string }>;
-  onSelect: (key: string) => void;
-}
+var HyperProfileDemoBar: React.FC<IHyperProfileDemoBarProps> = function (props) {
+  var expandedState = React.useState(false);
+  var isExpanded = expandedState[0];
+  var setExpanded = expandedState[1];
 
-const DemoChipSection: React.FC<IDemoChipSectionProps> = function (props) {
-  const chips = props.items.map(function (item) {
-    const isActive = props.activeKey === item.key;
-    const cls = styles.chip + (isActive ? " " + styles.chipActive : "");
-    return React.createElement("button", {
-      key: item.key,
-      className: cls,
-      type: "button",
-      onClick: function (): void { props.onSelect(item.key); },
-      "aria-pressed": isActive ? "true" : "false",
-    }, item.label);
-  });
+  var people = getSamplePeople();
 
-  return React.createElement("div", { className: styles.chipSection },
-    React.createElement("span", { className: styles.chipSectionTitle }, props.title),
-    React.createElement("div", { className: styles.chipGroup }, chips)
-  );
-};
-
-/** Light gray demo control bar -- sits ABOVE the published web part.
- *  Shows sample profile info, chip-style template switcher, person picker, and exit button.
- */
-const HyperProfileDemoBar: React.FC<IHyperProfileDemoBarProps> = function (props) {
-  const people = getSamplePeople();
-
-  // Find current person for the mini-profile display
-  let currentPerson = people[0]; // default to first
+  // Find current person for summary display
+  var currentPerson = people[0];
   people.forEach(function (p) {
     if (p.id === props.selectedPersonId) {
       currentPerson = p;
     }
   });
 
-  // Build person chip items
-  const personChips: Array<{ key: string; label: string }> = [];
-  people.forEach(function (person) {
-    const firstName = person.profile.givenName || person.profile.displayName;
-    personChips.push({
-      key: person.id,
-      label: firstName,
-    });
-  });
-
-  // Build template chip items from TEMPLATE_LIST
-  const templateChips: Array<{ key: string; label: string }> = [];
+  // Find current template name for summary display
+  var currentTemplateName = "";
   TEMPLATE_LIST.forEach(function (tpl) {
-    templateChips.push({
-      key: tpl.id,
-      label: tpl.name,
-    });
+    if (tpl.id === props.selectedTemplateId) {
+      currentTemplateName = tpl.name;
+    }
   });
 
-  const children: React.ReactNode[] = [];
+  // -- Build collapsed summary --
+  var summary = currentPerson.profile.displayName + " | " + currentTemplateName;
 
-  // ---- Row 1: Header with badge + mini profile + exit ----
-  const headerChildren: React.ReactNode[] = [];
+  // -- Person chips --
+  var personChips: React.ReactNode[] = [];
+  people.forEach(function (person) {
+    var isActive = props.selectedPersonId === person.id;
+    var chipClass = isActive
+      ? styles.chip + " " + styles.chipActive
+      : styles.chip;
+    var firstName = person.profile.givenName || person.profile.displayName;
 
-  // Demo badge
-  headerChildren.push(
-    React.createElement("div", { key: "badge", className: styles.demoBadge },
-      React.createElement("span", { className: styles.demoIcon, "aria-hidden": "true" }, "\uD83D\uDD0D"),
-      React.createElement("span", { className: styles.demoLabel }, "Demo Mode")
-    )
-  );
+    // Validate person ID before dispatching
+    var personId = person.id;
+    personChips.push(
+      React.createElement("button", {
+        key: personId,
+        className: chipClass,
+        type: "button",
+        onClick: function (): void {
+          var isValid = false;
+          DEMO_PEOPLE_IDS.forEach(function (id) {
+            if (id === personId) { isValid = true; }
+          });
+          if (isValid) {
+            props.onPersonChange(personId as DemoPersonId);
+          }
+        },
+        "aria-pressed": isActive ? "true" : "false",
+      }, firstName)
+    );
+  });
 
-  // Mini profile preview
-  const initials = (currentPerson.profile.givenName ? currentPerson.profile.givenName.charAt(0) : "") +
-    (currentPerson.profile.surname ? currentPerson.profile.surname.charAt(0) : "");
+  // -- Template chips --
+  var templateChips: React.ReactNode[] = [];
+  TEMPLATE_LIST.forEach(function (tpl) {
+    var isActive = props.selectedTemplateId === tpl.id;
+    var chipClass = isActive
+      ? styles.chip + " " + styles.chipActive
+      : styles.chip;
 
-  headerChildren.push(
-    React.createElement("div", { key: "mini", className: styles.miniProfile },
-      React.createElement("div", { className: styles.miniAvatar },
-        initials.toUpperCase()
-      ),
-      React.createElement("div", { className: styles.miniInfo },
-        React.createElement("span", { className: styles.miniName }, currentPerson.profile.displayName),
-        React.createElement("span", { className: styles.miniTitle }, currentPerson.profile.jobTitle || ""),
-        React.createElement("span", { className: styles.miniDept }, currentPerson.profile.department || "")
-      )
-    )
-  );
+    templateChips.push(
+      React.createElement("button", {
+        key: tpl.id,
+        className: chipClass,
+        type: "button",
+        onClick: function (): void { props.onTemplateChange(tpl.id); },
+        "aria-pressed": isActive ? "true" : "false",
+      }, tpl.name)
+    );
+  });
 
-  // Spacer
-  headerChildren.push(
-    React.createElement("div", { key: "spacer", className: styles.headerSpacer })
-  );
-
-  // Exit button
-  headerChildren.push(
-    React.createElement("button", {
-      key: "exit",
-      type: "button",
-      className: styles.exitButton,
-      onClick: props.onExitDemo,
-      "aria-label": "Exit demo mode",
-    }, "\u2715 Exit Demo")
-  );
-
-  children.push(
-    React.createElement("div", { key: "header", className: styles.demoBarHeader }, headerChildren)
-  );
-
-  // ---- Row 2: Person chips ----
-  children.push(
-    React.createElement(DemoChipSection, {
-      key: "people",
-      title: "Person",
-      activeKey: props.selectedPersonId,
-      items: personChips,
-      onSelect: function (key: string): void {
-        let isValid = false;
-        DEMO_PEOPLE_IDS.forEach(function (id) {
-          if (id === key) isValid = true;
-        });
-        if (isValid) {
-          props.onPersonChange(key as DemoPersonId);
-        }
-      },
-    })
-  );
-
-  // ---- Row 3: Template chips ----
-  children.push(
-    React.createElement(DemoChipSection, {
-      key: "templates",
-      title: "Template",
-      activeKey: props.selectedTemplateId,
-      items: templateChips,
-      onSelect: function (key: string): void {
-        props.onTemplateChange(key as TemplateType);
-      },
-    })
-  );
+  // -- Expanded panel class --
+  var panelClass = isExpanded
+    ? styles.expandPanel + " " + styles.expandPanelOpen
+    : styles.expandPanel;
 
   return React.createElement("div", {
     className: styles.demoBar,
     role: "toolbar",
     "aria-label": "Demo mode controls",
-  }, children);
+  },
+    // ---- Header row (always visible) ----
+    React.createElement("div", { className: styles.headerRow },
+      React.createElement("span", { className: styles.demoBadge }, "DEMO"),
+      React.createElement("span", { className: styles.wpName }, "HyperProfile Preview"),
+      !isExpanded ? React.createElement("span", { className: styles.collapsedSummary }, summary) : undefined,
+      React.createElement("span", { className: styles.spacer }),
+      React.createElement("button", {
+        className: styles.expandToggle,
+        type: "button",
+        onClick: function (): void { setExpanded(!isExpanded); },
+        "aria-expanded": isExpanded ? "true" : "false",
+      },
+        isExpanded ? "Collapse" : "Customize",
+        React.createElement("span", {
+          className: styles.chevron + (isExpanded ? " " + styles.chevronExpanded : ""),
+        }, "\u25BC")
+      ),
+      React.createElement("button", {
+        className: styles.exitButton,
+        type: "button",
+        onClick: props.onExitDemo,
+        "aria-label": "Exit demo mode",
+      }, "\u2715 Exit Demo")
+    ),
+
+    // ---- Expandable panel ----
+    React.createElement("div", { className: panelClass },
+      // Person row
+      React.createElement("div", { className: styles.chipRow },
+        React.createElement("span", { className: styles.chipRowLabel }, "Person:"),
+        React.createElement("div", { className: styles.chipGroup }, personChips)
+      ),
+
+      // Template row
+      React.createElement("div", { className: styles.chipRow },
+        React.createElement("span", { className: styles.chipRowLabel }, "Template:"),
+        React.createElement("div", { className: styles.chipGroup }, templateChips)
+      )
+    )
+  );
 };
 
 export default HyperProfileDemoBar;

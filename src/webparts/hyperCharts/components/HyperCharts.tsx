@@ -367,7 +367,16 @@ const HyperChartsInner: React.FC<IHyperChartsComponentProps> = function (props) 
   // Demo bar (rendered above everything when demo mode is on)
   if (props.demoMode) {
     contentChildren.push(
-      React.createElement(HyperChartsDemoBar, { key: "demobar" })
+      React.createElement(HyperChartsDemoBar, {
+        key: "demobar",
+        currentGridColumns: effectiveGridColumns,
+        currentShowDataLabels: store.demoShowDataLabels,
+        chartCount: allCharts.length,
+        onExitDemo: function (): void {
+          store.setDemoGridColumns(props.gridColumns || 2);
+          store.setDemoShowDataLabels(false);
+        },
+      })
     );
   }
 

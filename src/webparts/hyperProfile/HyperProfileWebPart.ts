@@ -145,6 +145,13 @@ export default class HyperProfileWebPart extends BaseHyperWebPart<IHyperProfileW
     if (this.properties.enableDemoMode === undefined) {
       this.properties.enableDemoMode = false;
     }
+    if (this.properties.useSampleData === undefined) {
+      this.properties.useSampleData = true;
+    }
+    // Sync: useSampleData=true activates demo mode
+    if (this.properties.useSampleData && !this.properties.enableDemoMode) {
+      this.properties.enableDemoMode = true;
+    }
     if (this.properties.showWizardOnInit === undefined) {
       this.properties.showWizardOnInit = true;
     }

@@ -140,6 +140,8 @@ export interface IHyperProfileWebPartProps extends IBaseHyperWebPartProps {
 
   // Demo Mode
   enableDemoMode: boolean;
+  /** Alias for enableDemoMode — when true, the web part displays sample data */
+  useSampleData: boolean;
   demoPersonId?: DemoPersonId;
 
   // Wizard

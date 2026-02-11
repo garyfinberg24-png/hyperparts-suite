@@ -1,8 +1,12 @@
 import * as React from "react";
 import type { IHyperStyleProps } from "./IHyperStyleProps";
 import type { IHyperStyleWebPartProps } from "../models";
+import type {
+  StyleTemplate, HeaderStyle, FooterStyle, CardStyle,
+} from "../models/IHyperStyleEnums";
 import { HyperErrorBoundary } from "../../../common/components";
 import WelcomeStep from "./wizard/WelcomeStep";
+import HyperStyleDemoBar from "./HyperStyleDemoBar";
 import { STYLE_TEMPLATES } from "../models";
 import styles from "./HyperStyle.module.scss";
 
@@ -189,6 +193,73 @@ var HyperStyleInner: React.FC<IHyperStyleProps> = function (props) {
   var wizardOpen = wizardOpenState[0];
   var setWizardOpen = wizardOpenState[1];
 
+  // ── Demo mode local state ──
+  var demoTemplateState = React.useState<StyleTemplate | "">(props.selectedTemplate || "");
+  var demoTemplate = demoTemplateState[0];
+  var setDemoTemplate = demoTemplateState[1];
+
+  var demoHeaderStyleState = React.useState<HeaderStyle>(props.headerStyle || "classic");
+  var demoHeaderStyle = demoHeaderStyleState[0];
+  var setDemoHeaderStyle = demoHeaderStyleState[1];
+
+  var demoFooterStyleState = React.useState<FooterStyle>(props.footerStyle || "classic");
+  var demoFooterStyle = demoFooterStyleState[0];
+  var setDemoFooterStyle = demoFooterStyleState[1];
+
+  var demoCardStyleState = React.useState<CardStyle>(props.cardStyle || "standard");
+  var demoCardStyle = demoCardStyleState[0];
+  var setDemoCardStyle = demoCardStyleState[1];
+
+  var demoDarkModeState = React.useState<boolean>(props.enableDarkMode || false);
+  var demoDarkMode = demoDarkModeState[0];
+  var setDemoDarkMode = demoDarkModeState[1];
+
+  var demoScrollRevealState = React.useState<boolean>(props.enableScrollReveal || false);
+  var demoScrollReveal = demoScrollRevealState[0];
+  var setDemoScrollReveal = demoScrollRevealState[1];
+
+  var demoHoverMicroState = React.useState<boolean>(props.enableHoverMicro || false);
+  var demoHoverMicro = demoHoverMicroState[0];
+  var setDemoHoverMicro = demoHoverMicroState[1];
+
+  var demoCustomScrollbarState = React.useState<boolean>(props.enableCustomScrollbar || false);
+  var demoCustomScrollbar = demoCustomScrollbarState[0];
+  var setDemoCustomScrollbar = demoCustomScrollbarState[1];
+
+  // ── Effective values: demo overrides when demo mode is on ──
+  var effectiveTemplate = props.enableDemoMode ? demoTemplate : props.selectedTemplate;
+  var effectiveHeaderStyle = props.enableDemoMode ? demoHeaderStyle : props.headerStyle;
+  var effectiveFooterStyle = props.enableDemoMode ? demoFooterStyle : props.footerStyle;
+  var effectiveCardStyle = props.enableDemoMode ? demoCardStyle : props.cardStyle;
+  var effectiveDarkMode = props.enableDemoMode ? demoDarkMode : props.enableDarkMode;
+  var effectiveScrollReveal = props.enableDemoMode ? demoScrollReveal : props.enableScrollReveal;
+  var effectiveHoverMicro = props.enableDemoMode ? demoHoverMicro : props.enableHoverMicro;
+  var effectiveCustomScrollbar = props.enableDemoMode ? demoCustomScrollbar : props.enableCustomScrollbar;
+
+  // Build effective props for CSS injection (merge demo overrides)
+  var effectiveProps: IHyperStyleProps = React.useMemo(function () {
+    if (!props.enableDemoMode) return props;
+    // Create a shallow copy with demo overrides
+    var merged: Record<string, unknown> = {};
+    var propKeys = Object.keys(props);
+    propKeys.forEach(function (k) {
+      merged[k] = (props as unknown as Record<string, unknown>)[k];
+    });
+    merged.selectedTemplate = effectiveTemplate;
+    merged.headerStyle = effectiveHeaderStyle;
+    merged.footerStyle = effectiveFooterStyle;
+    merged.cardStyle = effectiveCardStyle;
+    merged.enableDarkMode = effectiveDarkMode;
+    merged.enableScrollReveal = effectiveScrollReveal;
+    merged.enableHoverMicro = effectiveHoverMicro;
+    merged.enableCustomScrollbar = effectiveCustomScrollbar;
+    return merged as unknown as IHyperStyleProps;
+  }, [
+    props, props.enableDemoMode,
+    effectiveTemplate, effectiveHeaderStyle, effectiveFooterStyle, effectiveCardStyle,
+    effectiveDarkMode, effectiveScrollReveal, effectiveHoverMicro, effectiveCustomScrollbar,
+  ]);
+
   // Show wizard on first load if configured
   React.useEffect(function () {
     if (props.isEditMode && props.showWizardOnInit && !props.wizardCompleted) {
@@ -201,7 +272,7 @@ var HyperStyleInner: React.FC<IHyperStyleProps> = function (props) {
     if (!props.wizardCompleted) {
       return;
     }
-    var css = buildInjectedCss(props);
+    var css = buildInjectedCss(effectiveProps);
     var existing = document.getElementById(STYLE_TAG_ID);
     if (existing) {
       existing.textContent = css;
@@ -219,7 +290,7 @@ var HyperStyleInner: React.FC<IHyperStyleProps> = function (props) {
       }
     };
   }, [
-    props.wizardCompleted,
+    props.wizardCompleted, effectiveProps,
     props.primaryColor, props.secondaryColor, props.accentColor,
     props.successColor, props.warningColor, props.dangerColor,
     props.borderRadius, props.primaryFont, props.secondaryFont, props.baseFontSize,
@@ -227,9 +298,9 @@ var HyperStyleInner: React.FC<IHyperStyleProps> = function (props) {
     props.enableWpHeaderAccent, props.wpHeaderAccentColor,
     props.enableButtonRestyling, props.enableLinkStyling, props.linkColor,
     props.enableSelectionColor, props.selectionBg, props.selectionText,
-    props.enableCustomScrollbar, props.scrollThumbColor, props.scrollTrackColor,
+    effectiveCustomScrollbar, props.scrollThumbColor, props.scrollTrackColor,
     props.enableGradientText, props.gradientTextDirection, props.gradientTextColor1, props.gradientTextColor2,
-    props.enableDarkMode, props.darkModePreference,
+    effectiveDarkMode, props.darkModePreference,
   ]);
 
   // ── Inject Google Font ──
@@ -287,6 +358,36 @@ var HyperStyleInner: React.FC<IHyperStyleProps> = function (props) {
 
   // Build children
   var children: React.ReactElement[] = [];
+
+  // Demo bar (when demo mode is enabled)
+  if (props.enableDemoMode) {
+    children.push(
+      React.createElement(HyperStyleDemoBar, {
+        key: "demo",
+        currentTemplate: demoTemplate,
+        currentHeaderStyle: demoHeaderStyle,
+        currentFooterStyle: demoFooterStyle,
+        currentCardStyle: demoCardStyle,
+        darkMode: demoDarkMode,
+        scrollReveal: demoScrollReveal,
+        hoverMicro: demoHoverMicro,
+        customScrollbar: demoCustomScrollbar,
+        onTemplateChange: function (template: StyleTemplate): void { setDemoTemplate(template); },
+        onHeaderStyleChange: function (headerStyle: HeaderStyle): void { setDemoHeaderStyle(headerStyle); },
+        onFooterStyleChange: function (footerStyle: FooterStyle): void { setDemoFooterStyle(footerStyle); },
+        onCardStyleChange: function (cardStyle: CardStyle): void { setDemoCardStyle(cardStyle); },
+        onToggleDarkMode: function (): void { setDemoDarkMode(!demoDarkMode); },
+        onToggleScrollReveal: function (): void { setDemoScrollReveal(!demoScrollReveal); },
+        onToggleHoverMicro: function (): void { setDemoHoverMicro(!demoHoverMicro); },
+        onToggleCustomScrollbar: function (): void { setDemoCustomScrollbar(!demoCustomScrollbar); },
+        onExitDemo: function (): void {
+          if (props.onDemoModeChange) {
+            props.onDemoModeChange(false);
+          }
+        },
+      })
+    );
+  }
 
   // Edit mode bar
   if (props.isEditMode) {

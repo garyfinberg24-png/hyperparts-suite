@@ -165,7 +165,7 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
       this.properties.linkListUrlColumn = "URL";
     }
     if (this.properties.useSampleData === undefined) {
-      this.properties.useSampleData = false;
+      this.properties.useSampleData = true;
     }
   }
 

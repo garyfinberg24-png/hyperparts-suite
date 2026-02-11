@@ -36,4 +36,8 @@ export interface IHyperTabsWebPartProps extends IBaseHyperWebPartProps {
   wizardLinearMode: boolean;
   /** Enable panel transition animations */
   animationEnabled: boolean;
+  /** Whether the demo bar is enabled */
+  enableDemoMode: boolean;
+  /** Whether the WelcomeStep splash has been completed */
+  wizardCompleted: boolean;
 }

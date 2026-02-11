@@ -10,6 +10,9 @@ export interface IHyperStyleWebPartProps extends IBaseHyperWebPartProps {
   wizardCompleted: boolean;
   showWizardOnInit: boolean;
 
+  // Demo mode
+  enableDemoMode: boolean;
+
   // Template
   selectedTemplate: StyleTemplate | "";
 

@@ -414,6 +414,10 @@ const HyperDirectoryInner: React.FC<IHyperDirectoryComponentProps> = function (p
           onCardStyleChange: setDemoCardStyle,
           onPresenceToggle: toggleDemoShowPresence,
           onOpenWizard: openWizard,
+          onExitDemo: function (): void {
+            setDemoLayoutMode(layoutMode);
+            setDemoCardStyle(cardStyle);
+          },
         })
       : undefined,
     usingSampleData

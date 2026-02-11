@@ -138,14 +138,6 @@
         }
       ]
     },
-    "hyper-slider-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/hyperSlider/HyperSliderWebPart.js",
-          "manifest": "./src/webparts/hyperSlider/HyperSliderWebPart.manifest.json"
-        }
-      ]
-    },
     "hyper-explorer-web-part": {
       "components": [
         {
@@ -190,7 +182,6 @@
     "HyperTickerWebPartStrings": "lib/webparts/hyperTicker/loc/{locale}.js",
     "HyperFaqWebPartStrings": "lib/webparts/hyperFaq/loc/{locale}.js",
     "HyperBirthdaysWebPartStrings": "lib/webparts/hyperBirthdays/loc/{locale}.js",
-    "HyperSliderWebPartStrings": "lib/webparts/hyperSlider/loc/{locale}.js",
     "HyperExplorerWebPartStrings": "lib/webparts/hyperExplorer/loc/{locale}.js",
     "HyperImageWebPartStrings": "lib/webparts/hyperImage/loc/{locale}.js",
     "HyperStyleWebPartStrings": "lib/webparts/hyperStyle/loc/{locale}.js"

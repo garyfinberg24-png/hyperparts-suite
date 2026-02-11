@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as strings from "HyperBirthdaysWebPartStrings";
-import type { IHyperBirthdaysWebPartProps, CelebrationType, BirthdaysViewMode, ICelebration } from "../models";
+import type { IHyperBirthdaysWebPartProps, CelebrationType, BirthdaysViewMode, ICelebration, AnimationType } from "../models";
 import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton } from "../../../common/components";
 import { HyperWizard } from "../../../common/components/wizard/HyperWizard";
 import { useCelebrationData } from "../hooks/useCelebrationData";
@@ -25,6 +25,7 @@ import HyperBirthdaysSelfService from "./HyperBirthdaysSelfService";
 import { getShiftedDate } from "../utils/weekendShift";
 import { getNextOccurrence } from "../utils/dateHelpers";
 import { SAMPLE_CELEBRATIONS } from "../utils/sampleData";
+import HyperBirthdaysDemoBar from "./HyperBirthdaysDemoBar";
 import styles from "./HyperBirthdays.module.scss";
 
 export interface IHyperBirthdaysComponentProps extends IHyperBirthdaysWebPartProps {
@@ -52,6 +53,54 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
   const isSelfServiceOpen = useHyperBirthdaysStore(function (s) { return s.isSelfServiceOpen; });
   const openSelfService = useHyperBirthdaysStore(function (s) { return s.openSelfService; });
   const closeSelfService = useHyperBirthdaysStore(function (s) { return s.closeSelfService; });
+
+  // ── Demo mode local overrides ──
+  var demoViewState = React.useState<BirthdaysViewMode>(props.viewMode || "upcomingList");
+  var demoView = demoViewState[0];
+  var setDemoView = demoViewState[1];
+
+  var demoAnimationState = React.useState<AnimationType>(props.animationType || "confetti");
+  var demoAnimation = demoAnimationState[0];
+  var setDemoAnimation = demoAnimationState[1];
+
+  var demoEnabledTypesState = React.useState<CelebrationType[]>(function () {
+    var types: CelebrationType[] = [];
+    if (props.enableBirthdays) types.push("birthday");
+    if (props.enableAnniversaries) types.push("workAnniversary");
+    if (props.enableWeddings) types.push("wedding");
+    if (props.enableChildBirth) types.push("childBirth");
+    if (props.enableGraduation) types.push("graduation");
+    if (props.enableRetirement) types.push("retirement");
+    if (props.enablePromotion) types.push("promotion");
+    if (props.enableCustom) types.push("custom");
+    return types;
+  });
+  var demoEnabledTypes = demoEnabledTypesState[0];
+  var setDemoEnabledTypes = demoEnabledTypesState[1];
+
+  var demoAnimationsEnabledState = React.useState(props.enableAnimations !== false);
+  var demoAnimationsEnabled = demoAnimationsEnabledState[0];
+  var setDemoAnimationsEnabled = demoAnimationsEnabledState[1];
+
+  var demoMilestoneBadgesState = React.useState(props.enableMilestoneBadges !== false);
+  var demoMilestoneBadges = demoMilestoneBadgesState[0];
+  var setDemoMilestoneBadges = demoMilestoneBadgesState[1];
+
+  // Demo type toggle handler (multi-select)
+  var handleDemoTypeToggle = React.useCallback(function (type: CelebrationType): void {
+    setDemoEnabledTypes(function (prev: CelebrationType[]): CelebrationType[] {
+      if (prev.indexOf(type) !== -1) {
+        return prev.filter(function (t) { return t !== type; });
+      }
+      return prev.concat([type]);
+    });
+  }, []);
+
+  // Active values: demo overrides when demo mode is on, otherwise prop/store values
+  var activeViewMode = props.enableDemoMode ? demoView : viewMode;
+  var activeAnimation = props.enableDemoMode ? demoAnimation : (props.animationType || "confetti");
+  var activeAnimationsEnabled = props.enableDemoMode ? demoAnimationsEnabled : props.enableAnimations;
+  var activeMilestoneBadges = props.enableDemoMode ? demoMilestoneBadges : props.enableMilestoneBadges;
 
   // Auto-open wizard on first load when not yet configured
   React.useEffect(function () {
@@ -222,7 +271,7 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
   }
 
   // View mode handler
-  const handleViewModeChange = function (mode: BirthdaysViewMode): void {
+  var handleViewModeChange = function (mode: BirthdaysViewMode): void {
     setViewMode(mode);
   };
 
@@ -251,41 +300,41 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
     photoMap: photoMap,
     photoSize: props.photoSize || 48,
     enableTeamsDeepLink: props.enableTeamsDeepLink,
-    enableMilestoneBadges: props.enableMilestoneBadges,
+    enableMilestoneBadges: activeMilestoneBadges,
     sendWishesLabel: strings.SendWishesLabel,
     onSelectCelebration: handleSelectCelebration,
   };
 
   // Render the active view
-  let viewContent: React.ReactNode;
+  var viewContent: React.ReactNode;
 
-  if (viewMode === "monthlyCalendar") {
+  if (activeViewMode === "monthlyCalendar") {
     viewContent = React.createElement(HyperBirthdaysMonthCalendar, Object.assign({
       celebrations: displayCelebrations,
       year: currentYear,
       month: currentMonth,
     }, sharedLayoutProps));
-  } else if (viewMode === "cardCarousel") {
+  } else if (activeViewMode === "cardCarousel") {
     viewContent = React.createElement(HyperBirthdaysCardCarousel, Object.assign({
       celebrations: upcomingCelebrations,
     }, sharedLayoutProps));
-  } else if (viewMode === "timeline") {
+  } else if (activeViewMode === "timeline") {
     viewContent = React.createElement(HyperBirthdaysTimeline, Object.assign({
       celebrations: upcomingCelebrations,
     }, sharedLayoutProps));
-  } else if (viewMode === "featuredSpotlight") {
+  } else if (activeViewMode === "featuredSpotlight") {
     viewContent = React.createElement(HyperBirthdaysFeaturedSpotlight, Object.assign({
       celebrations: upcomingCelebrations,
     }, sharedLayoutProps));
-  } else if (viewMode === "masonryWall") {
+  } else if (activeViewMode === "masonryWall") {
     viewContent = React.createElement(HyperBirthdaysMasonryWall, Object.assign({
       celebrations: upcomingCelebrations,
     }, sharedLayoutProps));
-  } else if (viewMode === "compactStrip") {
+  } else if (activeViewMode === "compactStrip") {
     viewContent = React.createElement(HyperBirthdaysCompactStrip, Object.assign({
       celebrations: upcomingCelebrations,
     }, sharedLayoutProps));
-  } else if (viewMode === "cardGrid") {
+  } else if (activeViewMode === "cardGrid") {
     viewContent = React.createElement(HyperBirthdaysCardGrid, Object.assign({
       celebrations: upcomingCelebrations,
     }, sharedLayoutProps));
@@ -300,9 +349,9 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
   }
 
   // Animation overlay (only for today's celebrations)
-  const animationOverlay = props.enableAnimations && hasTodayCelebrations
+  var animationOverlay = activeAnimationsEnabled && hasTodayCelebrations
     ? React.createElement(HyperBirthdaysAnimation, {
-        animationType: props.animationType || "confetti",
+        animationType: activeAnimation,
         enabled: true,
       })
     : undefined;
@@ -355,19 +404,49 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
       }, "Sample Data Mode \u2014 Showing 20 South African demo celebrations. Disable in web part settings.")
     : undefined;
 
+  // Demo bar (rendered when enableDemoMode is true)
+  var demoBarElement = props.enableDemoMode
+    ? React.createElement(HyperBirthdaysDemoBar, {
+        currentView: demoView,
+        currentAnimation: demoAnimation,
+        celebrationCount: displayCelebrations.length,
+        enabledTypes: demoEnabledTypes,
+        animationsEnabled: demoAnimationsEnabled,
+        milestoneBadgesEnabled: demoMilestoneBadges,
+        onViewChange: function (view: BirthdaysViewMode): void {
+          setDemoView(view);
+          setViewMode(view);
+        },
+        onAnimationChange: setDemoAnimation,
+        onTypeToggle: handleDemoTypeToggle,
+        onAnimationsToggle: function (): void {
+          setDemoAnimationsEnabled(function (v: boolean): boolean { return !v; });
+        },
+        onMilestoneBadgesToggle: function (): void {
+          setDemoMilestoneBadges(function (v: boolean): boolean { return !v; });
+        },
+        onExitDemo: function (): void {
+          if (props.onWizardApply) {
+            props.onWizardApply({ enableDemoMode: false } as Partial<IHyperBirthdaysWebPartProps>);
+          }
+        },
+      })
+    : undefined;
+
   return React.createElement(
     "div",
     { className: styles.birthdaysContainer },
+    demoBarElement,
     sampleBanner,
     animationOverlay,
     React.createElement(HyperBirthdaysToolbar, {
       title: props.title || "Celebrations",
-      viewMode: viewMode,
+      viewMode: activeViewMode,
       onViewModeChange: handleViewModeChange,
       currentMonth: currentMonth,
       currentYear: currentYear,
       onNavigateMonth: navigateMonth,
-      showMonthNav: viewMode === "monthlyCalendar",
+      showMonthNav: activeViewMode === "monthlyCalendar",
       isEditMode: props.isEditMode,
       onConfigure: handleConfigureClick,
     }),

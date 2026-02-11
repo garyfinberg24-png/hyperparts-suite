@@ -55,6 +55,14 @@ const FIELD_TYPE_OPTIONS = [
 
 export default class HyperEventsWebPart extends BaseHyperWebPart<IHyperEventsWebPartProps> {
 
+  private _onWizardComplete = (result: Record<string, unknown>): void => {
+    this.properties.wizardCompleted = true;
+    Object.keys(result).forEach((key: string): void => {
+      (this.properties as unknown as Record<string, unknown>)[key] = result[key];
+    });
+    this.render();
+  };
+
   public render(): void {
     const self = this;
     const componentProps: IHyperEventsComponentProps = {
@@ -62,6 +70,7 @@ export default class HyperEventsWebPart extends BaseHyperWebPart<IHyperEventsWeb
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
       siteUrl: this.context.pageContext.web.absoluteUrl,
+      onWizardComplete: this._onWizardComplete,
       onWizardApply: function (result: Partial<IHyperEventsWebPartProps>): void {
         const keys = Object.keys(result);
         keys.forEach(function (key) {
@@ -147,6 +156,9 @@ export default class HyperEventsWebPart extends BaseHyperWebPart<IHyperEventsWeb
     }
     if (this.properties.demoMode === undefined) {
       this.properties.demoMode = true;
+    }
+    if (this.properties.wizardCompleted === undefined) {
+      this.properties.wizardCompleted = false;
     }
   }
 

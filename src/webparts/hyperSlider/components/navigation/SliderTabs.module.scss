@@ -1,7 +1,0 @@
-@import '~@fluentui/react/dist/sass/References';
-.tabs { display: flex; position: absolute; z-index: 10; }
-.positionBottom { bottom: 0; left: 0; width: 100%; }
-.positionTop { top: 0; left: 0; width: 100%; }
-.tab { cursor: pointer; padding: 8px 16px; border: none; background: transparent; color: rgba(255, 255, 255, 0.7); font-size: $ms-font-size-14; border-bottom: 2px solid transparent; transition: color 200ms ease, border-color 200ms ease; }
-.tab:hover { color: $ms-color-white; }
-.tabActive { color: $ms-color-white; border-bottom-color: $ms-color-white; }

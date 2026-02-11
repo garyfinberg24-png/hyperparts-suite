@@ -37,12 +37,21 @@ import type { IHyperSpotlightComponentProps } from "./components/HyperSpotlight"
 
 export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotlightWebPartProps> {
 
+  /** Callback: wizard completed — persists result props */
+  private _onWizardComplete = (result: Record<string, unknown>): void => {
+    this.properties.wizardCompleted = true;
+    Object.keys(result).forEach((key: string): void => {
+      (this.properties as unknown as Record<string, unknown>)[key] = result[key];
+    });
+    this.render();
+  };
+
   protected async onInit(): Promise<void> {
     await super.onInit();
 
     // Set defaults for any properties not yet initialised
     const p = this.properties;
-    if (p.useSampleData === undefined) p.useSampleData = false;
+    if (p.useSampleData === undefined) p.useSampleData = true;
     if (p.selectionMode === undefined) p.selectionMode = SelectionMode.Automatic;
     if (p.category === undefined) p.category = SpotlightCategory.Birthday;
     if (p.dateRange === undefined) p.dateRange = DateRange.ThisMonth;
@@ -125,12 +134,17 @@ export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotli
     if (p.wallOfFameSettings === undefined) {
       p.wallOfFameSettings = JSON.stringify({ columns: 3, showConfetti: true, cycleInterval: 10 });
     }
+    if (p.enableDemoMode === undefined) p.enableDemoMode = false;
+    if (p.wizardCompleted === undefined) p.wizardCompleted = false;
   }
 
   public render(): void {
     const element = React.createElement(HyperSpotlight, {
       ...this.properties,
       instanceId: this.instanceId,
+      isEditMode: this.displayMode === 2,
+      wizardCompleted: this.properties.wizardCompleted,
+      onWizardComplete: this._onWizardComplete,
     } as IHyperSpotlightComponentProps);
 
     ReactDom.render(element, this.domElement);
@@ -271,6 +285,7 @@ export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotli
               groupFields: [
                 PropertyPaneToggle("showRuntimeViewSwitcher", { label: strings.ShowRuntimeViewSwitcherLabel, onText: "On", offText: "Off" }),
                 PropertyPaneToggle("showRuntimeDepartmentFilter", { label: strings.ShowRuntimeDepartmentFilterLabel, onText: "On", offText: "Off" }),
+                PropertyPaneToggle("enableDemoMode", { label: strings.EnableDemoModeLabel, onText: "On", offText: "Off" }),
               ],
             },
             {

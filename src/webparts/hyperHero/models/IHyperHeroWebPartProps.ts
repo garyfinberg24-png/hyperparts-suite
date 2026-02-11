@@ -86,4 +86,6 @@ export interface IHyperHeroWebPartProps extends IBaseHyperWebPartProps {
   sliderMode: "simple" | "hyper";
   /** Tracks whether the first-run setup wizard has been completed */
   wizardCompleted: boolean;
+  /** Enables the demo bar for showcasing layouts/transitions */
+  enableDemoMode: boolean;
 }

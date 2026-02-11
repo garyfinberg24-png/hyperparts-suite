@@ -101,6 +101,14 @@ export interface IHyperSpotlightWebPartProps extends IBaseHyperWebPartProps {
   // Sample / Demo Data
   useSampleData: boolean;
 
+  // Demo Mode
+  /** Whether the demo bar is enabled */
+  enableDemoMode: boolean;
+
+  // Wizard
+  /** Whether the WelcomeStep splash has been completed */
+  wizardCompleted: boolean;
+
   // Advanced
   debugMode?: boolean;
 }

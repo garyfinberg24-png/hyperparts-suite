@@ -5,7 +5,7 @@ import { ImageLayout } from "../models/IHyperImageLayout";
 import { FilterPreset } from "../models/IHyperImageFilter";
 import { HoverEffect } from "../models/IHyperImageHover";
 import { BorderStylePreset } from "../models/IHyperImageBorder";
-import styles from "./HyperImageDemoBar.module.scss";
+import styles from "../../../common/components/demoBar/DemoBarRichPanel.module.scss";
 
 /* ── Quick-pick options for each category ── */
 
@@ -68,33 +68,39 @@ var DEMO_BORDERS: Array<{ key: BorderStylePreset; label: string }> = [
   { key: BorderStylePreset.DoubleFrame, label: "Double" },
 ];
 
-/* ── Component ── */
+/* ── Helper: build a chip row ── */
 
-interface IDemoBarSectionProps {
-  title: string;
-  activeKey: string | undefined;
-  items: Array<{ key: string; label: string }>;
-  onSelect: (key: string) => void;
-}
+function buildChipRow(
+  label: string,
+  activeKey: string | undefined,
+  items: Array<{ key: string; label: string }>,
+  onSelect: (key: string) => void
+): React.ReactElement {
+  var chips: React.ReactNode[] = [];
+  items.forEach(function (item) {
+    var isActive = activeKey === item.key;
+    var chipClass = isActive
+      ? styles.chip + " " + styles.chipActive
+      : styles.chip;
 
-var DemoBarSection: React.FC<IDemoBarSectionProps> = function (props) {
-  var buttons = props.items.map(function (item) {
-    var isActive = props.activeKey === item.key;
-    var cls = styles.demoBtn + (isActive ? " " + styles.demoBtnActive : "");
-    return React.createElement("button", {
-      key: item.key,
-      className: cls,
-      type: "button",
-      onClick: function () { props.onSelect(item.key); },
-      "aria-pressed": isActive ? "true" : "false",
-    }, item.label);
+    chips.push(
+      React.createElement("button", {
+        key: item.key,
+        className: chipClass,
+        type: "button",
+        onClick: function (): void { onSelect(item.key); },
+        "aria-pressed": isActive ? "true" : "false",
+      }, item.label)
+    );
   });
 
-  return React.createElement("div", { className: styles.demoSection },
-    React.createElement("span", { className: styles.demoSectionTitle }, props.title),
-    React.createElement("div", { className: styles.demoBtnGroup }, buttons)
+  return React.createElement("div", { className: styles.chipRow },
+    React.createElement("span", { className: styles.chipRowLabel }, label),
+    React.createElement("div", { className: styles.chipGroup }, chips)
   );
-};
+}
+
+/* ── Component ── */
 
 var HyperImageDemoBar: React.FC = function () {
   var demoShape = useHyperImageStore(function (s) { return s.demoShape; });
@@ -108,54 +114,69 @@ var HyperImageDemoBar: React.FC = function () {
   var setDemoHover = useHyperImageStore(function (s) { return s.setDemoHover; });
   var setDemoBorderPreset = useHyperImageStore(function (s) { return s.setDemoBorderPreset; });
   var resetDemo = useHyperImageStore(function (s) { return s.resetDemo; });
-  var openLayoutGallery = useHyperImageStore(function (s) { return s.openLayoutGallery; });
 
-  return React.createElement("div", { className: styles.demoBar, role: "toolbar", "aria-label": "Demo mode controls" },
-    React.createElement("div", { className: styles.demoBarHeader },
-      React.createElement("span", { className: styles.demoBarTitle }, "Demo Mode"),
+  var expandedState = React.useState(false);
+  var isExpanded = expandedState[0];
+  var setExpanded = expandedState[1];
+
+  // -- Build collapsed summary --
+  var summaryParts: string[] = [];
+  if (demoLayout) { summaryParts.push(demoLayout); }
+  if (demoShape) { summaryParts.push(demoShape); }
+  if (demoFilter && demoFilter !== FilterPreset.None) { summaryParts.push(demoFilter); }
+  var summary = summaryParts.length > 0 ? summaryParts.join(" | ") : "Default settings";
+
+  // -- Expanded panel class --
+  var panelClass = isExpanded
+    ? styles.expandPanel + " " + styles.expandPanelOpen
+    : styles.expandPanel;
+
+  return React.createElement("div", {
+    className: styles.demoBar,
+    role: "toolbar",
+    "aria-label": "Image demo controls",
+  },
+    // ---- Header row (always visible) ----
+    React.createElement("div", { className: styles.headerRow },
+      React.createElement("span", { className: styles.demoBadge }, "DEMO"),
+      React.createElement("span", { className: styles.wpName }, "HyperImage Preview"),
+      !isExpanded ? React.createElement("span", { className: styles.collapsedSummary }, summary) : undefined,
+      React.createElement("span", { className: styles.spacer }),
       React.createElement("button", {
-        className: styles.demoResetBtn,
+        className: styles.expandToggle,
         type: "button",
-        onClick: function () { openLayoutGallery(); },
-        "aria-label": "Browse layout gallery",
-      }, "Layouts"),
+        onClick: function (): void { setExpanded(!isExpanded); },
+        "aria-expanded": isExpanded ? "true" : "false",
+      },
+        isExpanded ? "Collapse" : "Customize",
+        React.createElement("span", {
+          className: styles.chevron + (isExpanded ? " " + styles.chevronExpanded : ""),
+        }, "\u25BC")
+      ),
       React.createElement("button", {
-        className: styles.demoResetBtn,
+        className: styles.exitButton,
         type: "button",
-        onClick: function () { resetDemo(); },
-        "aria-label": "Reset demo overrides",
-      }, "Reset")
+        onClick: function (): void { resetDemo(); },
+        "aria-label": "Reset and exit demo mode",
+      }, "\u2715 Exit Demo")
     ),
-    React.createElement("div", { className: styles.demoSections },
-      React.createElement(DemoBarSection, {
-        title: "Layout",
-        activeKey: demoLayout,
-        items: DEMO_LAYOUTS,
-        onSelect: function (key) { setDemoLayout(key as ImageLayout); },
+
+    // ---- Expandable panel ----
+    React.createElement("div", { className: panelClass },
+      buildChipRow("Layout:", demoLayout, DEMO_LAYOUTS, function (key) {
+        setDemoLayout(key as ImageLayout);
       }),
-      React.createElement(DemoBarSection, {
-        title: "Shape",
-        activeKey: demoShape,
-        items: DEMO_SHAPES,
-        onSelect: function (key) { setDemoShape(key as ShapeMask); },
+      buildChipRow("Shape:", demoShape, DEMO_SHAPES, function (key) {
+        setDemoShape(key as ShapeMask);
       }),
-      React.createElement(DemoBarSection, {
-        title: "Filter",
-        activeKey: demoFilter,
-        items: DEMO_FILTERS,
-        onSelect: function (key) { setDemoFilter(key as FilterPreset); },
+      buildChipRow("Filter:", demoFilter, DEMO_FILTERS, function (key) {
+        setDemoFilter(key as FilterPreset);
       }),
-      React.createElement(DemoBarSection, {
-        title: "Hover",
-        activeKey: demoHover,
-        items: DEMO_HOVERS,
-        onSelect: function (key) { setDemoHover(key as HoverEffect); },
+      buildChipRow("Hover:", demoHover, DEMO_HOVERS, function (key) {
+        setDemoHover(key as HoverEffect);
       }),
-      React.createElement(DemoBarSection, {
-        title: "Border",
-        activeKey: demoBorderPreset,
-        items: DEMO_BORDERS,
-        onSelect: function (key) { setDemoBorderPreset(key as BorderStylePreset); },
+      buildChipRow("Border:", demoBorderPreset, DEMO_BORDERS, function (key) {
+        setDemoBorderPreset(key as BorderStylePreset);
       })
     )
   );

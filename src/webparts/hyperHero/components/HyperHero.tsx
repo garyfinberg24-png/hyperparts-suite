@@ -7,6 +7,7 @@ import type {
   IHyperHeroGridLayout,
   IHyperHeroResponsiveLayouts,
   IHyperHeroRotation,
+  TransitionEffect,
 } from "../models";
 import {
   DEFAULT_SLIDE,
@@ -29,6 +30,7 @@ import { HyperHeroSlideEditor } from "./editor";
 import { HyperHeroEditOverlay, HyperHeroEditToolbar } from "./editor";
 import { HyperHeroSliderManager } from "./editor/HyperHeroSliderManager";
 import type { IStoredSliderConfig } from "../utils/sliderStorage";
+import HyperHeroDemoBar from "./HyperHeroDemoBar";
 import styles from "./HyperHero.module.scss";
 
 export interface IHyperHeroComponentProps extends IHyperHeroWebPartProps {
@@ -173,6 +175,37 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
   const [editingSlideId, setEditingSlideId] = React.useState<string | undefined>(undefined);
   const [showSliderManager, setShowSliderManager] = React.useState(false);
   const [editorInitialView, setEditorInitialView] = React.useState<"editor" | "manager">("editor");
+
+  // ── Demo mode local overrides ──
+  var demoLayoutState = React.useState<"grid" | "carousel" | "split" | "cinematic" | "filmstrip" | "stacked">("grid");
+  var demoLayout = demoLayoutState[0];
+  var setDemoLayout = demoLayoutState[1];
+
+  var demoTransitionState = React.useState<TransitionEffect>(
+    rotation && rotation.effect ? rotation.effect : "fade"
+  );
+  var demoTransition = demoTransitionState[0];
+  var setDemoTransition = demoTransitionState[1];
+
+  var demoAspectRatioState = React.useState<string>(props.aspectRatio || "16:9");
+  var demoAspectRatio = demoAspectRatioState[0];
+  var setDemoAspectRatio = demoAspectRatioState[1];
+
+  var demoParallaxState = React.useState(false);
+  var demoParallax = demoParallaxState[0];
+  var setDemoParallax = demoParallaxState[1];
+
+  var demoAutoRotationState = React.useState(rotation ? rotation.enabled : false);
+  var demoAutoRotation = demoAutoRotationState[0];
+  var setDemoAutoRotation = demoAutoRotationState[1];
+
+  var demoCountdownState = React.useState(false);
+  var demoCountdown = demoCountdownState[0];
+  var setDemoCountdown = demoCountdownState[1];
+
+  var demoVideoState = React.useState(false);
+  var demoVideo = demoVideoState[0];
+  var setDemoVideo = demoVideoState[1];
 
   // Auto-open wizard on first use in edit mode
   React.useEffect(function () {
@@ -575,9 +608,45 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
         buildSlideElements()
       );
 
+  // Demo bar (rendered when enableDemoMode is true)
+  var demoBarElement = props.enableDemoMode
+    ? React.createElement(HyperHeroDemoBar, {
+        currentLayout: demoLayout,
+        currentTransition: demoTransition,
+        currentAspectRatio: demoAspectRatio,
+        slideCount: scheduledSlides.length,
+        parallaxEnabled: demoParallax,
+        autoRotationEnabled: demoAutoRotation,
+        countdownEnabled: demoCountdown,
+        videoEnabled: demoVideo,
+        onLayoutChange: setDemoLayout,
+        onTransitionChange: setDemoTransition,
+        onAspectRatioChange: setDemoAspectRatio,
+        onParallaxToggle: function (): void {
+          setDemoParallax(function (v: boolean): boolean { return !v; });
+        },
+        onAutoRotationToggle: function (): void {
+          setDemoAutoRotation(function (v: boolean): boolean { return !v; });
+        },
+        onCountdownToggle: function (): void {
+          setDemoCountdown(function (v: boolean): boolean { return !v; });
+        },
+        onVideoToggle: function (): void {
+          setDemoVideo(function (v: boolean): boolean { return !v; });
+        },
+        onExitDemo: function (): void {
+          if (onSettingsChange) {
+            onSettingsChange({ enableDemoMode: false } as Partial<IHyperHeroWebPartProps>);
+          }
+        },
+      })
+    : undefined;
+
   return React.createElement(
     "div",
     { ref: containerRef, className: containerClasses },
+    // Demo bar
+    demoBarElement,
     // Title
     title
       ? React.createElement("h2", { className: styles.heroTitle }, title)

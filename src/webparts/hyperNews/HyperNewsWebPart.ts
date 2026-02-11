@@ -21,6 +21,12 @@ import { DEFAULT_FILTER_CONFIG, LAYOUT_OPTIONS, parseSources, SOURCE_TYPE_LABELS
 
 export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPartProps> {
 
+  /** Callback: WelcomeStep splash completed */
+  private _onWizardComplete = (): void => {
+    this.properties.wizardCompleted = true;
+    this.render();
+  };
+
   /** Callback: wizard applies config → persist to web part properties */
   private _onWizardApply = (result: Partial<IHyperNewsWebPartProps>): void => {
     const keys = Object.keys(result);
@@ -46,6 +52,9 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
     const props: IHyperNewsComponentProps = {
       ...this.properties,
       instanceId: this.instanceId,
+      isEditMode: this.displayMode === 2,
+      wizardCompleted: this.properties.wizardCompleted,
+      onWizardComplete: this._onWizardComplete,
       onWizardApply: this._onWizardApply,
       onOpenWizard: this._onOpenWizard,
       onImageSelect: (_imageUrl: string): void => {
@@ -133,6 +142,9 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
     }
     if (this.properties.showWizardOnInit === undefined) {
       this.properties.showWizardOnInit = true;
+    }
+    if (this.properties.wizardCompleted === undefined) {
+      this.properties.wizardCompleted = false;
     }
 
     // Sample data — on by default so the web part renders immediately

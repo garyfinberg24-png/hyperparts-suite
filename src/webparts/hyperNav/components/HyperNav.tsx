@@ -140,27 +140,26 @@ const HyperNavInner: React.FC<IHyperNavComponentProps> = function (props) {
   var store = useHyperNavStore();
 
   // ── Wizard state ──
-  var wizardState = React.useState(false);
-  var showWizard = wizardState[0];
-  var setShowWizard = wizardState[1];
+  var wizardOpenState = React.useState(false);
+  var wizardOpen = wizardOpenState[0];
+  var setWizardOpen = wizardOpenState[1];
 
   React.useEffect(function () {
     if (props.isEditMode && !props.wizardCompleted) {
-      setShowWizard(true);
+      setWizardOpen(true);
     }
   }, [props.isEditMode, props.wizardCompleted]);
 
-  // Show wizard if not completed
-  if (showWizard) {
-    return React.createElement(WelcomeStep, {
-      onGetStarted: function (): void {
-        if (props.onWizardComplete) {
-          props.onWizardComplete({});
-        }
-        setShowWizard(false);
-      },
-    });
-  }
+  var handleWizardApply = function (result: Partial<IHyperNavWebPartProps>): void {
+    if (props.onWizardComplete) {
+      props.onWizardComplete(result as Record<string, unknown>);
+    }
+    setWizardOpen(false);
+  };
+
+  var handleWizardClose = function (): void {
+    setWizardOpen(false);
+  };
 
   // V2: Demo mode local overrides
   var demoLayoutState = React.useState<HyperNavLayoutMode>(props.layoutMode);
@@ -303,6 +302,17 @@ const HyperNavInner: React.FC<IHyperNavComponentProps> = function (props) {
   var LayoutComponent = getLayoutComponent(activeLayout);
 
   var children: React.ReactNode[] = [];
+
+  // Wizard modal (always rendered, controlled by wizardOpen state)
+  children.push(
+    React.createElement(WelcomeStep, {
+      key: "wizard",
+      isOpen: wizardOpen,
+      onClose: handleWizardClose,
+      onApply: handleWizardApply,
+      currentProps: props.wizardCompleted ? props as any : undefined,
+    })
+  );
 
   // V2: Demo bar (top)
   if (props.enableDemoMode) {

@@ -9,7 +9,6 @@ import type {
 } from "../models";
 import { SAMPLE_LINKS } from "../models";
 import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton } from "../../../common/components";
-import { HyperWizard } from "../../../common/components/wizard/HyperWizard";
 import { useHyperLinks } from "../hooks/useHyperLinks";
 import { useLinksAudienceFilter } from "../hooks/useLinksAudienceFilter";
 import { useLinksSearch } from "../hooks/useLinksSearch";
@@ -17,7 +16,6 @@ import { useHyperLinksStore } from "../store/useHyperLinksStore";
 import { trackLinkClick } from "../utils/analyticsTracker";
 import { getPresetLinksById } from "../utils/linkPresets";
 import { stringifyLinks, stringifyGroups } from "../utils/linkParser";
-import { LINKS_WIZARD_CONFIG, buildStateFromProps } from "./wizard/linksWizardConfig";
 import WelcomeStep from "./wizard/WelcomeStep";
 import HyperLinksSearchBar from "./HyperLinksSearchBar";
 import HyperLinksDemoBar from "./HyperLinksDemoBar";
@@ -213,23 +211,6 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Build wizard state override from current props (for re-editing)
-  var wizardStateOverride = React.useMemo(function () {
-    return buildStateFromProps(props);
-  }, [
-    props.layoutMode, props.hoverEffect, props.borderRadius, props.tileSize,
-    props.gridColumns, props.compactAlignment, props.showIcons, props.iconSize,
-    props.showDescriptions, props.showThumbnails, props.enableColorCustomization,
-    props.enableGrouping, props.enableAudienceTargeting, props.enableSearch,
-    props.enableAnalytics, props.enableHealthCheck, props.enablePopularBadges,
-    props.showWizardOnInit,
-    props.backgroundMode, props.backgroundColor, props.backgroundGradient,
-    props.backgroundImageUrl, props.backgroundImageDarken,
-    props.textColor, props.iconColor, props.activePresetId,
-    props.linkDataSource, props.linkPresetId, props.linkListUrl,
-    props.linkListTitleColumn, props.linkListUrlColumn, props.useSampleData,
-  ]);
-
   // Handle wizard apply
   var handleWizardApply = React.useCallback(function (result: Partial<IHyperLinksWebPartProps>): void {
     if (props.onWizardApply) {
@@ -250,13 +231,12 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
     }
   }, [props.enableAnalytics, props.instanceId]);
 
-  // Wizard element — rendered in ALL code paths
-  var wizardElement = React.createElement(HyperWizard, {
-    config: LINKS_WIZARD_CONFIG,
+  // Wizard element — rendered in ALL code paths (WelcomeStep wraps HyperWizard)
+  var wizardElement = React.createElement(WelcomeStep, {
     isOpen: isWizardOpen,
     onClose: closeWizard,
     onApply: handleWizardApply,
-    initialStateOverride: wizardStateOverride,
+    currentProps: props.showWizardOnInit ? undefined : props as IHyperLinksWebPartProps,
   });
 
   // Demo mode toggle: small button to activate demo when useSampleData is enabled
@@ -313,18 +293,6 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
 
   // Toolbar to render: either the full DemoBar or the small toggle
   var demoToolbar: React.ReactElement | undefined = demoBarElement || demoToggle;
-
-  // WelcomeStep: show on first add when in edit mode and wizard hasn't been completed
-  if (props.isEditMode && props.showWizardOnInit && !isWizardOpen) {
-    return React.createElement(
-      "div",
-      { className: styles.hyperLinks },
-      React.createElement(WelcomeStep, {
-        onGetStarted: function () { openWizard(); },
-      }),
-      wizardElement
-    );
-  }
 
   // Loading state while checking audience targeting
   if (loading) {

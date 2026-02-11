@@ -36,8 +36,10 @@ export interface IHyperImageComponentProps extends IHyperImageWebPartProps {
   instanceId: string;
   /** Whether the web part is in edit mode (displayMode === 2) */
   isEditMode?: boolean;
-  /** Callback when the wizard "Get Started" is clicked */
-  onWizardComplete?: () => void;
+  /** Whether the wizard should open automatically on init */
+  showWizardOnInit?: boolean;
+  /** Callback when the wizard applies — receives partial web part props */
+  onWizardApply?: (result: Partial<IHyperImageWebPartProps>) => void;
   /** Callback when user selects an image from the browser */
   onImageSelect?: (imageUrl: string) => void;
   /** Callback when user selects a preset layout from the gallery */
@@ -62,27 +64,26 @@ function capitalize(s: string): string {
 
 var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
   // ── Wizard state ──
-  var wizardState = React.useState(false);
-  var showWizard = wizardState[0];
-  var setShowWizard = wizardState[1];
+  var wizardOpenState = React.useState(false);
+  var wizardOpen = wizardOpenState[0];
+  var setWizardOpen = wizardOpenState[1];
 
   React.useEffect(function () {
-    if (props.isEditMode && !props.wizardCompleted) {
-      setShowWizard(true);
+    if (props.isEditMode && props.showWizardOnInit && !props.wizardCompleted) {
+      setWizardOpen(true);
     }
-  }, [props.isEditMode, props.wizardCompleted]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Show wizard if not completed ──
-  if (showWizard) {
-    return React.createElement(WelcomeStep, {
-      onGetStarted: function (): void {
-        if (props.onWizardComplete) {
-          props.onWizardComplete();
-        }
-        setShowWizard(false);
-      },
-    });
-  }
+  var handleWizardApply = React.useCallback(function (result: Partial<IHyperImageWebPartProps>): void {
+    setWizardOpen(false);
+    if (props.onWizardApply) {
+      props.onWizardApply(result);
+    }
+  }, [props.onWizardApply, setWizardOpen]);
+
+  var handleWizardClose = React.useCallback(function (): void {
+    setWizardOpen(false);
+  }, [setWizardOpen]);
 
   // ── Flip effect state ──
   var flipState = React.useState(false);
@@ -337,6 +338,19 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
   if (textOverlay.enabled && textOverlay.placement === TextPlacement.Below) {
     containerChildren.push(
       React.createElement(HyperImageTextOverlay, { key: "caption", config: textOverlay })
+    );
+  }
+
+  // Wizard modal (rendered alongside main content, not as early return)
+  if (wizardOpen) {
+    containerChildren.push(
+      React.createElement(WelcomeStep, {
+        key: "wizard",
+        isOpen: wizardOpen,
+        onClose: handleWizardClose,
+        onApply: handleWizardApply,
+        currentProps: props.wizardCompleted ? props : undefined,
+      })
     );
   }
 

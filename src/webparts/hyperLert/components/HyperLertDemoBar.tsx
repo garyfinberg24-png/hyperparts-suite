@@ -5,8 +5,7 @@ import {
   ALL_LERT_TEMPLATES,
   getLertLayoutDisplayName,
 } from "../models/IHyperLertV2Enums";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const styles: Record<string, string> = require("./HyperLertDemoBar.module.scss");
+import styles from "../../../common/components/demoBar/DemoBarRichPanel.module.scss";
 
 export interface IHyperLertDemoBarProps {
   currentLayout: LertLayout;
@@ -42,101 +41,137 @@ function getTemplateLabel(id: LertTemplateId): string {
   }
 }
 
-const HyperLertDemoBar: React.FC<IHyperLertDemoBarProps> = function (props) {
-  var handleLayoutChange = React.useCallback(function (e: React.ChangeEvent<HTMLSelectElement>): void {
-    props.onLayoutChange(e.target.value as LertLayout);
-  }, [props.onLayoutChange]);
+function getGroupModeLabel(mode: AlertGroupMode): string {
+  var label = "";
+  GROUP_MODE_OPTIONS.forEach(function (opt) {
+    if (opt.value === mode) {
+      label = opt.label;
+    }
+  });
+  return label || String(mode);
+}
 
-  var handleTemplateChange = React.useCallback(function (e: React.ChangeEvent<HTMLSelectElement>): void {
-    props.onTemplateChange(e.target.value as LertTemplateId);
-  }, [props.onTemplateChange]);
+var HyperLertDemoBar: React.FC<IHyperLertDemoBarProps> = function (props) {
+  var expandedState = React.useState(false);
+  var isExpanded = expandedState[0];
+  var setExpanded = expandedState[1];
 
-  var handleGroupChange = React.useCallback(function (e: React.ChangeEvent<HTMLSelectElement>): void {
-    props.onGroupModeChange(e.target.value as AlertGroupMode);
-  }, [props.onGroupModeChange]);
+  // -- Build collapsed summary --
+  var summary = getLertLayoutDisplayName(props.currentLayout) +
+    " | " + getTemplateLabel(props.currentTemplate) +
+    " | " + getGroupModeLabel(props.currentGroupMode);
 
-  // Layout options
-  var layoutOptions: React.ReactNode[] = [];
-  ALL_LERT_LAYOUTS.forEach(function (layout: LertLayout): void {
-    layoutOptions.push(React.createElement("option", {
-      key: layout,
-      value: layout,
-    }, getLertLayoutDisplayName(layout)));
+  // -- Layout chips --
+  var layoutChips: React.ReactNode[] = [];
+  ALL_LERT_LAYOUTS.forEach(function (layout) {
+    var isActive = props.currentLayout === layout;
+    var chipClass = isActive
+      ? styles.chip + " " + styles.chipActive
+      : styles.chip;
+
+    layoutChips.push(
+      React.createElement("button", {
+        key: layout,
+        className: chipClass,
+        type: "button",
+        onClick: function (): void { props.onLayoutChange(layout); },
+        "aria-pressed": isActive ? "true" : "false",
+      }, getLertLayoutDisplayName(layout))
+    );
   });
 
-  // Template options
-  var templateOptions: React.ReactNode[] = [];
-  ALL_LERT_TEMPLATES.forEach(function (tmpl: LertTemplateId): void {
-    templateOptions.push(React.createElement("option", {
-      key: tmpl,
-      value: tmpl,
-    }, getTemplateLabel(tmpl)));
+  // -- Template chips --
+  var templateChips: React.ReactNode[] = [];
+  ALL_LERT_TEMPLATES.forEach(function (tmpl) {
+    var isActive = props.currentTemplate === tmpl;
+    var chipClass = isActive
+      ? styles.chip + " " + styles.chipActive
+      : styles.chip;
+
+    templateChips.push(
+      React.createElement("button", {
+        key: tmpl,
+        className: chipClass,
+        type: "button",
+        onClick: function (): void { props.onTemplateChange(tmpl); },
+        "aria-pressed": isActive ? "true" : "false",
+      }, getTemplateLabel(tmpl))
+    );
   });
 
-  // Group mode options
-  var groupOptions: React.ReactNode[] = [];
-  GROUP_MODE_OPTIONS.forEach(function (opt: { value: AlertGroupMode; label: string }): void {
-    groupOptions.push(React.createElement("option", {
-      key: opt.value,
-      value: opt.value,
-    }, opt.label));
+  // -- Group mode chips --
+  var groupChips: React.ReactNode[] = [];
+  GROUP_MODE_OPTIONS.forEach(function (opt) {
+    var isActive = props.currentGroupMode === opt.value;
+    var chipClass = isActive
+      ? styles.chip + " " + styles.chipActive
+      : styles.chip;
+
+    groupChips.push(
+      React.createElement("button", {
+        key: opt.value,
+        className: chipClass,
+        type: "button",
+        onClick: function (): void { props.onGroupModeChange(opt.value); },
+        "aria-pressed": isActive ? "true" : "false",
+      }, opt.label)
+    );
   });
+
+  // -- Expanded panel class --
+  var panelClass = isExpanded
+    ? styles.expandPanel + " " + styles.expandPanelOpen
+    : styles.expandPanel;
 
   return React.createElement("div", {
     className: styles.demoBar,
     role: "toolbar",
     "aria-label": "Demo mode controls",
   },
-    // Demo Mode label
-    React.createElement("span", { className: styles.demoLabel },
-      React.createElement("i", { className: "ms-Icon ms-Icon--TestBeaker" }),
-      "Demo Mode"
+    // ---- Header row (always visible) ----
+    React.createElement("div", { className: styles.headerRow },
+      React.createElement("span", { className: styles.demoBadge }, "DEMO"),
+      React.createElement("span", { className: styles.wpName }, "HyperLert Preview"),
+      !isExpanded ? React.createElement("span", { className: styles.collapsedSummary }, summary) : undefined,
+      React.createElement("span", { className: styles.spacer }),
+      React.createElement("button", {
+        className: styles.expandToggle,
+        type: "button",
+        onClick: function (): void { setExpanded(!isExpanded); },
+        "aria-expanded": isExpanded ? "true" : "false",
+      },
+        isExpanded ? "Collapse" : "Customize",
+        React.createElement("span", {
+          className: styles.chevron + (isExpanded ? " " + styles.chevronExpanded : ""),
+        }, "\u25BC")
+      ),
+      React.createElement("button", {
+        className: styles.exitButton,
+        type: "button",
+        onClick: props.onExitDemo,
+        "aria-label": "Exit demo mode",
+      }, "\u2715 Exit Demo")
     ),
 
-    // Layout switcher
-    React.createElement("div", { className: styles.demoGroup },
-      React.createElement("label", { className: styles.demoGroupLabel, htmlFor: "lert-demo-layout" }, "Layout:"),
-      React.createElement("select", {
-        id: "lert-demo-layout",
-        className: styles.demoSelect,
-        value: props.currentLayout,
-        onChange: handleLayoutChange,
-      }, layoutOptions)
-    ),
+    // ---- Expandable panel ----
+    React.createElement("div", { className: panelClass },
+      // Layout row
+      React.createElement("div", { className: styles.chipRow },
+        React.createElement("span", { className: styles.chipRowLabel }, "Layout:"),
+        React.createElement("div", { className: styles.chipGroup }, layoutChips)
+      ),
 
-    // Template switcher
-    React.createElement("div", { className: styles.demoGroup },
-      React.createElement("label", { className: styles.demoGroupLabel, htmlFor: "lert-demo-template" }, "Template:"),
-      React.createElement("select", {
-        id: "lert-demo-template",
-        className: styles.demoSelect,
-        value: props.currentTemplate,
-        onChange: handleTemplateChange,
-      }, templateOptions)
-    ),
+      // Template row
+      React.createElement("div", { className: styles.chipRow },
+        React.createElement("span", { className: styles.chipRowLabel }, "Template:"),
+        React.createElement("div", { className: styles.chipGroup }, templateChips)
+      ),
 
-    // Group mode switcher
-    React.createElement("div", { className: styles.demoGroup },
-      React.createElement("label", { className: styles.demoGroupLabel, htmlFor: "lert-demo-group" }, "Group:"),
-      React.createElement("select", {
-        id: "lert-demo-group",
-        className: styles.demoSelect,
-        value: props.currentGroupMode,
-        onChange: handleGroupChange,
-      }, groupOptions)
-    ),
-
-    // Spacer
-    React.createElement("div", { className: styles.demoSpacer }),
-
-    // Exit Demo button
-    React.createElement("button", {
-      className: styles.exitBtn,
-      onClick: props.onExitDemo,
-      type: "button",
-    },
-      React.createElement("i", { className: "ms-Icon ms-Icon--Cancel" }),
-      "Exit Demo"
+      // Group mode row
+      React.createElement("div", { className: styles.chipRow },
+        React.createElement("span", { className: styles.chipRowLabel }, "Grouping:"),
+        React.createElement("div", { className: styles.chipGroup }, groupChips)
+      )
     )
   );
 };

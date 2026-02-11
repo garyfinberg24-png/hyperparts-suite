@@ -128,8 +128,12 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
       instanceId: this.instanceId,
       wizardCompleted: this.properties.wizardCompleted,
       isEditMode: this.displayMode === 2,
-      onWizardComplete: (): void => {
+      showWizardOnInit: true,
+      onWizardApply: (result: Partial<IHyperImageWebPartProps>): void => {
         this.properties.wizardCompleted = true;
+        Object.keys(result).forEach((key: string): void => {
+          (this.properties as unknown as Record<string, unknown>)[key] = (result as Record<string, unknown>)[key];
+        });
         this.render();
       },
       onImageSelect: (imageUrl: string): void => {

@@ -473,6 +473,11 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
         onFolderTreeToggle: function () { setDemoShowFolderTree(function (v: boolean) { return !v; }); },
         onPreviewToggle: function () { setDemoShowPreview(function (v: boolean) { return !v; }); },
         onOpenWizard: store.openWizard,
+        onExitDemo: function (): void {
+          store.setViewMode(props.viewMode || "grid");
+          setDemoShowFolderTree(!!props.enableFolderTree);
+          setDemoShowPreview(!!props.enablePreview);
+        },
       })
     );
   }

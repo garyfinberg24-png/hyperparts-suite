@@ -2,6 +2,7 @@ import * as React from "react";
 import type { IHyperSpotlightWebPartProps } from "../models";
 import {
   LayoutMode,
+  CardStyle,
   DEFAULT_GRID_SETTINGS,
   DEFAULT_LIST_SETTINGS,
   DEFAULT_CAROUSEL_SETTINGS,
@@ -27,6 +28,7 @@ import type {
 } from "../models";
 import { HyperErrorBoundary, HyperEmptyState } from "../../../common/components";
 import { HyperSkeleton } from "../../../common/components";
+import WelcomeStep from "./wizard/WelcomeStep";
 import { useSpotlightEmployees } from "../hooks";
 import type { UseSpotlightEmployeesOptions, UseSpotlightEmployeesResult } from "../hooks";
 import {
@@ -34,11 +36,16 @@ import {
   BannerLayout, TimelineLayout, WallOfFameLayout,
 } from "./layouts";
 import HyperSpotlightToolbar from "./HyperSpotlightToolbar";
+import HyperSpotlightDemoBar from "./HyperSpotlightDemoBar";
 import { useHyperSpotlightStore } from "../store/useHyperSpotlightStore";
 import styles from "./HyperSpotlight.module.scss";
 
 export interface IHyperSpotlightComponentProps extends IHyperSpotlightWebPartProps {
   instanceId: string;
+  /** Whether the web part is in edit mode (displayMode === 2) */
+  isEditMode?: boolean;
+  /** Callback when the wizard is completed — receives partial props to persist */
+  onWizardComplete?: (result: Record<string, unknown>) => void;
 }
 
 /** Safely parse a JSON string with a fallback default */
@@ -76,6 +83,51 @@ const MOCK_RESULT: UseSpotlightEmployeesResult = {
 };
 
 const HyperSpotlightInner: React.FC<IHyperSpotlightComponentProps> = function (props) {
+  // ── WelcomeStep splash state ──
+  var wizardState = React.useState(false);
+  var showWizard = wizardState[0];
+  var setShowWizard = wizardState[1];
+
+  React.useEffect(function () {
+    if (props.isEditMode && !props.wizardCompleted) {
+      setShowWizard(true);
+    }
+  }, [props.isEditMode, props.wizardCompleted]);
+
+  // Show WelcomeStep wizard if not completed and in edit mode
+  if (showWizard) {
+    return React.createElement(WelcomeStep, {
+      isOpen: true,
+      onClose: function (): void {
+        setShowWizard(false);
+      },
+      onApply: function (result: Partial<IHyperSpotlightWebPartProps>): void {
+        if (props.onWizardComplete) {
+          props.onWizardComplete(result as Record<string, unknown>);
+        }
+        setShowWizard(false);
+      },
+      currentProps: props as IHyperSpotlightWebPartProps,
+    });
+  }
+
+  // ── Demo mode state (local, transient UI overrides) ──
+  var demoLayoutState = React.useState(props.layoutMode);
+  var demoLayout = demoLayoutState[0];
+  var setDemoLayout = demoLayoutState[1];
+
+  var demoCardStyleState = React.useState(props.cardStyle);
+  var demoCardStyle = demoCardStyleState[0];
+  var setDemoCardStyle = demoCardStyleState[1];
+
+  var demoExpandedDetailsState = React.useState(props.enableExpandableCards || false);
+  var demoExpandedDetails = demoExpandedDetailsState[0];
+  var setDemoExpandedDetails = demoExpandedDetailsState[1];
+
+  var demoDeptFilterState = React.useState(props.showRuntimeDepartmentFilter || false);
+  var demoDeptFilter = demoDeptFilterState[0];
+  var setDemoDeptFilter = demoDeptFilterState[1];
+
   const hookOptions: UseSpotlightEmployeesOptions = {
     selectionMode: props.selectionMode,
     category: props.category,
@@ -142,9 +194,13 @@ const HyperSpotlightInner: React.FC<IHyperSpotlightComponentProps> = function (p
     });
   }
 
+  // ── Effective values (demo overrides when demo mode on) ──
+  var activeCardStyle = props.enableDemoMode ? demoCardStyle : props.cardStyle;
+  var activeExpandableCards = props.enableDemoMode ? demoExpandedDetails : (props.enableExpandableCards || false);
+
   // Shared card props passed to every layout
   const sharedCardProps = {
-    cardStyle: props.cardStyle,
+    cardStyle: activeCardStyle,
     animationEntrance: props.animationEntrance,
     showProfilePicture: props.showProfilePicture,
     showEmployeeName: props.showEmployeeName,
@@ -172,16 +228,17 @@ const HyperSpotlightInner: React.FC<IHyperSpotlightComponentProps> = function (p
     showSkillset: props.showSkillset,
     showFavoriteWebsites: props.showFavoriteWebsites,
     showHireDate: props.showHireDate,
-    enableExpandableCards: props.enableExpandableCards,
+    enableExpandableCards: activeExpandableCards,
   };
 
-  // V2: Determine effective layout (runtime override or prop)
-  const effectiveLayout: LayoutMode = (props.showRuntimeViewSwitcher && runtimeLayout)
+  // V2: Determine effective layout (runtime override or prop, then demo override)
+  var baseLayout: LayoutMode = (props.showRuntimeViewSwitcher && runtimeLayout)
     ? runtimeLayout
     : props.layoutMode;
+  var effectiveLayout: LayoutMode = props.enableDemoMode ? demoLayout : baseLayout;
 
   // Determine layout component
-  let layoutElement: React.ReactElement;
+  var layoutElement: React.ReactElement;
 
   if (effectiveLayout === LayoutMode.List) {
     const listSettings = parseJson<IListSettings>(props.listSettings, DEFAULT_LIST_SETTINGS);
@@ -258,7 +315,30 @@ const HyperSpotlightInner: React.FC<IHyperSpotlightComponentProps> = function (p
   }
 
   // V2: Build container children
-  const containerChildren: React.ReactNode[] = [];
+  var containerChildren: React.ReactNode[] = [];
+
+  // Demo bar (when demo mode is enabled)
+  if (props.enableDemoMode) {
+    containerChildren.push(React.createElement(HyperSpotlightDemoBar, {
+      key: "demo",
+      currentLayout: demoLayout,
+      currentCardStyle: demoCardStyle,
+      employeeCount: employees.length,
+      expandedDetailsEnabled: demoExpandedDetails,
+      departmentFilterEnabled: demoDeptFilter,
+      onLayoutChange: function (layout: LayoutMode): void { setDemoLayout(layout); },
+      onCardStyleChange: function (style: CardStyle): void { setDemoCardStyle(style); },
+      onExpandedDetailsToggle: function (): void { setDemoExpandedDetails(function (v: boolean) { return !v; }); },
+      onDepartmentFilterToggle: function (): void { setDemoDeptFilter(function (v: boolean) { return !v; }); },
+      onExitDemo: function (): void {
+        // Reset demo state to current prop values
+        setDemoLayout(props.layoutMode);
+        setDemoCardStyle(props.cardStyle);
+        setDemoExpandedDetails(props.enableExpandableCards || false);
+        setDemoDeptFilter(props.showRuntimeDepartmentFilter || false);
+      },
+    }));
+  }
 
   // Toolbar (runtime view switcher + department filter)
   if (props.showRuntimeViewSwitcher || props.showRuntimeDepartmentFilter) {
