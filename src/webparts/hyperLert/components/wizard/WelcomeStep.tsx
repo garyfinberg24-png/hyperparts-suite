@@ -34,12 +34,11 @@ const WelcomeStep: React.FC<IWelcomeStepProps> = function (props) {
           React.createElement("span", { className: styles.splashPartText }, "Lert")
         ),
         React.createElement("div", { className: styles.splashTagline },
-          React.createElement("span", { className: styles.splashTaglineStrong }, "Monitor"),
-          " your data and alert your team.",
-          React.createElement("br"),
-          "Rules engine with ",
-          React.createElement("span", { className: styles.splashTaglineStrong }, "email & Teams"),
-          " notifications."
+          "The ",
+          React.createElement("span", { className: styles.splashTaglineStrong }, "Ultimate"),
+          " Alert & Notification ",
+          React.createElement("span", { className: styles.splashTaglineStrong }, "Command Center"),
+          " for SharePoint"
         )
       )
     ),
@@ -47,29 +46,37 @@ const WelcomeStep: React.FC<IWelcomeStepProps> = function (props) {
     // ── Body: Feature Cards + CTA ──
     React.createElement("div", { className: styles.splashBody },
       React.createElement("div", { className: styles.splashCards },
-        // Card 1: Rule Builder
+        // Card 1: 8 Display Layouts
         React.createElement("div", { className: styles.splashCard },
-          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\u2699\uFE0F"),
-          React.createElement("div", { className: styles.splashCardTitle }, "Rule Builder"),
-          React.createElement("div", { className: styles.splashCardDesc }, "4-step wizard with 13 operators")
+          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDDA5\uFE0F"),
+          React.createElement("div", { className: styles.splashCardTitle }, "8 Display Layouts"),
+          React.createElement("div", { className: styles.splashCardDesc },
+            "Command Center, Inbox, Card Grid, Table, Timeline, Kanban, Compact, and Split views"
+          )
         ),
-        // Card 2: Multi-Channel
+        // Card 2: Smart Notifications
         React.createElement("div", { className: styles.splashCard },
-          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDCE9"),
-          React.createElement("div", { className: styles.splashCardTitle }, "Multi-Channel"),
-          React.createElement("div", { className: styles.splashCardDesc }, "Email, Teams chat & page banners")
+          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDD14"),
+          React.createElement("div", { className: styles.splashCardTitle }, "Smart Notifications"),
+          React.createElement("div", { className: styles.splashCardDesc },
+            "Toast stacks, email, Teams, in-page banners, and a notification center inbox"
+          )
         ),
-        // Card 3: Alert History
+        // Card 3: Intelligent Rules
         React.createElement("div", { className: styles.splashCard },
-          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDCCB"),
-          React.createElement("div", { className: styles.splashCardTitle }, "Alert History"),
-          React.createElement("div", { className: styles.splashCardDesc }, "Full audit log in a SP list")
+          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\u26A1"),
+          React.createElement("div", { className: styles.splashCardTitle }, "Intelligent Rules"),
+          React.createElement("div", { className: styles.splashCardDesc },
+            "13-operator rule engine with grouping, deduplication, and 3-tier escalation"
+          )
         ),
-        // Card 4: Smart Scheduling
+        // Card 4: KPI Dashboard
         React.createElement("div", { className: styles.splashCard },
-          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDD51"),
-          React.createElement("div", { className: styles.splashCardTitle }, "Smart Scheduling"),
-          React.createElement("div", { className: styles.splashCardDesc }, "Active hours, cooldown & snooze")
+          React.createElement("div", { className: styles.splashCardIcon, "aria-hidden": "true" }, "\uD83D\uDCCA"),
+          React.createElement("div", { className: styles.splashCardTitle }, "KPI Dashboard"),
+          React.createElement("div", { className: styles.splashCardDesc },
+            "Real-time metrics: active alerts, MTTA, MTTR, and resolution rates"
+          )
         )
       ),
 
@@ -82,7 +89,7 @@ const WelcomeStep: React.FC<IWelcomeStepProps> = function (props) {
 
       // Hint
       React.createElement("span", { className: styles.splashHint },
-        "Set up your first alert rule in minutes"
+        "Configure your alert monitoring in minutes"
       )
     )
   );

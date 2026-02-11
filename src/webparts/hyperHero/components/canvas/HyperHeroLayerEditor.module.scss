@@ -193,7 +193,17 @@
 .layerList {
   flex: 1;
   overflow-y: auto;
-  padding: 2px 0;
+  padding: 0;
+}
+
+// ── Layer accordion wrapper ──
+
+.layerAccordion {
+  border-bottom: 1px solid #edebe9;
+
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
 .layerItem {
@@ -220,6 +230,30 @@
   opacity: 0.5;
 }
 
+// Accordion chevron
+.layerChevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  font-size: 10px;
+  color: #8a8886;
+  transition: transform 0.15s ease;
+  transform: rotate(0deg);
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    color: #323130;
+  }
+}
+
+.layerChevronExpanded {
+  transform: rotate(90deg);
+}
+
 .layerItemIcon {
   font-size: 13px;
   width: 18px;
@@ -233,6 +267,19 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 12px;
+}
+
+// Collapsed summary (type + position) shown when accordion is expanded
+.layerDetail {
+  padding: 0 10px 6px 38px;
+  font-size: 10px;
+  color: #8a8886;
+  line-height: 1.4;
+  display: none;
+}
+
+.layerDetailVisible {
+  display: block;
 }
 
 .layerItemActions {

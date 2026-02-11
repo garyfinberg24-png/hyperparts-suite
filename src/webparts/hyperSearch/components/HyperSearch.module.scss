@@ -8,11 +8,62 @@
   font-family: $ms-font-family-fallbacks;
 }
 
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .title {
   font-size: $ms-font-size-24;
   font-weight: $ms-font-weight-semibold;
   color: $ms-color-neutralPrimary;
   margin: 0 0 4px 0;
+  flex: 1;
+}
+
+.configureButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 4px;
+  border: 1px solid $ms-color-neutralQuaternary;
+  background: $ms-color-white;
+  color: $ms-color-themePrimary;
+  font-size: 13px;
+  font-weight: $ms-font-weight-semibold;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  &:hover {
+    background: $ms-color-themeLighterAlt;
+    border-color: $ms-color-themePrimary;
+  }
+}
+
+.sortAndFilterRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.filterToggleButton {
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid $ms-color-neutralQuaternary;
+  background: transparent;
+  color: $ms-color-neutralSecondary;
+  font-size: 12px;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  &:hover {
+    background: $ms-color-neutralLighterAlt;
+    color: $ms-color-neutralPrimary;
+  }
 }
 
 .contentGrid {

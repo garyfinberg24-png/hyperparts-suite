@@ -17,8 +17,10 @@ import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
 import HyperSearch from "./components/HyperSearch";
 import type { IHyperSearchComponentProps } from "./components/HyperSearch";
 import type { IHyperSearchWebPartProps } from "./models";
+import { DEFAULT_V2_FEATURES, DEFAULT_V2_FILTERS } from "./models";
+import { SEARCH_TEMPLATES } from "./constants/searchTemplates";
 
-const SCOPE_OPTIONS = [
+var SCOPE_OPTIONS = [
   { key: "everything", text: strings.ScopeEverything },
   { key: "sharepoint", text: strings.ScopeSharePoint },
   { key: "onedrive", text: strings.ScopeOneDrive },
@@ -27,10 +29,30 @@ const SCOPE_OPTIONS = [
   { key: "currentSite", text: strings.ScopeCurrentSite },
 ];
 
-const SORT_OPTIONS = [
+var SORT_OPTIONS = [
   { key: "relevance", text: strings.SortRelevance },
   { key: "dateModified", text: strings.SortDateModified },
   { key: "author", text: strings.SortAuthor },
+];
+
+var LAYOUT_OPTIONS = [
+  { key: "listRich", text: "Rich List" },
+  { key: "listCompact", text: "Compact List" },
+  { key: "cardGrid", text: "Card Grid" },
+  { key: "magazine", text: "Magazine" },
+  { key: "table", text: "Table" },
+  { key: "peopleGrid", text: "People Grid" },
+  { key: "mediaGallery", text: "Media Gallery" },
+  { key: "conversation", text: "Conversation" },
+  { key: "timeline", text: "Timeline" },
+  { key: "previewPanel", text: "Preview Panel" },
+];
+
+var BAR_STYLE_OPTIONS = [
+  { key: "rounded", text: "Rounded" },
+  { key: "square", text: "Square" },
+  { key: "pill", text: "Pill" },
+  { key: "underline", text: "Underline" },
 ];
 
 export default class HyperSearchWebPart extends BaseHyperWebPart<IHyperSearchWebPartProps> {
@@ -38,12 +60,12 @@ export default class HyperSearchWebPart extends BaseHyperWebPart<IHyperSearchWeb
   private _jsonValidationMessage: string = "";
 
   public render(): void {
-    const componentProps: IHyperSearchComponentProps = {
+    var componentProps: IHyperSearchComponentProps = {
       ...this.properties,
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
     };
-    const element: React.ReactElement<IHyperSearchComponentProps> =
+    var element: React.ReactElement<IHyperSearchComponentProps> =
       React.createElement(HyperSearch, componentProps);
     ReactDom.render(element, this.domElement);
   }
@@ -51,6 +73,7 @@ export default class HyperSearchWebPart extends BaseHyperWebPart<IHyperSearchWeb
   protected async onInit(): Promise<void> {
     await super.onInit();
 
+    // V1 defaults
     if (this.properties.title === undefined) {
       this.properties.title = "Search";
     }
@@ -99,6 +122,76 @@ export default class HyperSearchWebPart extends BaseHyperWebPart<IHyperSearchWeb
     if (this.properties.showResultPath === undefined) {
       this.properties.showResultPath = true;
     }
+
+    // V2 defaults
+    if (!this.properties.selectedTemplate) {
+      this.properties.selectedTemplate = "modern-clean";
+    }
+    if (!this.properties.resultLayout) {
+      this.properties.resultLayout = "listRich";
+    }
+    if (!this.properties.searchBarStyle) {
+      this.properties.searchBarStyle = "rounded";
+    }
+    if (!this.properties.accentColor) {
+      this.properties.accentColor = "#0078d4";
+    }
+    if (this.properties.borderRadius === undefined) {
+      this.properties.borderRadius = 8;
+    }
+    if (!this.properties.activeScopes) {
+      this.properties.activeScopes = "[\"sharepoint\",\"onedrive\"]";
+    }
+    if (this.properties.showScopeTabs === undefined) {
+      this.properties.showScopeTabs = true;
+    }
+    if (this.properties.enableDemoMode === undefined) {
+      this.properties.enableDemoMode = true;
+    }
+    if (this.properties.wizardCompleted === undefined) {
+      this.properties.wizardCompleted = false;
+    }
+    if (this.properties.showWizardOnInit === undefined) {
+      this.properties.showWizardOnInit = true;
+    }
+    if (!this.properties.v2Features) {
+      this.properties.v2Features = JSON.stringify(DEFAULT_V2_FEATURES);
+    }
+    if (!this.properties.v2Filters) {
+      this.properties.v2Filters = JSON.stringify(DEFAULT_V2_FILTERS);
+    }
+
+    // Individual feature toggle defaults
+    if (this.properties.enableInstantSearch === undefined) {
+      this.properties.enableInstantSearch = true;
+    }
+    if (this.properties.enableSearchVerticals === undefined) {
+      this.properties.enableSearchVerticals = true;
+    }
+    if (this.properties.enableZeroQuery === undefined) {
+      this.properties.enableZeroQuery = true;
+    }
+    if (this.properties.enableQuickActions === undefined) {
+      this.properties.enableQuickActions = true;
+    }
+    if (this.properties.enableHitHighlight === undefined) {
+      this.properties.enableHitHighlight = true;
+    }
+    if (this.properties.enableResultGrouping === undefined) {
+      this.properties.enableResultGrouping = false;
+    }
+    if (this.properties.enableThumbnailPreviews === undefined) {
+      this.properties.enableThumbnailPreviews = true;
+    }
+    if (this.properties.enableSavedSearches === undefined) {
+      this.properties.enableSavedSearches = true;
+    }
+    if (this.properties.enablePeopleCards === undefined) {
+      this.properties.enablePeopleCards = true;
+    }
+    if (this.properties.enableSpellingCorrection === undefined) {
+      this.properties.enableSpellingCorrection = true;
+    }
   }
 
   protected onDispose(): void {
@@ -106,22 +199,23 @@ export default class HyperSearchWebPart extends BaseHyperWebPart<IHyperSearchWeb
   }
 
   protected get dataVersion(): Version {
-    return Version.parse("1.0");
+    return Version.parse("2.0");
   }
 
   private _validatePromotedResultsJson(): () => string {
-    return (): string => {
+    var self = this;
+    return function (): string {
       try {
-        const parsed = JSON.parse(this.properties.promotedResults || "[]");
+        var parsed = JSON.parse(self.properties.promotedResults || "[]");
         if (Array.isArray(parsed)) {
-          this._jsonValidationMessage = strings.JsonValidLabel;
+          self._jsonValidationMessage = strings.JsonValidLabel;
         } else {
-          this._jsonValidationMessage = strings.JsonInvalidLabel;
+          self._jsonValidationMessage = strings.JsonInvalidLabel;
         }
       } catch {
-        this._jsonValidationMessage = strings.JsonInvalidLabel;
+        self._jsonValidationMessage = strings.JsonInvalidLabel;
       }
-      this.context.propertyPane.refresh();
+      self.context.propertyPane.refresh();
       return "";
     };
   }
@@ -142,9 +236,6 @@ export default class HyperSearchWebPart extends BaseHyperWebPart<IHyperSearchWeb
                 PropertyPaneTextField("placeholderText", {
                   label: strings.PlaceholderTextLabel,
                 }),
-                PropertyPaneToggle("showScopeSelector", {
-                  label: strings.ShowScopeSelectorLabel,
-                }),
                 PropertyPaneDropdown("defaultScope", {
                   label: strings.DefaultScopeLabel,
                   options: SCOPE_OPTIONS,
@@ -159,23 +250,71 @@ export default class HyperSearchWebPart extends BaseHyperWebPart<IHyperSearchWeb
                   max: 50,
                   step: 5,
                 }),
-                PropertyPaneToggle("enableTypeAhead", {
-                  label: strings.EnableTypeAheadLabel,
+              ],
+            },
+            {
+              groupName: strings.V2TemplateGroupName,
+              groupFields: [
+                PropertyPaneDropdown("selectedTemplate", {
+                  label: strings.SelectedTemplateLabel,
+                  options: SEARCH_TEMPLATES.map(function (t) {
+                    return { key: t.id, text: t.name };
+                  }),
                 }),
-                PropertyPaneSlider("typeAheadDebounce", {
-                  label: strings.TypeAheadDebounceLabel,
-                  min: 100,
-                  max: 1000,
-                  step: 50,
+                PropertyPaneDropdown("resultLayout", {
+                  label: strings.ResultLayoutLabel,
+                  options: LAYOUT_OPTIONS,
+                }),
+                PropertyPaneDropdown("searchBarStyle", {
+                  label: strings.SearchBarStyleLabel,
+                  options: BAR_STYLE_OPTIONS,
                 }),
               ],
             },
           ],
         },
-        // ── Page 2: Refiners & Display ──
+        // ── Page 2: Features & Filters ──
         {
-          header: { description: strings.RefinersPageDescription },
+          header: { description: strings.V2FeaturesPageDescription },
           groups: [
+            {
+              groupName: strings.V2FeaturesGroupName,
+              groupFields: [
+                PropertyPaneToggle("enableInstantSearch", {
+                  label: strings.EnableInstantSearchLabel,
+                }),
+                PropertyPaneToggle("enableSearchVerticals", {
+                  label: strings.EnableSearchVerticalsLabel,
+                }),
+                PropertyPaneToggle("showScopeTabs", {
+                  label: strings.ShowScopeTabsLabel,
+                }),
+                PropertyPaneToggle("enableZeroQuery", {
+                  label: strings.EnableZeroQueryLabel,
+                }),
+                PropertyPaneToggle("enableQuickActions", {
+                  label: strings.EnableQuickActionsLabel,
+                }),
+                PropertyPaneToggle("enableHitHighlight", {
+                  label: strings.EnableHitHighlightLabel,
+                }),
+                PropertyPaneToggle("enableResultGrouping", {
+                  label: strings.EnableResultGroupingLabel,
+                }),
+                PropertyPaneToggle("enableThumbnailPreviews", {
+                  label: strings.EnableThumbnailPreviewsLabel,
+                }),
+                PropertyPaneToggle("enableSavedSearches", {
+                  label: strings.EnableSavedSearchesLabel,
+                }),
+                PropertyPaneToggle("enablePeopleCards", {
+                  label: strings.EnablePeopleCardsLabel,
+                }),
+                PropertyPaneToggle("enableSpellingCorrection", {
+                  label: strings.EnableSpellingCorrectionLabel,
+                }),
+              ],
+            },
             {
               groupName: strings.RefinersGroupName,
               groupFields: [
@@ -186,23 +325,45 @@ export default class HyperSearchWebPart extends BaseHyperWebPart<IHyperSearchWeb
                   label: strings.RefinerFieldsLabel,
                   multiline: true,
                 }),
+                PropertyPaneToggle("enableTypeAhead", {
+                  label: strings.EnableTypeAheadLabel,
+                }),
+                PropertyPaneToggle("enableResultPreviews", {
+                  label: strings.EnableResultPreviewsLabel,
+                }),
                 PropertyPaneToggle("showResultIcon", {
                   label: strings.ShowResultIconLabel,
                 }),
                 PropertyPaneToggle("showResultPath", {
                   label: strings.ShowResultPathLabel,
                 }),
-                PropertyPaneToggle("enableResultPreviews", {
-                  label: strings.EnableResultPreviewsLabel,
-                }),
               ],
             },
           ],
         },
-        // ── Page 3: Advanced Features ──
+        // ── Page 3: Appearance & Advanced ──
         {
-          header: { description: strings.AdvancedPageDescription },
+          header: { description: strings.V2AppearancePageDescription },
           groups: [
+            {
+              groupName: strings.V2AppearanceGroupName,
+              groupFields: [
+                PropertyPaneTextField("accentColor", {
+                  label: strings.AccentColorLabel,
+                }),
+                PropertyPaneSlider("borderRadius", {
+                  label: strings.BorderRadiusLabel,
+                  min: 0,
+                  max: 24,
+                }),
+                PropertyPaneToggle("enableDemoMode", {
+                  label: strings.EnableDemoModeLabel,
+                }),
+                PropertyPaneToggle("showWizardOnInit", {
+                  label: strings.ShowWizardOnInitLabel,
+                }),
+              ],
+            },
             {
               groupName: strings.AdvancedGroupName,
               groupFields: [
@@ -231,5 +392,63 @@ export default class HyperSearchWebPart extends BaseHyperWebPart<IHyperSearchWeb
         },
       ],
     };
+  }
+
+  protected onPropertyPaneFieldChanged(propertyPath: string, oldValue: unknown, newValue: unknown): void {
+    // When a template is selected, apply its configuration
+    if (propertyPath === "selectedTemplate") {
+      var template: import("./models/IHyperSearchV2").ISearchTemplate | undefined;
+      SEARCH_TEMPLATES.forEach(function (t) {
+        if (t.id === newValue) template = t;
+      });
+      if (template && template.configuration) {
+        var cfg = template.configuration;
+        var props = this.properties as unknown as Record<string, unknown>;
+        var configMap = cfg as unknown as Record<string, unknown>;
+        Object.keys(configMap).forEach(function (key) {
+          if (key !== "features" && key !== "filters") {
+            props[key] = configMap[key];
+          }
+        });
+        // Apply features
+        if (cfg.features) {
+          props["v2Features"] = JSON.stringify(cfg.features);
+        }
+      }
+    }
+
+    // Sync individual feature toggles to v2Features JSON
+    var featureToggleKeys = [
+      "enableInstantSearch", "enableSearchVerticals", "enableZeroQuery",
+      "enableQuickActions", "enableHitHighlight", "enableResultGrouping",
+      "enableThumbnailPreviews", "enableSavedSearches", "enablePeopleCards",
+      "enableSpellingCorrection",
+    ];
+    var isFeatureToggle = false;
+    featureToggleKeys.forEach(function (k) {
+      if (k === propertyPath) isFeatureToggle = true;
+    });
+    if (isFeatureToggle) {
+      var p = this.properties;
+      var updatedFeatures = {
+        instantSearch: p.enableInstantSearch,
+        smartAutocomplete: p.enableTypeAhead,
+        searchVerticals: p.enableSearchVerticals,
+        zeroQuery: p.enableZeroQuery,
+        spellingCorrection: p.enableSpellingCorrection,
+        nlpParsing: false,
+        savedSearches: p.enableSavedSearches,
+        commandPalette: false,
+        inlinePreview: p.enableResultPreviews,
+        peopleCards: p.enablePeopleCards,
+        quickActions: p.enableQuickActions,
+        hitHighlight: p.enableHitHighlight,
+        resultGrouping: p.enableResultGrouping,
+        thumbnailPreviews: p.enableThumbnailPreviews,
+      };
+      this.properties.v2Features = JSON.stringify(updatedFeatures);
+    }
+
+    super.onPropertyPaneFieldChanged(propertyPath, oldValue, newValue);
   }
 }

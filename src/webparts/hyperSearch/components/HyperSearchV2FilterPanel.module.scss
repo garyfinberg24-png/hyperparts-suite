@@ -1,0 +1,109 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.filterPanel {
+  width: 240px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid $ms-color-neutralQuaternary;
+  background: $ms-color-white;
+}
+
+.filterHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filterTitle {
+  font-size: $ms-font-size-16;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  margin: 0;
+}
+
+.clearButton {
+  border: none;
+  background: transparent;
+  font-size: $ms-font-size-12;
+  color: $ms-color-themePrimary;
+  cursor: pointer;
+  padding: 2px 4px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.filterGroups {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filterGroupTitle {
+  font-size: 13px;
+  font-weight: $ms-font-weight-semibold;
+  color: $ms-color-neutralPrimary;
+  margin: 0 0 4px 0;
+  padding-bottom: 4px;
+  border-bottom: 1px solid $ms-color-neutralLighter;
+}
+
+.filterValues {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.filterValueRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  cursor: pointer;
+  font-size: 13px;
+  color: $ms-color-neutralPrimary;
+
+  &:hover {
+    color: $ms-color-themePrimary;
+  }
+}
+
+.filterCheckbox {
+  width: 16px;
+  height: 16px;
+  accent-color: $ms-color-themePrimary;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.filterValueLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filterValueCount {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralTertiary;
+  flex-shrink: 0;
+}
+
+.filterEmpty {
+  font-size: $ms-font-size-12;
+  color: $ms-color-neutralSecondary;
+  font-style: italic;
+  padding: 8px 0;
+}

@@ -51,6 +51,32 @@ declare interface IHyperSearchWebPartStrings {
   OfLabel: string;
   PreviousPageLabel: string;
   NextPageLabel: string;
+  // V2 — Template & Layout
+  V2TemplateGroupName: string;
+  SelectedTemplateLabel: string;
+  ResultLayoutLabel: string;
+  SearchBarStyleLabel: string;
+  // V2 — Features
+  V2FeaturesPageDescription: string;
+  V2FeaturesGroupName: string;
+  EnableInstantSearchLabel: string;
+  EnableSearchVerticalsLabel: string;
+  ShowScopeTabsLabel: string;
+  EnableZeroQueryLabel: string;
+  EnableQuickActionsLabel: string;
+  EnableHitHighlightLabel: string;
+  EnableResultGroupingLabel: string;
+  EnableThumbnailPreviewsLabel: string;
+  EnableSavedSearchesLabel: string;
+  EnablePeopleCardsLabel: string;
+  EnableSpellingCorrectionLabel: string;
+  // V2 — Appearance
+  V2AppearancePageDescription: string;
+  V2AppearanceGroupName: string;
+  AccentColorLabel: string;
+  BorderRadiusLabel: string;
+  EnableDemoModeLabel: string;
+  ShowWizardOnInitLabel: string;
 }
 
 declare module "HyperSearchWebPartStrings" {

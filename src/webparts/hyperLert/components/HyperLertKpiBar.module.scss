@@ -1,0 +1,95 @@
+@import '~@fluentui/react/dist/sass/References';
+
+.kpiBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.kpiCard {
+  flex: 1 1 140px;
+  min-width: 140px;
+  max-width: 220px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+  cursor: default;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+  }
+}
+
+.kpiCardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.kpiIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #fff;
+}
+
+.kpiTrend {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+.trendGood {
+  color: #16a34a;
+  background: #dcfce7;
+}
+
+.trendBad {
+  color: #dc2626;
+  background: #fee2e2;
+}
+
+.trendFlat {
+  color: #6b7280;
+  background: #f3f4f6;
+}
+
+.kpiValue {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #111827;
+}
+
+.kpiUnit {
+  font-size: 13px;
+  font-weight: 400;
+  color: #6b7280;
+  margin-left: 2px;
+}
+
+.kpiLabel {
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.2;
+}
+
+.kpiDelta {
+  font-size: 11px;
+  color: #9ca3af;
+}

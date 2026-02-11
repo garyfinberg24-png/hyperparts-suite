@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HyperCharts Wizard Mockups — Dashboard Builder</title>
+<style>
+  /* ── Reset ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f5f5; color: #323130; line-height: 1.5; }
+
+  /* ── Mockup Container ── */
+  .mockup-label { background: #0f172a; color: #94a3b8; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 10px 20px; margin-top: 40px; }
+  .mockup-label:first-child { margin-top: 0; }
+  .mockup-title { background: #1e293b; color: #e2e8f0; font-size: 16px; font-weight: 600; padding: 12px 20px; border-bottom: 2px solid #3b82f6; }
+
+  /* ══════════════════════════════════════════════════════════
+     WIZARD SHELL — 2-panel HyperWizard layout
+     (Matches HyperWizard.tsx / HyperWizard.module.scss)
+  ══════════════════════════════════════════════════════════ */
+  .wizard-shell { display: flex; height: 640px; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 8px 32px rgba(0,0,0,0.12); margin: 0 20px 20px; }
+
+  /* ── Left Sidebar (Dark Navy, 240px) ── */
+  .wizard-sidebar { width: 240px; min-width: 240px; background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); color: #94a3b8; padding: 24px 20px; display: flex; flex-direction: column; }
+  .wizard-brand { margin-bottom: 24px; }
+  .wizard-brand-name { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #64748b; }
+  .wizard-brand-badge { display: inline-block; margin-top: 4px; font-size: 10px; background: rgba(59,130,246,0.15); color: #60a5fa; padding: 2px 8px; border-radius: 10px; letter-spacing: 0.5px; }
+
+  .wizard-steps { flex: 1; display: flex; flex-direction: column; gap: 0; }
+  .wizard-step-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; position: relative; }
+  .wizard-step-circle { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #475569; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #64748b; flex-shrink: 0; }
+  .wizard-step-circle.active { border-color: #3b82f6; background: #3b82f6; color: #fff; }
+  .wizard-step-circle.done { border-color: #22c55e; background: #22c55e; color: #fff; }
+  .wizard-step-label { font-size: 13px; color: #64748b; }
+  .wizard-step-label.active { color: #e2e8f0; font-weight: 600; }
+  .wizard-step-connector { width: 2px; height: 16px; background: #334155; margin-left: 13px; }
+
+  /* ── Right Main Panel (White) ── */
+  .wizard-main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+  .wizard-header { padding: 20px 28px 0; }
+  .wizard-header h2 { font-size: 20px; font-weight: 700; color: #1e293b; }
+  .wizard-header p { font-size: 13px; color: #64748b; margin-top: 4px; }
+  .wizard-body { flex: 1; padding: 20px 28px; overflow-y: auto; }
+  .wizard-footer { padding: 16px 28px; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
+
+  /* ── Buttons ── */
+  .btn { padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; }
+  .btn-primary { background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; }
+  .btn-primary:hover { background: linear-gradient(135deg, #60a5fa, #3b82f6); }
+  .btn-secondary { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+  .btn-ghost { background: transparent; color: #64748b; }
+  .btn-cta { background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; padding: 12px 32px; font-size: 15px; border-radius: 8px; }
+  .btn-sm { padding: 5px 12px; font-size: 12px; }
+  .btn-danger { background: #fff; color: #dc2626; border: 1px solid #fca5a5; }
+  .btn-danger:hover { background: #fef2f2; }
+
+  /* ══════════════════════════════════════════════════════════
+     WELCOME SCREEN (Step -1) — DWx Branded Splash
+  ══════════════════════════════════════════════════════════ */
+  .welcome-banner { background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 50%, #1e293b 100%); border-radius: 12px; padding: 40px 32px; text-align: center; color: #fff; margin-bottom: 24px; }
+  .welcome-brand-strip { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 16px; }
+  .welcome-dwx { font-size: 12px; font-weight: 800; letter-spacing: 3px; color: #60a5fa; text-transform: uppercase; }
+  .welcome-suite-badge { font-size: 9px; background: rgba(59,130,246,0.2); color: #93c5fd; padding: 2px 8px; border-radius: 10px; letter-spacing: 0.5px; }
+  .welcome-product { font-size: 36px; font-weight: 800; letter-spacing: -0.5px; }
+  .welcome-product span { background: linear-gradient(90deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .welcome-tagline { font-size: 15px; color: #94a3b8; margin-top: 8px; max-width: 480px; margin-left: auto; margin-right: auto; }
+
+  .welcome-features { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .welcome-feature-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px 16px; text-align: center; }
+  .welcome-feature-icon { font-size: 28px; margin-bottom: 8px; }
+  .welcome-feature-title { font-size: 13px; font-weight: 700; color: #1e293b; margin-bottom: 4px; }
+  .welcome-feature-desc { font-size: 11px; color: #64748b; line-height: 1.4; }
+
+  /* ══════════════════════════════════════════════════════════
+     STEP COMPONENTS — Reusable Patterns
+  ══════════════════════════════════════════════════════════ */
+
+  /* ── Layout Grid Picker ── */
+  .layout-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+  .layout-card { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 10px; border: 2px solid #edebe9; border-radius: 8px; background: #fff; cursor: pointer; text-align: center; transition: all 0.15s; }
+  .layout-card:hover { border-color: #0078d4; box-shadow: 0 2px 8px rgba(0,120,212,0.1); }
+  .layout-card.selected { border-color: #0078d4; background: #f0f6ff; box-shadow: 0 2px 8px rgba(0,120,212,0.15); }
+  .layout-card-icon { font-size: 28px; }
+  .layout-card-name { font-size: 13px; font-weight: 600; color: #323130; }
+  .layout-card-desc { font-size: 11px; color: #605e5c; }
+
+  /* ── Grid Preview Thumbnails ── */
+  .grid-preview { display: grid; gap: 3px; width: 80px; height: 50px; margin: 0 auto; }
+  .grid-preview.g1x1 { grid-template-columns: 1fr; }
+  .grid-preview.g2x1 { grid-template-columns: 1fr 1fr; }
+  .grid-preview.g2x2 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+  .grid-preview.g3x2 { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; }
+  .grid-preview.g4x2 { grid-template-columns: 1fr 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; }
+  .grid-preview.g1x3 { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr 1fr; }
+  .grid-preview .cell { background: #cbd5e1; border-radius: 2px; }
+  .selected .grid-preview .cell { background: #93c5fd; }
+
+  /* ── Toggle Row ── */
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border: 1px solid #edebe9; border-radius: 6px; background: #fafafa; }
+  .toggle-row:hover { background: #f3f2f1; }
+  .toggle-info { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+  .toggle-icon { font-size: 18px; margin-right: 12px; flex-shrink: 0; }
+  .toggle-label { font-size: 13px; font-weight: 600; color: #323130; }
+  .toggle-desc { font-size: 12px; color: #605e5c; }
+  .toggle-switch { width: 40px; height: 22px; border-radius: 11px; background: #c8c6c4; position: relative; cursor: pointer; transition: background 0.2s; flex-shrink: 0; margin-left: 12px; }
+  .toggle-switch.on { background: #0078d4; }
+  .toggle-thumb { width: 18px; height: 18px; border-radius: 50%; background: #fff; position: absolute; top: 2px; left: 2px; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+  .toggle-switch.on .toggle-thumb { transform: translateX(18px); }
+
+  /* ── Section Labels ── */
+  .step-section { display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
+  .step-section-label { font-size: 14px; font-weight: 700; color: #1e293b; }
+  .step-section-hint { font-size: 12px; color: #64748b; }
+
+  /* ── Source Cards ── */
+  .source-card { border: 1px solid #e5e7eb; border-radius: 8px; background: #fff; overflow: hidden; margin-bottom: 12px; }
+  .source-card-header { display: flex; align-items: center; padding: 10px 14px; background: #f8fafc; border-bottom: 1px solid #e5e7eb; gap: 8px; }
+  .source-card-icon { font-size: 18px; }
+  .source-card-type { font-size: 13px; font-weight: 600; color: #1e293b; flex: 1; }
+  .source-card-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
+  .source-field { display: flex; flex-direction: column; gap: 4px; }
+  .source-field label { font-size: 12px; font-weight: 600; color: #64748b; }
+  .source-field input, .source-field select { padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; }
+  .source-field .hint { font-size: 11px; color: #94a3b8; }
+
+  /* ── Add Source Menu ── */
+  .add-source-btn { padding: 10px; border: 2px dashed #cbd5e1; border-radius: 8px; background: transparent; font-size: 13px; font-weight: 600; color: #3b82f6; cursor: pointer; text-align: center; width: 100%; }
+  .add-source-btn:hover { border-color: #3b82f6; background: #f0f6ff; }
+  .add-source-menu { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; padding: 12px; border: 1px solid #e5e7eb; border-radius: 8px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: 8px; }
+  .add-source-item { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 6px; cursor: pointer; font-size: 13px; color: #1e293b; }
+  .add-source-item:hover { background: #f0f6ff; border-color: #3b82f6; }
+
+  /* ── Chart Type Picker ── */
+  .chart-type-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; }
+  .chart-type-card { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 8px; border: 2px solid #edebe9; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.15s; }
+  .chart-type-card:hover { border-color: #3b82f6; }
+  .chart-type-card.selected { border-color: #3b82f6; background: #f0f6ff; }
+  .chart-type-icon { font-size: 24px; }
+  .chart-type-name { font-size: 11px; font-weight: 600; color: #323130; }
+
+  /* ── Tile Config Cards ── */
+  .tile-config { border: 1px solid #e5e7eb; border-radius: 8px; background: #fff; overflow: hidden; margin-bottom: 12px; }
+  .tile-config-header { display: flex; align-items: center; padding: 10px 14px; background: #f8fafc; border-bottom: 1px solid #e5e7eb; gap: 8px; cursor: pointer; }
+  .tile-config-number { width: 24px; height: 24px; border-radius: 50%; background: #3b82f6; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+  .tile-config-title { font-size: 13px; font-weight: 600; color: #1e293b; flex: 1; }
+  .tile-config-badge { font-size: 11px; background: #f0f6ff; color: #3b82f6; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+  .tile-config-body { padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+
+  /* ── Inline Field Row ── */
+  .field-row { display: flex; gap: 12px; align-items: flex-end; }
+  .field-row .field { flex: 1; }
+  .field label { display: block; font-size: 12px; font-weight: 600; color: #64748b; margin-bottom: 4px; }
+  .field input, .field select { width: 100%; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; }
+
+  /* ── Column Mapper ── */
+  .column-mapper { border: 1px solid #e5e7eb; border-radius: 6px; overflow: hidden; }
+  .column-mapper-header { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 40px; gap: 0; background: #f8fafc; border-bottom: 1px solid #e5e7eb; }
+  .column-mapper-header span { font-size: 11px; font-weight: 700; color: #64748b; padding: 6px 8px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .column-mapper-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 40px; gap: 0; border-bottom: 1px solid #f1f5f9; align-items: center; }
+  .column-mapper-row input, .column-mapper-row select { border: none; border-right: 1px solid #f1f5f9; padding: 8px; font-size: 12px; width: 100%; }
+  .column-mapper-row button { background: none; border: none; color: #dc2626; cursor: pointer; font-size: 14px; padding: 8px; }
+
+  /* ── Summary Cards ── */
+  .summary-card { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; }
+  .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f1f5f9; }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-label { font-size: 13px; color: #64748b; }
+  .summary-value { font-size: 13px; font-weight: 600; color: #1e293b; }
+  .summary-badge { display: inline-block; background: #dbeafe; color: #1d4ed8; padding: 2px 10px; border-radius: 10px; font-size: 12px; font-weight: 600; }
+  .summary-badge.green { background: #dcfce7; color: #16a34a; }
+
+  /* ── Dashboard Preview (in summary) ── */
+  .dashboard-preview { display: grid; gap: 8px; padding: 16px; background: #f1f5f9; border-radius: 8px; margin-top: 12px; }
+  .dashboard-tile { background: #fff; border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px; min-height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .dashboard-tile-icon { font-size: 24px; margin-bottom: 4px; }
+  .dashboard-tile-label { font-size: 11px; font-weight: 600; color: #64748b; }
+  .dashboard-tile-type { font-size: 10px; color: #94a3b8; }
+
+  /* ══════════════════════════════════════════════════════════
+     DEMO BAR
+  ══════════════════════════════════════════════════════════ */
+  .demo-bar { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 8px; padding: 12px 16px; margin: 0 20px 16px; color: #e2e8f0; }
+  .demo-bar-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .demo-bar-title { font-size: 13px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: #94a3b8; }
+  .demo-reset { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; color: #94a3b8; font-size: 11px; padding: 3px 10px; cursor: pointer; }
+  .demo-sections { display: flex; flex-direction: column; gap: 8px; }
+  .demo-section { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .demo-section-title { font-size: 11px; font-weight: 600; color: #64748b; min-width: 56px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .demo-btn-group { display: flex; gap: 4px; flex-wrap: wrap; }
+  .demo-btn { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #cbd5e1; font-size: 11px; padding: 4px 8px; cursor: pointer; white-space: nowrap; }
+  .demo-btn.active { background: linear-gradient(135deg, #3b82f6, #2563eb); border-color: #3b82f6; color: #fff; font-weight: 600; }
+
+  /* ══════════════════════════════════════════════════════════
+     SAMPLE DASHBOARD (Published Page Preview)
+  ══════════════════════════════════════════════════════════ */
+  .sample-dashboard { margin: 0 20px 20px; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+  .sample-toolbar { display: flex; align-items: center; padding: 12px 16px; border-bottom: 1px solid #e5e7eb; gap: 12px; }
+  .sample-toolbar h3 { font-size: 16px; font-weight: 700; color: #1e293b; flex: 1; }
+  .sample-toolbar-btn { padding: 5px 12px; border: 1px solid #cbd5e1; border-radius: 4px; background: #fff; font-size: 12px; color: #475569; cursor: pointer; }
+  .sample-grid { display: grid; gap: 16px; padding: 16px; }
+  .sample-grid.g2x2 { grid-template-columns: 1fr 1fr; }
+
+  /* ── Sample Chart Tiles ── */
+  .sample-tile { border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; background: #fff; }
+  .sample-tile-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid #f1f5f9; }
+  .sample-tile-title { font-size: 13px; font-weight: 600; color: #1e293b; }
+  .sample-tile-actions { display: flex; gap: 4px; }
+  .sample-tile-action { width: 24px; height: 24px; border-radius: 4px; background: #f8fafc; border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; }
+  .sample-tile-body { padding: 16px; display: flex; align-items: center; justify-content: center; min-height: 160px; }
+
+  /* ── Fake Bar Chart ── */
+  .fake-bar-chart { display: flex; align-items: flex-end; gap: 12px; height: 120px; padding: 0 8px; }
+  .fake-bar { width: 32px; border-radius: 4px 4px 0 0; transition: height 0.3s; }
+  .fake-bar-label { font-size: 10px; color: #94a3b8; text-align: center; margin-top: 4px; }
+
+  /* ── Fake KPI Card ── */
+  .fake-kpi { text-align: center; padding: 16px; }
+  .fake-kpi-value { font-size: 36px; font-weight: 800; color: #1e293b; }
+  .fake-kpi-label { font-size: 12px; color: #64748b; margin-top: 4px; }
+  .fake-kpi-trend { font-size: 13px; font-weight: 600; margin-top: 8px; }
+  .fake-kpi-trend.up { color: #16a34a; }
+  .fake-kpi-trend.down { color: #dc2626; }
+  .fake-kpi-sparkline { margin-top: 8px; }
+
+  /* ── Fake Pie Chart ── */
+  .fake-pie { width: 120px; height: 120px; border-radius: 50%; background: conic-gradient(#3b82f6 0% 35%, #22c55e 35% 60%, #f59e0b 60% 80%, #ef4444 80% 100%); position: relative; }
+  .fake-pie::after { content: ""; position: absolute; top: 30%; left: 30%; width: 40%; height: 40%; background: #fff; border-radius: 50%; }
+
+  /* ── Fake Goal Metric ── */
+  .fake-goal { width: 100%; text-align: center; }
+  .fake-goal-label { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+  .fake-goal-bar { height: 20px; background: #e5e7eb; border-radius: 10px; overflow: hidden; position: relative; }
+  .fake-goal-fill { height: 100%; background: linear-gradient(90deg, #22c55e, #16a34a); border-radius: 10px; }
+  .fake-goal-text { font-size: 13px; font-weight: 700; color: #1e293b; margin-top: 8px; }
+
+  /* ── Sample Banner ── */
+  .sample-banner { background: linear-gradient(90deg, #fff7ed, #fef3c7); border: 1px solid #fbbf24; border-radius: 6px; padding: 8px 16px; margin: 16px 20px 0; font-size: 13px; color: #92400e; }
+
+  /* ── Info Callout ── */
+  .info-callout { background: #f0f6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 10px 14px; font-size: 12px; color: #1d4ed8; display: flex; align-items: flex-start; gap: 8px; }
+  .info-callout-icon { font-size: 16px; flex-shrink: 0; }
+
+  /* ── Tabs ── */
+  .mini-tabs { display: flex; gap: 0; border-bottom: 2px solid #e5e7eb; margin-bottom: 16px; }
+  .mini-tab { padding: 8px 16px; font-size: 13px; font-weight: 600; color: #64748b; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+  .mini-tab.active { color: #3b82f6; border-bottom-color: #3b82f6; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════
+     MOCKUP 1A: WELCOME SCREEN (Step -1)
+     DWx branded splash — "Get Started" CTA
+══════════════════════════════════════════════════════════════ -->
+<div class="mockup-label">Mockup 1A — Welcome Screen (Step -1)</div>
+<div class="mockup-title">HyperCharts Setup Wizard — Welcome / Get Started</div>
+
+<div class="wizard-shell">
+  <!-- Sidebar -->
+  <div class="wizard-sidebar">
+    <div class="wizard-brand">
+      <div class="wizard-brand-name">HYPERPARTS</div>
+      <div class="wizard-brand-badge">HyperCharts Suite</div>
+    </div>
+    <div class="wizard-steps">
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle active">&#10003;</div>
+        <span class="wizard-step-label active">Welcome</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle">1</div>
+        <span class="wizard-step-label">Dashboard</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle">2</div>
+        <span class="wizard-step-label">Data Sources</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle">3</div>
+        <span class="wizard-step-label">Charts</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle">4</div>
+        <span class="wizard-step-label">Features</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle">5</div>
+        <span class="wizard-step-label">Review</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Panel -->
+  <div class="wizard-main">
+    <div class="wizard-body" style="display:flex;flex-direction:column;justify-content:center;">
+      <!-- DWx Branded Banner -->
+      <div class="welcome-banner">
+        <div class="welcome-brand-strip">
+          <span class="welcome-dwx">DWx</span>
+          <span class="welcome-suite-badge">HyperParts Suite</span>
+        </div>
+        <div class="welcome-product">Hyper<span>Charts</span></div>
+        <div class="welcome-tagline">Build powerful dashboards without Power BI — connect to any data source, aggregate, and visualize with 12+ chart types, KPI cards, and goal tracking</div>
+      </div>
+
+      <!-- 4 Feature Cards -->
+      <div class="welcome-features">
+        <div class="welcome-feature-card">
+          <div class="welcome-feature-icon">&#x1F4CA;</div>
+          <div class="welcome-feature-title">12+ Chart Types</div>
+          <div class="welcome-feature-desc">Bar, line, pie, donut, area, gauge, radar, scatter, stacked, combo, and more</div>
+        </div>
+        <div class="welcome-feature-card">
+          <div class="welcome-feature-icon">&#x1F4C8;</div>
+          <div class="welcome-feature-title">KPI Cards & Goals</div>
+          <div class="welcome-feature-desc">Sparklines, trend arrows, RAG status, goal vs actual with gauges and progress bars</div>
+        </div>
+        <div class="welcome-feature-card">
+          <div class="welcome-feature-icon">&#x1F5C4;</div>
+          <div class="welcome-feature-title">Multi-Source Data</div>
+          <div class="welcome-feature-desc">SharePoint lists, Excel workbooks, REST APIs, and manual entry with aggregation</div>
+        </div>
+        <div class="welcome-feature-card">
+          <div class="welcome-feature-icon">&#x1F4E4;</div>
+          <div class="welcome-feature-title">Export & Drill-Down</div>
+          <div class="welcome-feature-desc">Click any chart to drill into data. Export as PNG, CSV, or PDF for reporting</div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div style="text-align: center;">
+        <button class="btn btn-cta">Get Started &rarr;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     MOCKUP 1B: STEP 1 — DASHBOARD LAYOUT
+     Name + grid layout picker (visual thumbnails)
+══════════════════════════════════════════════════════════════ -->
+<div class="mockup-label">Mockup 1B — Step 1: Dashboard Layout</div>
+<div class="mockup-title">HyperCharts Setup Wizard — Dashboard Name & Grid Layout</div>
+
+<div class="wizard-shell">
+  <div class="wizard-sidebar">
+    <div class="wizard-brand">
+      <div class="wizard-brand-name">HYPERPARTS</div>
+      <div class="wizard-brand-badge">HyperCharts Suite</div>
+    </div>
+    <div class="wizard-steps">
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle done">&#10003;</div>
+        <span class="wizard-step-label">Welcome</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle active">1</div>
+        <span class="wizard-step-label active">Dashboard</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle">2</div>
+        <span class="wizard-step-label">Data Sources</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle">3</div>
+        <span class="wizard-step-label">Charts</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle">4</div>
+        <span class="wizard-step-label">Features</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle">5</div>
+        <span class="wizard-step-label">Review</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="wizard-main">
+    <div class="wizard-header">
+      <h2>Dashboard Layout</h2>
+      <p>Name your dashboard and choose a grid layout. Each cell becomes a chart tile.</p>
+    </div>
+    <div class="wizard-body">
+      <!-- Dashboard Title -->
+      <div class="step-section">
+        <div class="step-section-label">Dashboard Title</div>
+      </div>
+      <div style="margin-bottom: 24px;">
+        <input type="text" value="Sales Dashboard" style="width:100%;padding:8px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:14px;">
+      </div>
+
+      <!-- Grid Layout Picker -->
+      <div class="step-section">
+        <div class="step-section-label">Grid Layout</div>
+        <div class="step-section-hint">Choose how many tiles to display. You can assign a chart type to each tile in the next steps.</div>
+      </div>
+      <div class="layout-grid">
+        <div class="layout-card">
+          <div class="grid-preview g1x1"><div class="cell"></div></div>
+          <div class="layout-card-name">1 Tile</div>
+          <div class="layout-card-desc">Single full-width chart</div>
+        </div>
+        <div class="layout-card">
+          <div class="grid-preview g2x1"><div class="cell"></div><div class="cell"></div></div>
+          <div class="layout-card-name">2 Tiles</div>
+          <div class="layout-card-desc">Side by side</div>
+        </div>
+        <div class="layout-card selected">
+          <div class="grid-preview g2x2"><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+          <div class="layout-card-name">2 &times; 2</div>
+          <div class="layout-card-desc">4-tile dashboard grid</div>
+        </div>
+        <div class="layout-card">
+          <div class="grid-preview g3x2"><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+          <div class="layout-card-name">3 &times; 2</div>
+          <div class="layout-card-desc">6-tile wide dashboard</div>
+        </div>
+        <div class="layout-card">
+          <div class="grid-preview g4x2"><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+          <div class="layout-card-name">4 &times; 2</div>
+          <div class="layout-card-desc">8-tile full dashboard</div>
+        </div>
+        <div class="layout-card">
+          <div class="grid-preview g1x3"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+          <div class="layout-card-name">1 &times; 3</div>
+          <div class="layout-card-desc">Stacked vertical</div>
+        </div>
+      </div>
+
+      <!-- Selected info -->
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:#f0f6ff;border:1px solid #3b82f6;border-radius:6px;margin-top:16px;">
+        <span style="font-size:16px;">&#x2713;</span>
+        <span style="font-size:13px;font-weight:600;color:#1d4ed8;">Selected: 2 &times; 2 grid — 4 chart tiles</span>
+      </div>
+    </div>
+    <div class="wizard-footer">
+      <button class="btn btn-secondary">&larr; Back</button>
+      <button class="btn btn-primary">Next: Data Sources &rarr;</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     MOCKUP 1C: STEP 2 — DATA SOURCES
+     Add/configure data connections
+══════════════════════════════════════════════════════════════ -->
+<div class="mockup-label">Mockup 1C — Step 2: Data Sources</div>
+<div class="mockup-title">HyperCharts Setup Wizard — Connect to Data</div>
+
+<div class="wizard-shell">
+  <div class="wizard-sidebar">
+    <div class="wizard-brand">
+      <div class="wizard-brand-name">HYPERPARTS</div>
+      <div class="wizard-brand-badge">HyperCharts Suite</div>
+    </div>
+    <div class="wizard-steps">
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle done">&#10003;</div>
+        <span class="wizard-step-label">Welcome</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle done">&#10003;</div>
+        <span class="wizard-step-label">Dashboard</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle active">2</div>
+        <span class="wizard-step-label active">Data Sources</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle">3</div>
+        <span class="wizard-step-label">Charts</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle">4</div>
+        <span class="wizard-step-label">Features</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle">5</div>
+        <span class="wizard-step-label">Review</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="wizard-main">
+    <div class="wizard-header">
+      <h2>Data Sources</h2>
+      <p>Connect to your data. Each source can feed one or more chart tiles. You can add multiple sources.</p>
+    </div>
+    <div class="wizard-body">
+      <!-- Source 1: SP List -->
+      <div class="source-card">
+        <div class="source-card-header">
+          <span class="source-card-icon">&#x1F4CB;</span>
+          <span class="source-card-type">SharePoint List</span>
+          <button class="btn btn-sm btn-danger">Remove</button>
+        </div>
+        <div class="source-card-body">
+          <div class="field-row">
+            <div class="field">
+              <label>Display Name</label>
+              <input type="text" value="Sales Data">
+            </div>
+            <div class="field">
+              <label>List Name</label>
+              <input type="text" value="SalesReports">
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Site URL (leave empty for current site)</label>
+              <input type="text" placeholder="https://contoso.sharepoint.com/sites/sales">
+            </div>
+          </div>
+          <div class="step-section" style="margin-top:8px;margin-bottom:0;">
+            <div class="step-section-label" style="font-size:12px;">Column Mappings</div>
+            <div class="step-section-hint">Map list columns to chart roles. Category = X-axis labels, Value = Y-axis data.</div>
+          </div>
+          <div class="column-mapper">
+            <div class="column-mapper-header">
+              <span>Field Name</span>
+              <span>Display Label</span>
+              <span>Role</span>
+              <span>Aggregation</span>
+              <span></span>
+            </div>
+            <div class="column-mapper-row">
+              <input type="text" value="Region">
+              <input type="text" value="Region">
+              <select><option selected>Category</option><option>Value</option></select>
+              <select><option>—</option></select>
+              <button>&#x2715;</button>
+            </div>
+            <div class="column-mapper-row">
+              <input type="text" value="Revenue">
+              <input type="text" value="Revenue ($)">
+              <select><option>Category</option><option selected>Value</option></select>
+              <select><option>Count</option><option selected>Sum</option><option>Average</option><option>Min</option><option>Max</option></select>
+              <button>&#x2715;</button>
+            </div>
+            <div class="column-mapper-row">
+              <input type="text" value="Deals">
+              <input type="text" value="Closed Deals">
+              <select><option>Category</option><option selected>Value</option></select>
+              <select><option selected>Count</option><option>Sum</option><option>Average</option></select>
+              <button>&#x2715;</button>
+            </div>
+          </div>
+          <button class="btn btn-sm btn-secondary" style="align-self:flex-start;">+ Add Column</button>
+        </div>
+      </div>
+
+      <!-- Source 2: Excel -->
+      <div class="source-card">
+        <div class="source-card-header">
+          <span class="source-card-icon">&#x1F4D7;</span>
+          <span class="source-card-type">Excel Workbook</span>
+          <button class="btn btn-sm btn-danger">Remove</button>
+        </div>
+        <div class="source-card-body">
+          <div class="field-row">
+            <div class="field">
+              <label>Display Name</label>
+              <input type="text" value="Budget Tracker">
+            </div>
+            <div class="field">
+              <label>File Path</label>
+              <input type="text" value="/Shared Documents/Budget2025.xlsx">
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Sheet Name</label>
+              <input type="text" value="Q4 Summary">
+            </div>
+            <div class="field">
+              <label>Cell Range</label>
+              <input type="text" value="A1:D12">
+            </div>
+          </div>
+          <div class="toggle-row" style="margin-top:4px;">
+            <div class="toggle-info">
+              <span class="toggle-label">First row is headers</span>
+            </div>
+            <div class="toggle-switch on"><div class="toggle-thumb"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add Source Menu -->
+      <button class="add-source-btn">+ Add Data Source</button>
+      <div class="add-source-menu">
+        <div class="add-source-item">
+          <span>&#x1F4CB;</span> SharePoint List
+        </div>
+        <div class="add-source-item">
+          <span>&#x1F4D7;</span> Excel Workbook
+        </div>
+        <div class="add-source-item">
+          <span>&#x1F310;</span> REST API
+        </div>
+        <div class="add-source-item">
+          <span>&#x270D;&#xFE0F;</span> Manual Entry
+        </div>
+      </div>
+    </div>
+    <div class="wizard-footer">
+      <button class="btn btn-secondary">&larr; Back</button>
+      <button class="btn btn-primary">Next: Charts &rarr;</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     MOCKUP 1D: STEP 3 — CHART BUILDER (Per-Tile Config)
+     Configure each tile: chart type, data source, columns
+══════════════════════════════════════════════════════════════ -->
+<div class="mockup-label">Mockup 1D — Step 3: Chart Builder (Per-Tile)</div>
+<div class="mockup-title">HyperCharts Setup Wizard — Configure Each Tile</div>
+
+<div class="wizard-shell">
+  <div class="wizard-sidebar">
+    <div class="wizard-brand">
+      <div class="wizard-brand-name">HYPERPARTS</div>
+      <div class="wizard-brand-badge">HyperCharts Suite</div>
+    </div>
+    <div class="wizard-steps">
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle done">&#10003;</div>
+        <span class="wizard-step-label">Welcome</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle done">&#10003;</div>
+        <span class="wizard-step-label">Dashboard</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle done">&#10003;</div>
+        <span class="wizard-step-label">Data Sources</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle active">3</div>
+        <span class="wizard-step-label active">Charts</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle">4</div>
+        <span class="wizard-step-label">Features</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle">5</div>
+        <span class="wizard-step-label">Review</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="wizard-main">
+    <div class="wizard-header">
+      <h2>Chart Builder</h2>
+      <p>Configure each tile in your 2&times;2 dashboard. Pick a display type, chart kind, and connect to a data source.</p>
+    </div>
+    <div class="wizard-body">
+      <!-- Tile 1 (expanded) -->
+      <div class="tile-config">
+        <div class="tile-config-header">
+          <div class="tile-config-number">1</div>
+          <div class="tile-config-title">Revenue by Region</div>
+          <span class="tile-config-badge">Bar Chart</span>
+        </div>
+        <div class="tile-config-body">
+          <!-- Display Type -->
+          <div class="step-section" style="margin-bottom:8px;">
+            <div class="step-section-label" style="font-size:12px;">Display Type</div>
+          </div>
+          <div style="display:flex;gap:8px;margin-bottom:16px;">
+            <div class="chart-type-card selected" style="flex:1;">
+              <div class="chart-type-icon">&#x1F4CA;</div>
+              <div class="chart-type-name">Chart</div>
+            </div>
+            <div class="chart-type-card" style="flex:1;">
+              <div class="chart-type-icon">&#x1F4C8;</div>
+              <div class="chart-type-name">KPI Card</div>
+            </div>
+            <div class="chart-type-card" style="flex:1;">
+              <div class="chart-type-icon">&#x1F3AF;</div>
+              <div class="chart-type-name">Goal Metric</div>
+            </div>
+          </div>
+
+          <!-- Chart Type Grid -->
+          <div class="step-section" style="margin-bottom:8px;">
+            <div class="step-section-label" style="font-size:12px;">Chart Type</div>
+          </div>
+          <div class="chart-type-grid" style="margin-bottom:16px;">
+            <div class="chart-type-card selected">
+              <div class="chart-type-icon">&#x1F4CA;</div>
+              <div class="chart-type-name">Bar</div>
+            </div>
+            <div class="chart-type-card">
+              <div class="chart-type-icon">&#x1F4C9;</div>
+              <div class="chart-type-name">Line</div>
+            </div>
+            <div class="chart-type-card">
+              <div class="chart-type-icon">&#x25D4;</div>
+              <div class="chart-type-name">Pie</div>
+            </div>
+            <div class="chart-type-card">
+              <div class="chart-type-icon">&#x25EF;</div>
+              <div class="chart-type-name">Donut</div>
+            </div>
+            <div class="chart-type-card">
+              <div class="chart-type-icon">&#x2B21;</div>
+              <div class="chart-type-name">Area</div>
+            </div>
+            <div class="chart-type-card">
+              <div class="chart-type-icon">&#x1F3AF;</div>
+              <div class="chart-type-name">Gauge</div>
+            </div>
+            <div class="chart-type-card">
+              <div class="chart-type-icon">&#x1F578;</div>
+              <div class="chart-type-name">Radar</div>
+            </div>
+            <div class="chart-type-card">
+              <div class="chart-type-icon">&#x2022;&#x2022;</div>
+              <div class="chart-type-name">Scatter</div>
+            </div>
+            <div class="chart-type-card">
+              <div class="chart-type-icon">&#x2592;</div>
+              <div class="chart-type-name">Stacked</div>
+            </div>
+            <div class="chart-type-card">
+              <div class="chart-type-icon">&#x2194;</div>
+              <div class="chart-type-name">H. Bar</div>
+            </div>
+            <div class="chart-type-card">
+              <div class="chart-type-icon">&#x1F4CA;&#x1F4C9;</div>
+              <div class="chart-type-name">Combo</div>
+            </div>
+            <div class="chart-type-card">
+              <div class="chart-type-icon">&#x26C5;</div>
+              <div class="chart-type-name">Bubble</div>
+            </div>
+          </div>
+
+          <!-- Data Source + Column Mapping -->
+          <div class="field-row">
+            <div class="field">
+              <label>Title</label>
+              <input type="text" value="Revenue by Region">
+            </div>
+            <div class="field">
+              <label>Data Source</label>
+              <select>
+                <option selected>Sales Data (SP List)</option>
+                <option>Budget Tracker (Excel)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="info-callout" style="margin-top:4px;">
+            <span class="info-callout-icon">&#x2139;</span>
+            <span>Category column "Region" will be used for X-axis labels. Value column "Revenue ($)" will be aggregated using Sum.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tile 2 (collapsed) -->
+      <div class="tile-config">
+        <div class="tile-config-header">
+          <div class="tile-config-number">2</div>
+          <div class="tile-config-title">Total Revenue</div>
+          <span class="tile-config-badge">KPI Card</span>
+          <span style="color:#94a3b8;font-size:12px;">&#x25BC;</span>
+        </div>
+      </div>
+
+      <!-- Tile 3 (collapsed) -->
+      <div class="tile-config">
+        <div class="tile-config-header">
+          <div class="tile-config-number">3</div>
+          <div class="tile-config-title">Sales Target</div>
+          <span class="tile-config-badge">Goal Metric</span>
+          <span style="color:#94a3b8;font-size:12px;">&#x25BC;</span>
+        </div>
+      </div>
+
+      <!-- Tile 4 (collapsed) -->
+      <div class="tile-config">
+        <div class="tile-config-header">
+          <div class="tile-config-number">4</div>
+          <div class="tile-config-title">Revenue Split</div>
+          <span class="tile-config-badge">Donut Chart</span>
+          <span style="color:#94a3b8;font-size:12px;">&#x25BC;</span>
+        </div>
+      </div>
+    </div>
+    <div class="wizard-footer">
+      <button class="btn btn-secondary">&larr; Back</button>
+      <button class="btn btn-primary">Next: Features &rarr;</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     MOCKUP 1E: STEP 4 — FEATURES & STYLING
+     Toggle features, conditional colors, comparison, export
+══════════════════════════════════════════════════════════════ -->
+<div class="mockup-label">Mockup 1E — Step 4: Features & Styling</div>
+<div class="mockup-title">HyperCharts Setup Wizard — Dashboard Features</div>
+
+<div class="wizard-shell">
+  <div class="wizard-sidebar">
+    <div class="wizard-brand">
+      <div class="wizard-brand-name">HYPERPARTS</div>
+      <div class="wizard-brand-badge">HyperCharts Suite</div>
+    </div>
+    <div class="wizard-steps">
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle done">&#10003;</div>
+        <span class="wizard-step-label">Welcome</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle done">&#10003;</div>
+        <span class="wizard-step-label">Dashboard</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle done">&#10003;</div>
+        <span class="wizard-step-label">Data Sources</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle done">&#10003;</div>
+        <span class="wizard-step-label">Charts</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle active">4</div>
+        <span class="wizard-step-label active">Features</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle">5</div>
+        <span class="wizard-step-label">Review</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="wizard-main">
+    <div class="wizard-header">
+      <h2>Features & Styling</h2>
+      <p>Enable interactive features and configure how your dashboard behaves.</p>
+    </div>
+    <div class="wizard-body">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <!-- Interactivity -->
+        <div class="step-section" style="margin-bottom:4px;">
+          <div class="step-section-label">Interactivity</div>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-icon">&#x1F50D;</span>
+          <div class="toggle-info">
+            <span class="toggle-label">Drill-Down</span>
+            <span class="toggle-desc">Click chart segments to see underlying data in a table</span>
+          </div>
+          <div class="toggle-switch on"><div class="toggle-thumb"></div></div>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-icon">&#x1F4E4;</span>
+          <div class="toggle-info">
+            <span class="toggle-label">Export</span>
+            <span class="toggle-desc">Download charts as PNG images or data as CSV files</span>
+          </div>
+          <div class="toggle-switch on"><div class="toggle-thumb"></div></div>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-icon">&#x1F50E;</span>
+          <div class="toggle-info">
+            <span class="toggle-label">Zoom &amp; Pan</span>
+            <span class="toggle-desc">Pinch-to-zoom and drag-to-pan on time series charts</span>
+          </div>
+          <div class="toggle-switch"><div class="toggle-thumb"></div></div>
+        </div>
+
+        <!-- Display -->
+        <div class="step-section" style="margin-bottom:4px;margin-top:12px;">
+          <div class="step-section-label">Display</div>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-icon">&#x1F3F7;</span>
+          <div class="toggle-info">
+            <span class="toggle-label">Data Labels</span>
+            <span class="toggle-desc">Show values directly on chart bars, slices, and points</span>
+          </div>
+          <div class="toggle-switch on"><div class="toggle-thumb"></div></div>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-icon">&#x1F534;&#x1F7E1;&#x1F7E2;</span>
+          <div class="toggle-info">
+            <span class="toggle-label">Conditional Formatting (RAG)</span>
+            <span class="toggle-desc">Color-code values red/amber/green based on thresholds</span>
+          </div>
+          <div class="toggle-switch on"><div class="toggle-thumb"></div></div>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-icon">&#x1F4C5;</span>
+          <div class="toggle-info">
+            <span class="toggle-label">Period Comparison</span>
+            <span class="toggle-desc">Overlay previous period data (MoM, QoQ, YoY) with delta bars</span>
+          </div>
+          <div class="toggle-switch"><div class="toggle-thumb"></div></div>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-icon">&#x267F;</span>
+          <div class="toggle-info">
+            <span class="toggle-label">Accessibility Data Tables</span>
+            <span class="toggle-desc">Screen-reader-only data tables alongside every chart</span>
+          </div>
+          <div class="toggle-switch on"><div class="toggle-thumb"></div></div>
+        </div>
+
+        <!-- Auto-Refresh -->
+        <div class="step-section" style="margin-bottom:4px;margin-top:12px;">
+          <div class="step-section-label">Auto-Refresh</div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Refresh Interval</label>
+            <select>
+              <option>Disabled</option>
+              <option>Every 30 seconds</option>
+              <option selected>Every 60 seconds</option>
+              <option>Every 5 minutes</option>
+              <option>Every 15 minutes</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wizard-footer">
+      <button class="btn btn-secondary">&larr; Back</button>
+      <button class="btn btn-primary">Next: Review &rarr;</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     MOCKUP 1F: STEP 5 — REVIEW & APPLY
+     Summary of all config + visual preview
+══════════════════════════════════════════════════════════════ -->
+<div class="mockup-label">Mockup 1F — Step 5: Review & Apply</div>
+<div class="mockup-title">HyperCharts Setup Wizard — Review Dashboard Configuration</div>
+
+<div class="wizard-shell">
+  <div class="wizard-sidebar">
+    <div class="wizard-brand">
+      <div class="wizard-brand-name">HYPERPARTS</div>
+      <div class="wizard-brand-badge">HyperCharts Suite</div>
+    </div>
+    <div class="wizard-steps">
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle done">&#10003;</div>
+        <span class="wizard-step-label">Welcome</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle done">&#10003;</div>
+        <span class="wizard-step-label">Dashboard</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle done">&#10003;</div>
+        <span class="wizard-step-label">Data Sources</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle done">&#10003;</div>
+        <span class="wizard-step-label">Charts</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle done">&#10003;</div>
+        <span class="wizard-step-label">Features</span>
+      </div>
+      <div class="wizard-step-connector"></div>
+      <div class="wizard-step-item">
+        <div class="wizard-step-circle active">&#10003;</div>
+        <span class="wizard-step-label active">Review</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="wizard-main">
+    <div class="wizard-header">
+      <h2>Review &amp; Apply</h2>
+      <p>Review your dashboard configuration before applying.</p>
+    </div>
+    <div class="wizard-body">
+      <div class="summary-card">
+        <div class="summary-row">
+          <span class="summary-label">Dashboard Title</span>
+          <span class="summary-value">Sales Dashboard</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Grid Layout</span>
+          <span class="summary-badge">2 &times; 2 (4 tiles)</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Data Sources</span>
+          <span class="summary-badge">1 SP List, 1 Excel</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Chart Tiles</span>
+          <span class="summary-value">Bar, KPI Card, Goal Metric, Donut</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Features</span>
+          <span class="summary-badge green">Drill-Down, Export, Data Labels, RAG, A11y Tables</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Auto-Refresh</span>
+          <span class="summary-badge">Every 60 seconds</span>
+        </div>
+      </div>
+
+      <!-- Dashboard Preview -->
+      <div class="step-section" style="margin-top:20px;">
+        <div class="step-section-label">Dashboard Preview</div>
+      </div>
+      <div class="dashboard-preview" style="grid-template-columns: 1fr 1fr;">
+        <div class="dashboard-tile">
+          <div class="dashboard-tile-icon">&#x1F4CA;</div>
+          <div class="dashboard-tile-label">Revenue by Region</div>
+          <div class="dashboard-tile-type">Bar Chart &bull; Sales Data</div>
+        </div>
+        <div class="dashboard-tile">
+          <div class="dashboard-tile-icon">&#x1F4C8;</div>
+          <div class="dashboard-tile-label">Total Revenue</div>
+          <div class="dashboard-tile-type">KPI Card &bull; Sales Data</div>
+        </div>
+        <div class="dashboard-tile">
+          <div class="dashboard-tile-icon">&#x1F3AF;</div>
+          <div class="dashboard-tile-label">Sales Target</div>
+          <div class="dashboard-tile-type">Goal Metric &bull; Sales Data</div>
+        </div>
+        <div class="dashboard-tile">
+          <div class="dashboard-tile-icon">&#x25EF;</div>
+          <div class="dashboard-tile-label">Revenue Split</div>
+          <div class="dashboard-tile-type">Donut Chart &bull; Sales Data</div>
+        </div>
+      </div>
+
+      <div style="font-size:12px;color:#64748b;margin-top:12px;font-style:italic;">You can reconfigure at any time via the toolbar Configure button or the property pane.</div>
+    </div>
+    <div class="wizard-footer">
+      <button class="btn btn-secondary">&larr; Back</button>
+      <button class="btn btn-primary" style="background:linear-gradient(135deg,#22c55e,#16a34a);">&#10003; Apply Dashboard</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     MOCKUP 2: DEMO BAR + SAMPLE DASHBOARD (Published Page)
+══════════════════════════════════════════════════════════════ -->
+<div class="mockup-label">Mockup 2 — Demo Bar + Sample Dashboard (Published Page)</div>
+<div class="mockup-title">HyperCharts with Demo Mode + Sample Data</div>
+
+<!-- Demo Bar -->
+<div class="demo-bar">
+  <div class="demo-bar-header">
+    <span class="demo-bar-title">Demo Mode</span>
+    <button class="demo-reset">Reset</button>
+  </div>
+  <div class="demo-sections">
+    <div class="demo-section">
+      <span class="demo-section-title">Layout</span>
+      <div class="demo-btn-group">
+        <button class="demo-btn">1 Tile</button>
+        <button class="demo-btn">2 Tiles</button>
+        <button class="demo-btn active">2&times;2</button>
+        <button class="demo-btn">3&times;2</button>
+        <button class="demo-btn">4&times;2</button>
+      </div>
+    </div>
+    <div class="demo-section">
+      <span class="demo-section-title">Show</span>
+      <div class="demo-btn-group">
+        <button class="demo-btn active">Drill-Down</button>
+        <button class="demo-btn active">Export</button>
+        <button class="demo-btn active">Data Labels</button>
+        <button class="demo-btn active">RAG Colors</button>
+        <button class="demo-btn">Comparison</button>
+        <button class="demo-btn active">A11y Tables</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sample Banner -->
+<div class="sample-banner">Sample Data — Turn off "Use Sample Data" in the property pane and connect your own data sources.</div>
+
+<!-- Sample Dashboard -->
+<div class="sample-dashboard">
+  <div class="sample-toolbar">
+    <h3>Sales Dashboard</h3>
+    <button class="sample-toolbar-btn">&#x21BB; Refresh</button>
+    <button class="sample-toolbar-btn">&#x2913; Export &#x25BC;</button>
+  </div>
+  <div class="sample-grid g2x2">
+    <!-- Tile 1: Bar Chart -->
+    <div class="sample-tile">
+      <div class="sample-tile-header">
+        <span class="sample-tile-title">Revenue by Region</span>
+        <div class="sample-tile-actions">
+          <div class="sample-tile-action" title="Drill down">&#x1F50D;</div>
+          <div class="sample-tile-action" title="Export">&#x2913;</div>
+        </div>
+      </div>
+      <div class="sample-tile-body">
+        <div class="fake-bar-chart">
+          <div style="text-align:center;">
+            <div class="fake-bar" style="height:95px;background:#3b82f6;width:36px;"></div>
+            <div class="fake-bar-label">NA</div>
+          </div>
+          <div style="text-align:center;">
+            <div class="fake-bar" style="height:72px;background:#22c55e;width:36px;"></div>
+            <div class="fake-bar-label">EMEA</div>
+          </div>
+          <div style="text-align:center;">
+            <div class="fake-bar" style="height:58px;background:#f59e0b;width:36px;"></div>
+            <div class="fake-bar-label">APAC</div>
+          </div>
+          <div style="text-align:center;">
+            <div class="fake-bar" style="height:40px;background:#a855f7;width:36px;"></div>
+            <div class="fake-bar-label">LATAM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tile 2: KPI Card -->
+    <div class="sample-tile">
+      <div class="sample-tile-header">
+        <span class="sample-tile-title">Total Revenue</span>
+      </div>
+      <div class="sample-tile-body">
+        <div class="fake-kpi">
+          <div class="fake-kpi-value">$2.4M</div>
+          <div class="fake-kpi-label">Year to Date</div>
+          <div class="fake-kpi-trend up">&#x2191; 12.3% vs last year</div>
+          <div class="fake-kpi-sparkline">
+            <svg width="120" height="30" viewBox="0 0 120 30">
+              <polyline points="0,25 15,22 30,18 45,20 60,15 75,12 90,8 105,10 120,5" fill="none" stroke="#22c55e" stroke-width="2"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tile 3: Goal Metric -->
+    <div class="sample-tile">
+      <div class="sample-tile-header">
+        <span class="sample-tile-title">Sales Target</span>
+      </div>
+      <div class="sample-tile-body" style="flex-direction:column;gap:8px;">
+        <div class="fake-goal" style="width:80%;">
+          <div class="fake-goal-label">Q4 Target: $3M</div>
+          <div class="fake-goal-bar">
+            <div class="fake-goal-fill" style="width:78%;"></div>
+          </div>
+          <div class="fake-goal-text">$2.34M / $3.0M (78%)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tile 4: Donut Chart -->
+    <div class="sample-tile">
+      <div class="sample-tile-header">
+        <span class="sample-tile-title">Revenue Split</span>
+        <div class="sample-tile-actions">
+          <div class="sample-tile-action" title="Drill down">&#x1F50D;</div>
+        </div>
+      </div>
+      <div class="sample-tile-body">
+        <div class="fake-pie"></div>
+        <div style="margin-left:16px;font-size:11px;color:#64748b;line-height:1.8;">
+          <div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3b82f6;margin-right:6px;"></span>Products 35%</div>
+          <div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#22c55e;margin-right:6px;"></span>Services 25%</div>
+          <div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f59e0b;margin-right:6px;"></span>Licenses 20%</div>
+          <div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#ef4444;margin-right:6px;"></span>Support 20%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     MOCKUP 3: DEFAULT STATE (No config, sample data on)
+══════════════════════════════════════════════════════════════ -->
+<div class="mockup-label">Mockup 3 — Default State (First Add, useSampleData=true)</div>
+<div class="mockup-title">HyperCharts — Default First-Use Experience with Sample Dashboard</div>
+
+<div class="sample-banner" style="margin-bottom:12px;">Sample Data — This is a demo dashboard. Open the Setup Wizard or property pane to connect your own data sources.</div>
+
+<div class="sample-dashboard">
+  <div class="sample-toolbar">
+    <h3>Sales Dashboard</h3>
+    <button class="sample-toolbar-btn" style="background:#f0f6ff;color:#3b82f6;border-color:#3b82f6;font-weight:600;">&#x2699; Configure</button>
+    <button class="sample-toolbar-btn">&#x21BB;</button>
+    <button class="sample-toolbar-btn">&#x2913; Export</button>
+  </div>
+  <div class="sample-grid g2x2">
+    <div class="sample-tile">
+      <div class="sample-tile-header"><span class="sample-tile-title">Revenue by Region</span></div>
+      <div class="sample-tile-body">
+        <div class="fake-bar-chart">
+          <div style="text-align:center;"><div class="fake-bar" style="height:95px;background:#3b82f6;width:32px;"></div><div class="fake-bar-label">NA</div></div>
+          <div style="text-align:center;"><div class="fake-bar" style="height:72px;background:#22c55e;width:32px;"></div><div class="fake-bar-label">EMEA</div></div>
+          <div style="text-align:center;"><div class="fake-bar" style="height:58px;background:#f59e0b;width:32px;"></div><div class="fake-bar-label">APAC</div></div>
+          <div style="text-align:center;"><div class="fake-bar" style="height:40px;background:#a855f7;width:32px;"></div><div class="fake-bar-label">LATAM</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="sample-tile">
+      <div class="sample-tile-header"><span class="sample-tile-title">Total Revenue</span></div>
+      <div class="sample-tile-body">
+        <div class="fake-kpi">
+          <div class="fake-kpi-value">$2.4M</div>
+          <div class="fake-kpi-label">Year to Date</div>
+          <div class="fake-kpi-trend up">&#x2191; 12.3%</div>
+        </div>
+      </div>
+    </div>
+    <div class="sample-tile">
+      <div class="sample-tile-header"><span class="sample-tile-title">Sales Target</span></div>
+      <div class="sample-tile-body" style="flex-direction:column;">
+        <div class="fake-goal" style="width:80%;"><div class="fake-goal-bar"><div class="fake-goal-fill" style="width:78%;"></div></div><div class="fake-goal-text">$2.34M / $3.0M (78%)</div></div>
+      </div>
+    </div>
+    <div class="sample-tile">
+      <div class="sample-tile-header"><span class="sample-tile-title">Revenue Split</span></div>
+      <div class="sample-tile-body"><div class="fake-pie"></div></div>
+    </div>
+  </div>
+</div>
+
+<div style="height:60px;"></div>
+</body>
+</html>

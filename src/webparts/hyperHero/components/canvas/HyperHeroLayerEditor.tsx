@@ -74,6 +74,11 @@ const HyperHeroLayerEditorInner: React.FC<IHyperHeroLayerEditorProps> = function
   var showAddDropdown = addDropdownState[0];
   var setShowAddDropdown = addDropdownState[1];
 
+  // Accordion: which layers are expanded (by id)
+  var expandedState = React.useState<Record<string, boolean>>({});
+  var expandedLayerIds = expandedState[0];
+  var setExpandedLayerIds = expandedState[1];
+
   // Canvas height (resizable via drag handle)
   var canvasHeightState = React.useState(DEFAULT_CANVAS_HEIGHT);
   var canvasHeight = canvasHeightState[0];
@@ -484,7 +489,9 @@ const HyperHeroLayerEditorInner: React.FC<IHyperHeroLayerEditorProps> = function
           handleMoveUp,
           handleMoveDown,
           handleDuplicateLayer,
-          handleDeleteLayer
+          handleDeleteLayer,
+          expandedLayerIds,
+          setExpandedLayerIds
         ),
         renderRightPanel(selectedLayer, updateLayer, handleBrowseImage)
       ),
@@ -515,7 +522,9 @@ function renderLeftPanel(
   handleMoveUp: () => void,
   handleMoveDown: () => void,
   handleDuplicateLayer: () => void,
-  handleDeleteLayer: () => void
+  handleDeleteLayer: () => void,
+  expandedLayerIds: Record<string, boolean>,
+  setExpandedLayerIds: (v: Record<string, boolean>) => void
 ): React.ReactElement {
   return React.createElement("div", { className: styles.leftPanel },
     React.createElement("div", { className: styles.leftPanelTitle }, "Layers"),
@@ -542,40 +551,76 @@ function renderLeftPanel(
       )
     ),
 
-    // Layer list
+    // Layer list with accordion
     React.createElement("div", { className: styles.layerList },
       layers.map(function (layer) {
         var isSelected = layer.id === selectedLayerId;
+        var isExpanded = isSelected || expandedLayerIds[layer.id] === true;
         var itemClasses = [styles.layerItem];
         if (isSelected) itemClasses.push(styles.layerItemSelected);
         if (!layer.visible) itemClasses.push(styles.layerItemHidden);
 
+        var chevronClasses = styles.layerChevron;
+        if (isExpanded) chevronClasses += " " + styles.layerChevronExpanded;
+
+        var detailClasses = styles.layerDetail;
+        if (isExpanded) detailClasses += " " + styles.layerDetailVisible;
+
+        var typeName = layer.type.charAt(0).toUpperCase() + layer.type.substring(1);
+
         return React.createElement("div", {
           key: layer.id,
-          className: itemClasses.join(" "),
-          onClick: function (): void { setSelectedLayerId(layer.id); },
+          className: styles.layerAccordion,
         },
-          React.createElement("span", { className: styles.layerItemIcon }, LAYER_TYPE_ICONS[layer.type] || "?"),
-          React.createElement("span", { className: styles.layerItemName }, layer.name),
-          React.createElement("div", { className: styles.layerItemActions },
-            React.createElement("button", {
-              className: styles.layerItemBtn,
+          // Header row
+          React.createElement("div", {
+            className: itemClasses.join(" "),
+            onClick: function (): void { setSelectedLayerId(layer.id); },
+          },
+            // Chevron toggle
+            React.createElement("span", {
+              className: chevronClasses,
               onClick: function (e: React.MouseEvent): void {
                 e.stopPropagation();
-                updateLayer(layer.id, "visible", !layer.visible);
+                var updated: Record<string, boolean> = {};
+                // Copy existing keys (no Object.assign in ES5)
+                var keys = Object.keys(expandedLayerIds);
+                keys.forEach(function (k) { updated[k] = expandedLayerIds[k]; });
+                updated[layer.id] = !isExpanded;
+                setExpandedLayerIds(updated);
               },
-              type: "button",
-              title: layer.visible ? "Hide" : "Show",
-            }, layer.visible ? "\uD83D\uDC41" : "\uD83D\uDEAB"),
-            React.createElement("button", {
-              className: styles.layerItemBtn,
-              onClick: function (e: React.MouseEvent): void {
-                e.stopPropagation();
-                updateLayer(layer.id, "locked", !layer.locked);
-              },
-              type: "button",
-              title: layer.locked ? "Unlock" : "Lock",
-            }, layer.locked ? "\uD83D\uDD12" : "\uD83D\uDD13")
+              role: "button",
+              "aria-expanded": isExpanded,
+              "aria-label": isExpanded ? "Collapse " + layer.name : "Expand " + layer.name,
+            }, "\u25B6"),
+            React.createElement("span", { className: styles.layerItemIcon }, LAYER_TYPE_ICONS[layer.type] || "?"),
+            React.createElement("span", { className: styles.layerItemName }, layer.name),
+            React.createElement("div", { className: styles.layerItemActions },
+              React.createElement("button", {
+                className: styles.layerItemBtn,
+                onClick: function (e: React.MouseEvent): void {
+                  e.stopPropagation();
+                  updateLayer(layer.id, "visible", !layer.visible);
+                },
+                type: "button",
+                title: layer.visible ? "Hide" : "Show",
+              }, layer.visible ? "\uD83D\uDC41" : "\uD83D\uDEAB"),
+              React.createElement("button", {
+                className: styles.layerItemBtn,
+                onClick: function (e: React.MouseEvent): void {
+                  e.stopPropagation();
+                  updateLayer(layer.id, "locked", !layer.locked);
+                },
+                type: "button",
+                title: layer.locked ? "Unlock" : "Lock",
+              }, layer.locked ? "\uD83D\uDD12" : "\uD83D\uDD13")
+            )
+          ),
+          // Accordion detail (collapsed by default, shown when expanded)
+          React.createElement("div", { className: detailClasses },
+            typeName + " \u2022 " + layer.x + "%, " + layer.y + "% \u2022 " +
+              layer.width + "% \u00D7 " + (layer.height === 0 ? "Auto" : layer.height + "%") +
+              " \u2022 " + layer.opacity + "% opacity"
           )
         );
       })

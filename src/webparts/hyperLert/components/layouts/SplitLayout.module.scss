@@ -1,0 +1,137 @@
+@import '~@fluentui/react/dist/sass/References';
+
+.splitView {
+  display: flex;
+  min-height: 400px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.listPanel {
+  flex: 0 0 40%;
+  overflow-y: auto;
+  max-height: 600px;
+  border-right: 1px solid #e5e7eb;
+  background: #fafafa;
+}
+
+.detailPanel {
+  flex: 0 0 60%;
+  overflow-y: auto;
+  max-height: 600px;
+  background: #fff;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #f3f4f6;
+  cursor: pointer;
+  transition: background 0.1s ease;
+
+  &:hover {
+    background: #f3f4f6;
+  }
+
+  &:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: -2px;
+  }
+}
+
+.listItemSelected {
+  composes: listItem;
+  background: #eff6ff;
+  border-left: 3px solid #2563eb;
+  padding-left: 11px;
+
+  &:hover {
+    background: #dbeafe;
+  }
+}
+
+.severityDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.listItemContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.listItemTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.listItemMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.listItemSource {
+  font-size: 12px;
+  color: #6b7280;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 6px;
+  background: #e5e7eb;
+  border-radius: 3px;
+}
+
+.listItemTime {
+  font-size: 11px;
+  color: #9ca3af;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #9ca3af;
+  text-align: center;
+
+  i {
+    font-size: 36px;
+    margin-bottom: 12px;
+  }
+
+  p {
+    font-size: 14px;
+    margin: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .splitView {
+    flex-direction: column;
+  }
+
+  .listPanel,
+  .detailPanel {
+    flex: none;
+    max-height: 350px;
+    border-right: none;
+  }
+
+  .listPanel {
+    border-bottom: 1px solid #e5e7eb;
+  }
+}

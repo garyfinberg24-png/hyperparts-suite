@@ -1,0 +1,197 @@
+@import '~@fluentui/react/dist/sass/References';
+
+.inbox {
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+}
+
+.tabBar {
+  display: flex;
+  border-bottom: 2px solid #e5e7eb;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border: none;
+  background: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    color: #374151;
+  }
+
+  &:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: -2px;
+  }
+}
+
+.tabActive {
+  composes: tab;
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+  font-weight: 600;
+}
+
+.tabBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: #dc2626;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.inboxBody {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.messageList {
+  flex: 0 0 45%;
+  overflow-y: auto;
+  max-height: 550px;
+  border-right: 1px solid #e5e7eb;
+}
+
+.previewPane {
+  flex: 0 0 55%;
+  overflow-y: auto;
+  max-height: 550px;
+}
+
+.messageRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #f3f4f6;
+  cursor: pointer;
+  transition: background 0.1s ease;
+
+  &:hover {
+    background: #f9fafb;
+  }
+
+  &:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: -2px;
+  }
+}
+
+.messageRowSelected {
+  composes: messageRow;
+  background: #eff6ff;
+
+  &:hover {
+    background: #dbeafe;
+  }
+}
+
+.messageRowUnread {
+  .messageTitle {
+    font-weight: 700;
+  }
+}
+
+.checkboxCol {
+  flex-shrink: 0;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #2563eb;
+}
+
+.severityDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.messageContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.messageTitle {
+  font-size: 13px;
+  font-weight: 400;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.messageSource {
+  font-size: 12px;
+  color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.messageTime {
+  font-size: 11px;
+  color: #9ca3af;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #9ca3af;
+  text-align: center;
+
+  i {
+    font-size: 36px;
+    margin-bottom: 12px;
+  }
+
+  p {
+    font-size: 14px;
+    margin: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .inboxBody {
+    flex-direction: column;
+  }
+
+  .messageList,
+  .previewPane {
+    flex: none;
+    max-height: 350px;
+    border-right: none;
+  }
+
+  .messageList {
+    border-bottom: 1px solid #e5e7eb;
+  }
+}

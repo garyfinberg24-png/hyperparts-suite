@@ -1,0 +1,58 @@
+@import "~@fluentui/react/dist/sass/References";
+
+.scopeTabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid $ms-color-neutralQuaternary;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: $ms-color-neutralSecondary;
+  font-size: 13px;
+  font-weight: $ms-font-weight-regular;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+
+  &:hover {
+    color: $ms-color-neutralPrimary;
+    background: $ms-color-neutralLighterAlt;
+  }
+}
+
+.tabActive {
+  @extend .tab;
+  color: $ms-color-themePrimary;
+  font-weight: $ms-font-weight-semibold;
+  border-bottom-color: $ms-color-themePrimary;
+}
+
+.tabIcon {
+  font-size: 14px;
+}
+
+.tabLabel {
+  font-size: 13px;
+}
+
+.tabCount {
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: $ms-color-neutralLighter;
+  color: $ms-color-neutralSecondary;
+  font-weight: $ms-font-weight-semibold;
+}

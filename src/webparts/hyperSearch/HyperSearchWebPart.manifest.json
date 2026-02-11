@@ -13,7 +13,7 @@
     "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
     "group": { "default": "HyperParts" },
     "title": { "default": "HyperSearch" },
-    "description": { "default": "Enhanced federated search with type-ahead suggestions, refinement panel, result previews, search history, promoted results, and search analytics across SharePoint, OneDrive, Teams, and Exchange." },
+    "description": { "default": "The most powerful search experience ever built for SharePoint Online. 10 result layouts, 12 templates, instant search, zero-query, smart autocomplete, faceted filters, promoted results, hit highlighting, people cards, quick actions, and federated search across SharePoint, OneDrive, Teams, and Exchange." },
     "officeFabricIconFontName": "SearchBookmark",
     "properties": {
       "title": "Search",
@@ -31,7 +31,27 @@
       "enableAnalytics": false,
       "enableResultPreviews": true,
       "showResultIcon": true,
-      "showResultPath": true
+      "showResultPath": true,
+      "selectedTemplate": "modern-clean",
+      "resultLayout": "listRich",
+      "searchBarStyle": "rounded",
+      "accentColor": "#0078d4",
+      "borderRadius": 8,
+      "activeScopes": "[\"sharepoint\",\"onedrive\"]",
+      "showScopeTabs": true,
+      "enableDemoMode": true,
+      "wizardCompleted": false,
+      "showWizardOnInit": true,
+      "enableInstantSearch": true,
+      "enableSearchVerticals": true,
+      "enableZeroQuery": true,
+      "enableQuickActions": true,
+      "enableHitHighlight": true,
+      "enableResultGrouping": false,
+      "enableThumbnailPreviews": true,
+      "enableSavedSearches": true,
+      "enablePeopleCards": true,
+      "enableSpellingCorrection": true
     }
   }]
 }

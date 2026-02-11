@@ -51,6 +51,32 @@ define([], function () {
     PageLabel: "Page",
     OfLabel: "of",
     PreviousPageLabel: "Previous page",
-    NextPageLabel: "Next page"
+    NextPageLabel: "Next page",
+    // V2 — Template & Layout
+    V2TemplateGroupName: "Template & Layout",
+    SelectedTemplateLabel: "Search Template",
+    ResultLayoutLabel: "Result Layout",
+    SearchBarStyleLabel: "Search Bar Style",
+    // V2 — Features
+    V2FeaturesPageDescription: "Configure search features, filters, and display options.",
+    V2FeaturesGroupName: "Search Features",
+    EnableInstantSearchLabel: "Instant Search (results as-you-type)",
+    EnableSearchVerticalsLabel: "Search Verticals (scope tabs)",
+    ShowScopeTabsLabel: "Show Scope Tabs",
+    EnableZeroQueryLabel: "Zero-Query Experience (trending/recent)",
+    EnableQuickActionsLabel: "Quick Actions (Email, Chat, Copy)",
+    EnableHitHighlightLabel: "Hit Highlighting",
+    EnableResultGroupingLabel: "Result Grouping (by site/type/date)",
+    EnableThumbnailPreviewsLabel: "Thumbnail Previews",
+    EnableSavedSearchesLabel: "Saved Searches",
+    EnablePeopleCardsLabel: "People Cards on Hover",
+    EnableSpellingCorrectionLabel: "Spelling Correction",
+    // V2 — Appearance
+    V2AppearancePageDescription: "Customize appearance, demo mode, and advanced settings.",
+    V2AppearanceGroupName: "Appearance",
+    AccentColorLabel: "Accent Color",
+    BorderRadiusLabel: "Border Radius (px)",
+    EnableDemoModeLabel: "Enable Demo Mode (sample data)",
+    ShowWizardOnInitLabel: "Show Setup Wizard on First Edit"
   };
 });

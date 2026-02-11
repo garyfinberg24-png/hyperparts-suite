@@ -146,6 +146,23 @@ declare interface IHyperLertWebPartStrings {
   EmailPreviewTitle: string;
   ShowPreviewLabel: string;
   ShowTemplateLabel: string;
+
+  // V2 Property Pane Labels
+  V2LayoutLabel: string;
+  V2GroupModeLabel: string;
+  V2EnableKpiLabel: string;
+  V2UseSampleDataLabel: string;
+  V2EnableToastLabel: string;
+  V2ToastPositionLabel: string;
+  V2MaxToastsLabel: string;
+  V2EnableNotifCenterLabel: string;
+  V2EnableEscalationLabel: string;
+  V2EnableDedupLabel: string;
+  V2DedupWindowLabel: string;
+  V2QuietHoursLabel: string;
+  V2QuietStartLabel: string;
+  V2QuietEndLabel: string;
+  V2DigestLabel: string;
 }
 
 declare module "HyperLertWebPartStrings" {

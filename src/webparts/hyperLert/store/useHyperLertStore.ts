@@ -1,5 +1,9 @@
 import { create } from "zustand";
 import type { AlertSeverity, AlertStatus } from "../models";
+import type { LertLayout, LertTemplateId, AlertGroupMode, NotificationTab } from "../models";
+import type { ILertAlert } from "../models";
+import type { ILertKpiCard } from "../models";
+import type { ILertToast } from "../models";
 
 /** A single active banner for in-page display */
 export interface IActiveBanner {
@@ -46,6 +50,33 @@ export interface IHyperLertStoreState {
   isLoading: boolean;
   /** Error message from last operation */
   lastError: string;
+
+  // -------------------------------------------------------------------------
+  // V2 State
+  // -------------------------------------------------------------------------
+
+  /** Current dashboard layout */
+  runtimeLayout: LertLayout;
+  /** Current template */
+  runtimeTemplate: LertTemplateId;
+  /** Currently selected alert ID (for detail panel) */
+  selectedAlertId: string;
+  /** Whether demo mode is active */
+  isDemoMode: boolean;
+  /** Whether the setup wizard is open */
+  wizardOpen: boolean;
+  /** Alert grouping mode */
+  alertGroupMode: AlertGroupMode;
+  /** Whether the notification center panel is open */
+  notificationCenterOpen: boolean;
+  /** Active tab in notification center */
+  activeNotificationTab: NotificationTab;
+  /** Toast notifications */
+  toasts: ILertToast[];
+  /** V2 live alerts (from sample data or monitoring) */
+  alerts: ILertAlert[];
+  /** KPI metric cards */
+  kpiCards: ILertKpiCard[];
 }
 
 export interface IHyperLertStoreActions {
@@ -91,11 +122,44 @@ export interface IHyperLertStoreActions {
   clearError: () => void;
   /** Reset entire store */
   reset: () => void;
+
+  // -------------------------------------------------------------------------
+  // V2 Actions
+  // -------------------------------------------------------------------------
+
+  /** Set dashboard layout */
+  setRuntimeLayout: (layout: LertLayout) => void;
+  /** Set template */
+  setRuntimeTemplate: (template: LertTemplateId) => void;
+  /** Select an alert for detail view */
+  setSelectedAlertId: (alertId: string) => void;
+  /** Toggle demo mode */
+  setDemoMode: (on: boolean) => void;
+  /** Toggle wizard open */
+  setWizardOpen: (open: boolean) => void;
+  /** Set alert grouping mode */
+  setAlertGroupMode: (mode: AlertGroupMode) => void;
+  /** Toggle notification center */
+  setNotificationCenterOpen: (open: boolean) => void;
+  /** Set active notification tab */
+  setActiveNotificationTab: (tab: NotificationTab) => void;
+  /** Add a toast notification */
+  addToast: (toast: ILertToast) => void;
+  /** Remove a toast by ID */
+  removeToast: (toastId: string) => void;
+  /** Clear all toasts */
+  clearToasts: () => void;
+  /** Set V2 alerts */
+  setAlerts: (alerts: ILertAlert[]) => void;
+  /** Update a single alert */
+  updateAlert: (alertId: string, partial: Partial<ILertAlert>) => void;
+  /** Set KPI cards */
+  setKpiCards: (cards: ILertKpiCard[]) => void;
 }
 
 export type IHyperLertStore = IHyperLertStoreState & IHyperLertStoreActions;
 
-const initialState: IHyperLertStoreState = {
+var initialState: IHyperLertStoreState = {
   activeBanners: [],
   filters: {
     searchText: "",
@@ -114,15 +178,50 @@ const initialState: IHyperLertStoreState = {
   refreshTick: 0,
   isLoading: false,
   lastError: "",
+
+  // V2
+  runtimeLayout: "commandCenter",
+  runtimeTemplate: "it-operations",
+  selectedAlertId: "",
+  isDemoMode: false,
+  wizardOpen: false,
+  alertGroupMode: "severity",
+  notificationCenterOpen: false,
+  activeNotificationTab: "all",
+  toasts: [],
+  alerts: [],
+  kpiCards: [],
 };
 
-export const useHyperLertStore = create<IHyperLertStore>(function (set) {
+export var useHyperLertStore = create<IHyperLertStore>(function (set) {
   return {
-    ...initialState,
+    activeBanners: initialState.activeBanners,
+    filters: initialState.filters,
+    showFilters: initialState.showFilters,
+    isHistoryOpen: initialState.isHistoryOpen,
+    ruleBuilder: initialState.ruleBuilder,
+    isEmailPreviewOpen: initialState.isEmailPreviewOpen,
+    emailPreviewRuleId: initialState.emailPreviewRuleId,
+    refreshTick: initialState.refreshTick,
+    isLoading: initialState.isLoading,
+    lastError: initialState.lastError,
+    runtimeLayout: initialState.runtimeLayout,
+    runtimeTemplate: initialState.runtimeTemplate,
+    selectedAlertId: initialState.selectedAlertId,
+    isDemoMode: initialState.isDemoMode,
+    wizardOpen: initialState.wizardOpen,
+    alertGroupMode: initialState.alertGroupMode,
+    notificationCenterOpen: initialState.notificationCenterOpen,
+    activeNotificationTab: initialState.activeNotificationTab,
+    toasts: initialState.toasts,
+    alerts: initialState.alerts,
+    kpiCards: initialState.kpiCards,
+
+    // ── V1 Actions ──
 
     addBanner: function (ruleId: string, message: string, severity: AlertSeverity, autoDismissMs: number): void {
       set(function (state) {
-        const banner: IActiveBanner = {
+        var banner: IActiveBanner = {
           id: "banner-" + Date.now().toString(36) + "-" + Math.random().toString(36).substring(2, 5),
           ruleId: ruleId,
           message: message,
@@ -130,7 +229,7 @@ export const useHyperLertStore = create<IHyperLertStore>(function (set) {
           timestamp: new Date().toISOString(),
           autoDismissMs: autoDismissMs,
         };
-        const updated: IActiveBanner[] = [];
+        var updated: IActiveBanner[] = [];
         state.activeBanners.forEach(function (b) { updated.push(b); });
         updated.push(banner);
         return { activeBanners: updated };
@@ -139,7 +238,7 @@ export const useHyperLertStore = create<IHyperLertStore>(function (set) {
 
     removeBanner: function (bannerId: string): void {
       set(function (state) {
-        const updated: IActiveBanner[] = [];
+        var updated: IActiveBanner[] = [];
         state.activeBanners.forEach(function (b) {
           if (b.id !== bannerId) updated.push(b);
         });
@@ -280,7 +379,135 @@ export const useHyperLertStore = create<IHyperLertStore>(function (set) {
     },
 
     reset: function (): void {
-      set(initialState);
+      set({
+        activeBanners: initialState.activeBanners,
+        filters: initialState.filters,
+        showFilters: initialState.showFilters,
+        isHistoryOpen: initialState.isHistoryOpen,
+        ruleBuilder: initialState.ruleBuilder,
+        isEmailPreviewOpen: initialState.isEmailPreviewOpen,
+        emailPreviewRuleId: initialState.emailPreviewRuleId,
+        refreshTick: initialState.refreshTick,
+        isLoading: initialState.isLoading,
+        lastError: initialState.lastError,
+        runtimeLayout: initialState.runtimeLayout,
+        runtimeTemplate: initialState.runtimeTemplate,
+        selectedAlertId: initialState.selectedAlertId,
+        isDemoMode: initialState.isDemoMode,
+        wizardOpen: initialState.wizardOpen,
+        alertGroupMode: initialState.alertGroupMode,
+        notificationCenterOpen: initialState.notificationCenterOpen,
+        activeNotificationTab: initialState.activeNotificationTab,
+        toasts: initialState.toasts,
+        alerts: initialState.alerts,
+        kpiCards: initialState.kpiCards,
+      });
+    },
+
+    // ── V2 Actions ──
+
+    setRuntimeLayout: function (layout: LertLayout): void {
+      set({ runtimeLayout: layout });
+    },
+
+    setRuntimeTemplate: function (template: LertTemplateId): void {
+      set({ runtimeTemplate: template });
+    },
+
+    setSelectedAlertId: function (alertId: string): void {
+      set({ selectedAlertId: alertId });
+    },
+
+    setDemoMode: function (on: boolean): void {
+      set({ isDemoMode: on });
+    },
+
+    setWizardOpen: function (open: boolean): void {
+      set({ wizardOpen: open });
+    },
+
+    setAlertGroupMode: function (mode: AlertGroupMode): void {
+      set({ alertGroupMode: mode });
+    },
+
+    setNotificationCenterOpen: function (open: boolean): void {
+      set({ notificationCenterOpen: open });
+    },
+
+    setActiveNotificationTab: function (tab: NotificationTab): void {
+      set({ activeNotificationTab: tab });
+    },
+
+    addToast: function (toast: ILertToast): void {
+      set(function (state) {
+        var updated: ILertToast[] = [];
+        state.toasts.forEach(function (t) { updated.push(t); });
+        updated.push(toast);
+        return { toasts: updated };
+      });
+    },
+
+    removeToast: function (toastId: string): void {
+      set(function (state) {
+        var updated: ILertToast[] = [];
+        state.toasts.forEach(function (t) {
+          if (t.id !== toastId) updated.push(t);
+        });
+        return { toasts: updated };
+      });
+    },
+
+    clearToasts: function (): void {
+      set({ toasts: [] });
+    },
+
+    setAlerts: function (alerts: ILertAlert[]): void {
+      set({ alerts: alerts });
+    },
+
+    updateAlert: function (alertId: string, partial: Partial<ILertAlert>): void {
+      set(function (state) {
+        var updated: ILertAlert[] = [];
+        state.alerts.forEach(function (a) {
+          if (a.id === alertId) {
+            var merged: ILertAlert = {
+              id: partial.id !== undefined ? partial.id : a.id,
+              ruleId: partial.ruleId !== undefined ? partial.ruleId : a.ruleId,
+              ruleName: partial.ruleName !== undefined ? partial.ruleName : a.ruleName,
+              title: partial.title !== undefined ? partial.title : a.title,
+              description: partial.description !== undefined ? partial.description : a.description,
+              severity: partial.severity !== undefined ? partial.severity : a.severity,
+              state: partial.state !== undefined ? partial.state : a.state,
+              source: partial.source !== undefined ? partial.source : a.source,
+              category: partial.category !== undefined ? partial.category : a.category,
+              triggeredAt: partial.triggeredAt !== undefined ? partial.triggeredAt : a.triggeredAt,
+              acknowledgedAt: partial.acknowledgedAt !== undefined ? partial.acknowledgedAt : a.acknowledgedAt,
+              acknowledgedBy: partial.acknowledgedBy !== undefined ? partial.acknowledgedBy : a.acknowledgedBy,
+              resolvedAt: partial.resolvedAt !== undefined ? partial.resolvedAt : a.resolvedAt,
+              resolvedBy: partial.resolvedBy !== undefined ? partial.resolvedBy : a.resolvedBy,
+              snoozedUntil: partial.snoozedUntil !== undefined ? partial.snoozedUntil : a.snoozedUntil,
+              escalatedTo: partial.escalatedTo !== undefined ? partial.escalatedTo : a.escalatedTo,
+              escalatedAt: partial.escalatedAt !== undefined ? partial.escalatedAt : a.escalatedAt,
+              triggerCount: partial.triggerCount !== undefined ? partial.triggerCount : a.triggerCount,
+              fingerprint: partial.fingerprint !== undefined ? partial.fingerprint : a.fingerprint,
+              groupedAlertIds: partial.groupedAlertIds !== undefined ? partial.groupedAlertIds : a.groupedAlertIds,
+              tags: partial.tags !== undefined ? partial.tags : a.tags,
+              triggerData: partial.triggerData !== undefined ? partial.triggerData : a.triggerData,
+              notes: partial.notes !== undefined ? partial.notes : a.notes,
+              isRead: partial.isRead !== undefined ? partial.isRead : a.isRead,
+              isArchived: partial.isArchived !== undefined ? partial.isArchived : a.isArchived,
+            };
+            updated.push(merged);
+          } else {
+            updated.push(a);
+          }
+        });
+        return { alerts: updated };
+      });
+    },
+
+    setKpiCards: function (cards: ILertKpiCard[]): void {
+      set({ kpiCards: cards });
     },
   };
 });

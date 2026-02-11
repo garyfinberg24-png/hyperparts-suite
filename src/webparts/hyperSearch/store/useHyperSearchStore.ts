@@ -7,6 +7,8 @@ import type {
   ISearchRefiner,
   SearchScopeType,
   SearchSortBy,
+  ResultLayoutMode,
+  SearchBarStyle,
 } from "../models";
 import { DEFAULT_QUERY } from "../models";
 
@@ -37,6 +39,29 @@ export interface IHyperSearchStoreState {
   hasSearched: boolean;
   /** Spelling suggestion from search engine ("Did you mean?") */
   spellingSuggestion: string;
+
+  // ── V2 State ──
+
+  /** Current active scope tab */
+  activeScope: SearchScopeType;
+  /** Current result layout mode */
+  resultLayout: ResultLayoutMode;
+  /** Whether demo mode is active */
+  demoMode: boolean;
+  /** Whether the wizard panel is open */
+  wizardOpen: boolean;
+  /** Whether the search bar is focused (for zero-query) */
+  searchBarFocused: boolean;
+  /** Whether the filter panel is expanded */
+  filterPanelOpen: boolean;
+  /** Saved searches */
+  savedSearches: string[];
+  /** Search bar visual style */
+  searchBarStyle: SearchBarStyle;
+  /** Accent color */
+  accentColor: string;
+  /** Border radius */
+  borderRadius: number;
 }
 
 // ── Actions ──
@@ -74,6 +99,31 @@ export interface IHyperSearchStoreActions {
   setSpellingSuggestion: (suggestion: string) => void;
   /** Reset the store to initial state */
   reset: () => void;
+
+  // ── V2 Actions ──
+
+  /** Set active scope tab */
+  setActiveScope: (scope: SearchScopeType) => void;
+  /** Set result layout mode */
+  setResultLayout: (layout: ResultLayoutMode) => void;
+  /** Toggle demo mode */
+  setDemoMode: (enabled: boolean) => void;
+  /** Toggle wizard open/close */
+  setWizardOpen: (open: boolean) => void;
+  /** Set search bar focused state */
+  setSearchBarFocused: (focused: boolean) => void;
+  /** Toggle filter panel open/close */
+  setFilterPanelOpen: (open: boolean) => void;
+  /** Add a saved search */
+  addSavedSearch: (query: string) => void;
+  /** Remove a saved search */
+  removeSavedSearch: (query: string) => void;
+  /** Set search bar style */
+  setSearchBarStyle: (style: SearchBarStyle) => void;
+  /** Set accent color */
+  setAccentColor: (color: string) => void;
+  /** Set border radius */
+  setBorderRadius: (radius: number) => void;
 }
 
 // ── Combined ──
@@ -82,8 +132,8 @@ export type IHyperSearchStore = IHyperSearchStoreState & IHyperSearchStoreAction
 
 // ── Initial state ──
 
-const initialState: IHyperSearchStoreState = {
-  query: { ...DEFAULT_QUERY },
+var initialState: IHyperSearchStoreState = {
+  query: { queryText: DEFAULT_QUERY.queryText, scope: DEFAULT_QUERY.scope, sortBy: DEFAULT_QUERY.sortBy, refiners: {}, startRow: DEFAULT_QUERY.startRow, pageSize: DEFAULT_QUERY.pageSize },
   results: [],
   totalResults: 0,
   loading: false,
@@ -95,18 +145,54 @@ const initialState: IHyperSearchStoreState = {
   previewResultId: "",
   hasSearched: false,
   spellingSuggestion: "",
+
+  // V2
+  activeScope: "everything",
+  resultLayout: "listRich",
+  demoMode: true,
+  wizardOpen: false,
+  searchBarFocused: false,
+  filterPanelOpen: false,
+  savedSearches: [],
+  searchBarStyle: "rounded",
+  accentColor: "#0078d4",
+  borderRadius: 8,
 };
 
 // ── Store ──
 
-export const useHyperSearchStore = create<IHyperSearchStore>(function (set) {
+export var useHyperSearchStore = create<IHyperSearchStore>(function (set) {
   return {
-    ...initialState,
+    // Spread initial state
+    query: initialState.query,
+    results: initialState.results,
+    totalResults: initialState.totalResults,
+    loading: initialState.loading,
+    error: initialState.error,
+    suggestions: initialState.suggestions,
+    suggestionsLoading: initialState.suggestionsLoading,
+    history: initialState.history,
+    refiners: initialState.refiners,
+    previewResultId: initialState.previewResultId,
+    hasSearched: initialState.hasSearched,
+    spellingSuggestion: initialState.spellingSuggestion,
+    activeScope: initialState.activeScope,
+    resultLayout: initialState.resultLayout,
+    demoMode: initialState.demoMode,
+    wizardOpen: initialState.wizardOpen,
+    searchBarFocused: initialState.searchBarFocused,
+    filterPanelOpen: initialState.filterPanelOpen,
+    savedSearches: initialState.savedSearches,
+    searchBarStyle: initialState.searchBarStyle,
+    accentColor: initialState.accentColor,
+    borderRadius: initialState.borderRadius,
+
+    // ── V1 Actions ──
 
     setQueryText: function (text: string): void {
       set(function (state) {
         return {
-          query: { ...state.query, queryText: text, startRow: 0 },
+          query: { queryText: text, scope: state.query.scope, sortBy: state.query.sortBy, refiners: state.query.refiners, startRow: 0, pageSize: state.query.pageSize },
         };
       });
     },
@@ -114,8 +200,9 @@ export const useHyperSearchStore = create<IHyperSearchStore>(function (set) {
     setScope: function (scope: SearchScopeType): void {
       set(function (state) {
         return {
-          query: { ...state.query, scope: scope, startRow: 0, refiners: {} },
+          query: { queryText: state.query.queryText, scope: scope, sortBy: state.query.sortBy, refiners: {}, startRow: 0, pageSize: state.query.pageSize },
           refiners: [],
+          activeScope: scope,
         };
       });
     },
@@ -123,14 +210,14 @@ export const useHyperSearchStore = create<IHyperSearchStore>(function (set) {
     setSortBy: function (sortBy: SearchSortBy): void {
       set(function (state) {
         return {
-          query: { ...state.query, sortBy: sortBy, startRow: 0 },
+          query: { queryText: state.query.queryText, scope: state.query.scope, sortBy: sortBy, refiners: state.query.refiners, startRow: 0, pageSize: state.query.pageSize },
         };
       });
     },
 
     setRefiner: function (fieldName: string, values: string[]): void {
       set(function (state) {
-        const newRefiners: Record<string, string[]> = {};
+        var newRefiners: Record<string, string[]> = {};
         Object.keys(state.query.refiners).forEach(function (key) {
           newRefiners[key] = state.query.refiners[key];
         });
@@ -140,7 +227,7 @@ export const useHyperSearchStore = create<IHyperSearchStore>(function (set) {
           delete newRefiners[fieldName];
         }
         return {
-          query: { ...state.query, refiners: newRefiners, startRow: 0 },
+          query: { queryText: state.query.queryText, scope: state.query.scope, sortBy: state.query.sortBy, refiners: newRefiners, startRow: 0, pageSize: state.query.pageSize },
         };
       });
     },
@@ -148,7 +235,7 @@ export const useHyperSearchStore = create<IHyperSearchStore>(function (set) {
     clearRefiners: function (): void {
       set(function (state) {
         return {
-          query: { ...state.query, refiners: {}, startRow: 0 },
+          query: { queryText: state.query.queryText, scope: state.query.scope, sortBy: state.query.sortBy, refiners: {}, startRow: 0, pageSize: state.query.pageSize },
           refiners: [],
         };
       });
@@ -157,7 +244,7 @@ export const useHyperSearchStore = create<IHyperSearchStore>(function (set) {
     setStartRow: function (startRow: number): void {
       set(function (state) {
         return {
-          query: { ...state.query, startRow: startRow },
+          query: { queryText: state.query.queryText, scope: state.query.scope, sortBy: state.query.sortBy, refiners: state.query.refiners, startRow: startRow, pageSize: state.query.pageSize },
         };
       });
     },
@@ -203,7 +290,88 @@ export const useHyperSearchStore = create<IHyperSearchStore>(function (set) {
     },
 
     reset: function (): void {
-      set({ ...initialState, query: { ...DEFAULT_QUERY } });
+      set({
+        query: { queryText: "", scope: "everything", sortBy: "relevance", refiners: {}, startRow: 0, pageSize: 10 },
+        results: [],
+        totalResults: 0,
+        loading: false,
+        error: "",
+        suggestions: [],
+        suggestionsLoading: false,
+        history: [],
+        refiners: [],
+        previewResultId: "",
+        hasSearched: false,
+        spellingSuggestion: "",
+        searchBarFocused: false,
+        filterPanelOpen: false,
+      });
+    },
+
+    // ── V2 Actions ──
+
+    setActiveScope: function (scope: SearchScopeType): void {
+      set(function (state) {
+        return {
+          activeScope: scope,
+          query: { queryText: state.query.queryText, scope: scope, sortBy: state.query.sortBy, refiners: {}, startRow: 0, pageSize: state.query.pageSize },
+          refiners: [],
+        };
+      });
+    },
+
+    setResultLayout: function (layout: ResultLayoutMode): void {
+      set({ resultLayout: layout });
+    },
+
+    setDemoMode: function (enabled: boolean): void {
+      set({ demoMode: enabled });
+    },
+
+    setWizardOpen: function (open: boolean): void {
+      set({ wizardOpen: open });
+    },
+
+    setSearchBarFocused: function (focused: boolean): void {
+      set({ searchBarFocused: focused });
+    },
+
+    setFilterPanelOpen: function (open: boolean): void {
+      set({ filterPanelOpen: open });
+    },
+
+    addSavedSearch: function (query: string): void {
+      set(function (state) {
+        var existing = state.savedSearches;
+        var filtered: string[] = [];
+        existing.forEach(function (s) {
+          if (s !== query) filtered.push(s);
+        });
+        filtered.push(query);
+        return { savedSearches: filtered };
+      });
+    },
+
+    removeSavedSearch: function (query: string): void {
+      set(function (state) {
+        var filtered: string[] = [];
+        state.savedSearches.forEach(function (s) {
+          if (s !== query) filtered.push(s);
+        });
+        return { savedSearches: filtered };
+      });
+    },
+
+    setSearchBarStyle: function (style: SearchBarStyle): void {
+      set({ searchBarStyle: style });
+    },
+
+    setAccentColor: function (color: string): void {
+      set({ accentColor: color });
+    },
+
+    setBorderRadius: function (radius: number): void {
+      set({ borderRadius: radius });
     },
   };
 });

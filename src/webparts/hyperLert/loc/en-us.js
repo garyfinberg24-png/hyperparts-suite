@@ -1,12 +1,12 @@
 define([], function () {
   return {
     // Page headers
-    PropertyPaneDescription: "Configure alert rules and notification settings.",
+    PropertyPaneDescription: "Configure alert rules, layout, and notification settings.",
     NotificationPageDescription: "Configure notification delivery channels and defaults.",
-    AdvancedPageDescription: "Configure alert history, cooldown, and advanced settings.",
+    AdvancedPageDescription: "Configure escalation, deduplication, quiet hours, and history.",
 
     // Page 1 - Rules Overview
-    RulesGroupName: "Rules Overview",
+    RulesGroupName: "Dashboard & Layout",
     TitleFieldLabel: "Dashboard Title",
     RefreshIntervalFieldLabel: "Auto-Refresh Interval (seconds)",
     RuleCountLabel: "Configured Rules",
@@ -23,7 +23,7 @@ define([], function () {
     DefaultSeverityLabel: "Default Severity for New Rules",
 
     // Page 3 - Advanced
-    AdvancedGroupName: "History & Advanced",
+    AdvancedGroupName: "Escalation, Dedup & History",
     HistoryListNameLabel: "History List Name",
     MaxHistoryItemsLabel: "Maximum History Items (50-500)",
     GlobalCooldownLabel: "Global Cooldown Between Notifications (minutes)",
@@ -147,5 +147,22 @@ define([], function () {
     EmailPreviewTitle: "Email Preview",
     ShowPreviewLabel: "Preview",
     ShowTemplateLabel: "Template",
+
+    // V2 Property Pane Labels
+    V2LayoutLabel: "Dashboard Layout",
+    V2GroupModeLabel: "Alert Grouping Mode",
+    V2EnableKpiLabel: "Show KPI Dashboard",
+    V2UseSampleDataLabel: "Use Sample Data (Demo Mode)",
+    V2EnableToastLabel: "Enable Toast Notifications",
+    V2ToastPositionLabel: "Toast Position",
+    V2MaxToastsLabel: "Max Visible Toasts (1-8)",
+    V2EnableNotifCenterLabel: "Enable Notification Center",
+    V2EnableEscalationLabel: "Enable 3-Tier Escalation",
+    V2EnableDedupLabel: "Enable Alert Deduplication",
+    V2DedupWindowLabel: "Deduplication Window (minutes)",
+    V2QuietHoursLabel: "Quiet Hours Mode",
+    V2QuietStartLabel: "Quiet Hours Start (HH:mm)",
+    V2QuietEndLabel: "Quiet Hours End (HH:mm)",
+    V2DigestLabel: "Digest Frequency",
   };
 });

@@ -25,13 +25,13 @@ export default class HyperLertWebPart extends BaseHyperWebPart<IHyperLertWebPart
   };
 
   public render(): void {
-    const props: IHyperLertComponentProps = {
+    var props: IHyperLertComponentProps = {
       ...this.properties,
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
       onRulesChange: this._onRulesChange,
     };
-    const element: React.ReactElement<IHyperLertComponentProps> =
+    var element: React.ReactElement<IHyperLertComponentProps> =
       React.createElement(HyperLert, props);
     ReactDom.render(element, this.domElement);
   }
@@ -39,6 +39,7 @@ export default class HyperLertWebPart extends BaseHyperWebPart<IHyperLertWebPart
   protected async onInit(): Promise<void> {
     await super.onInit();
 
+    // V1 defaults
     if (this.properties.title === undefined) {
       this.properties.title = "Alert Dashboard";
     }
@@ -81,6 +82,59 @@ export default class HyperLertWebPart extends BaseHyperWebPart<IHyperLertWebPart
     if (this.properties.autoCreateList === undefined) {
       this.properties.autoCreateList = true;
     }
+
+    // V2 defaults
+    if (this.properties.layout === undefined) {
+      this.properties.layout = "commandCenter";
+    }
+    if (this.properties.templateId === undefined) {
+      this.properties.templateId = "it-operations";
+    }
+    if (this.properties.enableToast === undefined) {
+      this.properties.enableToast = true;
+    }
+    if (this.properties.toastPosition === undefined) {
+      this.properties.toastPosition = "topRight";
+    }
+    if (this.properties.maxToasts === undefined) {
+      this.properties.maxToasts = 4;
+    }
+    if (this.properties.enableNotificationCenter === undefined) {
+      this.properties.enableNotificationCenter = true;
+    }
+    if (this.properties.enableEscalation === undefined) {
+      this.properties.enableEscalation = false;
+    }
+    if (this.properties.escalationPolicy === undefined) {
+      this.properties.escalationPolicy = "";
+    }
+    if (this.properties.enableKpiDashboard === undefined) {
+      this.properties.enableKpiDashboard = true;
+    }
+    if (this.properties.alertGroupMode === undefined) {
+      this.properties.alertGroupMode = "severity";
+    }
+    if (this.properties.enableDeduplication === undefined) {
+      this.properties.enableDeduplication = true;
+    }
+    if (this.properties.deduplicationWindowMinutes === undefined) {
+      this.properties.deduplicationWindowMinutes = 5;
+    }
+    if (this.properties.quietHoursMode === undefined) {
+      this.properties.quietHoursMode = "off";
+    }
+    if (this.properties.quietHoursStart === undefined) {
+      this.properties.quietHoursStart = "22:00";
+    }
+    if (this.properties.quietHoursEnd === undefined) {
+      this.properties.quietHoursEnd = "07:00";
+    }
+    if (this.properties.digestFrequency === undefined) {
+      this.properties.digestFrequency = "realtime";
+    }
+    if (this.properties.useSampleData === undefined) {
+      this.properties.useSampleData = true;
+    }
   }
 
   protected onDispose(): void {
@@ -88,15 +142,15 @@ export default class HyperLertWebPart extends BaseHyperWebPart<IHyperLertWebPart
   }
 
   protected get dataVersion(): Version {
-    return Version.parse("1.0");
+    return Version.parse("2.0");
   }
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
-    const rules = parseRules(this.properties.rules);
+    var rules = parseRules(this.properties.rules);
 
     return {
       pages: [
-        // Page 1: Rules Overview
+        // Page 1: Dashboard & Layout
         {
           header: { description: strings.PropertyPaneDescription },
           groups: [
@@ -106,11 +160,40 @@ export default class HyperLertWebPart extends BaseHyperWebPart<IHyperLertWebPart
                 PropertyPaneTextField("title", {
                   label: strings.TitleFieldLabel,
                 }),
+                PropertyPaneDropdown("layout", {
+                  label: strings.V2LayoutLabel,
+                  options: [
+                    { key: "commandCenter", text: "Command Center" },
+                    { key: "inbox", text: "Inbox" },
+                    { key: "cardGrid", text: "Card Grid" },
+                    { key: "table", text: "Table" },
+                    { key: "timeline", text: "Timeline" },
+                    { key: "kanban", text: "Kanban Board" },
+                    { key: "compact", text: "Compact List" },
+                    { key: "split", text: "Split View" },
+                  ],
+                }),
+                PropertyPaneDropdown("alertGroupMode", {
+                  label: strings.V2GroupModeLabel,
+                  options: [
+                    { key: "none", text: "No Grouping" },
+                    { key: "severity", text: "By Severity" },
+                    { key: "source", text: "By Source" },
+                    { key: "rule", text: "By Rule" },
+                    { key: "category", text: "By Category" },
+                  ],
+                }),
                 PropertyPaneSlider("refreshInterval", {
                   label: strings.RefreshIntervalFieldLabel,
                   min: 15,
                   max: 300,
                   step: 15,
+                }),
+                PropertyPaneToggle("enableKpiDashboard", {
+                  label: strings.V2EnableKpiLabel,
+                }),
+                PropertyPaneToggle("useSampleData", {
+                  label: strings.V2UseSampleDataLabel,
                 }),
                 PropertyPaneLabel("_ruleCount", {
                   text: strings.RuleCountLabel + ": " + rules.length,
@@ -119,13 +202,31 @@ export default class HyperLertWebPart extends BaseHyperWebPart<IHyperLertWebPart
             },
           ],
         },
-        // Page 2: Notification Defaults
+        // Page 2: Notifications
         {
           header: { description: strings.NotificationPageDescription },
           groups: [
             {
               groupName: strings.NotificationGroupName,
               groupFields: [
+                PropertyPaneToggle("enableToast", {
+                  label: strings.V2EnableToastLabel,
+                }),
+                PropertyPaneDropdown("toastPosition", {
+                  label: strings.V2ToastPositionLabel,
+                  options: [
+                    { key: "topRight", text: "Top Right" },
+                    { key: "topLeft", text: "Top Left" },
+                    { key: "bottomRight", text: "Bottom Right" },
+                    { key: "bottomLeft", text: "Bottom Left" },
+                  ],
+                }),
+                PropertyPaneSlider("maxToasts", {
+                  label: strings.V2MaxToastsLabel,
+                  min: 1,
+                  max: 8,
+                  step: 1,
+                }),
                 PropertyPaneToggle("enableEmail", {
                   label: strings.EnableEmailLabel,
                 }),
@@ -134,6 +235,9 @@ export default class HyperLertWebPart extends BaseHyperWebPart<IHyperLertWebPart
                 }),
                 PropertyPaneToggle("enableBanner", {
                   label: strings.EnableBannerLabel,
+                }),
+                PropertyPaneToggle("enableNotificationCenter", {
+                  label: strings.V2EnableNotifCenterLabel,
                 }),
                 PropertyPaneTextField("emailFromName", {
                   label: strings.EmailFromNameLabel,
@@ -169,6 +273,41 @@ export default class HyperLertWebPart extends BaseHyperWebPart<IHyperLertWebPart
             {
               groupName: strings.AdvancedGroupName,
               groupFields: [
+                PropertyPaneToggle("enableEscalation", {
+                  label: strings.V2EnableEscalationLabel,
+                }),
+                PropertyPaneToggle("enableDeduplication", {
+                  label: strings.V2EnableDedupLabel,
+                }),
+                PropertyPaneSlider("deduplicationWindowMinutes", {
+                  label: strings.V2DedupWindowLabel,
+                  min: 1,
+                  max: 60,
+                  step: 1,
+                }),
+                PropertyPaneDropdown("quietHoursMode", {
+                  label: strings.V2QuietHoursLabel,
+                  options: [
+                    { key: "off", text: "Off" },
+                    { key: "scheduled", text: "Scheduled" },
+                    { key: "dnd", text: "Do Not Disturb" },
+                  ],
+                }),
+                PropertyPaneTextField("quietHoursStart", {
+                  label: strings.V2QuietStartLabel,
+                }),
+                PropertyPaneTextField("quietHoursEnd", {
+                  label: strings.V2QuietEndLabel,
+                }),
+                PropertyPaneDropdown("digestFrequency", {
+                  label: strings.V2DigestLabel,
+                  options: [
+                    { key: "realtime", text: "Real-time" },
+                    { key: "hourly", text: "Hourly" },
+                    { key: "daily", text: "Daily" },
+                    { key: "weekly", text: "Weekly" },
+                  ],
+                }),
                 PropertyPaneTextField("historyListName", {
                   label: strings.HistoryListNameLabel,
                 }),

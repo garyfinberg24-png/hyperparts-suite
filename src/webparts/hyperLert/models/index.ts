@@ -1,3 +1,7 @@
+// ---------------------------------------------------------------------------
+// V1 Exports (backward compatible)
+// ---------------------------------------------------------------------------
+
 export type {
   AlertSeverity,
   AlertStatus,
@@ -59,3 +63,93 @@ export {
 } from "./IAlertHistory";
 
 export type { IHyperLertWebPartProps } from "./IHyperLertWebPartProps";
+
+// ---------------------------------------------------------------------------
+// V2 Exports — Enums & Types
+// ---------------------------------------------------------------------------
+
+export type {
+  LertLayout,
+  LertSeverityV2,
+  LertAlertState,
+  LertTemplateId,
+  ToastPosition,
+  NotificationTab,
+  EscalationTier,
+  KpiMetricType,
+  AlertGroupMode,
+  DigestFrequency,
+  QuietHoursMode,
+} from "./IHyperLertV2Enums";
+export {
+  getLertLayoutDisplayName,
+  getLertSeverityDisplayName,
+  getLertAlertStateDisplayName,
+  ALL_LERT_LAYOUTS,
+  ALL_LERT_SEVERITIES_V2,
+  ALL_LERT_ALERT_STATES,
+  ALL_LERT_TEMPLATES,
+  getSeverityColor,
+  getSeverityIcon,
+} from "./IHyperLertV2Enums";
+
+// ---------------------------------------------------------------------------
+// V2 Exports — Templates
+// ---------------------------------------------------------------------------
+
+export type { ILertTemplate } from "./ILertTemplate";
+export {
+  LERT_TEMPLATES,
+  getTemplateById,
+} from "./ILertTemplate";
+
+// ---------------------------------------------------------------------------
+// V2 Exports — Live Alerts
+// ---------------------------------------------------------------------------
+
+export type { ILertAlert } from "./ILertAlert";
+export {
+  DEFAULT_LERT_ALERT,
+  createLertAlert,
+  generateAlertId,
+} from "./ILertAlert";
+
+// ---------------------------------------------------------------------------
+// V2 Exports — Escalation
+// ---------------------------------------------------------------------------
+
+export type {
+  IEscalationStep,
+  IEscalationPolicy,
+} from "./ILertEscalation";
+export {
+  DEFAULT_ESCALATION_POLICY,
+  parseEscalationPolicy,
+  stringifyEscalationPolicy,
+} from "./ILertEscalation";
+
+// ---------------------------------------------------------------------------
+// V2 Exports — KPI
+// ---------------------------------------------------------------------------
+
+export type { ILertKpiCard } from "./ILertKpi";
+export {
+  DEFAULT_KPI_CARDS,
+  computeKpiTrend,
+  formatKpiValue,
+} from "./ILertKpi";
+
+// ---------------------------------------------------------------------------
+// V2 Exports — Toast
+// ---------------------------------------------------------------------------
+
+export type {
+  ILertToast,
+  IToastAction,
+  IToastConfig,
+} from "./ILertToast";
+export {
+  DEFAULT_TOAST_CONFIG,
+  getAutoDismissMs,
+  getDefaultToastActions,
+} from "./ILertToast";
