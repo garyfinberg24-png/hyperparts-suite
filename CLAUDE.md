@@ -2,7 +2,7 @@
 
 ## What This Project Is
 
-HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 30+ web parts for SharePoint Online. Every standard SharePoint web part gets a "Hyper" replacement with richer features, deeper Microsoft Graph integration, and full visual customization. The full PRD is in `../MASTER_CONTEXT.md` at the repo parent directory.
+HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 20 web parts (shipping) for SharePoint Online. Every standard SharePoint web part gets a "Hyper" replacement with richer features, deeper Microsoft Graph integration, and full visual customization. The full PRD is in `../MASTER_CONTEXT.md` at the repo parent directory.
 
 **Repo:** <https://github.com/garyfinberg24-png/hyperparts-suite>
 **Git identity:** `Gary Finberg <garyfinberg24@gmail.com>` (repo-local config)
@@ -257,55 +257,45 @@ HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 30+ web parts fo
   - No new npm dependencies (uses existing date-fns)
   - `gulp build` passes clean (0 errors, 0 warnings)
 
-### Phase 3, Step 4 Completed: HyperSlider (Slider Revolution-class)
+### HyperSlider — REMOVED (commit 50faa24)
 
-- All features implemented across 2 sub-steps (SL1/SL2)
-- **Layer-based composition system:** Each slide contains independently positioned + animated layers
-- 8 layer types: Text (HTML), Image (objectFit/mask), Video (MP4/YouTube/Vimeo), Button (4 variants), Shape (SVG), Icon (Fluent), Lottie (dynamic import), Group (recursive children)
-- 4 slider modes: Slider (standard auto-advance), Carousel (CSS scroll-snap 3-up), Hero (single static), BeforeAfter (draggable image comparison)
-- 14 slide transition types: fade, slideH, slideV, zoom, zoomOut, rotate, cube3D, flip3D, coverflow3D, kenBurns, wipe, curtain, blinds, crossFade
-- 48 CSS keyframe animations: 16 entrance (fade/fadeUp/fadeDown/fadeLeft/fadeRight/zoomIn/zoomOut/rotateIn/bounceIn/elasticIn/slideUp/slideDown/slideLeft/slideRight/typewriter/none) + 16 exit (mirrors) + 8 loop (pulse/pendulum/wave/wiggle/rotate/float/blink) + 7 hover effects (scale/rotate/brightness/blur/shadow/lift)
-- 6 navigation components: Arrows (4 styles), Bullets (4 styles), Thumbnails (filmstrip), Tabs (text labels), Progress (animated bar), SlideCount (numeric)
-- 5 effects: ParticleOverlay (5 shapes), BeforeAfterSlider (H/V drag), TypewriterEffect (char-by-char), RevealEffect (clip-path), SnowOverlay (CSS falling)
-- Particle system: 5 shapes (circle/square/triangle/star/snow), configurable count/size/speed/direction/opacity/color
-- Ken Burns pan+zoom on background images
-- Multi-layer parallax scrolling with per-layer speed
-- Responsive layer positioning: per-breakpoint visibility + position/size overrides
-- Dynamic content: SP list binding via useListItems + field mapping
-- Keyboard navigation: Left/Right/Home/End/Space, swipe/drag with threshold detection
-- Full ARIA: role=region, aria-roledescription=carousel, role=tablist/tab for navigation
-- 4-page property pane: General, Transitions & Autoplay, Navigation, Content & Effects
-- Zustand store (~25 actions), 9 hooks, 6 utils, 11 model files (~80 exports)
-- `mergeStyles()` helper for combining CSSProperties in ES5 (replaces Object.assign)
-- Web part ID: `c1d2e3f4-5a6b-7c8d-9e0f-1a2b3c4d5e6f`
-- Bundle #18: `hyper-slider-web-part`
-- No new npm dependencies (reuses existing lottie-web)
-- 78 files changed, `gulp build` passes clean (0 errors, 0 warnings)
+- Fully deleted: 79 files, -6818 lines
+- Functionality superseded by HyperHero (which supports all slider modes)
+- Entry removed from config/config.json bundle config
 
-### HyperExplorer EX1 Scaffold
+### Cross-Cutting Standards — ALL 20 WEB PARTS COMPLETE
 
-- Core scaffold only — models, hooks, store, utils, web part class, manifest
-- Components not yet built — needs EX2+ implementation (layouts, file browser, preview panel)
-- No WelcomeStep splash screen yet
+**Wizard Pattern B (HyperWizard 2-panel modal):**
 
-### DWx Branded Splash Screens — ALL 18 WEB PARTS COMPLETE
-
-- Shared SCSS: `src/common/components/wizard/DwxSplash.module.scss`
+- All 20 WPs have `wizardConfig.ts` + `WelcomeStep.tsx`
+- Pattern B = dark navy sidebar stepper (left) + content panel (right)
+- WelcomeStep props: `isOpen`, `onClose`, `onApply`, `currentProps?`
 - Shared interfaces: `src/common/components/wizard/IHyperWizard.ts`
-- Each web part: `components/wizard/WelcomeStep.tsx` + `WelcomeStep.module.scss`
-- DWx brand strip (navy gradient, badge), Hyper{Name} hero banner, 4 feature cards, "Get Started" CTA
-- HyperHero's original inline SCSS replaced with `@import` of shared styles
+
+**DemoBar Rich Panel (shared SCSS):**
+
+- All 20 WPs have DemoBar .tsx imported and rendered in main component
+- All DemoBars import shared `src/common/components/demoBar/DemoBarRichPanel.module.scss`
+- No per-WP DemoBar SCSS files — all use the shared stylesheet
+- Dark navy gradient toolbar, DEMO badge, grouped chip toggles, exit button
+
+**Sample Data:**
+
+- All applicable WPs have sample data wired with `useSampleData=true` default
+- Profile, Rollup, Ticker confirmed fully wired
+- Links and Spotlight defaults confirmed correct (`true`)
 
 ### Production Package Built
 
 - `gulp bundle --ship && gulp package-solution --ship` completed
 - Package: `sharepoint/solution/hyperparts-suite.sppkg`
-- 19 web parts (18 complete + 1 scaffold) in single solution
+- 20 web parts in single solution, 0 TS errors
 
 ### Next Up
 
-- Complete HyperExplorer components (EX2+)
-- Build remaining Phase 3 web parts (see roadmap below)
+- Build remaining Phase 3+ web parts (see roadmap below)
+- Rename HyperDirectory to HyperDex (deferred)
+- Option B packaging restructure (deferred)
 
 ### Full Roadmap (from MASTER_CONTEXT.md Addendum B)
 
@@ -313,7 +303,7 @@ HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 30+ web parts fo
 | ----- | --------- |
 | 1 | **HyperHero**, **HyperNews**, **HyperTabs**, **HyperRollup**, **HyperSpotlight**, **HyperProfile**, **HyperDirectory** — ALL COMPLETE |
 | 2 | **HyperNav**, **HyperEvents**, **HyperPoll**, **HyperSearch**, **HyperLinks**, **HyperCharts**, **HyperLert** — ALL COMPLETE |
-| 3 | **HyperTicker**, **HyperFAQ**, **HyperBirthdays**, **HyperSlider** — COMPLETE. **HyperExplorer** — SCAFFOLD. Remaining: HyperAction, HyperRecognition, HyperExternal, HyperTimeline, HyperBreadcrumb, HyperFeedback, HyperLocal, HyperLayout, HyperForms, HyperBanner |
+| 3 | **HyperTicker**, **HyperFAQ**, **HyperBirthdays**, **HyperExplorer**, **HyperImage**, **HyperStyle** — ALL COMPLETE. HyperSlider REMOVED (superseded by HyperHero). Remaining: HyperAction, HyperRecognition, HyperExternal, HyperTimeline, HyperBreadcrumb, HyperFeedback, HyperLocal, HyperLayout, HyperForms, HyperBanner |
 
 ---
 
@@ -622,21 +612,9 @@ src/
     │   │   ├── HyperBirthdaysMilestoneBadge # Colored badge with years + icon
     │   │   └── HyperBirthdaysAnimation # Pure CSS confetti/balloons/sparkle, auto-dismiss 3.5s
     │   └── loc/
-    └── hyperSlider/                   # Slider Revolution-class slider (8 layer types, 48 animations)
-        ├── HyperSliderWebPart.ts      # ID: c1d2e3f4-5a6b-7c8d-9e0f-1a2b3c4d5e6f
-        ├── models/                    # 11 model files (~80 exports): ISliderSlide, ISliderLayer, 8 layer configs, transitions, animations, navigation, particles, beforeAfter, responsive, WebPartProps
-        ├── hooks/                     # useSliderEngine, useSliderNavigation, useLayerAnimations, useSliderParallax, useSliderPreload, useSliderDynamicContent, useBeforeAfter, useSliderParticles
-        ├── store/                     # Zustand store (~25 actions: slide nav, transitions, autoplay, edit, responsive, particles, beforeAfter, history)
-        ├── utils/                     # sliderUtils, animationUtils, transitionUtils, particleUtils, responsiveUtils, layerUtils
-        ├── components/
-        │   ├── HyperSlider.tsx        # Main orchestrator (4 slider modes)
-        │   ├── HyperSliderSlide       # Background (image/video/Lottie/gradient) + layers
-        │   ├── HyperSliderLayer       # Layer renderer with 48 CSS keyframe animations
-        │   ├── HyperSliderEditOverlay # Edit mode overlay
-        │   ├── layers/                # TextLayer, ImageLayer, VideoLayer, ButtonLayer, ShapeLayer, IconLayer, LottieLayer, GroupLayer
-        │   ├── navigation/            # SliderArrows, SliderBullets, SliderThumbnails, SliderTabs, SliderProgress, SliderCount
-        │   └── effects/               # ParticleOverlay, BeforeAfterSlider, TypewriterEffect, RevealEffect, SnowOverlay
-        └── loc/
+    ├── hyperExplorer/                # File/document explorer
+    ├── hyperImage/                   # Image gallery & media display
+    └── hyperStyle/                   # Global branding engine with CSS injection
 ```
 
 ### Key IDs
@@ -659,7 +637,7 @@ src/
 - **HyperTicker Web Part ID:** `d8e9f0a1-2b3c-4d5e-6f7a-8b9c0d1e2f3a`
 - **HyperFAQ Web Part ID:** `e9f0a1b2-3c4d-5e6f-7a8b-9c0d1e2f3a4b`
 - **HyperBirthdays Web Part ID:** `f0a1b2c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c`
-- **HyperSlider Web Part ID:** `c1d2e3f4-5a6b-7c8d-9e0f-1a2b3c4d5e6f`
+
 - **Feature ID:** `4c137d6a-7e80-46c6-8936-e7f7639893bc`
 
 ---
