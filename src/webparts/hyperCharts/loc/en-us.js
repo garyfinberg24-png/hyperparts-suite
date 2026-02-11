@@ -49,7 +49,7 @@ define([], function () {
     ManualValuesLabel: "Values (comma-separated)",
 
     // Wizard & Demo
-    ShowWizardOnInitLabel: "Show Setup Wizard on First Add",
+    WizardCompletedLabel: "Wizard Completed",
     UseSampleDataLabel: "Use Sample Data",
     DemoModeLabel: "Demo Mode (show demo bar)",
     SetupGroupName: "Setup & Demo",

@@ -81,6 +81,9 @@ export default class HyperHeroWebPart extends BaseHyperWebPart<IHyperHeroWebPart
     if (this.properties.wizardCompleted === undefined) {
       this.properties.wizardCompleted = false;
     }
+    if (this.properties.enableDemoMode === undefined) {
+      this.properties.enableDemoMode = true;
+    }
   }
 
   protected onDispose(): void {

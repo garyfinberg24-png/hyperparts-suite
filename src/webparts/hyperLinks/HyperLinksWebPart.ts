@@ -42,7 +42,7 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
     keys.forEach(function (key: string) {
       (self.properties as unknown as Record<string, unknown>)[key] = (result as unknown as Record<string, unknown>)[key];
     });
-    self.properties.showWizardOnInit = false;
+    self.properties.wizardCompleted = true;
     self.render();
     self.context.propertyPane.refresh();
   };
@@ -113,8 +113,8 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
     if (this.properties.compactAlignment === undefined) {
       this.properties.compactAlignment = "left";
     }
-    if (this.properties.showWizardOnInit === undefined) {
-      this.properties.showWizardOnInit = true;
+    if (this.properties.wizardCompleted === undefined) {
+      this.properties.wizardCompleted = false;
     }
     if (this.properties.enableSearch === undefined) {
       this.properties.enableSearch = false;
@@ -166,6 +166,9 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
     }
     if (this.properties.useSampleData === undefined) {
       this.properties.useSampleData = true;
+    }
+    if (this.properties.enableDemoMode === undefined) {
+      this.properties.enableDemoMode = true;
     }
   }
 

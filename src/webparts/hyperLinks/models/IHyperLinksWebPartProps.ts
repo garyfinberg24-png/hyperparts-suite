@@ -28,8 +28,8 @@ export interface IHyperLinksWebPartProps extends IBaseHyperWebPartProps {
   hoverEffect: HyperLinksHoverEffect;
   borderRadius: HyperLinksBorderRadius;
   compactAlignment: HyperLinksAlignment;
-  /** Show wizard on first load */
-  showWizardOnInit: boolean;
+  /** Whether the setup wizard has been completed */
+  wizardCompleted: boolean;
   /** Enable search bar within links */
   enableSearch: boolean;
   /** Enable link health monitoring in edit mode */
@@ -68,4 +68,6 @@ export interface IHyperLinksWebPartProps extends IBaseHyperWebPartProps {
   // ── Demo Mode ──
   /** Enable sample data / demo mode */
   useSampleData: boolean;
+  /** Enable demo mode toolbar for previewing layouts/themes */
+  enableDemoMode: boolean;
 }

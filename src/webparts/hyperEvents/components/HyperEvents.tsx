@@ -86,7 +86,7 @@ const HyperEventsInner: React.FC<IHyperEventsComponentProps> = function (props) 
 
   // ── Demo mode overrides ──
   var demoViewMode = store.demoViewMode;
-  var effectiveViewMode: HyperEventsViewMode = props.demoMode && demoViewMode !== undefined ? demoViewMode : store.viewMode;
+  var effectiveViewMode: HyperEventsViewMode = props.enableDemoMode && demoViewMode !== undefined ? demoViewMode : store.viewMode;
 
   // Parse sources, categories, and registration fields from JSON props
   const sources = React.useMemo(function () {
@@ -214,14 +214,14 @@ const HyperEventsInner: React.FC<IHyperEventsComponentProps> = function (props) 
   );
 
   // Demo bar (rendered above everything when demo mode is on)
-  if (props.demoMode) {
+  if (props.enableDemoMode) {
     contentChildren.push(
       React.createElement(HyperEventsDemoBar, { key: "demobar" })
     );
   }
 
   // Sample data banner
-  if (props.useSampleData && !props.demoMode) {
+  if (props.useSampleData && !props.enableDemoMode) {
     contentChildren.push(
       React.createElement("div", {
         key: "sampleBanner",

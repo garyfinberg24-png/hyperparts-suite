@@ -58,7 +58,7 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
     if (p.useSampleData === undefined) p.useSampleData = true;
 
     // Demo mode
-    if (p.demoMode === undefined) p.demoMode = false;
+    if (p.enableDemoMode === undefined) p.enableDemoMode = true;
 
     // Image source
     if (p.imageUrl === undefined) p.imageUrl = "";
@@ -216,7 +216,7 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
             {
               groupName: strings.DemoModeGroupName,
               groupFields: [
-                PropertyPaneToggle("demoMode", {
+                PropertyPaneToggle("enableDemoMode", {
                   label: strings.DemoModeLabel,
                   onText: "On",
                   offText: "Off",

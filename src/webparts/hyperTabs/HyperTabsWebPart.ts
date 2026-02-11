@@ -98,7 +98,7 @@ export default class HyperTabsWebPart extends BaseHyperWebPart<IHyperTabsWebPart
       this.properties.animationEnabled = true;
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = false;
+      this.properties.enableDemoMode = true;
     }
     if (this.properties.wizardCompleted === undefined) {
       this.properties.wizardCompleted = false;

@@ -39,9 +39,9 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
   // Store
   var store = useHyperExplorerStore();
 
-  // Auto-open wizard on first load when showWizardOnInit and no library configured
+  // Auto-open wizard on first load when wizard not yet completed
   React.useEffect(function () {
-    if (props.showWizardOnInit) {
+    if (!props.wizardCompleted) {
       store.openWizard();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -56,7 +56,7 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
       props.enableUpload, props.enableQuickActions, props.enableFolderTree,
       props.enableBreadcrumbs, props.enableCompare, props.enableWatermark,
       props.enableRecentFiles, props.enableFilePlan, props.useSampleData,
-      props.cacheEnabled, props.cacheDuration, props.showWizardOnInit]);
+      props.cacheEnabled, props.cacheDuration, props.wizardCompleted]);
   // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle wizard apply

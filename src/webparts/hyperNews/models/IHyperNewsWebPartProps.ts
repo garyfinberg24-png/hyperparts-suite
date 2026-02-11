@@ -51,5 +51,5 @@ export interface IHyperNewsWebPartProps extends IBaseHyperWebPartProps {
   useSampleData: boolean;
 
   /** Demo mode: shows interactive toolbar to preview layouts without edit mode */
-  demoMode: boolean;
+  enableDemoMode: boolean;
 }

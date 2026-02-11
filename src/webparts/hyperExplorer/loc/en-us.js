@@ -13,7 +13,7 @@ define([], function () {
     ItemsPerPageFieldLabel: "Items Per Page",
     ShowFoldersFieldLabel: "Show Folders",
     UseSampleDataFieldLabel: "Use Sample Data (demo mode)",
-    ShowWizardOnInitFieldLabel: "Show Welcome Wizard",
+    WizardCompletedFieldLabel: "Wizard Completed",
 
     /* Page 2 — Preview & Display */
     PreviewDisplayPageDescription: "Configure preview and display options.",

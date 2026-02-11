@@ -154,8 +154,8 @@ export default class HyperEventsWebPart extends BaseHyperWebPart<IHyperEventsWeb
     if (this.properties.useSampleData === undefined) {
       this.properties.useSampleData = true;
     }
-    if (this.properties.demoMode === undefined) {
-      this.properties.demoMode = true;
+    if (this.properties.enableDemoMode === undefined) {
+      this.properties.enableDemoMode = true;
     }
     if (this.properties.wizardCompleted === undefined) {
       this.properties.wizardCompleted = false;
@@ -782,7 +782,7 @@ export default class HyperEventsWebPart extends BaseHyperWebPart<IHyperEventsWeb
                 PropertyPaneToggle("useSampleData", {
                   label: strings.UseSampleDataLabel,
                 }),
-                PropertyPaneToggle("demoMode", {
+                PropertyPaneToggle("enableDemoMode", {
                   label: strings.DemoModeLabel,
                 }),
               ],

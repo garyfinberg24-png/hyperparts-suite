@@ -83,14 +83,14 @@ export default class HyperChartsWebPart extends BaseHyperWebPart<IHyperChartsWeb
     if (this.properties.powerBiEmbedUrl === undefined) {
       this.properties.powerBiEmbedUrl = "";
     }
-    if (this.properties.showWizardOnInit === undefined) {
-      this.properties.showWizardOnInit = true;
+    if (this.properties.wizardCompleted === undefined) {
+      this.properties.wizardCompleted = false;
     }
     if (this.properties.useSampleData === undefined) {
       this.properties.useSampleData = true;
     }
-    if (this.properties.demoMode === undefined) {
-      this.properties.demoMode = false;
+    if (this.properties.enableDemoMode === undefined) {
+      this.properties.enableDemoMode = true;
     }
   }
 
@@ -554,13 +554,13 @@ export default class HyperChartsWebPart extends BaseHyperWebPart<IHyperChartsWeb
             {
               groupName: strings.SetupGroupName,
               groupFields: [
-                PropertyPaneToggle("showWizardOnInit", {
-                  label: strings.ShowWizardOnInitLabel,
+                PropertyPaneToggle("wizardCompleted", {
+                  label: strings.WizardCompletedLabel,
                 }),
                 PropertyPaneToggle("useSampleData", {
                   label: strings.UseSampleDataLabel,
                 }),
-                PropertyPaneToggle("demoMode", {
+                PropertyPaneToggle("enableDemoMode", {
                   label: strings.DemoModeLabel,
                 }),
               ],

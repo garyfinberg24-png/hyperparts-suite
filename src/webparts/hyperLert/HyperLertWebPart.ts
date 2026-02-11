@@ -149,6 +149,9 @@ export default class HyperLertWebPart extends BaseHyperWebPart<IHyperLertWebPart
     if (this.properties.wizardCompleted === undefined) {
       this.properties.wizardCompleted = false;
     }
+    if (this.properties.enableDemoMode === undefined) {
+      this.properties.enableDemoMode = true;
+    }
   }
 
   protected onDispose(): void {

@@ -137,7 +137,7 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
       this.properties.useSampleData = true;
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = false;
+      this.properties.enableDemoMode = true;
     }
     if (this.properties.enableStickyNav === undefined) {
       this.properties.enableStickyNav = false;

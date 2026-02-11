@@ -48,7 +48,7 @@ declare interface IHyperChartsWebPartStrings {
   ManualValuesLabel: string;
 
   // Wizard & Demo
-  ShowWizardOnInitLabel: string;
+  WizardCompletedLabel: string;
   UseSampleDataLabel: string;
   DemoModeLabel: string;
   SetupGroupName: string;

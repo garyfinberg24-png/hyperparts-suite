@@ -50,6 +50,7 @@ export default class HyperFaqWebPart extends BaseHyperWebPart<IHyperFaqWebPartPr
       showCategoryCards: this.properties.showCategoryCards,
       showHeroFaq: this.properties.showHeroFaq,
       heroFaqId: this.properties.heroFaqId,
+      enableDemoMode: this.properties.enableDemoMode,
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
       onWizardApply: function (result: Partial<IHyperFaqWebPartProps>): void {
@@ -160,6 +161,9 @@ export default class HyperFaqWebPart extends BaseHyperWebPart<IHyperFaqWebPartPr
     }
     if (this.properties.heroFaqId === undefined) {
       this.properties.heroFaqId = 0;
+    }
+    if (this.properties.enableDemoMode === undefined) {
+      this.properties.enableDemoMode = true;
     }
   }
 

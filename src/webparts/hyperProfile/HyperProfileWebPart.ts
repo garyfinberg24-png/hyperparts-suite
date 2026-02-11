@@ -143,7 +143,7 @@ export default class HyperProfileWebPart extends BaseHyperWebPart<IHyperProfileW
       this.properties.animation = "none";
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = false;
+      this.properties.enableDemoMode = true;
     }
     if (this.properties.useSampleData === undefined) {
       this.properties.useSampleData = true;

@@ -40,10 +40,10 @@ export interface IHyperChartsWebPartProps extends IBaseHyperWebPartProps {
   powerBiEmbedUrl: string;
 
   // ─── Wizard & Demo ───
-  /** Show setup wizard on first add */
-  showWizardOnInit: boolean;
+  /** Whether the setup wizard has been completed */
+  wizardCompleted: boolean;
   /** Use sample data (pre-built 2x2 dashboard) */
   useSampleData: boolean;
   /** Show demo bar with interactive controls */
-  demoMode: boolean;
+  enableDemoMode: boolean;
 }

@@ -206,7 +206,7 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
 
   // Auto-open wizard on first load when not yet configured
   React.useEffect(function () {
-    if (props.showWizardOnInit) {
+    if (!props.wizardCompleted) {
       openWizard();
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -236,7 +236,7 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
     isOpen: isWizardOpen,
     onClose: closeWizard,
     onApply: handleWizardApply,
-    currentProps: props.showWizardOnInit ? undefined : props as IHyperLinksWebPartProps,
+    currentProps: !props.wizardCompleted ? undefined : props as IHyperLinksWebPartProps,
   });
 
   // Demo mode toggle: small button to activate demo when useSampleData is enabled

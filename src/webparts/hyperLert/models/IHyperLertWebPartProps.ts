@@ -115,4 +115,6 @@ export interface IHyperLertWebPartProps extends IBaseHyperWebPartProps {
   showWizardOnInit: boolean;
   /** Whether the setup wizard has been completed at least once */
   wizardCompleted: boolean;
+  /** Enable demo mode toolbar for previewing layouts/themes */
+  enableDemoMode: boolean;
 }

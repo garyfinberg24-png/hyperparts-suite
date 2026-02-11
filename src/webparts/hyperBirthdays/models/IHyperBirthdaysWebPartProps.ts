@@ -55,7 +55,8 @@ export interface IHyperBirthdaysWebPartProps extends IBaseHyperWebPartProps {
   useSampleData: boolean;
 
   // Wizard
-  showWizardOnInit: boolean;
+  /** Whether the setup wizard has been completed */
+  wizardCompleted: boolean;
 
   // Demo mode
   enableDemoMode: boolean;

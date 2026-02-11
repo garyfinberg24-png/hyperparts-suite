@@ -104,13 +104,13 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
   var demoBorderPreset = useHyperImageStore(function (s) { return s.demoBorderPreset; });
 
   // Apply demo overrides (undefined means "use prop value")
-  var effectiveShape: ShapeMask = props.demoMode && demoShape !== undefined ? demoShape : props.shape;
-  var effectiveLayout: ImageLayout = props.demoMode && demoLayout !== undefined ? demoLayout : props.imageLayout;
-  var effectiveFilterPreset: FilterPreset = props.demoMode && demoFilter !== undefined ? demoFilter : props.filterPreset;
-  var effectiveHover: HoverEffect = props.demoMode && demoHover !== undefined ? demoHover : props.hoverEffect;
+  var effectiveShape: ShapeMask = props.enableDemoMode && demoShape !== undefined ? demoShape : props.shape;
+  var effectiveLayout: ImageLayout = props.enableDemoMode && demoLayout !== undefined ? demoLayout : props.imageLayout;
+  var effectiveFilterPreset: FilterPreset = props.enableDemoMode && demoFilter !== undefined ? demoFilter : props.filterPreset;
+  var effectiveHover: HoverEffect = props.enableDemoMode && demoHover !== undefined ? demoHover : props.hoverEffect;
 
   // Apply demo border preset override
-  if (props.demoMode && demoBorderPreset !== undefined && BORDER_STYLE_PRESETS[demoBorderPreset]) {
+  if (props.enableDemoMode && demoBorderPreset !== undefined && BORDER_STYLE_PRESETS[demoBorderPreset]) {
     var presetConfig = BORDER_STYLE_PRESETS[demoBorderPreset];
     borderConfig = {
       width: presetConfig.width,
@@ -124,7 +124,7 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
 
   // When demo mode changes layout to multi, provide sample additional images
   var effectiveAdditional = additionalImages;
-  if (props.demoMode && demoLayout !== undefined && demoLayout !== ImageLayout.Single && effectiveAdditional.length === 0) {
+  if (props.enableDemoMode && demoLayout !== undefined && demoLayout !== ImageLayout.Single && effectiveAdditional.length === 0) {
     effectiveAdditional = getSampleAdditionalImages();
   }
 
@@ -150,7 +150,7 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
   // ── Effective shadow preset (demo border preset may override) ──
   var effectiveShadowPreset = props.shadowPreset;
   var demoBorderShadow: string | undefined;
-  if (props.demoMode && demoBorderPreset !== undefined && BORDER_STYLE_PRESETS[demoBorderPreset]) {
+  if (props.enableDemoMode && demoBorderPreset !== undefined && BORDER_STYLE_PRESETS[demoBorderPreset]) {
     var presetShadow = BORDER_STYLE_PRESETS[demoBorderPreset].shadow;
     if (presetShadow) {
       demoBorderShadow = presetShadow;
@@ -171,7 +171,7 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
   });
 
   // Override figure style with demo border preset shadow and paddingBottom
-  if (props.demoMode && demoBorderPreset !== undefined && BORDER_STYLE_PRESETS[demoBorderPreset]) {
+  if (props.enableDemoMode && demoBorderPreset !== undefined && BORDER_STYLE_PRESETS[demoBorderPreset]) {
     if (demoBorderShadow) {
       computedStyles = {
         containerStyle: computedStyles.containerStyle,
@@ -318,14 +318,14 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
   var containerChildren: React.ReactNode[] = [];
 
   // Demo bar (rendered above the image when demo mode is on)
-  if (props.demoMode) {
+  if (props.enableDemoMode) {
     containerChildren.push(
       React.createElement(HyperImageDemoBar, { key: "demobar" })
     );
   }
 
   // Sample data banner
-  if (props.useSampleData && !props.demoMode) {
+  if (props.useSampleData && !props.enableDemoMode) {
     containerChildren.push(React.createElement("div", {
       key: "banner",
       className: styles.sampleBanner,

@@ -152,8 +152,8 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
       this.properties.useSampleData = true;
     }
     // Demo mode
-    if (this.properties.demoMode === undefined) {
-      this.properties.demoMode = false;
+    if (this.properties.enableDemoMode === undefined) {
+      this.properties.enableDemoMode = true;
     }
   }
 
@@ -222,7 +222,7 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
             {
               groupName: strings.DemoModeGroupName,
               groupFields: [
-                PropertyPaneToggle("demoMode", {
+                PropertyPaneToggle("enableDemoMode", {
                   label: strings.DemoModeLabel,
                   onText: "On",
                   offText: "Off",

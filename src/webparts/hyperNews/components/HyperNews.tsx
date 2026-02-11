@@ -124,16 +124,16 @@ const HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
   const demoPageSize = useHyperNewsStore(function (s) { return s.demoPageSize; });
   const demoDisplayToggles = useHyperNewsStore(function (s) { return s.demoDisplayToggles; });
 
-  // Apply demo overrides when demoMode is on
-  const effectiveLayout: LayoutType = props.demoMode && demoLayout !== undefined ? demoLayout : layoutType;
-  const effectivePageSize: number = props.demoMode && demoPageSize !== undefined ? demoPageSize : pageSize;
+  // Apply demo overrides when enableDemoMode is on
+  const effectiveLayout: LayoutType = props.enableDemoMode && demoLayout !== undefined ? demoLayout : layoutType;
+  const effectivePageSize: number = props.enableDemoMode && demoPageSize !== undefined ? demoPageSize : pageSize;
   // Display overrides — consumed below as a record for future layout prop forwarding
   const _effectiveDisplay: Record<string, boolean> = {
-    showImages: props.demoMode ? demoDisplayToggles.showImages !== false : props.showImages,
-    showDescription: props.demoMode ? demoDisplayToggles.showDescription !== false : props.showDescription,
-    showAuthor: props.demoMode ? demoDisplayToggles.showAuthor !== false : props.showAuthor,
-    showDate: props.demoMode ? demoDisplayToggles.showDate !== false : props.showDate,
-    showReadTime: props.demoMode ? demoDisplayToggles.showReadTime !== false : props.showReadTime,
+    showImages: props.enableDemoMode ? demoDisplayToggles.showImages !== false : props.showImages,
+    showDescription: props.enableDemoMode ? demoDisplayToggles.showDescription !== false : props.showDescription,
+    showAuthor: props.enableDemoMode ? demoDisplayToggles.showAuthor !== false : props.showAuthor,
+    showDate: props.enableDemoMode ? demoDisplayToggles.showDate !== false : props.showDate,
+    showReadTime: props.enableDemoMode ? demoDisplayToggles.showReadTime !== false : props.showReadTime,
   };
   // Keep reference alive so it's not tree-shaken (will be forwarded to layouts in future)
   const _hasDisplayOverrides = Object.keys(_effectiveDisplay).length > 0;
@@ -309,12 +309,12 @@ const HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
   });
 
   // ── Demo bar element ──
-  const demoBarElement = props.demoMode
+  const demoBarElement = props.enableDemoMode
     ? React.createElement(HyperNewsDemoBar, { key: "demobar" })
     : undefined;
 
   // ── Sample data banner ──
-  const sampleBannerElement = props.useSampleData && !props.demoMode
+  const sampleBannerElement = props.useSampleData && !props.enableDemoMode
     ? React.createElement("div", {
         key: "banner",
         style: {

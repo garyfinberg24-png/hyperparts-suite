@@ -102,7 +102,7 @@ function buildResult(state: IExplorerWizardState): Partial<IHyperExplorerWebPart
     cacheDuration: state.advanced.cacheDuration,
 
     // Mark wizard as done
-    showWizardOnInit: false,
+    wizardCompleted: true,
   };
 }
 
@@ -197,7 +197,7 @@ function buildSummary(state: IExplorerWizardState): IWizardSummaryRow[] {
 /** Hydrate wizard state from existing web part properties (for re-editing) */
 export function buildStateFromProps(props: IHyperExplorerWebPartProps): IExplorerWizardState | undefined {
   // If wizard hasn't been configured yet, return undefined (shows welcome screen)
-  if (props.showWizardOnInit !== false) {
+  if (props.wizardCompleted !== true) {
     return undefined;
   }
 

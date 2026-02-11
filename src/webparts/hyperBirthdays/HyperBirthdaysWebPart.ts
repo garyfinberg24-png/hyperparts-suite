@@ -23,7 +23,7 @@ export default class HyperBirthdaysWebPart extends BaseHyperWebPart<IHyperBirthd
     keys.forEach(function (key: string) {
       (self.properties as unknown as Record<string, unknown>)[key] = (result as unknown as Record<string, unknown>)[key];
     });
-    self.properties.showWizardOnInit = false;
+    self.properties.wizardCompleted = true;
     self.render();
     self.context.propertyPane.refresh();
   };
@@ -142,8 +142,11 @@ export default class HyperBirthdaysWebPart extends BaseHyperWebPart<IHyperBirthd
     if (this.properties.useSampleData === undefined) {
       this.properties.useSampleData = true;
     }
-    if (this.properties.showWizardOnInit === undefined) {
-      this.properties.showWizardOnInit = true;
+    if (this.properties.wizardCompleted === undefined) {
+      this.properties.wizardCompleted = false;
+    }
+    if (this.properties.enableDemoMode === undefined) {
+      this.properties.enableDemoMode = true;
     }
 
     // When sample data is on, enable all celebration types by default

@@ -144,8 +144,11 @@ export default class HyperExplorerWebPart extends BaseHyperWebPart<IHyperExplore
     if (this.properties.useSampleData === undefined) {
       this.properties.useSampleData = true;
     }
-    if (this.properties.showWizardOnInit === undefined) {
-      this.properties.showWizardOnInit = true;
+    if (this.properties.wizardCompleted === undefined) {
+      this.properties.wizardCompleted = false;
+    }
+    if (this.properties.enableDemoMode === undefined) {
+      this.properties.enableDemoMode = true;
     }
   }
 
@@ -205,8 +208,8 @@ export default class HyperExplorerWebPart extends BaseHyperWebPart<IHyperExplore
                 PropertyPaneToggle("useSampleData", {
                   label: strings.UseSampleDataFieldLabel,
                 }),
-                PropertyPaneToggle("showWizardOnInit", {
-                  label: strings.ShowWizardOnInitFieldLabel,
+                PropertyPaneToggle("wizardCompleted", {
+                  label: strings.WizardCompletedFieldLabel,
                 }),
               ],
             },

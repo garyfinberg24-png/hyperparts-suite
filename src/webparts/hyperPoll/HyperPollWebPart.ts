@@ -137,7 +137,7 @@ export default class HyperPollWebPart extends BaseHyperWebPart<IHyperPollWebPart
       this.properties.useSampleData = true;
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = false;
+      this.properties.enableDemoMode = true;
     }
     if (this.properties.wizardCompleted === undefined) {
       this.properties.wizardCompleted = false;

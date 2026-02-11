@@ -297,9 +297,9 @@ const HyperChartsMetricRenderer: React.FC<IMetricRendererProps> = function (rend
 const HyperChartsInner: React.FC<IHyperChartsComponentProps> = function (props) {
   const store = useHyperChartsStore();
 
-  // Auto-open wizard on first load when showWizardOnInit and no charts configured
+  // Auto-open wizard on first load when wizardCompleted is false and no charts configured
   React.useEffect(function () {
-    if (props.showWizardOnInit && (!props.charts || props.charts === "" || props.charts === "[]")) {
+    if (!props.wizardCompleted && (!props.charts || props.charts === "" || props.charts === "[]")) {
       store.openWizard();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -318,7 +318,7 @@ const HyperChartsInner: React.FC<IHyperChartsComponentProps> = function (props) 
     return buildStateFromProps(props);
   }, [props.charts, props.gridColumns, props.gridGap, props.title, props.enableDrillDown,
       props.enableExport, props.enableConditionalColors, props.enableComparison,
-      props.enableAccessibilityTables, props.refreshInterval, props.showWizardOnInit]);
+      props.enableAccessibilityTables, props.refreshInterval, props.wizardCompleted]);
   // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle wizard apply
@@ -341,7 +341,7 @@ const HyperChartsInner: React.FC<IHyperChartsComponentProps> = function (props) 
   }, [sampleCharts, configuredCharts]);
 
   // Demo mode overrides
-  var effectiveGridColumns = props.demoMode && store.demoGridColumns !== undefined ? store.demoGridColumns : (props.gridColumns || 2);
+  var effectiveGridColumns = props.enableDemoMode && store.demoGridColumns !== undefined ? store.demoGridColumns : (props.gridColumns || 2);
 
   // Auto-refresh
   useAutoRefresh({
@@ -365,7 +365,7 @@ const HyperChartsInner: React.FC<IHyperChartsComponentProps> = function (props) 
   );
 
   // Demo bar (rendered above everything when demo mode is on)
-  if (props.demoMode) {
+  if (props.enableDemoMode) {
     contentChildren.push(
       React.createElement(HyperChartsDemoBar, {
         key: "demobar",
@@ -381,7 +381,7 @@ const HyperChartsInner: React.FC<IHyperChartsComponentProps> = function (props) 
   }
 
   // Sample data banner
-  if (props.useSampleData && !props.demoMode) {
+  if (props.useSampleData && !props.enableDemoMode) {
     contentChildren.push(
       React.createElement("div", {
         key: "sampleBanner",

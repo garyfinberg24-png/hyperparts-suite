@@ -193,7 +193,7 @@ function buildResult(state: IChartsWizardState): Partial<IHyperChartsWebPartProp
     enableAccessibilityTables: state.features.enableAccessibilityTables,
     refreshInterval: state.refreshInterval,
     // Mark wizard as done
-    showWizardOnInit: false,
+    wizardCompleted: true,
   };
 }
 
@@ -299,7 +299,7 @@ function buildSummary(state: IChartsWizardState): IWizardSummaryRow[] {
 /** Hydrate wizard state from existing web part properties (for re-editing) */
 export function buildStateFromProps(props: IHyperChartsWebPartProps): IChartsWizardState | undefined {
   // If wizard hasn't been configured yet, return undefined (shows welcome screen)
-  if ((props as unknown as Record<string, unknown>).showWizardOnInit !== false) {
+  if ((props as unknown as Record<string, unknown>).wizardCompleted !== true) {
     return undefined;
   }
 

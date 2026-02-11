@@ -129,7 +129,7 @@ export default class HyperStyleWebPart extends BaseHyperWebPart<IHyperStyleWebPa
     // Wizard state
     if (p.wizardCompleted === undefined) { p.wizardCompleted = false; }
     if (p.showWizardOnInit === undefined) { p.showWizardOnInit = true; }
-    if (p.enableDemoMode === undefined) { p.enableDemoMode = false; }
+    if (p.enableDemoMode === undefined) { p.enableDemoMode = true; }
     // Template
     if (p.selectedTemplate === undefined) { p.selectedTemplate = ""; }
     // Branding

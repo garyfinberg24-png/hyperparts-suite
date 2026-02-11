@@ -104,7 +104,7 @@ const HyperDirectoryInner: React.FC<IHyperDirectoryComponentProps> = function (p
 
   // Auto-open wizard on first load when not yet configured
   React.useEffect(function () {
-    if (props.showWizardOnInit) {
+    if (!props.wizardCompleted) {
       openWizard();
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -122,7 +122,7 @@ const HyperDirectoryInner: React.FC<IHyperDirectoryComponentProps> = function (p
     props.photoSize, props.showCompletenessScore, props.showPronouns,
     props.showSmartOoo, props.showQrCode,
     props.enableSkillsSearch, props.useSampleData, props.cacheEnabled, props.cacheDuration,
-    props.showWizardOnInit,
+    props.wizardCompleted,
   ]);
 
   // Handle wizard apply

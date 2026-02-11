@@ -12,7 +12,7 @@ declare interface IHyperExplorerWebPartStrings {
   ItemsPerPageFieldLabel: string;
   ShowFoldersFieldLabel: string;
   UseSampleDataFieldLabel: string;
-  ShowWizardOnInitFieldLabel: string;
+  WizardCompletedFieldLabel: string;
 
   /* Page 2 — Preview & Display */
   PreviewDisplayPageDescription: string;

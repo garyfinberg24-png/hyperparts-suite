@@ -49,7 +49,10 @@ export interface IHyperExplorerWebPartProps extends IBaseHyperWebPartProps {
 
   /** Sample data & wizard */
   useSampleData: boolean;
-  showWizardOnInit: boolean;
+  /** Whether the setup wizard has been completed */
+  wizardCompleted: boolean;
+  /** Enable demo mode toolbar for previewing layouts/themes */
+  enableDemoMode: boolean;
 }
 
 /** Default property values */
@@ -89,5 +92,6 @@ export const DEFAULT_EXPLORER_PROPS: Partial<IHyperExplorerWebPartProps> = {
   enableNamingConvention: false,
   enableZipDownload: false,
   useSampleData: true,
-  showWizardOnInit: true,
+  wizardCompleted: false,
+  enableDemoMode: true,
 };

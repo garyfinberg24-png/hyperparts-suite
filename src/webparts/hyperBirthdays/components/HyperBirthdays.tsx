@@ -104,7 +104,7 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
 
   // Auto-open wizard on first load when not yet configured
   React.useEffect(function () {
-    if (props.showWizardOnInit) {
+    if (!props.wizardCompleted) {
       openWizard();
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -119,7 +119,7 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
     props.enableSpList, props.spListName, props.viewMode, props.timeRange,
     props.maxItems, props.photoSize, props.enableTeamsDeepLink,
     props.enableAnimations, props.animationType, props.enableMilestoneBadges,
-    props.enablePrivacyOptOut, props.optOutListName, props.showWizardOnInit,
+    props.enablePrivacyOptOut, props.optOutListName, props.wizardCompleted,
   ]);
 
   // Handle wizard apply

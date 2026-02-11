@@ -47,4 +47,7 @@ export interface IHyperFaqWebPartProps extends IBaseHyperWebPartProps {
   showCategoryCards: boolean;
   showHeroFaq: boolean;
   heroFaqId: number;
+
+  /** Enable demo mode toolbar for previewing layouts/themes */
+  enableDemoMode: boolean;
 }

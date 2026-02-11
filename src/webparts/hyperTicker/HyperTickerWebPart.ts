@@ -120,7 +120,7 @@ export default class HyperTickerWebPart extends BaseHyperWebPart<IHyperTickerWeb
       this.properties.enableCopy = false;
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = false;
+      this.properties.enableDemoMode = true;
     }
     if (this.properties.useSampleData === undefined) {
       this.properties.useSampleData = true;

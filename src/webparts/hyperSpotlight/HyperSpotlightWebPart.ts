@@ -134,7 +134,7 @@ export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotli
     if (p.wallOfFameSettings === undefined) {
       p.wallOfFameSettings = JSON.stringify({ columns: 3, showConfetti: true, cycleInterval: 10 });
     }
-    if (p.enableDemoMode === undefined) p.enableDemoMode = false;
+    if (p.enableDemoMode === undefined) p.enableDemoMode = true;
     if (p.wizardCompleted === undefined) p.wizardCompleted = false;
   }
 

@@ -98,7 +98,7 @@ function buildResult(state: IBirthdaysWizardState): Partial<IHyperBirthdaysWebPa
     optOutListName: state.engagement.optOutListName,
 
     // Mark wizard as done
-    showWizardOnInit: false,
+    wizardCompleted: true,
   };
 }
 
@@ -172,7 +172,7 @@ function buildSummary(state: IBirthdaysWizardState): IWizardSummaryRow[] {
 /** Hydrate wizard state from existing web part properties (for re-editing) */
 export function buildStateFromProps(props: IHyperBirthdaysWebPartProps): IBirthdaysWizardState | undefined {
   // If wizard hasn't been configured yet, return undefined (shows welcome screen)
-  if (props.showWizardOnInit !== false) {
+  if (props.wizardCompleted !== true) {
     return undefined;
   }
 

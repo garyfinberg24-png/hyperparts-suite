@@ -51,8 +51,8 @@ export interface IHyperDirectoryWebPartProps extends IBaseHyperWebPartProps {
   cacheDuration: number;
 
   // Wizard
-  /** Show wizard on first load */
-  showWizardOnInit: boolean;
+  /** Whether the setup wizard has been completed */
+  wizardCompleted: boolean;
 
   // New Hyper features
   /** Enable CSV export of filtered results */
@@ -69,4 +69,6 @@ export interface IHyperDirectoryWebPartProps extends IBaseHyperWebPartProps {
   enableSkillsSearch: boolean;
   /** Seed directory with sample data until real data is connected */
   useSampleData: boolean;
+  /** Enable demo mode toolbar for previewing layouts/themes */
+  enableDemoMode: boolean;
 }

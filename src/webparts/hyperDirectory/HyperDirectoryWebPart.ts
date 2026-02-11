@@ -23,7 +23,7 @@ export default class HyperDirectoryWebPart extends BaseHyperWebPart<IHyperDirect
     keys.forEach(function (key: string) {
       (self.properties as unknown as Record<string, unknown>)[key] = (result as unknown as Record<string, unknown>)[key];
     });
-    self.properties.showWizardOnInit = false;
+    self.properties.wizardCompleted = true;
     self.render();
     self.context.propertyPane.refresh();
   };
@@ -128,8 +128,8 @@ export default class HyperDirectoryWebPart extends BaseHyperWebPart<IHyperDirect
       this.properties.cacheDuration = 10;
     }
     // New property defaults
-    if (this.properties.showWizardOnInit === undefined) {
-      this.properties.showWizardOnInit = true;
+    if (this.properties.wizardCompleted === undefined) {
+      this.properties.wizardCompleted = false;
     }
     if (this.properties.enableExport === undefined) {
       this.properties.enableExport = false;
@@ -151,6 +151,9 @@ export default class HyperDirectoryWebPart extends BaseHyperWebPart<IHyperDirect
     }
     if (this.properties.useSampleData === undefined) {
       this.properties.useSampleData = true;
+    }
+    if (this.properties.enableDemoMode === undefined) {
+      this.properties.enableDemoMode = true;
     }
   }
 
