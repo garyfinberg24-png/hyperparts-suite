@@ -106,10 +106,12 @@ function HyperWizardInner<TState extends Record<string, any>, TResult>(
   // ── Build sidebar step list ──
   var sidebarElements: React.ReactElement[] = [];
 
-  // Brand strip
+  // DWx brand strip
   sidebarElements.push(
     React.createElement("div", { key: "brand", className: styles.wizardBrandStrip },
-      React.createElement("div", { className: styles.wizardBrandName }, "HyperParts")
+      React.createElement("div", { className: styles.wizardDwxLabel }, "DWx"),
+      React.createElement("div", { className: styles.wizardDwxFull }, "Digital Workplace Excellence"),
+      React.createElement("div", { className: styles.wizardDwxRule })
     )
   );
 
@@ -245,7 +247,11 @@ function HyperWizardInner<TState extends Record<string, any>, TResult>(
   var wizardLayout = React.createElement("div", { className: styles.wizardLayout },
     // Sidebar
     React.createElement("div", { className: styles.wizardSidebar },
-      React.createElement("div", { className: styles.wizardStepList }, sidebarElements)
+      React.createElement("div", { className: styles.wizardStepList }, sidebarElements),
+      React.createElement("div", { className: styles.wizardBottomStrip },
+        React.createElement("div", { className: styles.wizardBottomName }, "HyperParts"),
+        React.createElement("div", { className: styles.wizardBottomFd }, "A First Digital product")
+      )
     ),
     // Main
     React.createElement("div", { className: styles.wizardMain },
