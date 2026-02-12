@@ -21,6 +21,7 @@ import { createGroupHeaderField } from "../../common/propertyPane";
 import HyperTabs from "./components/HyperTabs";
 import type { IHyperTabsComponentProps } from "./components/HyperTabs";
 import type { IHyperTabsWebPartProps, IHyperTabPanel } from "./models";
+import type { HyperTabContentType } from "./models";
 import { DEFAULT_PANEL, DEFAULT_PANEL_2 } from "./models";
 import {
   parsePanels,
@@ -29,6 +30,7 @@ import {
   removePanel,
   reorderPanel,
 } from "./utils/panelUtils";
+import { STYLE_PRESETS, getPresetById } from "./utils/stylePresets";
 
 export default class HyperTabsWebPart extends BaseHyperWebPart<IHyperTabsWebPartProps> {
 
@@ -105,6 +107,30 @@ export default class HyperTabsWebPart extends BaseHyperWebPart<IHyperTabsWebPart
     if (this.properties.wizardCompleted === undefined) {
       this.properties.wizardCompleted = false;
     }
+    if (this.properties.useSampleData === undefined) {
+      this.properties.useSampleData = true;
+    }
+    if (this.properties.tabAlignment === undefined) {
+      this.properties.tabAlignment = "left";
+    }
+    if (this.properties.autoRotate === undefined) {
+      this.properties.autoRotate = false;
+    }
+    if (this.properties.autoRotateInterval === undefined) {
+      this.properties.autoRotateInterval = 5;
+    }
+    if (this.properties.rememberActiveTab === undefined) {
+      this.properties.rememberActiveTab = false;
+    }
+    if (this.properties.enableTabOverflow === undefined) {
+      this.properties.enableTabOverflow = false;
+    }
+    if (this.properties.enableTabSearch === undefined) {
+      this.properties.enableTabSearch = false;
+    }
+    if (this.properties.stylePreset === undefined) {
+      this.properties.stylePreset = "";
+    }
   }
 
   protected onDispose(): void {
@@ -158,6 +184,10 @@ export default class HyperTabsWebPart extends BaseHyperWebPart<IHyperTabsWebPart
           { key: "simple", text: "Simple HTML" },
           { key: "image", text: "Image + HTML" },
           { key: "nested-tabs", text: "Nested Tabs" },
+          { key: "embed", text: "Embed / iFrame" },
+          { key: "list-view", text: "List View" },
+          { key: "media", text: "Media (Video/Audio)" },
+          { key: "markdown", text: "Markdown" },
         ],
       })
     );
@@ -288,12 +318,21 @@ export default class HyperTabsWebPart extends BaseHyperWebPart<IHyperTabsWebPart
       if (!isNaN(panelIndex)) {
         const panels = parsePanels(this.properties.panels);
         if (panelIndex >= 0 && panelIndex < panels.length) {
-          panels[panelIndex].contentType = String(newValue) as "simple" | "image" | "nested-tabs";
+          panels[panelIndex].contentType = String(newValue) as HyperTabContentType;
           this.properties.panels = stringifyPanels(panels);
           this.render();
         }
       }
       return;
+    }
+
+    // Handle style preset selection
+    if (propertyPath === "stylePreset" && newValue) {
+      var preset = getPresetById(String(newValue));
+      if (preset) {
+        // Style presets currently stored for DemoBar/component to use
+        // The component reads stylePreset prop and applies colors
+      }
     }
 
     super.onPropertyPaneFieldChanged(propertyPath, oldValue, newValue);
@@ -325,6 +364,7 @@ export default class HyperTabsWebPart extends BaseHyperWebPart<IHyperTabsWebPart
                     { key: "tabs", text: "Tabs" },
                     { key: "accordion", text: "Accordion" },
                     { key: "wizard", text: "Wizard" },
+                    { key: "scroll-spy", text: "Scroll Spy" },
                   ],
                 }),
                 PropertyPaneDropdown("tabStyle", {
@@ -335,6 +375,20 @@ export default class HyperTabsWebPart extends BaseHyperWebPart<IHyperTabsWebPart
                     { key: "vertical", text: "Vertical" },
                     { key: "pill", text: "Pill" },
                     { key: "underline", text: "Underline" },
+                    { key: "enclosed", text: "Enclosed" },
+                    { key: "enclosed-colored", text: "Enclosed Colored" },
+                    { key: "floating", text: "Floating" },
+                    { key: "segmented", text: "Segmented" },
+                    { key: "vertical-pill", text: "Vertical Pill" },
+                  ],
+                }),
+                PropertyPaneDropdown("tabAlignment", {
+                  label: strings.TabAlignmentLabel,
+                  disabled: this.properties.displayMode !== "tabs",
+                  options: [
+                    { key: "left", text: "Left" },
+                    { key: "center", text: "Center" },
+                    { key: "fitted", text: "Fitted" },
                   ],
                 }),
                 PropertyPaneToggle("animationEnabled", {
@@ -394,6 +448,49 @@ export default class HyperTabsWebPart extends BaseHyperWebPart<IHyperTabsWebPart
                 }),
                 PropertyPaneToggle("enableDemoMode", {
                   label: strings.EnableDemoModeLabel,
+                }),
+              ],
+            },
+          ],
+        },
+        // ── Page 4: Style & Features ──
+        {
+          header: { description: strings.StylePresetsPageDescription },
+          groups: [
+            {
+              groupName: "Style & Features",
+              groupFields: [
+                createGroupHeaderField("_styleHeader", { icon: "\uD83C\uDFA8", title: "Style", subtitle: "Presets & features", color: "red" }),
+                PropertyPaneDropdown("stylePreset", {
+                  label: strings.StylePresetLabel,
+                  options: [{ key: "", text: "(Custom)" }].concat(
+                    STYLE_PRESETS.map(function (p) { return { key: p.id, text: p.name }; })
+                  ),
+                }),
+                PropertyPaneToggle("autoRotate", {
+                  label: strings.AutoRotateLabel,
+                  disabled: this.properties.displayMode !== "tabs",
+                }),
+                PropertyPaneSlider("autoRotateInterval", {
+                  label: strings.AutoRotateIntervalLabel,
+                  min: 2,
+                  max: 30,
+                  step: 1,
+                  disabled: !this.properties.autoRotate || this.properties.displayMode !== "tabs",
+                }),
+                PropertyPaneToggle("rememberActiveTab", {
+                  label: strings.RememberActiveTabLabel,
+                }),
+                PropertyPaneToggle("enableTabOverflow", {
+                  label: strings.EnableTabOverflowLabel,
+                  disabled: this.properties.displayMode !== "tabs",
+                }),
+                PropertyPaneToggle("enableTabSearch", {
+                  label: strings.EnableTabSearchLabel,
+                  disabled: this.properties.displayMode !== "tabs",
+                }),
+                PropertyPaneToggle("useSampleData", {
+                  label: strings.UseSampleDataLabel,
                 }),
               ],
             },

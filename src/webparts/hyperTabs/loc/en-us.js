@@ -29,6 +29,15 @@ define([], function() {
     "AccordionExpandAllLabel": "Expand All by Default",
     "WizardShowProgressLabel": "Show Progress Indicator",
     "WizardLinearModeLabel": "Require Sequential Completion",
-    "EnableDemoModeLabel": "Enable Demo Mode"
+    "EnableDemoModeLabel": "Enable Demo Mode",
+    "TabAlignmentLabel": "Tab Alignment",
+    "AutoRotateLabel": "Auto-Rotate Tabs",
+    "AutoRotateIntervalLabel": "Rotation Interval (seconds)",
+    "RememberActiveTabLabel": "Remember Active Tab",
+    "EnableTabOverflowLabel": "Enable Tab Overflow Arrows",
+    "EnableTabSearchLabel": "Enable Tab Search/Filter",
+    "StylePresetLabel": "Style Preset",
+    "UseSampleDataLabel": "Use Sample Data",
+    "StylePresetsPageDescription": "Visual presets and style options"
   };
 });

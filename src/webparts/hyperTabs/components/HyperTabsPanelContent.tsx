@@ -95,6 +95,131 @@ const HyperTabsPanelContent: React.FC<IHyperTabsPanelContentProps> = function (p
     );
   }
 
+  // Embed / iframe content
+  if (panel.contentType === "embed") {
+    if (panel.embedConfig && panel.embedConfig.url) {
+      var embedHeight = panel.embedConfig.height > 0 ? panel.embedConfig.height : 400;
+      var sandboxAttr = panel.embedConfig.sandbox
+        ? "allow-scripts allow-same-origin allow-forms allow-popups"
+        : undefined;
+      children.push(
+        React.createElement("div", {
+          key: "embed-content",
+          className: styles.embedContainer,
+        },
+          React.createElement("iframe", {
+            src: panel.embedConfig.url,
+            className: styles.embedIframe,
+            height: embedHeight,
+            sandbox: sandboxAttr,
+            title: panel.title || "Embedded content",
+            loading: "lazy",
+            allowFullScreen: true,
+          })
+        )
+      );
+    } else {
+      children.push(
+        React.createElement("div", {
+          key: "embed-empty",
+          className: styles.listViewPlaceholder,
+        }, "No embed URL configured.")
+      );
+    }
+  }
+
+  // List view content (placeholder — full SP list rendering requires PnPjs wiring)
+  if (panel.contentType === "list-view") {
+    var listViewMessage = "SharePoint list view";
+    if (panel.listViewConfig && panel.listViewConfig.listId) {
+      listViewMessage = "SharePoint list view (List ID: " + panel.listViewConfig.listId + ")";
+    }
+    children.push(
+      React.createElement("div", {
+        key: "listview-content",
+        className: styles.listViewContainer,
+      },
+        React.createElement("div", {
+          className: styles.listViewPlaceholder,
+        }, listViewMessage + " \u2014 connect a SharePoint list in the property pane to display items.")
+      )
+    );
+  }
+
+  // Media content (video or audio)
+  if (panel.contentType === "media") {
+    if (panel.mediaConfig && panel.mediaConfig.url) {
+      if (panel.mediaConfig.mediaType === "video") {
+        var videoProps: Record<string, unknown> = {
+          key: "media-video",
+          src: panel.mediaConfig.url,
+          className: styles.mediaVideo,
+          controls: panel.mediaConfig.showControls !== false,
+        };
+        if (panel.mediaConfig.autoplay) {
+          videoProps.autoPlay = true;
+          videoProps.muted = true;
+        }
+        if (panel.mediaConfig.posterUrl) {
+          videoProps.poster = panel.mediaConfig.posterUrl;
+        }
+        children.push(
+          React.createElement("div", {
+            key: "media-container",
+            className: styles.mediaContainer,
+          },
+            React.createElement("video", videoProps)
+          )
+        );
+      } else if (panel.mediaConfig.mediaType === "audio") {
+        var audioProps: Record<string, unknown> = {
+          key: "media-audio",
+          src: panel.mediaConfig.url,
+          className: styles.mediaAudio,
+          controls: panel.mediaConfig.showControls !== false,
+        };
+        if (panel.mediaConfig.autoplay) {
+          audioProps.autoPlay = true;
+        }
+        children.push(
+          React.createElement("div", {
+            key: "media-container",
+            className: styles.mediaContainer,
+          },
+            React.createElement("audio", audioProps)
+          )
+        );
+      }
+    } else {
+      children.push(
+        React.createElement("div", {
+          key: "media-empty",
+          className: styles.listViewPlaceholder,
+        }, "No media URL configured.")
+      );
+    }
+  }
+
+  // Markdown content (expects pre-rendered HTML in markdownContent field)
+  if (panel.contentType === "markdown") {
+    if (panel.markdownContent) {
+      children.push(
+        React.createElement("div", {
+          key: "markdown-content",
+          className: styles.markdownContent,
+          dangerouslySetInnerHTML: { __html: panel.markdownContent },
+        })
+      );
+    } else {
+      children.push(
+        React.createElement("div", {
+          key: "markdown-empty",
+          className: styles.listViewPlaceholder,
+        }, "No markdown content provided.")
+      );
+    }
+  }
+
   // Nested tabs (recursive HyperTabs with depth limit)
   if (panel.contentType === "nested-tabs") {
     if (nestingDepth >= 2) {

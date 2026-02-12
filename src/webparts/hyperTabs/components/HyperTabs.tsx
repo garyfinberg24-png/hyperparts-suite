@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useRef, useEffect, useMemo } from "react";
-import type { IHyperTabsWebPartProps, IHyperTabPanel, HyperTabsDisplayMode, HyperTabsTabStyle } from "../models";
+import type { IHyperTabsWebPartProps, IHyperTabPanel, HyperTabsDisplayMode, HyperTabsTabStyle, HyperTabsAlignment } from "../models";
 import type { Breakpoint } from "../../../common/models";
 import { useResponsive } from "../../../common/hooks";
 import { HyperErrorBoundary, HyperEditOverlay } from "../../../common/components";
@@ -9,9 +9,11 @@ import { useDeepLinking } from "../hooks/useDeepLinking";
 import { useResponsiveMode } from "../hooks/useResponsiveMode";
 import { useHyperTabsStore } from "../store/useHyperTabsStore";
 import { parsePanels } from "../utils/panelUtils";
+import { SAMPLE_PANELS } from "../utils/sampleData";
 import HyperTabsTabsMode from "./modes/HyperTabsTabsMode";
 import HyperTabsAccordionMode from "./modes/HyperTabsAccordionMode";
 import HyperTabsWizardMode from "./modes/HyperTabsWizardMode";
+import HyperTabsScrollSpyMode from "./modes/HyperTabsScrollSpyMode";
 import WelcomeStep from "./wizard/WelcomeStep";
 import HyperTabsDemoBar from "./HyperTabsDemoBar";
 import styles from "./HyperTabs.module.scss";
@@ -76,12 +78,35 @@ const HyperTabsInner: React.FC<IHyperTabsComponentProps> = function (props) {
   var demoAnimations = demoAnimationsState[0];
   var setDemoAnimations = demoAnimationsState[1];
 
+  // ── V2 demo state ──
+  var demoAlignmentState = React.useState(props.tabAlignment || "left" as HyperTabsAlignment);
+  var demoAlignment = demoAlignmentState[0];
+  var setDemoAlignment = demoAlignmentState[1];
+
+  var demoAutoRotateState = React.useState(props.autoRotate || false);
+  var demoAutoRotate = demoAutoRotateState[0];
+  var setDemoAutoRotate = demoAutoRotateState[1];
+
+  var demoOverflowState = React.useState(props.enableTabOverflow || false);
+  var demoOverflow = demoOverflowState[0];
+  var setDemoOverflow = demoOverflowState[1];
+
+  var demoSearchState = React.useState(props.enableTabSearch || false);
+  var demoSearch = demoSearchState[0];
+  var setDemoSearch = demoSearchState[1];
+
   // ── Effective values (demo overrides when demo mode on) ──
   var activeDisplayMode = props.enableDemoMode ? demoDisplayMode : props.displayMode;
   var activeTabStyle = props.enableDemoMode ? demoTabStyle : props.tabStyle;
   var activeDeepLinking = props.enableDemoMode ? demoDeepLinking : props.enableDeepLinking;
   var activeResponsiveCollapse = props.enableDemoMode ? demoResponsiveCollapse : props.enableResponsiveCollapse;
   var activeAnimationEnabled = props.enableDemoMode ? demoAnimations : props.animationEnabled;
+
+  // ── V2 effective values ──
+  var activeAlignment = props.enableDemoMode ? demoAlignment : (props.tabAlignment || "left");
+  var activeAutoRotate = props.enableDemoMode ? demoAutoRotate : (props.autoRotate || false);
+  var activeOverflow = props.enableDemoMode ? demoOverflow : (props.enableTabOverflow || false);
+  var activeSearch = props.enableDemoMode ? demoSearch : (props.enableTabSearch || false);
 
   const {
     title,
@@ -103,10 +128,13 @@ const HyperTabsInner: React.FC<IHyperTabsComponentProps> = function (props) {
 
   const currentDepth = nestingDepth || 0;
 
-  // Parse panels from JSON string
+  // Parse panels from JSON string (supports sample data)
   const panels: IHyperTabPanel[] = useMemo(function () {
+    if (props.useSampleData) {
+      return SAMPLE_PANELS;
+    }
     return parsePanels(panelsJson);
-  }, [panelsJson]);
+  }, [panelsJson, props.useSampleData]);
 
   // Filter to enabled panels only
   const enabledPanels = useMemo(function () {
@@ -189,6 +217,12 @@ const HyperTabsInner: React.FC<IHyperTabsComponentProps> = function (props) {
       animationEnabled: animationEnabled,
       nestingDepth: currentDepth,
       onTabClick: enableDeepLinking && currentDepth === 0 ? updateHash : undefined,
+      tabAlignment: activeAlignment,
+      enableOverflow: activeOverflow,
+      enableSearch: activeSearch,
+      autoRotate: activeAutoRotate,
+      autoRotateInterval: props.autoRotateInterval || 5,
+      isEditMode: props.isEditMode,
     });
   } else if (effectiveDisplayMode === "accordion") {
     modeComponent = React.createElement(HyperTabsAccordionMode, {
@@ -196,6 +230,13 @@ const HyperTabsInner: React.FC<IHyperTabsComponentProps> = function (props) {
       multiExpand: accordionMultiExpand,
       enableLazyLoading: enableLazyLoading,
       showExpandAll: accordionExpandAll,
+      animationEnabled: animationEnabled,
+      nestingDepth: currentDepth,
+    });
+  } else if (effectiveDisplayMode === "scroll-spy") {
+    modeComponent = React.createElement(HyperTabsScrollSpyMode, {
+      panels: enabledPanels,
+      enableLazyLoading: enableLazyLoading,
       animationEnabled: animationEnabled,
       nestingDepth: currentDepth,
     });
@@ -228,11 +269,19 @@ const HyperTabsInner: React.FC<IHyperTabsComponentProps> = function (props) {
       responsiveCollapse: demoResponsiveCollapse,
       animations: demoAnimations,
       panelCount: enabledPanels.length,
+      currentAlignment: demoAlignment,
+      autoRotate: demoAutoRotate,
+      enableOverflow: demoOverflow,
+      enableSearch: demoSearch,
       onDisplayModeChange: function (mode: HyperTabsDisplayMode): void { setDemoDisplayMode(mode); },
       onTabStyleChange: function (style: HyperTabsTabStyle): void { setDemoTabStyle(style); },
       onToggleDeepLinking: function (): void { setDemoDeepLinking(function (v: boolean) { return !v; }); },
       onToggleResponsiveCollapse: function (): void { setDemoResponsiveCollapse(function (v: boolean) { return !v; }); },
       onToggleAnimations: function (): void { setDemoAnimations(function (v: boolean) { return !v; }); },
+      onAlignmentChange: function (a: HyperTabsAlignment): void { setDemoAlignment(a); },
+      onToggleAutoRotate: function (): void { setDemoAutoRotate(function (v: boolean) { return !v; }); },
+      onToggleOverflow: function (): void { setDemoOverflow(function (v: boolean) { return !v; }); },
+      onToggleSearch: function (): void { setDemoSearch(function (v: boolean) { return !v; }); },
       onExitDemo: function (): void {
         // Reset demo state to current prop values
         setDemoDisplayMode(props.displayMode);
@@ -240,8 +289,30 @@ const HyperTabsInner: React.FC<IHyperTabsComponentProps> = function (props) {
         setDemoDeepLinking(props.enableDeepLinking);
         setDemoResponsiveCollapse(props.enableResponsiveCollapse);
         setDemoAnimations(props.animationEnabled);
+        setDemoAlignment(props.tabAlignment || "left");
+        setDemoAutoRotate(props.autoRotate || false);
+        setDemoOverflow(props.enableTabOverflow || false);
+        setDemoSearch(props.enableTabSearch || false);
       },
     }));
+  }
+
+  // Sample data banner
+  if (props.useSampleData) {
+    containerChildren.push(
+      React.createElement("div", {
+        key: "sample-banner",
+        style: {
+          padding: "8px 16px",
+          backgroundColor: "#fff4ce",
+          border: "1px solid #ffe082",
+          borderRadius: "4px",
+          fontSize: "13px",
+          color: "#6d4c00",
+          marginBottom: "12px",
+        },
+      }, "Sample data active \u2014 connect real content panels in the property pane.")
+    );
   }
 
   // Mode component

@@ -29,6 +29,15 @@ declare interface IHyperTabsWebPartStrings {
   WizardShowProgressLabel: string;
   WizardLinearModeLabel: string;
   EnableDemoModeLabel: string;
+  TabAlignmentLabel: string;
+  AutoRotateLabel: string;
+  AutoRotateIntervalLabel: string;
+  RememberActiveTabLabel: string;
+  EnableTabOverflowLabel: string;
+  EnableTabSearchLabel: string;
+  StylePresetLabel: string;
+  UseSampleDataLabel: string;
+  StylePresetsPageDescription: string;
 }
 
 declare module "HyperTabsWebPartStrings" {
