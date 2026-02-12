@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "f04eafd0-d267-4f5f-b35b-93b007f1f93d",
+  "alias": "HyperFlowWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart", "TeamsPersonalApp", "TeamsTab", "SharePointFullPage"],
+  "supportsThemeVariants": true,
+
+  "preconfiguredEntries": [{
+    "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+    "group": { "default": "HyperParts" },
+    "title": { "default": "HyperFlow" },
+    "description": { "default": "Dual-purpose process stepper and visual diagram builder with 5 visual styles, 4 functional layouts, drag-drop designer, and 6 pre-built templates." },
+    "officeFabricIconFontName": "Flow",
+    "properties": {
+      "title": "Process Flow",
+      "flowMode": "visual",
+      "visualStyle": "pill",
+      "functionalLayout": "horizontal",
+      "colorTheme": "corporate",
+      "diagramJson": "",
+      "processJson": "",
+      "showStepNumbers": true,
+      "enableAnimation": true,
+      "showConnectorLabels": true,
+      "dataSource": "manual",
+      "listId": ""
+    }
+  }]
+}

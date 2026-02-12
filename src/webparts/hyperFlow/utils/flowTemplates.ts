@@ -1,0 +1,692 @@
+// ============================================================
+// HyperFlow — Templates & Visual Presets
+// 6 functional process templates + 5 visual diagram presets
+// ============================================================
+
+import type { IFlowTemplate } from "../models";
+
+// ====================================================================
+// FUNCTIONAL TEMPLATES (6) — each has a process with typed steps
+// ====================================================================
+
+var salesPipelineTemplate: IFlowTemplate = {
+  id: "tpl-sales-pipeline",
+  name: "Sales Pipeline",
+  description: "Track opportunities from lead capture through close. Includes win/loss branching at the final stage.",
+  category: "Sales",
+  flowMode: "functional",
+  functionalLayout: "horizontal",
+  colorTheme: "corporate",
+  previewIcon: "flag",
+  process: {
+    title: "Sales Pipeline",
+    currentStepId: "sp-3",
+    steps: [
+      {
+        id: "sp-1",
+        title: "Lead Captured",
+        description: "New inbound lead added to CRM. Auto-assigned to sales rep based on territory.",
+        icon: "plus",
+        status: "completed",
+        assignee: "Sarah Chen",
+        order: 1,
+        color: "#0078d4",
+      },
+      {
+        id: "sp-2",
+        title: "Qualified",
+        description: "BANT criteria verified. Budget confirmed, authority identified, need validated, timeline set.",
+        icon: "check-circle",
+        status: "completed",
+        assignee: "Sarah Chen",
+        order: 2,
+        color: "#106ebe",
+      },
+      {
+        id: "sp-3",
+        title: "Discovery Call",
+        description: "Deep-dive meeting with stakeholders. Document pain points and success criteria.",
+        icon: "user",
+        status: "in-progress",
+        assignee: "Marcus Rivera",
+        dueDate: "2025-02-20",
+        order: 3,
+        color: "#2b88d8",
+        subtasks: [
+          { id: "sp-3a", title: "Schedule call with decision maker", completed: true },
+          { id: "sp-3b", title: "Prepare discovery questionnaire", completed: true },
+          { id: "sp-3c", title: "Send calendar invite", completed: false },
+        ],
+      },
+      {
+        id: "sp-4",
+        title: "Proposal Sent",
+        description: "Custom proposal drafted and sent. Includes pricing, timeline, and ROI projections.",
+        icon: "edit",
+        status: "not-started",
+        assignee: "Marcus Rivera",
+        order: 4,
+        color: "#005a9e",
+      },
+      {
+        id: "sp-5",
+        title: "Negotiation",
+        description: "Contract terms under discussion. Legal review in progress on both sides.",
+        icon: "link",
+        status: "not-started",
+        order: 5,
+        color: "#004578",
+      },
+      {
+        id: "sp-6",
+        title: "Won",
+        description: "Deal closed-won. Contract signed and onboarding initiated.",
+        icon: "star",
+        status: "not-started",
+        order: 6,
+        color: "#059669",
+      },
+      {
+        id: "sp-7",
+        title: "Lost",
+        description: "Deal closed-lost. Loss reason documented for pipeline analytics.",
+        icon: "minus",
+        status: "not-started",
+        order: 7,
+        color: "#ef4444",
+      },
+    ],
+  },
+};
+
+var documentApprovalTemplate: IFlowTemplate = {
+  id: "tpl-doc-approval",
+  name: "Document Approval",
+  description: "Route documents through review, revision, and approval stages with clear ownership.",
+  category: "Compliance",
+  flowMode: "functional",
+  functionalLayout: "horizontal",
+  colorTheme: "ocean",
+  previewIcon: "edit",
+  process: {
+    title: "Document Approval",
+    currentStepId: "da-2",
+    steps: [
+      {
+        id: "da-1",
+        title: "Draft",
+        description: "Author creates initial document draft. Formatting and content standards applied.",
+        icon: "edit",
+        status: "completed",
+        assignee: "Priya Patel",
+        order: 1,
+        color: "#0ea5e9",
+      },
+      {
+        id: "da-2",
+        title: "Review",
+        description: "Subject matter experts review for accuracy. Track changes enabled.",
+        icon: "eye",
+        status: "in-progress",
+        assignee: "James Wilson",
+        dueDate: "2025-03-01",
+        order: 2,
+        color: "#06b6d4",
+        subtasks: [
+          { id: "da-2a", title: "Technical accuracy review", completed: true },
+          { id: "da-2b", title: "Legal compliance check", completed: false },
+          { id: "da-2c", title: "Brand guidelines verification", completed: false },
+        ],
+      },
+      {
+        id: "da-3",
+        title: "Revision",
+        description: "Author incorporates feedback and resolves comments. Second review if substantial changes.",
+        icon: "refresh",
+        status: "not-started",
+        assignee: "Priya Patel",
+        order: 3,
+        color: "#22d3ee",
+      },
+      {
+        id: "da-4",
+        title: "Approved",
+        description: "Final sign-off from approving authority. Version number incremented.",
+        icon: "check-circle",
+        status: "not-started",
+        assignee: "Director",
+        order: 4,
+        color: "#0284c7",
+      },
+      {
+        id: "da-5",
+        title: "Published",
+        description: "Document published to document library. Stakeholders notified automatically.",
+        icon: "flag",
+        status: "not-started",
+        order: 5,
+        color: "#0891b2",
+      },
+    ],
+  },
+};
+
+var sprintWorkflowTemplate: IFlowTemplate = {
+  id: "tpl-sprint-workflow",
+  name: "Sprint Workflow",
+  description: "Agile sprint board with stages from backlog through code review, QA, and done.",
+  category: "Engineering",
+  flowMode: "functional",
+  functionalLayout: "kanban",
+  colorTheme: "purple-haze",
+  previewIcon: "steps",
+  process: {
+    title: "Sprint Workflow",
+    currentStepId: "sw-3",
+    steps: [
+      {
+        id: "sw-1",
+        title: "Backlog",
+        description: "Groomed and prioritized product backlog items awaiting sprint selection.",
+        icon: "rectangle",
+        status: "completed",
+        order: 1,
+        color: "#7c3aed",
+      },
+      {
+        id: "sw-2",
+        title: "Selected for Sprint",
+        description: "Items pulled into current sprint during planning. Story points assigned.",
+        icon: "check",
+        status: "completed",
+        assignee: "Dev Team",
+        order: 2,
+        color: "#a855f7",
+      },
+      {
+        id: "sw-3",
+        title: "In Development",
+        description: "Active coding. Feature branch created. Daily standups track progress.",
+        icon: "edit",
+        status: "in-progress",
+        assignee: "Alex Kim",
+        dueDate: "2025-02-28",
+        order: 3,
+        color: "#c084fc",
+        subtasks: [
+          { id: "sw-3a", title: "Implement feature logic", completed: true },
+          { id: "sw-3b", title: "Write unit tests", completed: false },
+          { id: "sw-3c", title: "Update documentation", completed: false },
+        ],
+      },
+      {
+        id: "sw-4",
+        title: "Code Review",
+        description: "Pull request submitted. At least two approvals required before merge.",
+        icon: "eye",
+        status: "not-started",
+        order: 4,
+        color: "#6d28d9",
+      },
+      {
+        id: "sw-5",
+        title: "QA Testing",
+        description: "Quality assurance validates acceptance criteria. Regression tests executed.",
+        icon: "check-circle",
+        status: "not-started",
+        assignee: "QA Team",
+        order: 5,
+        color: "#8b5cf6",
+      },
+      {
+        id: "sw-6",
+        title: "Done",
+        description: "All acceptance criteria met. Deployed to production. Sprint velocity updated.",
+        icon: "star",
+        status: "not-started",
+        order: 6,
+        color: "#059669",
+      },
+    ],
+  },
+};
+
+var employeeOnboardingTemplate: IFlowTemplate = {
+  id: "tpl-employee-onboarding",
+  name: "Employee Onboarding",
+  description: "Structured onboarding journey from pre-boarding through the first 90 days.",
+  category: "HR",
+  flowMode: "functional",
+  functionalLayout: "timeline",
+  colorTheme: "forest",
+  previewIcon: "user",
+  process: {
+    title: "Employee Onboarding",
+    currentStepId: "eo-2",
+    steps: [
+      {
+        id: "eo-1",
+        title: "Pre-boarding",
+        description: "Equipment ordered, accounts provisioned, welcome email sent. Buddy assigned.",
+        icon: "edit",
+        status: "completed",
+        assignee: "HR Team",
+        order: 1,
+        color: "#059669",
+        subtasks: [
+          { id: "eo-1a", title: "Order laptop and peripherals", completed: true },
+          { id: "eo-1b", title: "Create email and Teams accounts", completed: true },
+          { id: "eo-1c", title: "Assign onboarding buddy", completed: true },
+        ],
+      },
+      {
+        id: "eo-2",
+        title: "Day 1 Orientation",
+        description: "Welcome session, office tour, IT setup, meet the team. Badge and building access.",
+        icon: "flag",
+        status: "in-progress",
+        assignee: "Hiring Manager",
+        dueDate: "2025-03-03",
+        order: 2,
+        color: "#10b981",
+        subtasks: [
+          { id: "eo-2a", title: "Complete I-9 and tax forms", completed: true },
+          { id: "eo-2b", title: "Team introductions", completed: false },
+          { id: "eo-2c", title: "Review company policies", completed: false },
+        ],
+      },
+      {
+        id: "eo-3",
+        title: "Week 1 Training",
+        description: "Role-specific training sessions. Access to knowledge base and project documentation.",
+        icon: "steps",
+        status: "not-started",
+        assignee: "Hiring Manager",
+        order: 3,
+        color: "#34d399",
+      },
+      {
+        id: "eo-4",
+        title: "Month 1 Check-in",
+        description: "30-day performance check-in. Feedback gathered from manager and buddy.",
+        icon: "user",
+        status: "not-started",
+        assignee: "HR Team",
+        order: 4,
+        color: "#047857",
+      },
+      {
+        id: "eo-5",
+        title: "Fully Settled",
+        description: "90-day milestone reached. Onboarding survey completed. Transition to regular 1-on-1s.",
+        icon: "check-circle",
+        status: "not-started",
+        order: 5,
+        color: "#065f46",
+      },
+    ],
+  },
+};
+
+var incidentResponseTemplate: IFlowTemplate = {
+  id: "tpl-incident-response",
+  name: "Incident Response",
+  description: "IT incident management from detection through resolution and post-mortem analysis.",
+  category: "IT Operations",
+  flowMode: "functional",
+  functionalLayout: "horizontal",
+  colorTheme: "sunset",
+  previewIcon: "flag",
+  process: {
+    title: "Incident Response",
+    currentStepId: "ir-3",
+    steps: [
+      {
+        id: "ir-1",
+        title: "Detected",
+        description: "Monitoring alert triggered. Incident ticket auto-created. On-call engineer paged.",
+        icon: "eye",
+        status: "completed",
+        order: 1,
+        color: "#f59e0b",
+      },
+      {
+        id: "ir-2",
+        title: "Triaged",
+        description: "Severity classified (P1-P4). Incident commander assigned. Stakeholders notified.",
+        icon: "flag",
+        status: "completed",
+        assignee: "Ops Lead",
+        order: 2,
+        color: "#ef4444",
+      },
+      {
+        id: "ir-3",
+        title: "Investigating",
+        description: "Root cause analysis underway. Logs and metrics being correlated. War room open.",
+        icon: "eye",
+        status: "in-progress",
+        assignee: "SRE Team",
+        dueDate: "2025-02-15",
+        order: 3,
+        color: "#f97316",
+        subtasks: [
+          { id: "ir-3a", title: "Review application logs", completed: true },
+          { id: "ir-3b", title: "Check infrastructure metrics", completed: true },
+          { id: "ir-3c", title: "Identify affected services", completed: false },
+        ],
+      },
+      {
+        id: "ir-4",
+        title: "Mitigating",
+        description: "Workaround or fix being deployed. Customer-facing status page updated.",
+        icon: "lock",
+        status: "not-started",
+        assignee: "SRE Team",
+        order: 4,
+        color: "#d97706",
+      },
+      {
+        id: "ir-5",
+        title: "Resolved",
+        description: "Service restored to normal. Root cause confirmed. Monitoring validated.",
+        icon: "check-circle",
+        status: "not-started",
+        order: 5,
+        color: "#dc2626",
+      },
+      {
+        id: "ir-6",
+        title: "Post-Mortem",
+        description: "Blameless retrospective completed. Action items created to prevent recurrence.",
+        icon: "edit",
+        status: "not-started",
+        order: 6,
+        color: "#fb923c",
+      },
+    ],
+  },
+};
+
+var contentPublishingTemplate: IFlowTemplate = {
+  id: "tpl-content-publishing",
+  name: "Content Publishing",
+  description: "End-to-end content lifecycle from ideation through approval and publishing.",
+  category: "Marketing",
+  flowMode: "functional",
+  functionalLayout: "horizontal",
+  colorTheme: "ocean",
+  previewIcon: "edit",
+  process: {
+    title: "Content Publishing",
+    currentStepId: "cp-3",
+    steps: [
+      {
+        id: "cp-1",
+        title: "Ideation",
+        description: "Content idea submitted and evaluated against editorial calendar and audience needs.",
+        icon: "star",
+        status: "completed",
+        assignee: "Content Lead",
+        order: 1,
+        color: "#0ea5e9",
+      },
+      {
+        id: "cp-2",
+        title: "Writing",
+        description: "First draft authored. SEO keywords integrated. Target word count and tone applied.",
+        icon: "edit",
+        status: "completed",
+        assignee: "Emma Taylor",
+        order: 2,
+        color: "#06b6d4",
+      },
+      {
+        id: "cp-3",
+        title: "Editing",
+        description: "Copy editing for grammar, style, and brand voice. Fact-checking completed.",
+        icon: "eye",
+        status: "in-progress",
+        assignee: "Editorial Team",
+        dueDate: "2025-02-25",
+        order: 3,
+        color: "#22d3ee",
+        subtasks: [
+          { id: "cp-3a", title: "Grammar and style review", completed: true },
+          { id: "cp-3b", title: "Fact-check all claims", completed: false },
+          { id: "cp-3c", title: "SEO optimization check", completed: false },
+        ],
+      },
+      {
+        id: "cp-4",
+        title: "Design",
+        description: "Visual assets created. Hero image, infographics, and social media cards prepared.",
+        icon: "palette",
+        status: "not-started",
+        assignee: "Design Team",
+        order: 4,
+        color: "#0284c7",
+      },
+      {
+        id: "cp-5",
+        title: "Approval",
+        description: "Final sign-off from stakeholders. Legal review if required. Publish date confirmed.",
+        icon: "check-circle",
+        status: "not-started",
+        assignee: "Marketing Director",
+        order: 5,
+        color: "#0891b2",
+      },
+      {
+        id: "cp-6",
+        title: "Published",
+        description: "Content live on site. Social media promotion scheduled. Analytics tracking enabled.",
+        icon: "flag",
+        status: "not-started",
+        order: 6,
+        color: "#67e8f9",
+      },
+    ],
+  },
+};
+
+// ====================================================================
+// VISUAL PRESETS (5) — each has a diagram with positioned nodes
+// ====================================================================
+
+var pillPreset: IFlowTemplate = {
+  id: "preset-pill",
+  name: "Sales Funnel",
+  description: "Seven-stage horizontal pill flow showing a typical sales funnel progression.",
+  category: "Visual Presets",
+  flowMode: "visual",
+  visualStyle: "pill",
+  colorTheme: "corporate",
+  previewIcon: "pill",
+  diagram: {
+    title: "Sales Funnel",
+    direction: "horizontal",
+    nodes: [
+      { id: "pp-1", label: "Awareness", description: "Prospect discovers your brand", shape: "pill", color: "#0078d4", x: 0, y: 100, width: 140, height: 48 },
+      { id: "pp-2", label: "Interest", description: "Prospect engages with content", shape: "pill", color: "#106ebe", x: 180, y: 100, width: 140, height: 48 },
+      { id: "pp-3", label: "Consideration", description: "Prospect evaluates solutions", shape: "pill", color: "#2b88d8", x: 360, y: 100, width: 140, height: 48 },
+      { id: "pp-4", label: "Intent", description: "Prospect signals buying intent", shape: "pill", color: "#005a9e", x: 540, y: 100, width: 140, height: 48 },
+      { id: "pp-5", label: "Evaluation", description: "Prospect compares vendors", shape: "pill", color: "#004578", x: 720, y: 100, width: 140, height: 48 },
+      { id: "pp-6", label: "Purchase", description: "Deal closed successfully", shape: "pill", color: "#3a96dd", x: 900, y: 100, width: 140, height: 48 },
+      { id: "pp-7", label: "Retention", description: "Customer renewal and expansion", shape: "pill", color: "#0078d4", x: 1080, y: 100, width: 140, height: 48 },
+    ],
+    connectors: [
+      { id: "pp-c1", fromNodeId: "pp-1", toNodeId: "pp-2", style: "arrow", color: "#a0aec0" },
+      { id: "pp-c2", fromNodeId: "pp-2", toNodeId: "pp-3", style: "arrow", color: "#a0aec0" },
+      { id: "pp-c3", fromNodeId: "pp-3", toNodeId: "pp-4", style: "arrow", color: "#a0aec0" },
+      { id: "pp-c4", fromNodeId: "pp-4", toNodeId: "pp-5", style: "arrow", color: "#a0aec0" },
+      { id: "pp-c5", fromNodeId: "pp-5", toNodeId: "pp-6", style: "arrow", color: "#a0aec0" },
+      { id: "pp-c6", fromNodeId: "pp-6", toNodeId: "pp-7", style: "arrow", color: "#a0aec0" },
+    ],
+  },
+};
+
+var circlePreset: IFlowTemplate = {
+  id: "preset-circle",
+  name: "Proposal Workflow",
+  description: "Five-node circle flow for routing proposals through review and approval.",
+  category: "Visual Presets",
+  flowMode: "visual",
+  visualStyle: "circle",
+  colorTheme: "purple-haze",
+  previewIcon: "circle",
+  diagram: {
+    title: "Proposal Workflow",
+    direction: "horizontal",
+    nodes: [
+      { id: "cp-1", label: "Draft", description: "Create initial proposal", shape: "circle", color: "#7c3aed", x: 60, y: 100, width: 80, height: 80 },
+      { id: "cp-2", label: "Review", description: "Peer review and feedback", shape: "circle", color: "#a855f7", x: 240, y: 100, width: 80, height: 80 },
+      { id: "cp-3", label: "Revise", description: "Incorporate feedback", shape: "circle", color: "#c084fc", x: 420, y: 100, width: 80, height: 80 },
+      { id: "cp-4", label: "Approve", description: "Management sign-off", shape: "circle", color: "#6d28d9", x: 600, y: 100, width: 80, height: 80 },
+      { id: "cp-5", label: "Submit", description: "Send to client", shape: "circle", color: "#8b5cf6", x: 780, y: 100, width: 80, height: 80 },
+    ],
+    connectors: [
+      { id: "cp-c1", fromNodeId: "cp-1", toNodeId: "cp-2", style: "arrow", color: "#c4b5fd" },
+      { id: "cp-c2", fromNodeId: "cp-2", toNodeId: "cp-3", style: "arrow", color: "#c4b5fd" },
+      { id: "cp-c3", fromNodeId: "cp-3", toNodeId: "cp-4", style: "arrow", color: "#c4b5fd" },
+      { id: "cp-c4", fromNodeId: "cp-4", toNodeId: "cp-5", style: "arrow", color: "#c4b5fd" },
+    ],
+  },
+};
+
+var cardPreset: IFlowTemplate = {
+  id: "preset-card",
+  name: "Product Request",
+  description: "Five-stage vertical card flow for product feature requests and prioritization.",
+  category: "Visual Presets",
+  flowMode: "visual",
+  visualStyle: "card",
+  colorTheme: "ocean",
+  previewIcon: "card",
+  diagram: {
+    title: "Product Request",
+    direction: "vertical",
+    nodes: [
+      { id: "cd-1", label: "Submitted", description: "Feature request logged by user", icon: "plus", shape: "card", color: "#0ea5e9", x: 100, y: 0, width: 200, height: 80 },
+      { id: "cd-2", label: "Triaged", description: "PM reviews and categorizes", icon: "flag", shape: "card", color: "#06b6d4", x: 100, y: 120, width: 200, height: 80 },
+      { id: "cd-3", label: "Prioritized", description: "Added to product roadmap", icon: "star", shape: "card", color: "#22d3ee", x: 100, y: 240, width: 200, height: 80 },
+      { id: "cd-4", label: "In Progress", description: "Engineering team building", icon: "edit", shape: "card", color: "#0284c7", x: 100, y: 360, width: 200, height: 80 },
+      { id: "cd-5", label: "Shipped", description: "Feature released to users", icon: "check-circle", shape: "card", color: "#0891b2", x: 100, y: 480, width: 200, height: 80 },
+    ],
+    connectors: [
+      { id: "cd-c1", fromNodeId: "cd-1", toNodeId: "cd-2", style: "arrow", color: "#a5f3fc" },
+      { id: "cd-c2", fromNodeId: "cd-2", toNodeId: "cd-3", style: "arrow", color: "#a5f3fc" },
+      { id: "cd-c3", fromNodeId: "cd-3", toNodeId: "cd-4", style: "arrow", color: "#a5f3fc" },
+      { id: "cd-c4", fromNodeId: "cd-4", toNodeId: "cd-5", style: "arrow", color: "#a5f3fc" },
+    ],
+  },
+};
+
+var gradientLanePreset: IFlowTemplate = {
+  id: "preset-gradient-lane",
+  name: "Delivery Handover",
+  description: "Five-stage horizontal flow with gradient lanes showing handoffs between teams.",
+  category: "Visual Presets",
+  flowMode: "visual",
+  visualStyle: "gradient-lane",
+  colorTheme: "sunset",
+  previewIcon: "steps",
+  diagram: {
+    title: "Delivery Handover",
+    direction: "horizontal",
+    nodes: [
+      { id: "gl-1", label: "Requirements", description: "BA gathers requirements", icon: "edit", shape: "rectangle", color: "#f59e0b", x: 0, y: 80, width: 160, height: 60 },
+      { id: "gl-2", label: "Design", description: "UX creates wireframes", icon: "palette", shape: "rectangle", color: "#ef4444", x: 200, y: 80, width: 160, height: 60 },
+      { id: "gl-3", label: "Development", description: "Engineering builds features", icon: "steps", shape: "rectangle", color: "#f97316", x: 400, y: 80, width: 160, height: 60 },
+      { id: "gl-4", label: "Testing", description: "QA validates quality", icon: "check-circle", shape: "rectangle", color: "#d97706", x: 600, y: 80, width: 160, height: 60 },
+      { id: "gl-5", label: "Deployment", description: "Ops deploys to production", icon: "flag", shape: "rectangle", color: "#dc2626", x: 800, y: 80, width: 160, height: 60 },
+    ],
+    connectors: [
+      { id: "gl-c1", fromNodeId: "gl-1", toNodeId: "gl-2", style: "thick", label: "Handoff", color: "#fcd34d" },
+      { id: "gl-c2", fromNodeId: "gl-2", toNodeId: "gl-3", style: "thick", label: "Handoff", color: "#fcd34d" },
+      { id: "gl-c3", fromNodeId: "gl-3", toNodeId: "gl-4", style: "thick", label: "Handoff", color: "#fcd34d" },
+      { id: "gl-c4", fromNodeId: "gl-4", toNodeId: "gl-5", style: "thick", label: "Handoff", color: "#fcd34d" },
+    ],
+  },
+};
+
+var metroMapPreset: IFlowTemplate = {
+  id: "preset-metro-map",
+  name: "IT Service Desk",
+  description: "Nine-node metro map with three parallel tracks showing IT service request routing.",
+  category: "Visual Presets",
+  flowMode: "visual",
+  visualStyle: "metro-map",
+  colorTheme: "forest",
+  previewIcon: "flow",
+  diagram: {
+    title: "IT Service Desk",
+    direction: "horizontal",
+    nodes: [
+      // Track 1 — Hardware (top row)
+      { id: "mm-1", label: "Ticket Created", description: "Service request submitted", icon: "plus", shape: "circle", color: "#059669", x: 0, y: 40, width: 60, height: 60 },
+      { id: "mm-2", label: "Hardware Request", description: "New equipment or repair", icon: "rectangle", shape: "circle", color: "#10b981", x: 160, y: 0, width: 60, height: 60 },
+      { id: "mm-3", label: "Procurement", description: "Order placed with vendor", icon: "flag", shape: "circle", color: "#34d399", x: 320, y: 0, width: 60, height: 60 },
+      // Track 2 — Software (middle row)
+      { id: "mm-4", label: "Software Request", description: "Install or license needed", icon: "card", shape: "circle", color: "#047857", x: 160, y: 100, width: 60, height: 60 },
+      { id: "mm-5", label: "License Check", description: "Verify available licenses", icon: "lock", shape: "circle", color: "#065f46", x: 320, y: 100, width: 60, height: 60 },
+      // Track 3 — Access (bottom row)
+      { id: "mm-6", label: "Access Request", description: "Permission or role change", icon: "user", shape: "circle", color: "#6ee7b7", x: 160, y: 200, width: 60, height: 60 },
+      { id: "mm-7", label: "Approval", description: "Manager approves access", icon: "check-circle", shape: "circle", color: "#a7f3d0", x: 320, y: 200, width: 60, height: 60 },
+      // Convergence
+      { id: "mm-8", label: "Fulfillment", description: "Request completed", icon: "check", shape: "circle", color: "#059669", x: 480, y: 100, width: 60, height: 60 },
+      { id: "mm-9", label: "Closed", description: "Ticket resolved and rated", icon: "star", shape: "circle", color: "#047857", x: 640, y: 100, width: 60, height: 60 },
+    ],
+    connectors: [
+      // Branch from ticket
+      { id: "mm-c1", fromNodeId: "mm-1", toNodeId: "mm-2", style: "arrow", color: "#a7f3d0" },
+      { id: "mm-c2", fromNodeId: "mm-1", toNodeId: "mm-4", style: "arrow", color: "#a7f3d0" },
+      { id: "mm-c3", fromNodeId: "mm-1", toNodeId: "mm-6", style: "arrow", color: "#a7f3d0" },
+      // Track continuations
+      { id: "mm-c4", fromNodeId: "mm-2", toNodeId: "mm-3", style: "arrow", color: "#a7f3d0" },
+      { id: "mm-c5", fromNodeId: "mm-4", toNodeId: "mm-5", style: "arrow", color: "#a7f3d0" },
+      { id: "mm-c6", fromNodeId: "mm-6", toNodeId: "mm-7", style: "arrow", color: "#a7f3d0" },
+      // Converge to fulfillment
+      { id: "mm-c7", fromNodeId: "mm-3", toNodeId: "mm-8", style: "dashed", color: "#a7f3d0" },
+      { id: "mm-c8", fromNodeId: "mm-5", toNodeId: "mm-8", style: "arrow", color: "#a7f3d0" },
+      { id: "mm-c9", fromNodeId: "mm-7", toNodeId: "mm-8", style: "dashed", color: "#a7f3d0" },
+      // Final
+      { id: "mm-c10", fromNodeId: "mm-8", toNodeId: "mm-9", style: "thick", color: "#059669" },
+    ],
+  },
+};
+
+// ====================================================================
+// Exports
+// ====================================================================
+
+export var FUNCTIONAL_TEMPLATES: IFlowTemplate[] = [
+  salesPipelineTemplate,
+  documentApprovalTemplate,
+  sprintWorkflowTemplate,
+  employeeOnboardingTemplate,
+  incidentResponseTemplate,
+  contentPublishingTemplate,
+];
+
+export var VISUAL_PRESETS: IFlowTemplate[] = [
+  pillPreset,
+  circlePreset,
+  cardPreset,
+  gradientLanePreset,
+  metroMapPreset,
+];
+
+export var ALL_TEMPLATES: IFlowTemplate[] = [
+  salesPipelineTemplate,
+  documentApprovalTemplate,
+  sprintWorkflowTemplate,
+  employeeOnboardingTemplate,
+  incidentResponseTemplate,
+  contentPublishingTemplate,
+  pillPreset,
+  circlePreset,
+  cardPreset,
+  gradientLanePreset,
+  metroMapPreset,
+];

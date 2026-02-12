@@ -177,6 +177,14 @@
           "manifest": "./src/webparts/hyperOnboard/HyperOnboardWebPart.manifest.json"
         }
       ]
+    },
+    "hyper-flow-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hyperFlow/HyperFlowWebPart.js",
+          "manifest": "./src/webparts/hyperFlow/HyperFlowWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -202,6 +210,7 @@
     "HyperImageWebPartStrings": "lib/webparts/hyperImage/loc/{locale}.js",
     "HyperStyleWebPartStrings": "lib/webparts/hyperStyle/loc/{locale}.js",
     "HyperSocialWebPartStrings": "lib/webparts/hyperSocial/loc/{locale}.js",
-    "HyperOnboardWebPartStrings": "lib/webparts/hyperOnboard/loc/{locale}.js"
+    "HyperOnboardWebPartStrings": "lib/webparts/hyperOnboard/loc/{locale}.js",
+    "HyperFlowWebPartStrings": "lib/webparts/hyperFlow/loc/{locale}.js"
   }
 }

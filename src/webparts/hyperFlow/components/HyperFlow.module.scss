@@ -1,0 +1,55 @@
+.hyperFlow {
+  position: relative;
+  min-height: 120px;
+}
+
+.flowTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a2b3c;
+  margin-bottom: 16px;
+}
+
+.sampleBanner {
+  padding: 8px 16px;
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #6d4c00;
+  margin-bottom: 12px;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.emptyIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #f0f4f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  color: #8a9bb5;
+}
+
+.emptyTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a2b3c;
+  margin-bottom: 8px;
+}
+
+.emptyDesc {
+  font-size: 13px;
+  color: #5a6b7d;
+  max-width: 360px;
+}
