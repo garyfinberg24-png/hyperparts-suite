@@ -40,7 +40,14 @@ src/
 │   │   ├── HyperSkeleton        # Loading skeleton
 │   │   ├── HyperEmptyState      # Empty state with CTA
 │   │   ├── HyperCard            # Reusable card
-│   │   └── HyperModal           # Accessible modal/dialog
+│   │   ├── HyperModal           # Accessible modal/dialog
+│   │   ├── HyperEditOverlay     # Edit mode overlay (frosted glass)
+│   │   └── HyperImageBrowser    # SP image library browser
+│   ├── propertyPane/              # Shared property pane components
+│   │   ├── HyperPropertyPaneGroupHeader  # Color-coded group headers
+│   │   ├── HyperPropertyPaneAccordion    # Collapsible item editor
+│   │   ├── createGroupHeaderField.ts     # SPFx custom field helper
+│   │   └── createAccordionField.ts       # SPFx accordion field helper
 │   └── models/                    # Shared TypeScript interfaces
 └── webparts/
     ├── hyperHero/                 # Hero banners (12 features)
@@ -147,6 +154,9 @@ gulp package-solution --ship  # Create .sppkg
 - [x] enableDemoMode=true default — Demo panel active by default across all 20 web parts
 - [x] Property standardization — wizardCompleted and enableDemoMode naming unified across all 20 web parts
 - [x] HyperSlider removed — functionality superseded by HyperHero
+- [x] Edit Mode Overlay (Standard 5) — Frosted glass pill overlay for 19 web parts (HyperHero excluded)
+- [x] Styled Property Pane (Standard 6) — Color-coded group headers for all 20 WPs + accordion editor for Nav/Links
+- [x] Image Browser Consolidation (Standard 7) — Shared HyperImageBrowser moved to common components
 
 ### Future
 
@@ -186,6 +196,7 @@ gulp package-solution --ship  # Create .sppkg
 | 0.0.20  | February 9, 2026  | Bug fixes + new features across 17 web parts (82 files)                                     |
 | 0.0.21  | February 11, 2026 | DemoBar Rich Panel 20/20, wizard Pattern B 20/20, HyperSlider removed, sample data wired    |
 | 0.0.22  | February 11, 2026 | enableDemoMode=true default 20/20, wizardCompleted standardized, demoMode renamed           |
+| 0.0.23  | February 12, 2026 | Standards 5-7: edit overlay, styled property pane, image browser consolidation (57 files)   |
 
 ## References
 
