@@ -44,11 +44,10 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
 
   // Auto-open wizard on first load when wizard not yet completed
   React.useEffect(function () {
-    if (!props.wizardCompleted) {
+    if (props.isEditMode && !props.wizardCompleted) {
       store.openWizard();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [props.isEditMode, props.wizardCompleted]);
 
   // Build wizard state override from current props (for re-editing)
   var wizardStateOverride = React.useMemo(function () {

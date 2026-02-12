@@ -262,10 +262,10 @@ var HyperStyleInner: React.FC<IHyperStyleProps> = function (props) {
 
   // Show wizard on first load if configured
   React.useEffect(function () {
-    if (props.isEditMode && props.showWizardOnInit && !props.wizardCompleted) {
+    if (props.isEditMode && !props.wizardCompleted) {
       setWizardOpen(true);
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [props.isEditMode, props.wizardCompleted]);
 
   // ── Inject CSS ──
   React.useEffect(function () {

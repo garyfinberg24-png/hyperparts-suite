@@ -236,8 +236,14 @@ var HyperSearchInner: React.FC<IHyperSearchComponentProps> = function (props) {
     store.setFilterPanelOpen(!store.filterPanelOpen);
   };
 
-  // Wizard
-  var showWizard = store.wizardOpen || (props.showWizardOnInit && !props.wizardCompleted && props.isEditMode);
+  // Wizard — auto-open on first load in edit mode when not yet completed
+  React.useEffect(function () {
+    if (props.isEditMode && !props.wizardCompleted) {
+      store.setWizardOpen(true);
+    }
+  }, [props.isEditMode, props.wizardCompleted]);
+
+  var showWizard = store.wizardOpen;
 
   var handleOpenWizard = function (): void {
     store.setWizardOpen(true);

@@ -36,7 +36,7 @@ export interface IHyperLertComponentProps extends IHyperLertWebPartProps {
   isEditMode?: boolean;
   onConfigure?: () => void;
   onRulesChange?: (rulesJson: string) => void;
-  onWizardComplete?: () => void;
+  onWizardComplete?: (result?: Partial<IHyperLertWebPartProps>) => void;
 }
 
 // ── KPI computation helper ──
@@ -143,9 +143,9 @@ var HyperLertInner: React.FC<IHyperLertComponentProps> = function (props) {
     }
   }, [props.isEditMode, props.wizardCompleted]);
 
-  var handleWizardApply = function (_result: Partial<IHyperLertWebPartProps>): void {
+  var handleWizardApply = function (result: Partial<IHyperLertWebPartProps>): void {
     if (props.onWizardComplete) {
-      props.onWizardComplete();
+      props.onWizardComplete(result);
     }
     setWizardOpen(false);
   };

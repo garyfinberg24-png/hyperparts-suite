@@ -48,10 +48,10 @@ var HyperFlowInner: React.FC<IHyperFlowComponentProps> = function (props) {
 
   // Auto-open wizard on first load
   React.useEffect(function () {
-    if (!props.wizardCompleted) {
+    if (props.isEditMode && !props.wizardCompleted) {
       openWizard();
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [props.isEditMode, props.wizardCompleted]);
 
   // Demo mode local state overrides
   var demoFlowModeState = React.useState<FlowMode>(props.flowMode);

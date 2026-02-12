@@ -67,7 +67,7 @@ export default class HyperSearchWebPart extends BaseHyperWebPart<IHyperSearchWeb
       isEditMode: this.displayMode === DisplayMode.Edit,
       onConfigure: (): void => { this.context.propertyPane.open(); },
       onWizardComplete: (result: Record<string, unknown>): void => {
-        // Apply wizard result to web part properties
+        this.properties.wizardCompleted = true;
         var propsRecord = this.properties as unknown as Record<string, unknown>;
         Object.keys(result).forEach((key: string): void => {
           propsRecord[key] = result[key];

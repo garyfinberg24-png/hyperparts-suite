@@ -105,10 +105,10 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
 
   // Auto-open wizard on first load when not yet configured
   React.useEffect(function () {
-    if (!props.wizardCompleted) {
+    if (props.isEditMode && !props.wizardCompleted) {
       openWizard();
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [props.isEditMode, props.wizardCompleted]);
 
   // Build wizard state override from current props (for re-editing)
   var wizardStateOverride = React.useMemo(function () {

@@ -25,6 +25,7 @@ export default class HyperExplorerWebPart extends BaseHyperWebPart<IHyperExplore
       instanceId: this.instanceId,
       isEditMode: this.displayMode === 2,
       onWizardApply: function (result: Partial<IHyperExplorerWebPartProps>): void {
+        self.properties.wizardCompleted = true;
         Object.keys(result).forEach(function (key: string): void {
           (self.properties as unknown as Record<string, unknown>)[key] = (result as unknown as Record<string, unknown>)[key];
         });

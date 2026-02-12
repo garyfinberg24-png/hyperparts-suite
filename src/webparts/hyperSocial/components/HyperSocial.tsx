@@ -50,10 +50,10 @@ var HyperSocialInner: React.FC<IHyperSocialComponentProps> = function (props) {
 
   // Auto-open wizard on first load
   React.useEffect(function () {
-    if (!props.wizardCompleted) {
+    if (props.isEditMode && !props.wizardCompleted) {
       openWizard();
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [props.isEditMode, props.wizardCompleted]);
 
   // Get posts
   var posts = React.useMemo(function (): ISocialPost[] {

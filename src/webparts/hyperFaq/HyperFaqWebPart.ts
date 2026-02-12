@@ -56,6 +56,7 @@ export default class HyperFaqWebPart extends BaseHyperWebPart<IHyperFaqWebPartPr
       isEditMode: this.displayMode === DisplayMode.Edit,
       onConfigure: function (): void { self.context.propertyPane.open(); },
       onWizardApply: function (result: Partial<IHyperFaqWebPartProps>): void {
+        self.properties.wizardCompleted = true;
         Object.keys(result).forEach(function (key) {
           (self.properties as unknown as Record<string, unknown>)[key] = (result as unknown as Record<string, unknown>)[key];
         });

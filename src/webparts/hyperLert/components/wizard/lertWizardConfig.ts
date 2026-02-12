@@ -268,9 +268,29 @@ var steps: Array<IWizardStepDef<ILertWizardState>> = [
 
 function buildResult(state: ILertWizardState): Partial<IHyperLertWebPartProps> {
   return {
+    // Layout & template
+    layout: state.layout,
+    templateId: state.selectedTemplate,
+    alertGroupMode: state.alertGroupMode,
+    // Notification channels
     enableEmail: state.enableEmail,
     enableTeams: state.enableTeams,
     enableBanner: state.enableBanner,
+    enableToast: state.enableToast,
+    toastPosition: state.toastPosition,
+    enableNotificationCenter: state.enableNotificationCenter,
+    // Rule features
+    enableEscalation: state.enableEscalation,
+    enableDeduplication: state.enableDeduplication,
+    deduplicationWindowMinutes: state.deduplicationWindowMinutes,
+    // Dashboard
+    enableKpiDashboard: state.enableKpiDashboard,
+    // Schedule
+    quietHoursMode: state.enableQuietHours ? "scheduled" : "off",
+    quietHoursStart: state.quietHoursStart,
+    quietHoursEnd: state.quietHoursEnd,
+    digestFrequency: state.digestFrequency,
+    // Advanced
     maxBanners: state.maxBanners,
     globalCooldownMinutes: state.globalCooldownMinutes,
     refreshInterval: state.refreshInterval,
@@ -384,26 +404,26 @@ export function buildStateFromLertProps(props: IHyperLertWebPartProps): ILertWiz
   }
 
   return {
-    selectedTemplate: "custom",
-    layout: "commandCenter",
-    dataSource: "sample",
+    selectedTemplate: props.templateId || "custom",
+    layout: props.layout || "commandCenter",
+    dataSource: props.useSampleData ? "sample" : "spList",
     listName: "",
     graphEndpoint: "",
-    enableToast: true,
-    toastPosition: "topRight",
+    enableToast: props.enableToast !== false,
+    toastPosition: props.toastPosition || "topRight",
     enableEmail: props.enableEmail !== false,
     enableTeams: props.enableTeams === true,
     enableBanner: props.enableBanner !== false,
-    enableNotificationCenter: true,
-    enableEscalation: false,
-    enableDeduplication: true,
-    deduplicationWindowMinutes: 5,
-    alertGroupMode: "severity",
-    enableQuietHours: false,
-    quietHoursStart: "22:00",
-    quietHoursEnd: "07:00",
-    digestFrequency: "realtime",
-    enableKpiDashboard: true,
+    enableNotificationCenter: props.enableNotificationCenter !== false,
+    enableEscalation: props.enableEscalation === true,
+    enableDeduplication: props.enableDeduplication !== false,
+    deduplicationWindowMinutes: props.deduplicationWindowMinutes || 5,
+    alertGroupMode: props.alertGroupMode || "severity",
+    enableQuietHours: props.quietHoursMode === "scheduled" || props.quietHoursMode === "dnd",
+    quietHoursStart: props.quietHoursStart || "22:00",
+    quietHoursEnd: props.quietHoursEnd || "07:00",
+    digestFrequency: props.digestFrequency || "realtime",
+    enableKpiDashboard: props.enableKpiDashboard !== false,
     refreshInterval: props.refreshInterval || 60,
     maxBanners: props.maxBanners || 3,
     globalCooldownMinutes: props.globalCooldownMinutes || 5,

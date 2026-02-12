@@ -53,13 +53,12 @@ const HyperEventsInner: React.FC<IHyperEventsComponentProps> = function (props) 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Auto-open wizard on first load when showWizardOnInit and no sources configured
+  // Auto-open wizard on first load when wizard not yet completed
   React.useEffect(function () {
-    if (props.showWizardOnInit && (!props.sources || props.sources === "[]")) {
+    if (props.isEditMode && !props.wizardCompleted) {
       store.openWizard();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [props.isEditMode, props.wizardCompleted]);
 
   // ── Sample data ──
   var sampleEvents = React.useMemo(function () {

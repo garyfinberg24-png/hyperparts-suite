@@ -71,10 +71,10 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
   var setWizardOpen = wizardOpenState[1];
 
   React.useEffect(function () {
-    if (props.isEditMode && props.showWizardOnInit && !props.wizardCompleted) {
+    if (props.isEditMode && !props.wizardCompleted) {
       setWizardOpen(true);
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [props.isEditMode, props.wizardCompleted]);
 
   var handleWizardApply = React.useCallback(function (result: Partial<IHyperImageWebPartProps>): void {
     setWizardOpen(false);

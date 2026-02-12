@@ -25,8 +25,13 @@ export default class HyperLertWebPart extends BaseHyperWebPart<IHyperLertWebPart
     this.render();
   };
 
-  private _onWizardComplete = (): void => {
+  private _onWizardComplete = (result?: Partial<IHyperLertWebPartProps>): void => {
     this.properties.wizardCompleted = true;
+    if (result) {
+      Object.keys(result).forEach((key: string): void => {
+        (this.properties as unknown as Record<string, unknown>)[key] = (result as unknown as Record<string, unknown>)[key];
+      });
+    }
     this.render();
   };
 

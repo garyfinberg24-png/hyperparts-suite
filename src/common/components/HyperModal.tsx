@@ -14,7 +14,7 @@ const sizeMap: Record<string, string> = {
   medium: "600px",
   large: "900px",
   xlarge: "1200px",
-  fullscreen: "95vw",
+  fullscreen: "960px",
 };
 
 export const HyperModal: React.FC<IHyperModalProps> = (props) => {
@@ -82,9 +82,9 @@ export const HyperModal: React.FC<IHyperModalProps> = (props) => {
         backgroundColor: "#ffffff",
         borderRadius: size === "fullscreen" ? "4px" : "8px",
         boxShadow: "0 8px 24px rgba(0,0,0,0.14)",
-        width: size === "fullscreen" ? "95vw" : "90%",
-        maxWidth: sizeMap[size],
-        height: size === "fullscreen" ? "90vh" : undefined,
+        width: size === "fullscreen" ? "960px" : "90%",
+        maxWidth: size === "fullscreen" ? "95vw" : sizeMap[size],
+        height: size === "fullscreen" ? "85vh" : undefined,
         maxHeight: "90vh",
         display: "flex",
         flexDirection: "column" as const,

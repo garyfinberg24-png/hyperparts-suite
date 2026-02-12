@@ -302,13 +302,12 @@ const HyperChartsMetricRenderer: React.FC<IMetricRendererProps> = function (rend
 const HyperChartsInner: React.FC<IHyperChartsComponentProps> = function (props) {
   const store = useHyperChartsStore();
 
-  // Auto-open wizard on first load when wizardCompleted is false and no charts configured
+  // Auto-open wizard on first load when wizardCompleted is false
   React.useEffect(function () {
-    if (!props.wizardCompleted && (!props.charts || props.charts === "" || props.charts === "[]")) {
+    if (props.isEditMode && !props.wizardCompleted) {
       store.openWizard();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [props.isEditMode, props.wizardCompleted]);
 
   // ── Sample data ──
   var sampleCharts = React.useMemo(function (): IHyperChart[] {

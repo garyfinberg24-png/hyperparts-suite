@@ -28,6 +28,7 @@ export default class HyperTickerWebPart extends BaseHyperWebPart<IHyperTickerWeb
   };
 
   private _onWizardApply = (result: Partial<IHyperTickerWebPartProps>): void => {
+    this.properties.wizardCompleted = true;
     const props = this.properties;
     const keys = Object.keys(result);
     keys.forEach(function (key: string) {

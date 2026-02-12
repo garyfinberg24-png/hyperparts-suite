@@ -128,10 +128,10 @@ var HyperFaqInner: React.FC<IHyperFaqComponentProps> = function (props) {
 
   // Show wizard on init
   React.useEffect(function () {
-    if (props.isEditMode && props.showWizardOnInit && !props.wizardCompleted) {
+    if (props.isEditMode && !props.wizardCompleted) {
       setWizardOpen(true);
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [props.isEditMode, props.wizardCompleted]);
 
   // Voting
   var voting = useFaqVoting(props.listName || "");

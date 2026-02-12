@@ -117,7 +117,6 @@ const HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
   const filterConfig = props.filterConfig;
   const reactionListName = props.reactionListName;
   const instanceId = props.instanceId;
-  const showWizardOnInit = props.showWizardOnInit;
   const onWizardApply = props.onWizardApply;
 
   // ── Demo mode overrides from store ──
@@ -181,12 +180,12 @@ const HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
   const openWizard = storeState.openWizard;
   const closeWizard = storeState.closeWizard;
 
-  // Auto-open wizard on first load when showWizardOnInit is true and no sources configured
+  // Auto-open wizard on first load in edit mode when not yet completed
   useEffect(function () {
-    if (showWizardOnInit && (!sourcesJson || sourcesJson === "[]") && !props.useSampleData) {
+    if (props.isEditMode && !props.wizardCompleted) {
       openWizard();
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [props.isEditMode, props.wizardCompleted]);
 
   // Build wizard state override from current props (for re-editing)
   const wizardStateOverride = useMemo(function () {

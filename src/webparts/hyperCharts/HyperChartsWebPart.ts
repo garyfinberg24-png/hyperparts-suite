@@ -32,6 +32,7 @@ export default class HyperChartsWebPart extends BaseHyperWebPart<IHyperChartsWeb
       isEditMode: this.displayMode === DisplayMode.Edit,
       onConfigure: (): void => { this.context.propertyPane.open(); },
       onWizardApply: function (result: Partial<IHyperChartsWebPartProps>): void {
+        self.properties.wizardCompleted = true;
         var keys = Object.keys(result);
         keys.forEach(function (key) {
           (self.properties as unknown as Record<string, unknown>)[key] =
