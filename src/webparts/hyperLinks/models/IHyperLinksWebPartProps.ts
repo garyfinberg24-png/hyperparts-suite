@@ -7,6 +7,8 @@ import type {
   HyperLinksBorderRadius,
   HyperLinksAlignment,
   HyperLinksBackgroundMode,
+  HyperLinksTextPosition,
+  HyperLinksButtonShape,
 } from "./IHyperLink";
 import type { LinksDataSourceMode } from "./IHyperLinksWizardState";
 
@@ -52,6 +54,10 @@ export interface IHyperLinksWebPartProps extends IBaseHyperWebPartProps {
   iconColor: string;
   /** Active preset style ID (empty = custom) */
   activePresetId: string;
+  /** Text label position relative to icon */
+  textPosition: HyperLinksTextPosition;
+  /** Button shape */
+  buttonShape: HyperLinksButtonShape;
 
   // ── Link Data Source ──
   /** Data source mode: inline, preset, or list */

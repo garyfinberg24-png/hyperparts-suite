@@ -14,6 +14,7 @@ import type { IHyperExplorerWebPartProps } from "../../models/IHyperExplorerWebP
 import LayoutDisplayStep from "./LayoutDisplayStep";
 import PreviewFeaturesStep from "./PreviewFeaturesStep";
 import AdvancedStep from "./AdvancedStep";
+import GovernanceStep from "./GovernanceStep";
 
 // ============================================================
 // HyperExplorer Wizard Config
@@ -68,6 +69,20 @@ var steps: Array<IWizardStepDef<IExplorerWizardState>> = [
     },
     component: AdvancedStep,
   },
+  {
+    id: "governance",
+    label: "Governance & Compliance",
+    shortLabel: "Governance",
+    helpText: function (state: IExplorerWizardState): string {
+      var features: string[] = [];
+      if (state.governance.enableNamingConvention) { features.push("Naming Convention"); }
+      if (state.governance.enableMetadataProfiles) { features.push("Metadata Profiles"); }
+      if (state.governance.enableFilePlan) { features.push("File Plan"); }
+      if (features.length === 0) { return "Enable governance features for document compliance."; }
+      return "Enabled: " + features.join(", ") + ".";
+    },
+    component: GovernanceStep,
+  },
 ];
 
 /** Transform wizard state into web part properties */
@@ -96,10 +111,14 @@ function buildResult(state: IExplorerWizardState): Partial<IHyperExplorerWebPart
     enableCompare: state.advanced.enableCompare,
     enableWatermark: state.advanced.enableWatermark,
     enableRecentFiles: state.advanced.enableRecentFiles,
-    enableFilePlan: state.advanced.enableFilePlan,
+    enableFilePlan: state.governance.enableFilePlan || state.advanced.enableFilePlan,
     useSampleData: state.advanced.useSampleData,
     cacheEnabled: state.advanced.cacheEnabled,
     cacheDuration: state.advanced.cacheDuration,
+
+    // Governance
+    enableNamingConvention: state.governance.enableNamingConvention,
+    enableMetadataProfiles: state.governance.enableMetadataProfiles,
 
     // Mark wizard as done
     wizardCompleted: true,
@@ -175,6 +194,17 @@ function buildSummary(state: IExplorerWizardState): IWizardSummaryRow[] {
     type: "badgeGreen",
   });
 
+  // Governance
+  var govOpts: string[] = [];
+  if (state.governance.enableNamingConvention) { govOpts.push("Naming Convention"); }
+  if (state.governance.enableMetadataProfiles) { govOpts.push("Metadata Profiles"); }
+  if (state.governance.enableFilePlan) { govOpts.push("File Plan"); }
+  rows.push({
+    label: "Governance",
+    value: govOpts.length > 0 ? govOpts.join(", ") : "None",
+    type: govOpts.length > 0 ? "badgeGreen" : "text",
+  });
+
   // Sample Data
   rows.push({
     label: "Sample Data",
@@ -229,6 +259,11 @@ export function buildStateFromProps(props: IHyperExplorerWebPartProps): IExplore
       useSampleData: !!props.useSampleData,
       cacheEnabled: props.cacheEnabled !== false,
       cacheDuration: props.cacheDuration || 300,
+    },
+    governance: {
+      enableNamingConvention: !!props.enableNamingConvention,
+      enableMetadataProfiles: !!props.enableMetadataProfiles,
+      enableFilePlan: !!props.enableFilePlan,
     },
   };
 }

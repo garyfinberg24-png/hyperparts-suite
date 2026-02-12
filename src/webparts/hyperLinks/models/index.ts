@@ -7,7 +7,10 @@ export type {
   HyperLinksBorderRadius,
   HyperLinksAlignment,
   HyperLinksBackgroundMode,
+  HyperLinksTextPosition,
+  HyperLinksButtonShape,
   IHyperLinksBackground,
+  IHyperLinksStylePreset,
   IHyperLinkPresetStyle,
   IHyperLink,
   IHyperLinkGroup,
@@ -18,6 +21,7 @@ export {
   DEFAULT_BACKGROUND,
   DEFAULT_HYPER_LINK,
   SAMPLE_LINKS,
+  STYLE_PRESETS,
 } from "./IHyperLink";
 
 export type { IHyperLinksWebPartProps } from "./IHyperLinksWebPartProps";

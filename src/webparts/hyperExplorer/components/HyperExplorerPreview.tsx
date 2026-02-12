@@ -7,6 +7,8 @@ export interface IHyperExplorerPreviewProps {
   file: IExplorerFile;
   previewMode: PreviewMode;
   siteUrl: string;
+  /** When true, show placeholder preview instead of loading real URLs */
+  useSampleData?: boolean;
   onClose: () => void;
 }
 
@@ -41,14 +43,67 @@ function getPreviewType(file: IExplorerFile): string {
   return "unsupported";
 }
 
+/** Category → emoji icon mapping for placeholder preview */
+var PREVIEW_ICONS: Record<string, string> = {
+  image: "\uD83D\uDDBC\uFE0F",
+  video: "\uD83C\uDFA5",
+  pdf: "\uD83D\uDCCB",
+  wopi: "\uD83D\uDCC4",
+  unsupported: "\uD83D\uDCC3",
+};
+
 var HyperExplorerPreview: React.FC<IHyperExplorerPreviewProps> = function (props) {
   var file = props.file;
   var previewType = getPreviewType(file);
 
+  // Detect sample data: no siteUrl or serverRelativeUrl contains /sites/contoso/ (fake sample path)
+  var isSamplePreview = !props.siteUrl ||
+    props.siteUrl.length === 0 ||
+    !!props.useSampleData ||
+    (file.serverRelativeUrl && file.serverRelativeUrl.indexOf("/sites/contoso/") !== -1);
+
   // Build preview content
   var previewContent: React.ReactNode;
 
-  if (previewType === "image") {
+  // Sample data → show styled placeholder instead of broken iframe/img
+  if (isSamplePreview) {
+    var icon = PREVIEW_ICONS[previewType] || "\uD83D\uDCC3";
+    previewContent = React.createElement("div", {
+      style: {
+        display: "flex",
+        flexDirection: "column" as const,
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "40px 24px",
+        textAlign: "center" as const,
+        background: "linear-gradient(145deg, #f7f7f7, #eef2f7)",
+        minHeight: "200px",
+        borderRadius: "8px",
+      },
+    },
+      React.createElement("span", { style: { fontSize: "56px", lineHeight: "1", marginBottom: "12px" } }, icon),
+      React.createElement("p", { style: { fontSize: "15px", fontWeight: 600, color: "#323130", margin: "0 0 4px 0" } }, file.name),
+      React.createElement("p", { style: { fontSize: "12px", color: "#605e5c", margin: "0 0 8px 0" } },
+        previewType === "wopi" ? "Office Document Preview" :
+        previewType === "pdf" ? "PDF Document Preview" :
+        previewType === "image" ? "Image Preview" :
+        previewType === "video" ? "Video Preview" :
+        "File Preview"
+      ),
+      React.createElement("span", {
+        style: {
+          display: "inline-block",
+          padding: "4px 12px",
+          background: "#fff3cd",
+          border: "1px solid #ffc107",
+          borderRadius: "4px",
+          fontSize: "11px",
+          color: "#856404",
+          marginTop: "8px",
+        },
+      }, "Sample data \u2014 connect a real library for live preview")
+    );
+  } else if (previewType === "image") {
     var imgUrl = buildDirectUrl(props.siteUrl, file.serverRelativeUrl);
     previewContent = React.createElement("div", { className: styles.previewImageContainer },
       React.createElement("img", {

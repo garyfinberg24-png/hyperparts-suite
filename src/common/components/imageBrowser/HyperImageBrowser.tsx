@@ -3,6 +3,24 @@ import { HyperModal } from "../HyperModal";
 import { getSP, getContext } from "../../services/HyperPnP";
 import styles from "./HyperImageBrowser.module.scss";
 
+/** Safely extract ServerRelativeUrl from a PnPjs v4 upload result with fallbacks */
+function _extractServerRelativeUrl(uploadResult: unknown, folderPath: string, fileName: string): string {
+  var ur = uploadResult as Record<string, unknown>;
+  // Pattern 1: { data: { ServerRelativeUrl: "..." } }
+  if (ur.data && typeof ur.data === "object") {
+    var data = ur.data as Record<string, unknown>;
+    if (typeof data.ServerRelativeUrl === "string") {
+      return data.ServerRelativeUrl;
+    }
+  }
+  // Pattern 2: { ServerRelativeUrl: "..." } (top-level)
+  if (typeof ur.ServerRelativeUrl === "string") {
+    return ur.ServerRelativeUrl;
+  }
+  // Fallback: construct from known folder path + file name
+  return folderPath + "/" + fileName;
+}
+
 // ── Props ──────────────────────────────────────────────────────────────────────
 
 export interface IHyperImageBrowserProps {
@@ -342,8 +360,7 @@ const HyperImageBrowserInner: React.FC<IHyperImageBrowserProps> = function (prop
             .addUsingPath(file.name, content, { Overwrite: true });
         })
         .then(function (uploadResult: unknown) {
-          const ur = uploadResult as { data: { ServerRelativeUrl: string } };
-          const uploadedUrl = ur.data.ServerRelativeUrl;
+          var uploadedUrl = _extractServerRelativeUrl(uploadResult, uploadFolderPath, file.name);
           setUploadStatus("Uploaded: " + file.name);
           setSelectedImageUrl(uploadedUrl);
           setUploading(false);
@@ -353,8 +370,7 @@ const HyperImageBrowserInner: React.FC<IHyperImageBrowserProps> = function (prop
           sp.web.getFolderByServerRelativePath(uploadFolderPath).files
             .addUsingPath(file.name, content, { Overwrite: true })
             .then(function (uploadResult: unknown) {
-              const ur = uploadResult as { data: { ServerRelativeUrl: string } };
-              const uploadedUrl = ur.data.ServerRelativeUrl;
+              var uploadedUrl = _extractServerRelativeUrl(uploadResult, uploadFolderPath, file.name);
               setUploadStatus("Uploaded: " + file.name);
               setSelectedImageUrl(uploadedUrl);
               setUploading(false);

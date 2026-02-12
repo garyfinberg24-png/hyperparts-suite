@@ -40,6 +40,25 @@ export default class HyperChartsWebPart extends BaseHyperWebPart<IHyperChartsWeb
         self.render();
         self.context.propertyPane.refresh();
       },
+      onChartUpdate: function (chartId: string, changes: Record<string, unknown>): void {
+        var charts = parseCharts(self.properties.charts);
+        charts.forEach(function (c: IHyperChart) {
+          if (c.id === chartId) {
+            var changeKeys = Object.keys(changes);
+            changeKeys.forEach(function (key) {
+              (c as unknown as Record<string, unknown>)[key] = changes[key];
+            });
+          }
+        });
+        self._updateCharts(charts);
+      },
+      onChartReorder: function (fromIndex: number, toIndex: number): void {
+        var charts = parseCharts(self.properties.charts);
+        if (fromIndex < 0 || fromIndex >= charts.length || toIndex < 0 || toIndex >= charts.length) return;
+        var item = charts.splice(fromIndex, 1)[0];
+        charts.splice(toIndex, 0, item);
+        self._updateCharts(charts);
+      },
     };
     const element: React.ReactElement<IHyperChartsComponentProps> =
       React.createElement(HyperCharts, props);

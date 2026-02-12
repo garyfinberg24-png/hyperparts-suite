@@ -24,6 +24,8 @@ export const ButtonLayout: React.FC<ILinksLayoutProps> = function (props) {
           className: styles.button,
           textColor: props.textColor,
           iconColor: props.iconColor,
+          textPosition: props.textPosition,
+          buttonShape: props.buttonShape,
         })
       );
     })

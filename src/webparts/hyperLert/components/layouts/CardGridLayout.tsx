@@ -3,8 +3,7 @@ import type { ILertLayoutProps } from "./ILertLayoutProps";
 import type { ILertAlert } from "../../models/ILertAlert";
 import { getSeverityColor, getSeverityIcon } from "../../models/IHyperLertV2Enums";
 import type { LertSeverityV2, LertAlertState } from "../../models/IHyperLertV2Enums";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const styles: Record<string, string> = require("./CardGridLayout.module.scss");
+import styles from "./CardGridLayout.module.scss";
 
 function formatTimeAgo(isoString: string): string {
   if (!isoString) return "";

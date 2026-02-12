@@ -1,8 +1,7 @@
 import * as React from "react";
 import type { ILertKpiCard } from "../models/ILertKpi";
 import { formatKpiValue } from "../models/ILertKpi";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const styles: Record<string, string> = require("./HyperLertKpiBar.module.scss");
+import styles from "./HyperLertKpiBar.module.scss";
 
 export interface IHyperLertKpiBarProps {
   kpiCards: ILertKpiCard[];

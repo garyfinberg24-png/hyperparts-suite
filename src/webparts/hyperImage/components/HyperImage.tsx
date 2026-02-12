@@ -43,6 +43,8 @@ export interface IHyperImageComponentProps extends IHyperImageWebPartProps {
   onImageSelect?: (imageUrl: string) => void;
   /** Callback when user selects a preset layout from the gallery */
   onLayoutSelect?: (preset: IPresetLayout) => void;
+  /** Callback when the visual editor applies changes — persists to web part props */
+  onEditorApply?: (changes: IEditorChanges) => void;
   onConfigure?: () => void;
 }
 
@@ -235,18 +237,38 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
   var alt = props.isDecorative ? "" : (props.altText || "Image");
   var ariaHidden = props.isDecorative ? "true" : undefined;
 
+  // ── Progressive loading state ──
+  var imgLoadedState = React.useState(!props.progressiveLoad);
+  var imgLoaded = imgLoadedState[0];
+  var setImgLoaded = imgLoadedState[1];
+
+  var imgClass = styles.hyperImageImg
+    + (props.progressiveLoad && !imgLoaded ? " " + styles.progressiveBlur : "")
+    + (props.progressiveLoad && imgLoaded ? " " + styles.progressiveSharp : "");
+
   // ── Build image element ──
   var imgElement = React.createElement("img", {
-    className: styles.hyperImageImg,
+    className: imgClass,
     src: imageUrl,
     alt: alt,
     "aria-hidden": ariaHidden,
     loading: props.lazyLoad ? "lazy" : undefined,
     style: computedStyles.imageStyle,
+    onLoad: props.progressiveLoad ? function () { setImgLoaded(true); } : undefined,
   });
 
   // ── Build figure with optional text overlay ──
   var figureChildren: React.ReactNode[] = [imgElement];
+
+  // Link indicator badge (shown in edit mode when a link is set)
+  if (props.linkUrl && props.isEditMode) {
+    figureChildren.push(
+      React.createElement("span", {
+        key: "link-badge",
+        className: styles.linkIndicator,
+      }, "\uD83D\uDD17 " + (props.linkTarget === "_blank" ? "New Window" : "Link"))
+    );
+  }
 
   // Text overlay (on image)
   if (textOverlay.enabled && textOverlay.placement === TextPlacement.Overlay) {
@@ -332,13 +354,16 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
     }, "Sample Image \u2014 Turn off \"Use Sample Image\" in the property pane and add your own image."));
   }
 
-  containerChildren.push(wrappedFigure);
-
-  // Text caption (below image) — callout box
+  // Wrap figure + caption in a card enclosure when text is "below"
   if (textOverlay.enabled && textOverlay.placement === TextPlacement.Below) {
     containerChildren.push(
-      React.createElement(HyperImageTextOverlay, { key: "caption", config: textOverlay })
+      React.createElement("div", { key: "card", className: styles.imageCard },
+        wrappedFigure,
+        React.createElement(HyperImageTextOverlay, { config: textOverlay })
+      )
     );
+  } else {
+    containerChildren.push(wrappedFigure);
   }
 
   // Wizard modal (rendered alongside main content, not as early return)
@@ -351,6 +376,39 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
         onApply: handleWizardApply,
         currentProps: props.wizardCompleted ? props : undefined,
       })
+    );
+  }
+
+  // ── Debug panel (when debugMode is on) ──
+  if (props.debugMode) {
+    var debugEntries: Array<[string, string]> = [
+      ["Shape", String(effectiveShape)],
+      ["Filter", String(effectiveFilterPreset)],
+      ["Hover", String(effectiveHover)],
+      ["Layout", String(effectiveLayout)],
+      ["Shadow", String(props.shadowPreset)],
+      ["Entrance", String(props.entranceAnimation)],
+      ["Object Fit", String(props.objectFit)],
+      ["Aspect Ratio", String(props.aspectRatio)],
+      ["Lazy Load", String(props.lazyLoad)],
+      ["Progressive", String(props.progressiveLoad)],
+      ["Text Enabled", String(textOverlay.enabled)],
+      ["Image URL", imageUrl ? imageUrl.substring(0, 80) : "(none)"],
+    ];
+    var debugItems: React.ReactNode[] = [];
+    debugEntries.forEach(function (entry) {
+      debugItems.push(React.createElement("dt", { key: "dt-" + entry[0] }, entry[0] + ":"));
+      debugItems.push(React.createElement("dd", { key: "dd-" + entry[0] }, entry[1]));
+    });
+    containerChildren.push(
+      React.createElement("dl", { key: "debug", className: styles.debugPanel }, debugItems)
+    );
+  }
+
+  // ── Custom CSS injection ──
+  if (props.customCss) {
+    containerChildren.push(
+      React.createElement("style", { key: "custom-css" }, props.customCss)
     );
   }
 
@@ -501,10 +559,10 @@ var HyperImageWithLightbox: React.FC<IHyperImageComponentProps> = function (prop
   var imageUrl = props.useSampleData ? getSampleImageUrl() : props.imageUrl;
 
   /** Called when the visual editor "Apply" button is clicked */
-  function handleEditorApply(_changes: IEditorChanges): void {
-    // In a full integration the web part class would update its properties.
-    // For now the editor stores changes locally; a future enhancement
-    // will use a callback prop to persist changes back to the property bag.
+  function handleEditorApply(changes: IEditorChanges): void {
+    if (props.onEditorApply) {
+      props.onEditorApply(changes);
+    }
   }
 
   /** Called when user selects an image from the SP browser */

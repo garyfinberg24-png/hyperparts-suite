@@ -55,17 +55,33 @@ const RollerDexLayoutInner: React.FC<IRollerDexLayoutProps> = function (props) {
     goToIndex(activeIndex - 1);
   }, [activeIndex, goToIndex]);
 
-  // Mouse wheel handler
+  // Mouse wheel handler with accumulated delta threshold to slow scrolling
+  var wheelAccumRef = React.useRef<number>(0);
+  var wheelCooldownRef = React.useRef<boolean>(false);
+
   React.useEffect(function () {
     const container = containerRef.current;
     if (!container) return undefined;
 
+    var WHEEL_THRESHOLD = 120; // Accumulated deltaY needed to advance one card
+    var COOLDOWN_MS = 300;     // Minimum ms between card advances
+
     function handleWheel(e: WheelEvent): void {
       e.preventDefault();
-      if (e.deltaY > 0) {
-        goNext();
-      } else {
-        goPrev();
+
+      if (wheelCooldownRef.current) return;
+
+      wheelAccumRef.current += e.deltaY;
+
+      if (Math.abs(wheelAccumRef.current) >= WHEEL_THRESHOLD) {
+        if (wheelAccumRef.current > 0) {
+          goNext();
+        } else {
+          goPrev();
+        }
+        wheelAccumRef.current = 0;
+        wheelCooldownRef.current = true;
+        setTimeout(function () { wheelCooldownRef.current = false; }, COOLDOWN_MS);
       }
     }
 

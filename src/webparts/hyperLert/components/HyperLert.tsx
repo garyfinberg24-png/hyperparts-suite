@@ -28,7 +28,6 @@ import HyperLertHistoryPanel from "./HyperLertHistoryPanel";
 import HyperLertRuleBuilder from "./ruleBuilder/HyperLertRuleBuilder";
 import HyperLertEmailPreview from "./HyperLertEmailPreview";
 import HyperLertDemoBar from "./HyperLertDemoBar";
-import HyperLertKpiBar from "./HyperLertKpiBar";
 import WelcomeStep from "./wizard/WelcomeStep";
 import styles from "./HyperLert.module.scss";
 
@@ -431,10 +430,8 @@ var HyperLertInner: React.FC<IHyperLertComponentProps> = function (props) {
         onAddRule: openRuleBuilder,
         onRefresh: handleRefresh,
       }),
-      // KPI bar
-      props.enableKpiDashboard !== false
-        ? React.createElement(HyperLertKpiBar, { kpiCards: kpiCards })
-        : undefined,
+      // KPI bar is rendered inside the layout component (via showKpi prop),
+      // so we do NOT render it here to avoid duplication.
       // Filter bar (conditionally shown)
       showFilters ? React.createElement(HyperLertFilterBar) : undefined,
       // V2 layout

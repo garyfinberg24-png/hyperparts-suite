@@ -28,6 +28,8 @@ export const GridLayout: React.FC<ILinksLayoutProps> = function (props) {
           className: styles.gridItem,
           textColor: props.textColor,
           iconColor: props.iconColor,
+          textPosition: props.textPosition,
+          buttonShape: props.buttonShape,
         })
       );
     })

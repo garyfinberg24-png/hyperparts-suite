@@ -20,8 +20,17 @@ var LAYOUT_OPTIONS: Array<{ key: DirectoryLayoutMode; label: string }> = [
 
 var CARD_STYLE_OPTIONS: Array<{ key: DirectoryCardStyle; label: string }> = [
   { key: "standard", label: "Standard" },
-  { key: "detailed", label: "Detailed" },
   { key: "compact", label: "Compact" },
+  { key: "detailed", label: "Detailed" },
+  { key: "corporate", label: "Corporate" },
+  { key: "modern", label: "Modern" },
+  { key: "minimal", label: "Minimal" },
+  { key: "executive", label: "Executive" },
+  { key: "glassmorphic", label: "Glass" },
+  { key: "neon", label: "Neon" },
+  { key: "gradient", label: "Gradient" },
+  { key: "elevated", label: "Elevated" },
+  { key: "outlined", label: "Outlined" },
 ];
 
 function getLayoutLabel(key: DirectoryLayoutMode): string {

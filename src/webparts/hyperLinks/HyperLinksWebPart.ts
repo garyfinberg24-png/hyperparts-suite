@@ -17,12 +17,12 @@ import {
 
 import * as strings from "HyperLinksWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
-import { createGroupHeaderField, createAccordionField } from "../../common/propertyPane";
+import { createGroupHeaderField, createAccordionField, createColorPickerField } from "../../common/propertyPane";
 import type { IAccordionItem, IAccordionField } from "../../common/propertyPane";
 import HyperLinks from "./components/HyperLinks";
 import type { IHyperLinksComponentProps } from "./components/HyperLinks";
 import type { IHyperLinksWebPartProps, IHyperLink } from "./models";
-import { SAMPLE_LINKS } from "./models";
+import { SAMPLE_LINKS, STYLE_PRESETS } from "./models";
 import {
   parseLinks,
   stringifyLinks,
@@ -150,6 +150,12 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
     }
     if (this.properties.activePresetId === undefined) {
       this.properties.activePresetId = "";
+    }
+    if (this.properties.textPosition === undefined) {
+      this.properties.textPosition = "right";
+    }
+    if (this.properties.buttonShape === undefined) {
+      this.properties.buttonShape = "default";
     }
     if (this.properties.linkDataSource === undefined) {
       this.properties.linkDataSource = "inline";
@@ -319,7 +325,7 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
           key: "backgroundColor",
           label: strings.LinkBackgroundColorLabel,
           value: link.backgroundColor || "",
-          type: "text",
+          type: "color",
           onChange: function (newValue: string): void {
             const currentLinks = parseLinks(self.properties.links);
             const idx = self._findLinkIndex(currentLinks, link.id);
@@ -494,6 +500,31 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
     oldValue: unknown,
     newValue: unknown
   ): void {
+    // Style preset selection — apply all preset values at once
+    if (propertyPath === "activePresetId" && newValue) {
+      var presetId = String(newValue);
+      var matchedPreset: typeof STYLE_PRESETS[0] | undefined;
+      for (var pi = 0; pi < STYLE_PRESETS.length; pi++) {
+        if (STYLE_PRESETS[pi].id === presetId) {
+          matchedPreset = STYLE_PRESETS[pi];
+          break;
+        }
+      }
+      if (matchedPreset) {
+        this.properties.backgroundMode = matchedPreset.backgroundMode;
+        this.properties.backgroundColor = matchedPreset.backgroundColor;
+        this.properties.backgroundGradient = matchedPreset.backgroundGradient;
+        this.properties.textColor = matchedPreset.textColor;
+        this.properties.iconColor = matchedPreset.iconColor;
+        this.properties.hoverEffect = matchedPreset.hoverEffect;
+        this.properties.borderRadius = matchedPreset.borderRadius;
+        this.properties.buttonShape = matchedPreset.buttonShape;
+        this.render();
+        this.context.propertyPane.refresh();
+      }
+      return;
+    }
+
     // Per-link title
     if (propertyPath.indexOf("_linkTitle") === 0) {
       const indexStr = propertyPath.substring("_linkTitle".length);
@@ -752,6 +783,44 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
           { key: "large", text: "Large" },
           { key: "round", text: "Round" },
         ],
+      }),
+      PropertyPaneDropdown("textPosition", {
+        label: "Text Position",
+        options: [
+          { key: "right", text: "Right of Icon" },
+          { key: "below", text: "Below Icon" },
+          { key: "above", text: "Above Icon" },
+          { key: "left", text: "Left of Icon" },
+          { key: "hidden", text: "Hidden (Icon Only)" },
+        ],
+      }),
+      PropertyPaneDropdown("buttonShape", {
+        label: "Button Shape",
+        options: [
+          { key: "default", text: "Default" },
+          { key: "square", text: "Square" },
+          { key: "rounded", text: "Rounded" },
+          { key: "pill", text: "Pill" },
+          { key: "circle", text: "Circle" },
+        ],
+      }),
+      PropertyPaneDropdown("activePresetId", {
+        label: "Style Preset",
+        options: [
+          { key: "", text: "(Custom)" },
+          { key: "midnight-blue", text: "Midnight Blue" },
+          { key: "sunset-glow", text: "Sunset Glow" },
+          { key: "ocean-breeze", text: "Ocean Breeze" },
+          { key: "corporate-navy", text: "Corporate Navy" },
+          { key: "fresh-mint", text: "Fresh Mint" },
+          { key: "warm-earth", text: "Warm Earth" },
+          { key: "glass-frost", text: "Glass Frost" },
+          { key: "neon-dark", text: "Neon Dark" },
+          { key: "rose-gold", text: "Rose Gold" },
+          { key: "arctic-white", text: "Arctic White" },
+          { key: "aurora-borealis", text: "Aurora Borealis" },
+          { key: "sunshine-pop", text: "Sunshine Pop" },
+        ],
       })
     );
 
@@ -785,10 +854,15 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
 
     // Conditional background fields
     if (this.properties.backgroundMode === "color") {
+      var selfBg = this;
       page1Fields.push(
-        PropertyPaneTextField("backgroundColor", {
+        createColorPickerField("_backgroundColor", {
           label: strings.BackgroundColorFieldLabel,
-          description: "CSS color (e.g. #f5f5f5, rgba(0,120,212,0.1))",
+          value: this.properties.backgroundColor || "#ffffff",
+          onChange: function (newColor: string): void {
+            selfBg.properties.backgroundColor = newColor;
+            selfBg.render();
+          },
         })
       );
     }
@@ -814,14 +888,23 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
 
     // Text / icon color overrides (when background is active)
     if (this.properties.backgroundMode !== "none") {
+      var selfColors = this;
       page1Fields.push(
-        PropertyPaneTextField("textColor", {
+        createColorPickerField("_textColor", {
           label: strings.TextColorFieldLabel,
-          description: "CSS color for link text (e.g. #ffffff)",
+          value: this.properties.textColor || "#323130",
+          onChange: function (newColor: string): void {
+            selfColors.properties.textColor = newColor;
+            selfColors.render();
+          },
         }),
-        PropertyPaneTextField("iconColor", {
+        createColorPickerField("_iconColor", {
           label: strings.IconColorFieldLabel,
-          description: "CSS color for icons (e.g. #ffffff)",
+          value: this.properties.iconColor || "#323130",
+          onChange: function (newColor: string): void {
+            selfColors.properties.iconColor = newColor;
+            selfColors.render();
+          },
         })
       );
     }

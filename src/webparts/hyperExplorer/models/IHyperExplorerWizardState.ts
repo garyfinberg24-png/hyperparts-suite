@@ -43,11 +43,19 @@ export interface IExplorerWizardAdvanced {
   cacheDuration: number;
 }
 
+/** Step 4: Governance & Compliance */
+export interface IExplorerWizardGovernance {
+  enableNamingConvention: boolean;
+  enableMetadataProfiles: boolean;
+  enableFilePlan: boolean;
+}
+
 /** Combined wizard state */
 export interface IExplorerWizardState {
   layoutDisplay: IExplorerWizardLayoutDisplay;
   previewFeatures: IExplorerWizardPreviewFeatures;
   advanced: IExplorerWizardAdvanced;
+  governance: IExplorerWizardGovernance;
 }
 
 /** Default wizard state */
@@ -79,6 +87,11 @@ export var DEFAULT_EXPLORER_WIZARD_STATE: IExplorerWizardState = {
     useSampleData: true,
     cacheEnabled: true,
     cacheDuration: 300,
+  },
+  governance: {
+    enableNamingConvention: false,
+    enableMetadataProfiles: false,
+    enableFilePlan: false,
   },
 };
 

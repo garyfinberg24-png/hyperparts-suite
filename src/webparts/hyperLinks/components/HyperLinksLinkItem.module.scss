@@ -194,3 +194,82 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+// ── Text position variants ──
+
+.textBelow {
+  flex-direction: column;
+  text-align: center;
+
+  .linkText {
+    align-items: center;
+  }
+}
+
+.textAbove {
+  flex-direction: column-reverse;
+  text-align: center;
+
+  .linkText {
+    align-items: center;
+  }
+}
+
+.textLeft {
+  flex-direction: row-reverse;
+}
+
+.textHidden {
+  justify-content: center;
+}
+
+// ── Button shape variants ──
+
+.shapeSquare {
+  border-radius: 0;
+  padding: 12px 16px;
+  background: $ms-color-neutralLighter;
+  border: 1px solid $ms-color-neutralLight;
+}
+
+.shapeRounded {
+  border-radius: 12px;
+  padding: 10px 18px;
+  background: $ms-color-neutralLighter;
+  border: 1px solid $ms-color-neutralLight;
+}
+
+.shapePill {
+  border-radius: 999px;
+  padding: 8px 24px;
+  background: $ms-color-neutralLighter;
+  border: 1px solid $ms-color-neutralLight;
+}
+
+.shapeCircle {
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  padding: 0;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: $ms-color-neutralLighter;
+  border: 1px solid $ms-color-neutralLight;
+  gap: 4px;
+
+  .linkText {
+    align-items: center;
+  }
+
+  .linkTitle {
+    font-size: $ms-font-size-10;
+    white-space: nowrap;
+    max-width: 68px;
+    text-align: center;
+  }
+
+  .linkDescription {
+    display: none;
+  }
+}

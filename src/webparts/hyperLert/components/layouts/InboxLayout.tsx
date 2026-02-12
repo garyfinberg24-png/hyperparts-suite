@@ -4,8 +4,7 @@ import type { ILertAlert } from "../../models/ILertAlert";
 import { getSeverityColor } from "../../models/IHyperLertV2Enums";
 import type { LertSeverityV2 } from "../../models/IHyperLertV2Enums";
 import HyperLertAlertDetail from "../HyperLertAlertDetail";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const styles: Record<string, string> = require("./InboxLayout.module.scss");
+import styles from "./InboxLayout.module.scss";
 
 type InboxTab = "all" | "unread" | "critical" | "archived";
 

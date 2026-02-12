@@ -1,5 +1,12 @@
 import * as React from "react";
-import type { IHyperLink, HyperLinksIconSize, HyperLinksHoverEffect, HyperLinksBorderRadius } from "../models";
+import type {
+  IHyperLink,
+  HyperLinksIconSize,
+  HyperLinksHoverEffect,
+  HyperLinksBorderRadius,
+  HyperLinksTextPosition,
+  HyperLinksButtonShape,
+} from "../models";
 import { resolveIcon } from "../utils/iconResolver";
 import styles from "./HyperLinksLinkItem.module.scss";
 
@@ -19,6 +26,10 @@ export interface IHyperLinksLinkItemProps {
   textColor?: string;
   /** Override icon color (CSS color) from container background */
   iconColor?: string;
+  /** Text label position relative to icon */
+  textPosition?: HyperLinksTextPosition;
+  /** Button shape */
+  buttonShape?: HyperLinksButtonShape;
 }
 
 function capitalize(str: string): string {
@@ -50,6 +61,20 @@ export const HyperLinksLinkItem: React.FC<IHyperLinksLinkItemProps> = React.memo
     if (resolved) {
       const sizeClass = (styles as Record<string, string>)[resolved.sizeClass];
       if (sizeClass) classList.push(sizeClass);
+    }
+
+    // Text position
+    var textPos = props.textPosition || "right";
+    if (textPos !== "right") {
+      var posClass = (styles as Record<string, string>)["text" + capitalize(textPos)];
+      if (posClass) classList.push(posClass);
+    }
+
+    // Button shape
+    var btnShape = props.buttonShape || "default";
+    if (btnShape !== "default") {
+      var shapeClass = (styles as Record<string, string>)["shape" + capitalize(btnShape)];
+      if (shapeClass) classList.push(shapeClass);
     }
 
     // Inline style for custom background color + text/icon color overrides
@@ -99,19 +124,21 @@ export const HyperLinksLinkItem: React.FC<IHyperLinksLinkItemProps> = React.memo
       }
     }
 
-    // Text content
-    const textChildren: React.ReactNode[] = [];
-    textChildren.push(
-      React.createElement("span", { key: "title", className: styles.linkTitle }, link.title)
-    );
-    if (props.showDescription && link.description) {
+    // Text content (hidden when textPosition is "hidden")
+    if (textPos !== "hidden") {
+      const textChildren: React.ReactNode[] = [];
       textChildren.push(
-        React.createElement("span", { key: "desc", className: styles.linkDescription }, link.description)
+        React.createElement("span", { key: "title", className: styles.linkTitle }, link.title)
+      );
+      if (props.showDescription && link.description) {
+        textChildren.push(
+          React.createElement("span", { key: "desc", className: styles.linkDescription }, link.description)
+        );
+      }
+      children.push(
+        React.createElement("span", { key: "text", className: styles.linkText }, textChildren)
       );
     }
-    children.push(
-      React.createElement("span", { key: "text", className: styles.linkText }, textChildren)
-    );
 
     // Extra children (e.g. chevron for list layout)
     if (props.children) {

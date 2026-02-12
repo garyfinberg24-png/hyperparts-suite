@@ -57,6 +57,7 @@ export const HyperModal: React.FC<IHyperModalProps> = (props) => {
       alignItems: isPanel ? "stretch" : "center",
       justifyContent: isPanel ? "flex-end" : "center",
       zIndex: 1000000,
+      pointerEvents: "auto" as const,
     },
     onClick: (e: React.MouseEvent) => {
       if (e.target === e.currentTarget) onClose();

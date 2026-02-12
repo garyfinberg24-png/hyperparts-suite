@@ -73,7 +73,9 @@ export interface IHyperImageWebPartProps extends IBaseHyperWebPartProps {
 
   /* ── Performance ── */
   lazyLoad: boolean;
+  progressiveLoad: boolean;
 
-  /* ── Debug ── */
+  /* ── Debug / Advanced ── */
   debugMode: boolean;
+  customCss: string;
 }

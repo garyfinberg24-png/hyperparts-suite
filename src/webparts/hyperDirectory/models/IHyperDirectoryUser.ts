@@ -34,7 +34,19 @@ export interface IHyperDirectoryUser {
 export type DirectoryLayoutMode = "grid" | "list" | "compact" | "card" | "masonry" | "rollerDex" | "orgChart";
 
 /** Card display style */
-export type DirectoryCardStyle = "standard" | "compact" | "detailed";
+export type DirectoryCardStyle =
+  | "standard"      // Clean horizontal layout
+  | "compact"       // Minimal, small padding
+  | "detailed"      // Vertical centered, all fields
+  | "corporate"     // Navy gradient header band, structured info
+  | "modern"        // Rounded, vibrant accent bar, shadow
+  | "minimal"       // Ultra clean, monochrome, thin borders
+  | "executive"     // Large photo, gold accent, premium feel
+  | "glassmorphic"  // Frosted glass, blur backdrop
+  | "neon"          // Dark background, glowing accent border
+  | "gradient"      // Full gradient background, white text
+  | "elevated"      // Deep shadow, floating card effect
+  | "outlined";     // No fill, thick colored border only
 
 /** Photo size options */
 export type DirectoryPhotoSize = "small" | "medium" | "large";

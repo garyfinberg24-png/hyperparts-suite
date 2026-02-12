@@ -133,7 +133,7 @@ export default class HyperBirthdaysWebPart extends BaseHyperWebPart<IHyperBirthd
       this.properties.selfServiceListName = "";
     }
     if (this.properties.maxItems === undefined) {
-      this.properties.maxItems = 50;
+      this.properties.maxItems = 20;
     }
     if (this.properties.cacheDuration === undefined) {
       this.properties.cacheDuration = 300;
@@ -322,9 +322,9 @@ export default class HyperBirthdaysWebPart extends BaseHyperWebPart<IHyperBirthd
                 }),
                 PropertyPaneSlider("maxItems", {
                   label: strings.MaxItemsFieldLabel,
-                  min: 10,
-                  max: 200,
-                  step: 10,
+                  min: 1,
+                  max: 100,
+                  step: 1,
                 }),
                 PropertyPaneSlider("cacheDuration", {
                   label: strings.CacheDurationFieldLabel,

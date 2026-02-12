@@ -31,6 +31,10 @@ export interface IHyperChartsComponentProps extends IHyperChartsWebPartProps {
   onConfigure?: () => void;
   /** Callback from web part class to persist wizard result */
   onWizardApply?: (result: Partial<IHyperChartsWebPartProps>) => void;
+  /** Callback to update a single chart property (e.g. colSpan via resize) */
+  onChartUpdate?: (chartId: string, changes: Record<string, unknown>) => void;
+  /** Callback to reorder charts via drag-drop */
+  onChartReorder?: (fromIndex: number, toIndex: number) => void;
 }
 
 /** Convert IChartDatasetResult[] to ICanvasDataset[] */
@@ -350,6 +354,104 @@ const HyperChartsInner: React.FC<IHyperChartsComponentProps> = function (props) 
     onRefresh: store.incrementRefreshTick,
   });
 
+  // ─── Drag-drop state (must be before any early returns — React hooks rules) ───
+  var dragIndexState = React.useState<number | undefined>(undefined);
+  var dragIndex = dragIndexState[0];
+  var setDragIndex = dragIndexState[1];
+
+  var dragOverIndexState = React.useState<number | undefined>(undefined);
+  var dragOverIndex = dragOverIndexState[0];
+  var setDragOverIndex = dragOverIndexState[1];
+
+  // ─── Resize state ───
+  // eslint-disable-next-line @rushstack/no-new-null
+  var resizeStartRef = React.useRef<{ chartId: string; startX: number; startColSpan: number; cellWidth: number } | null>(null);
+
+  // Manual refresh handler for toolbar (must be before early returns — hook)
+  var handleManualRefresh = React.useCallback(function () {
+    store.incrementRefreshTick();
+  }, [store]);
+
+  // ─── Resize handler (must be before early returns — hook) ───
+  var handleResizeMouseDown = React.useCallback(function (
+    e: React.MouseEvent<HTMLDivElement>,
+    chartId: string,
+    currentColSpan: number,
+    gridColumns: number
+  ): void {
+    e.preventDefault();
+    e.stopPropagation();
+    var target = e.currentTarget as HTMLElement;
+    var card = target.parentElement;
+    if (!card) return;
+    var cardRect = card.getBoundingClientRect();
+    var cellWidth = cardRect.width / currentColSpan;
+
+    resizeStartRef.current = {
+      chartId: chartId,
+      startX: e.clientX,
+      startColSpan: currentColSpan,
+      cellWidth: cellWidth,
+    };
+
+    var handleMouseMove = function (moveEvt: MouseEvent): void {
+      if (!resizeStartRef.current) return;
+      var deltaX = moveEvt.clientX - resizeStartRef.current.startX;
+      var spanDelta = Math.round(deltaX / resizeStartRef.current.cellWidth);
+      var newSpan = resizeStartRef.current.startColSpan + spanDelta;
+      // Clamp to valid range
+      if (newSpan < 1) newSpan = 1;
+      if (newSpan > 4) newSpan = 4;
+      if (newSpan > gridColumns) newSpan = gridColumns;
+      // Update live via callback
+      if (props.onChartUpdate) {
+        props.onChartUpdate(resizeStartRef.current.chartId, { colSpan: newSpan });
+      }
+    };
+
+    var handleMouseUp = function (): void {
+      // eslint-disable-next-line @rushstack/no-new-null
+      resizeStartRef.current = null;
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  }, [props.onChartUpdate]);
+
+  // ─── Drag-drop handlers (must be before early returns — hooks) ───
+  var handleDragStart = React.useCallback(function (index: number, e: React.DragEvent<HTMLElement>): void {
+    setDragIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", String(index));
+  }, []);
+
+  var handleDragOver = React.useCallback(function (index: number, e: React.DragEvent<HTMLElement>): void {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    setDragOverIndex(index);
+  }, []);
+
+  var handleDragLeave = React.useCallback(function (): void {
+    setDragOverIndex(undefined);
+  }, []);
+
+  var handleDrop = React.useCallback(function (toIndex: number, e: React.DragEvent<HTMLElement>): void {
+    e.preventDefault();
+    var fromIndex = dragIndex;
+    setDragIndex(undefined);
+    setDragOverIndex(undefined);
+    if (fromIndex !== undefined && fromIndex !== toIndex && props.onChartReorder) {
+      props.onChartReorder(fromIndex, toIndex);
+    }
+  }, [dragIndex, props.onChartReorder]);
+
+  var handleDragEnd = React.useCallback(function (): void {
+    setDragIndex(undefined);
+    setDragOverIndex(undefined);
+  }, []);
+
   // Build content children array
   var contentChildren: React.ReactNode[] = [];
 
@@ -424,34 +526,113 @@ const HyperChartsInner: React.FC<IHyperChartsComponentProps> = function (props) 
     });
   }
 
-  // Manual refresh handler for toolbar
-  var handleManualRefresh = React.useCallback(function () {
-    store.incrementRefreshTick();
-  }, [store]);
-
   // Build chart elements with grid span styles
   var chartElements: React.ReactElement[] = [];
-  allCharts.forEach(function (chart) {
+  allCharts.forEach(function (chart, index) {
     var cardStyle: React.CSSProperties = {
       gridColumn: "span " + chart.colSpan,
       gridRow: "span " + chart.rowSpan,
     };
-    chartElements.push(
-      React.createElement(
-        "div",
-        { key: chart.id, style: cardStyle },
-        React.createElement(HyperChartsMetricRenderer, {
-          chart: chart,
-          refreshTick: store.refreshTick,
-          cacheDuration: props.cacheDuration || 300,
-          enableDrillDown: props.enableDrillDown,
-          enableConditionalColors: props.enableConditionalColors,
-          enableComparison: props.enableComparison,
-          enableAccessibilityTables: props.enableAccessibilityTables,
-          enableExport: props.enableExport,
-          instanceId: props.instanceId,
+
+    // Build wrapper class names
+    var wrapperClasses = styles.chartCardWrapper;
+    if (props.isEditMode && dragIndex === index) {
+      wrapperClasses = wrapperClasses + " " + styles.dragging;
+    }
+    if (props.isEditMode && dragOverIndex === index && dragIndex !== index) {
+      wrapperClasses = wrapperClasses + " " + styles.dragOver;
+    }
+
+    // Children of wrapper
+    var wrapperChildren: React.ReactNode[] = [];
+
+    // Drag handle (edit mode only)
+    if (props.isEditMode) {
+      wrapperChildren.push(
+        React.createElement(
+          "button",
+          {
+            key: "dragHandle",
+            className: styles.dragHandle,
+            draggable: true,
+            onDragStart: function (e: React.DragEvent<HTMLElement>): void { handleDragStart(index, e); },
+            "aria-label": "Drag to reorder " + chart.title,
+            type: "button",
+          },
+          React.createElement("span", { className: styles.dragHandleDots },
+            React.createElement("span", { className: styles.dragHandleDotRow }),
+            React.createElement("span", { className: styles.dragHandleDotRow }),
+            React.createElement("span", { className: styles.dragHandleDotRow })
+          )
+        )
+      );
+    }
+
+    // Metric renderer (the actual chart)
+    wrapperChildren.push(
+      React.createElement(HyperChartsMetricRenderer, {
+        key: "metric",
+        chart: chart,
+        refreshTick: store.refreshTick,
+        cacheDuration: props.cacheDuration || 300,
+        enableDrillDown: props.enableDrillDown,
+        enableConditionalColors: props.enableConditionalColors,
+        enableComparison: props.enableComparison,
+        enableAccessibilityTables: props.enableAccessibilityTables,
+        enableExport: props.enableExport,
+        instanceId: props.instanceId,
+      })
+    );
+
+    // Resize handle (edit mode only)
+    if (props.isEditMode) {
+      var currentGridCols = effectiveGridColumns;
+      wrapperChildren.push(
+        React.createElement("div", {
+          key: "resizeHandle",
+          className: styles.resizeHandle,
+          onMouseDown: function (e: React.MouseEvent<HTMLDivElement>): void {
+            handleResizeMouseDown(e, chart.id, chart.colSpan, currentGridCols);
+          },
+          role: "separator",
+          "aria-label": "Resize " + chart.title + " chart width",
+          "aria-orientation": "vertical",
+          tabIndex: 0,
+          onKeyDown: function (e: React.KeyboardEvent<HTMLDivElement>): void {
+            if (e.key === "ArrowRight") {
+              e.preventDefault();
+              var newSpan = chart.colSpan + 1;
+              if (newSpan <= 4 && newSpan <= currentGridCols && props.onChartUpdate) {
+                props.onChartUpdate(chart.id, { colSpan: newSpan });
+              }
+            } else if (e.key === "ArrowLeft") {
+              e.preventDefault();
+              var shrunkSpan = chart.colSpan - 1;
+              if (shrunkSpan >= 1 && props.onChartUpdate) {
+                props.onChartUpdate(chart.id, { colSpan: shrunkSpan });
+              }
+            }
+          },
         })
-      )
+      );
+    }
+
+    // Wrapper div with drag-drop events
+    var wrapperProps: Record<string, unknown> = {
+      key: chart.id,
+      style: cardStyle,
+      className: wrapperClasses,
+    };
+
+    if (props.isEditMode) {
+      wrapperProps.onDragOver = function (e: React.DragEvent<HTMLElement>): void { handleDragOver(index, e); };
+      wrapperProps.onDragLeave = handleDragLeave;
+      wrapperProps.onDrop = function (e: React.DragEvent<HTMLElement>): void { handleDrop(index, e); };
+      wrapperProps.onDragEnd = handleDragEnd;
+    }
+
+    chartElements.push(
+      React.createElement("div", wrapperProps, wrapperChildren)
     );
   });
 

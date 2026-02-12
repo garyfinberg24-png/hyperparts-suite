@@ -106,6 +106,16 @@ export interface IHyperExplorerState {
   /** ZIP selection IDs */
   zipSelectionIds: string[];
 
+  /** Rename modal */
+  renameFileId: string | undefined;
+  renameFileName: string;
+
+  /** Move modal */
+  moveFileId: string | undefined;
+
+  /** Share modal */
+  shareFileId: string | undefined;
+
   /** Actions */
   setCurrentFolder: (path: string) => void;
   setBreadcrumbs: (crumbs: IExplorerBreadcrumb[]) => void;
@@ -179,6 +189,18 @@ export interface IHyperExplorerState {
   setWatermarkSize: (size: number) => void;
   addToZipSelection: (id: string) => void;
   clearZipSelection: () => void;
+  /** Rename file */
+  openRenameModal: (fileId: string, currentName: string) => void;
+  closeRenameModal: () => void;
+  renameFile: (fileId: string, newName: string) => void;
+  /** Move file */
+  openMoveModal: (fileId: string) => void;
+  closeMoveModal: () => void;
+  /** Delete file (removes from local state) */
+  deleteFile: (fileId: string) => void;
+  /** Share modal */
+  openShareModal: (fileId: string) => void;
+  closeShareModal: () => void;
   reset: () => void;
 }
 
@@ -342,6 +364,10 @@ const INITIAL_STATE = {
   watermarkOpacity: 4,
   watermarkSize: 72,
   zipSelectionIds: [] as string[],
+  renameFileId: undefined as string | undefined,
+  renameFileName: "",
+  moveFileId: undefined as string | undefined,
+  shareFileId: undefined as string | undefined,
 };
 
 export const useHyperExplorerStore = create<IHyperExplorerState>(function (set, get) {
@@ -737,6 +763,87 @@ export const useHyperExplorerStore = create<IHyperExplorerState>(function (set, 
 
     clearZipSelection: function (): void {
       set({ zipSelectionIds: [] });
+    },
+
+    openRenameModal: function (fileId: string, currentName: string): void {
+      set({ renameFileId: fileId, renameFileName: currentName });
+    },
+
+    closeRenameModal: function (): void {
+      set({ renameFileId: undefined, renameFileName: "" });
+    },
+
+    renameFile: function (fileId: string, newName: string): void {
+      set(function (state: IHyperExplorerState) {
+        var updatedFiles = state.files.map(function (f: IExplorerFile) {
+          if (f.id !== fileId) { return f; }
+          var newExt = newName.indexOf(".") !== -1
+            ? newName.substring(newName.lastIndexOf(".") + 1).toLowerCase()
+            : f.fileType;
+          var copy: IExplorerFile = {
+            id: f.id,
+            name: newName,
+            fileType: newExt,
+            fileCategory: f.fileCategory,
+            size: f.size,
+            created: f.created,
+            modified: f.modified,
+            author: f.author,
+            authorEmail: f.authorEmail,
+            editor: f.editor,
+            editorEmail: f.editorEmail,
+            serverRelativeUrl: f.serverRelativeUrl,
+            thumbnailUrl: f.thumbnailUrl,
+            parentFolder: f.parentFolder,
+            isFolder: f.isFolder,
+            isImage: f.isImage,
+            isVideo: f.isVideo,
+            isPreviewable: f.isPreviewable,
+            version: f.version,
+            contentType: f.contentType,
+            uniqueId: f.uniqueId,
+            tags: f.tags,
+            description: f.description,
+          };
+          return copy;
+        });
+        var filtered = filterAndSortFiles(updatedFiles, state.searchQuery, state.fileTypeFilter, state.sortMode, state.sortDirection);
+        return { files: updatedFiles, filteredFiles: filtered, renameFileId: undefined, renameFileName: "" };
+      });
+    },
+
+    openMoveModal: function (fileId: string): void {
+      set({ moveFileId: fileId });
+    },
+
+    closeMoveModal: function (): void {
+      set({ moveFileId: undefined });
+    },
+
+    deleteFile: function (fileId: string): void {
+      set(function (state: IHyperExplorerState) {
+        var updatedFiles = state.files.filter(function (f: IExplorerFile): boolean {
+          return f.id !== fileId;
+        });
+        var filtered = filterAndSortFiles(updatedFiles, state.searchQuery, state.fileTypeFilter, state.sortMode, state.sortDirection);
+        var updatedSelected = state.selectedFileIds.filter(function (id: string): boolean {
+          return id !== fileId;
+        });
+        return {
+          files: updatedFiles,
+          filteredFiles: filtered,
+          selectedFileIds: updatedSelected,
+          previewFile: state.previewFile && state.previewFile.id === fileId ? undefined : state.previewFile,
+        };
+      });
+    },
+
+    openShareModal: function (fileId: string): void {
+      set({ shareFileId: fileId });
+    },
+
+    closeShareModal: function (): void {
+      set({ shareFileId: undefined });
     },
 
     reset: function (): void {

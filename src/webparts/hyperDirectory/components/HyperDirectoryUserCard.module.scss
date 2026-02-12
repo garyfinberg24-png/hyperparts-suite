@@ -9,7 +9,7 @@
   border-radius: 8px;
   background: "[theme:white, default: #ffffff]";
   cursor: pointer;
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
 
   &:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -26,15 +26,347 @@
   }
 }
 
+// ── Compact ──
 .userCardCompact {
   padding: 8px;
   gap: 8px;
 }
 
+// ── Detailed ──
 .userCardDetailed {
   flex-direction: column;
   align-items: center;
   text-align: center;
+}
+
+// ── Corporate ──
+.userCardCorporate {
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+
+  &::before {
+    content: "";
+    display: block;
+    height: 6px;
+    background: linear-gradient(90deg, #1a2744, #2b5797);
+  }
+
+  .photoContainer {
+    padding: 16px 16px 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  .info {
+    padding: 8px 16px 16px;
+    text-align: center;
+  }
+
+  .displayName {
+    font-size: 15px;
+    color: #1a2744;
+    letter-spacing: 0.2px;
+  }
+
+  .jobTitle {
+    color: #2b5797;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .department {
+    font-size: 11px;
+    color: #5a6b8a;
+    border-top: 1px solid #e6eaf0;
+    padding-top: 6px;
+    margin-top: 4px;
+  }
+}
+
+// ── Modern ──
+.userCardModern {
+  border-radius: 12px;
+  border: none;
+  padding: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, "[theme:themePrimary, default: #0078d4]", "[theme:themeDarker, default: #004578]");
+    border-radius: 4px 0 0 4px;
+  }
+
+  &:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+  }
+
+  .displayName {
+    font-size: 15px;
+  }
+}
+
+// ── Minimal ──
+.userCardMinimal {
+  box-shadow: none;
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  padding: 16px 20px;
+  gap: 16px;
+
+  &:hover {
+    box-shadow: none;
+    border-color: #b0b0b0;
+  }
+
+  .displayName {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+
+  .jobTitle {
+    font-size: 11px;
+    color: #888;
+  }
+
+  .department {
+    font-size: 11px;
+    color: #aaa;
+  }
+}
+
+// ── Executive ──
+.userCardExecutive {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  &::before {
+    content: "";
+    display: block;
+    height: 8px;
+    background: linear-gradient(90deg, #b8860b, #daa520, #b8860b);
+  }
+
+  .photoContainer {
+    padding: 20px 0 8px;
+  }
+
+  .photo {
+    width: 72px;
+    height: 72px;
+    border: 2px solid #daa520;
+  }
+
+  .info {
+    padding: 0 20px 20px;
+    align-items: center;
+  }
+
+  .displayName {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #1a1a1a;
+  }
+
+  .jobTitle {
+    font-size: 13px;
+    font-weight: 600;
+    color: #b8860b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .department {
+    font-size: 11px;
+    color: #777;
+    margin-top: 4px;
+  }
+}
+
+// ── Glassmorphic ──
+.userCardGlassmorphic {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+    border-color: rgba(255, 255, 255, 0.7);
+  }
+
+  .displayName {
+    font-size: 15px;
+  }
+
+  .jobTitle {
+    opacity: 0.85;
+  }
+}
+
+// ── Neon ──
+.userCardNeon {
+  background: #1a1a2e;
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.1);
+
+  &:hover {
+    border-color: #00d4ff;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.25), 0 0 40px rgba(0, 212, 255, 0.1);
+  }
+
+  .displayName {
+    color: #e0e0ff;
+    font-size: 15px;
+  }
+
+  .jobTitle {
+    color: #00d4ff;
+    font-size: 12px;
+  }
+
+  .department {
+    color: rgba(0, 212, 255, 0.5);
+  }
+
+  .location {
+    color: rgba(0, 212, 255, 0.4);
+  }
+
+  .photoPlaceholder {
+    background: linear-gradient(135deg, #0d7377, #14a3c7);
+  }
+}
+
+// ── Gradient ──
+.userCardGradient {
+  background: linear-gradient(135deg, "[theme:themePrimary, default: #0078d4]", "[theme:themeDarker, default: #004578]");
+  border: none;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  &:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
+  }
+
+  .displayName {
+    color: #ffffff;
+    font-size: 15px;
+  }
+
+  .jobTitle {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .department {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .location {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .photoPlaceholder {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .photo {
+    border: 2px solid rgba(255, 255, 255, 0.4);
+  }
+}
+
+// ── Elevated ──
+.userCardElevated {
+  background: "[theme:white, default: #ffffff]";
+  border: none;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: "[theme:themePrimary, default: #0078d4]";
+  }
+
+  &:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.16);
+    transform: translateY(-2px);
+  }
+
+  .displayName {
+    font-size: 15px;
+  }
+}
+
+// ── Outlined ──
+.userCardOutlined {
+  background: transparent;
+  border: 2px solid "[theme:themePrimary, default: #0078d4]";
+  border-radius: 10px;
+  padding: 14px;
+  box-shadow: none;
+
+  &:hover {
+    box-shadow: none;
+    background: rgba(0, 120, 212, 0.04);
+    border-color: "[theme:themeDarker, default: #004578]";
+  }
+
+  .displayName {
+    color: "[theme:themeDarker, default: #004578]";
+    font-size: 15px;
+  }
+
+  .jobTitle {
+    color: "[theme:themePrimary, default: #0078d4]";
+  }
+
+  .department {
+    color: "[theme:neutralSecondary, default: #605e5c]";
+  }
+
+  .photoPlaceholder {
+    background: transparent;
+    border: 2px solid "[theme:themePrimary, default: #0078d4]";
+    color: "[theme:themePrimary, default: #0078d4]";
+  }
 }
 
 .photoContainer {

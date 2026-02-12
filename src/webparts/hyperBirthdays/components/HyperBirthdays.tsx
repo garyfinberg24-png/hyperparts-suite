@@ -216,10 +216,15 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
     return found;
   }, [displayCelebrations]);
 
-  // Filter by time range for list/carousel views
+  // Filter by time range for list/carousel views, then limit to displayCount
+  var displayLimit = props.maxItems || 50;
   const upcomingCelebrations = React.useMemo(function () {
-    return getUpcomingCelebrations(displayCelebrations, props.timeRange || "thisMonth");
-  }, [displayCelebrations, props.timeRange]);
+    var upcoming = getUpcomingCelebrations(displayCelebrations, props.timeRange || "thisMonth");
+    if (displayLimit > 0 && upcoming.length > displayLimit) {
+      return upcoming.slice(0, displayLimit);
+    }
+    return upcoming;
+  }, [displayCelebrations, props.timeRange, displayLimit]);
 
   const isLoading = !useSample && (celebrationData.loading || privacyOptOut.loading);
 

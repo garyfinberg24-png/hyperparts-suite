@@ -4,3 +4,4 @@ export { HyperPropertyPaneAccordion } from "./HyperPropertyPaneAccordion";
 export type { IHyperPropertyPaneAccordionProps, IAccordionItem, IAccordionField } from "./HyperPropertyPaneAccordion";
 export { createGroupHeaderField } from "./createGroupHeaderField";
 export { createAccordionField } from "./createAccordionField";
+export { createColorPickerField } from "./createColorPickerField";

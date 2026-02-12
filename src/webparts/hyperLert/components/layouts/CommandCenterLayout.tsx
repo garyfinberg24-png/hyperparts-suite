@@ -5,8 +5,7 @@ import { getSeverityColor } from "../../models/IHyperLertV2Enums";
 import type { LertSeverityV2, LertAlertState } from "../../models/IHyperLertV2Enums";
 import HyperLertKpiBar from "../HyperLertKpiBar";
 import HyperLertAlertDetail from "../HyperLertAlertDetail";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const styles: Record<string, string> = require("./CommandCenterLayout.module.scss");
+import styles from "./CommandCenterLayout.module.scss";
 
 function formatTimeAgo(isoString: string): string {
   if (!isoString) return "";

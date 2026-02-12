@@ -2,8 +2,7 @@ import * as React from "react";
 import type { ILertAlert } from "../models/ILertAlert";
 import { getSeverityColor } from "../models/IHyperLertV2Enums";
 import type { LertSeverityV2, LertAlertState } from "../models/IHyperLertV2Enums";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const styles: Record<string, string> = require("./HyperLertAlertDetail.module.scss");
+import styles from "./HyperLertAlertDetail.module.scss";
 
 export interface IHyperLertAlertDetailProps {
   alert: ILertAlert | undefined;

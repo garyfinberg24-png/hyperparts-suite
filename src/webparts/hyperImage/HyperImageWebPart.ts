@@ -39,13 +39,16 @@ import {
 } from "./models";
 import HyperImage from "./components/HyperImage";
 import type { IHyperImageComponentProps } from "./components/HyperImage";
+import type { IEditorChanges } from "./components/editor";
 import type { IPresetLayout } from "./models/IHyperImagePresetLayout";
-import { createGroupHeaderField } from "../../common/propertyPane";
+import { createGroupHeaderField, createColorPickerField } from "../../common/propertyPane";
 
 export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPartProps> {
 
-  /** Parsed text overlay for property pane access */
+  /** Parsed text overlay for property pane virtual fields */
   private _textOverlay = DEFAULT_TEXT_OVERLAY;
+  /** Parsed border config for property pane virtual fields */
+  private _borderConfig = DEFAULT_BORDER_CONFIG;
 
   protected async onInit(): Promise<void> {
     await super.onInit();
@@ -110,17 +113,49 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
 
     // Performance
     if (p.lazyLoad === undefined) p.lazyLoad = true;
+    if (p.progressiveLoad === undefined) p.progressiveLoad = false;
 
-    // Debug
+    // Debug / Advanced
     if (p.debugMode === undefined) p.debugMode = false;
+    if (p.customCss === undefined) p.customCss = "";
 
-    // Parse complex JSON props
+    // Parse complex JSON props and sync virtual properties
     this._parseJsonProps();
+    this._syncVirtualProps();
   }
 
   /** Parse JSON properties into working objects */
   private _parseJsonProps(): void {
     try { this._textOverlay = JSON.parse(this.properties.textOverlayJson); } catch { this._textOverlay = DEFAULT_TEXT_OVERLAY; }
+    try { this._borderConfig = JSON.parse(this.properties.borderConfigJson); } catch { this._borderConfig = DEFAULT_BORDER_CONFIG; }
+  }
+
+  /** Push parsed JSON values into virtual (underscore-prefixed) properties for property pane binding */
+  private _syncVirtualProps(): void {
+    var p = this.properties as unknown as Record<string, unknown>;
+    var t = this._textOverlay;
+    p._textEnabled = t.enabled;
+    p._textPlacement = t.placement;
+    p._textTitle = t.title;
+    p._textSubtitle = t.subtitle;
+    p._textBody = t.bodyText;
+    p._textPosition = t.position;
+    p._textFontFamily = t.fontFamily;
+    p._textTitleFontSize = t.titleFontSize;
+    p._textSubtitleFontSize = t.subtitleFontSize;
+    p._textBodyFontSize = t.bodyFontSize;
+    p._textColor = t.color;
+    p._textShadow = t.textShadow;
+    p._textBgColor = t.bgColor;
+    p._textBgOpacity = t.bgOpacity;
+    p._textEntrance = t.entrance;
+    p._textAlign = t.textAlign;
+    var b = this._borderConfig;
+    p._borderWidth = b.width;
+    p._borderColor = b.color;
+    p._borderStyle = b.style;
+    p._borderRadius = b.radius;
+    p._borderPadding = b.padding;
   }
 
   public render(): void {
@@ -152,6 +187,20 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
         });
         this.render();
       },
+      onEditorApply: (changes: IEditorChanges): void => {
+        this.properties.shape = changes.shape;
+        this.properties.customClipPath = changes.customClipPath;
+        this.properties.filterPreset = changes.filterPreset;
+        this.properties.filterConfigJson = changes.filterConfigJson;
+        this.properties.hoverEffect = changes.hoverEffect;
+        this.properties.textOverlayJson = changes.textOverlayJson;
+        this.properties.borderConfigJson = changes.borderConfigJson;
+        this.properties.shadowPreset = changes.shadowPreset;
+        this.properties.entranceAnimation = changes.entranceAnimation;
+        this._parseJsonProps();
+        this._syncVirtualProps();
+        this.render();
+      },
       onConfigure: (): void => { this.context.propertyPane.open(); },
     };
     var element: React.ReactElement<IHyperImageComponentProps> =
@@ -164,10 +213,55 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
     ReactDom.unmountComponentAtNode(this.domElement);
   }
 
+  /** Virtual-to-JSON field maps */
+  private static _TEXT_FIELD_MAP: Record<string, string> = {
+    _textEnabled: "enabled",
+    _textPlacement: "placement",
+    _textTitle: "title",
+    _textSubtitle: "subtitle",
+    _textBody: "bodyText",
+    _textPosition: "position",
+    _textFontFamily: "fontFamily",
+    _textTitleFontSize: "titleFontSize",
+    _textSubtitleFontSize: "subtitleFontSize",
+    _textBodyFontSize: "bodyFontSize",
+    _textColor: "color",
+    _textShadow: "textShadow",
+    _textBgColor: "bgColor",
+    _textBgOpacity: "bgOpacity",
+    _textEntrance: "entrance",
+    _textAlign: "textAlign",
+  };
+
+  private static _BORDER_FIELD_MAP: Record<string, string> = {
+    _borderWidth: "width",
+    _borderColor: "color",
+    _borderStyle: "style",
+    _borderRadius: "radius",
+    _borderPadding: "padding",
+  };
+
   protected onPropertyPaneFieldChanged(propertyPath: string, _oldValue: unknown, newValue: unknown): void {
-    // Re-parse JSON props whenever they change
+    // ── Text overlay virtual fields → textOverlayJson ──
+    var textField = HyperImageWebPart._TEXT_FIELD_MAP[propertyPath];
+    if (textField) {
+      (this._textOverlay as unknown as Record<string, unknown>)[textField] = newValue;
+      this.properties.textOverlayJson = JSON.stringify(this._textOverlay);
+      this._syncVirtualProps();
+    }
+
+    // ── Border virtual fields → borderConfigJson ──
+    var borderField = HyperImageWebPart._BORDER_FIELD_MAP[propertyPath];
+    if (borderField) {
+      (this._borderConfig as unknown as Record<string, unknown>)[borderField] = newValue;
+      this.properties.borderConfigJson = JSON.stringify(this._borderConfig);
+      this._syncVirtualProps();
+    }
+
+    // Re-parse JSON props whenever the raw JSON fields change directly
     if (propertyPath === "textOverlayJson" || propertyPath === "borderConfigJson" || propertyPath === "filterConfigJson") {
       this._parseJsonProps();
+      this._syncVirtualProps();
     }
 
     // When filter preset changes, update the filterConfigJson to match
@@ -290,8 +384,10 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
                   rows: 3,
                   disabled: !isFlipHover,
                 }),
-                PropertyPaneTextField("flipBackBgColor", {
+                createColorPickerField("flipBackBgColor", {
                   label: strings.FlipBackBgColorLabel,
+                  value: this.properties.flipBackBgColor || "#f3f2f1",
+                  onChange: this._makeColorHandler("flipBackBgColor").bind(this),
                   disabled: !isFlipHover,
                 }),
                 PropertyPaneDropdown("entranceAnimation", { label: strings.EntranceAnimationLabel, options: ENTRANCE_ANIMATION_OPTIONS }),
@@ -348,16 +444,20 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
                   min: 10, max: 36, step: 1,
                   disabled: !this._textOverlay.enabled,
                 }),
-                PropertyPaneTextField("_textColor", {
+                createColorPickerField("_textColor", {
                   label: strings.TextColorLabel,
+                  value: this._textOverlay.color || "#333333",
+                  onChange: this._makeVirtualColorHandler("_textColor").bind(this),
                   disabled: !this._textOverlay.enabled,
                 }),
                 PropertyPaneToggle("_textShadow", {
                   label: strings.TextShadowLabel, onText: "On", offText: "Off",
                   disabled: !this._textOverlay.enabled,
                 }),
-                PropertyPaneTextField("_textBgColor", {
+                createColorPickerField("_textBgColor", {
                   label: strings.TextBgColorLabel,
+                  value: this._textOverlay.bgColor || "#ffffff",
+                  onChange: this._makeVirtualColorHandler("_textBgColor").bind(this),
                   disabled: !this._textOverlay.enabled,
                 }),
                 PropertyPaneSlider("_textBgOpacity", {
@@ -390,8 +490,10 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
                 PropertyPaneSlider("_borderWidth", {
                   label: strings.BorderWidthLabel, min: 0, max: 10, step: 1,
                 }),
-                PropertyPaneTextField("_borderColor", {
+                createColorPickerField("_borderColor", {
                   label: strings.BorderColorLabel,
+                  value: this._borderConfig.color || "#e1e1e1",
+                  onChange: this._makeVirtualColorHandler("_borderColor").bind(this),
                 }),
                 PropertyPaneDropdown("_borderStyle", {
                   label: strings.BorderStyleLabel, options: BORDER_STYLE_OPTIONS,
@@ -445,11 +547,11 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
             },
             {
               groupName: strings.ActionGroupName,
-              isCollapsed: true,
               groupFields: [
                 createGroupHeaderField("_actionHeader", { icon: "\uD83D\uDD17", title: "Action", subtitle: "Link & lightbox", color: "orange" }),
                 PropertyPaneTextField("linkUrl", {
                   label: strings.LinkUrlLabel,
+                  description: this.properties.linkUrl ? "Link active" : "No link set",
                 }),
                 PropertyPaneDropdown("linkTarget", {
                   label: strings.LinkTargetLabel,
@@ -457,9 +559,11 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
                     { key: "_self", text: "Same Window" },
                     { key: "_blank", text: "New Window" },
                   ],
+                  disabled: !this.properties.linkUrl,
                 }),
                 PropertyPaneToggle("openLightbox", {
                   label: strings.OpenLightboxLabel, onText: "On", offText: "Off",
+                  disabled: !!this.properties.linkUrl,
                 }),
               ],
             },
@@ -471,6 +575,11 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
                 PropertyPaneToggle("lazyLoad", {
                   label: strings.LazyLoadLabel, onText: "On", offText: "Off",
                 }),
+                PropertyPaneToggle("progressiveLoad", {
+                  label: "Progressive Loading",
+                  onText: "On",
+                  offText: "Off",
+                }),
               ],
             },
             {
@@ -480,6 +589,12 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
                 createGroupHeaderField("_advancedHeader", { icon: "\u2699\uFE0F", title: "Advanced", subtitle: "Debug & editor", color: "orange" }),
                 PropertyPaneToggle("debugMode", {
                   label: strings.DebugModeLabel, onText: "On", offText: "Off",
+                }),
+                PropertyPaneTextField("customCss", {
+                  label: "Custom CSS",
+                  multiline: true,
+                  rows: 4,
+                  description: "Additional CSS rules applied to the image container",
                 }),
                 PropertyPaneButton("_openEditor", {
                   text: strings.OpenVisualEditorLabel,
@@ -521,5 +636,22 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
     if (store && store.useHyperImageStore) {
       store.useHyperImageStore.getState().openEditor();
     }
+  }
+
+  /** Factory: returns a change handler for a direct (non-virtual) color property */
+  private _makeColorHandler(propertyPath: string): (newColor: string) => void {
+    var self = this;
+    return function (newColor: string): void {
+      (self.properties as unknown as Record<string, unknown>)[propertyPath] = newColor;
+      self.render();
+    };
+  }
+
+  /** Factory: returns a change handler for a virtual (_prefix) color property that writes to JSON */
+  private _makeVirtualColorHandler(virtualPath: string): (newColor: string) => void {
+    var self = this;
+    return function (newColor: string): void {
+      self.onPropertyPaneFieldChanged(virtualPath, "", newColor);
+    };
   }
 }

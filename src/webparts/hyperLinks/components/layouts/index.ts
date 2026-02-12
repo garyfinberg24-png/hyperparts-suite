@@ -5,6 +5,8 @@ import type {
   HyperLinksHoverEffect,
   HyperLinksBorderRadius,
   HyperLinksAlignment,
+  HyperLinksTextPosition,
+  HyperLinksButtonShape,
 } from "../../models";
 
 /** Shared props interface for all layout components */
@@ -25,6 +27,10 @@ export interface ILinksLayoutProps {
   textColor?: string;
   /** Icon color override from background/preset */
   iconColor?: string;
+  /** Text label position relative to icon */
+  textPosition?: HyperLinksTextPosition;
+  /** Button shape */
+  buttonShape?: HyperLinksButtonShape;
 }
 
 export { CompactLayout } from "./CompactLayout";

@@ -3,8 +3,7 @@ import type { ILertLayoutProps } from "./ILertLayoutProps";
 import type { ILertAlert } from "../../models/ILertAlert";
 import { getSeverityColor } from "../../models/IHyperLertV2Enums";
 import type { LertSeverityV2, LertAlertState } from "../../models/IHyperLertV2Enums";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const styles: Record<string, string> = require("./TableLayout.module.scss");
+import styles from "./TableLayout.module.scss";
 
 type SortField = "severity" | "title" | "source" | "category" | "triggeredAt" | "state";
 type SortDir = "asc" | "desc";

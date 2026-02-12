@@ -7,7 +7,7 @@ export interface IAccordionField {
   key: string;
   label: string;
   value: string;
-  type: "text" | "url" | "dropdown" | "toggle";
+  type: "text" | "url" | "dropdown" | "toggle" | "color";
   onChange: (newValue: string) => void;
   options?: Array<{ key: string; text: string }>;
 }
@@ -193,6 +193,51 @@ var HyperPropertyPaneAccordionInner: React.FC<IHyperPropertyPaneAccordionProps> 
               },
             }),
             React.createElement("span", { style: { fontSize: "13px" } }, field.value === "true" ? "On" : "Off")
+          );
+        } else if (field.type === "color") {
+          fieldInput = React.createElement("div", {
+            style: { display: "flex", alignItems: "center", gap: "8px" },
+          },
+            React.createElement("input", {
+              type: "color",
+              value: field.value || "#000000",
+              onChange: function (e: React.ChangeEvent<HTMLInputElement>) { field.onChange(e.target.value); },
+              style: {
+                width: "32px",
+                height: "32px",
+                border: "1px solid #c8c6c4",
+                borderRadius: "4px",
+                padding: "0",
+                cursor: "pointer",
+              },
+            }),
+            React.createElement("input", {
+              type: "text",
+              value: field.value || "",
+              placeholder: "#000000",
+              onChange: function (e: React.ChangeEvent<HTMLInputElement>) { field.onChange(e.target.value); },
+              style: {
+                flex: "1",
+                padding: "6px 10px",
+                border: "1px solid #c8c6c4",
+                borderRadius: "3px",
+                fontSize: "13px",
+                fontFamily: "monospace",
+                color: "#323130",
+                background: "#fff",
+                maxWidth: "100px",
+              },
+            }),
+            React.createElement("span", {
+              style: {
+                width: "16px",
+                height: "16px",
+                borderRadius: "3px",
+                border: "1px solid #e1dfdd",
+                backgroundColor: field.value || "#000000",
+                flexShrink: 0,
+              },
+            })
           );
         } else {
           fieldInput = React.createElement("input", {

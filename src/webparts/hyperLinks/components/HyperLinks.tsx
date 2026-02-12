@@ -78,6 +78,8 @@ function buildLayoutProps(
     enableColorCustomization: props.enableColorCustomization,
     textColor: props.textColor || undefined,
     iconColor: props.iconColor || undefined,
+    textPosition: props.textPosition || "right",
+    buttonShape: props.buttonShape || "default",
   };
 }
 

@@ -303,7 +303,7 @@
 }
 
 .faqCard {
-  padding: 20px;
+  padding: 24px;
   border: 1px solid $ms-color-neutralLight;
   border-radius: 8px;
   background: $ms-color-white;
@@ -317,7 +317,7 @@
 }
 
 .faqCardExpanded {
-  padding: 20px;
+  padding: 24px;
   border: 2px solid $ms-color-themePrimary;
   border-radius: 8px;
   background: $ms-color-white;
@@ -368,7 +368,7 @@
   color: $ms-color-neutralPrimary;
   line-height: 1.6;
   margin-top: 8px;
-  padding-top: 12px;
+  padding: 12px 4px 4px 4px;
   border-top: 1px solid $ms-color-neutralLight;
 }
 
@@ -394,7 +394,7 @@
   align-items: center;
   gap: 12px;
   width: 100%;
-  padding: 12px 16px;
+  padding: 14px 20px;
   border: none;
   background: none;
   cursor: pointer;
@@ -429,13 +429,12 @@
 }
 
 .compactAnswer {
-  padding: 0 16px 16px 16px;
+  padding: 12px 20px 16px 20px;
   font-size: $ms-font-size-14;
   color: $ms-color-neutralPrimary;
   line-height: 1.6;
   border-top: 1px solid $ms-color-neutralLighter;
   margin: 0 16px;
-  padding-top: 12px;
 }
 
 // ════════════════════════════════════════
@@ -502,7 +501,7 @@
 }
 
 .timelineCard {
-  padding: 16px;
+  padding: 20px;
   border: 1px solid $ms-color-neutralLight;
   border-radius: 8px;
   background: $ms-color-white;
@@ -516,7 +515,7 @@
 }
 
 .timelineCardExpanded {
-  padding: 16px;
+  padding: 20px;
   border: 2px solid $ms-color-themePrimary;
   border-radius: 8px;
   background: $ms-color-white;
@@ -546,7 +545,7 @@
   font-size: $ms-font-size-14;
   color: $ms-color-neutralPrimary;
   line-height: 1.6;
-  padding-top: 8px;
+  padding: 12px 4px 4px 4px;
   border-top: 1px solid $ms-color-neutralLight;
 }
 
@@ -561,7 +560,7 @@
 
 .masonryCard {
   break-inside: avoid;
-  padding: 16px;
+  padding: 20px;
   border: 1px solid $ms-color-neutralLight;
   border-radius: 8px;
   background: $ms-color-white;
@@ -604,7 +603,7 @@
   font-size: $ms-font-size-14;
   color: $ms-color-neutralPrimary;
   line-height: 1.6;
-  padding-top: 8px;
+  padding: 12px 4px 4px 4px;
   border-top: 1px solid $ms-color-neutralLight;
   margin-top: 8px;
 }
@@ -666,7 +665,7 @@
 }
 
 .magCard {
-  padding: 20px;
+  padding: 24px;
   border: 1px solid $ms-color-neutralLight;
   border-radius: 8px;
   background: $ms-color-white;

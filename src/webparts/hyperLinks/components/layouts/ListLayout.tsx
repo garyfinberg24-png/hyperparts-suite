@@ -26,6 +26,8 @@ export const ListLayout: React.FC<ILinksLayoutProps> = function (props) {
             className: styles.listItem,
             textColor: props.textColor,
             iconColor: props.iconColor,
+            textPosition: props.textPosition,
+            buttonShape: props.buttonShape,
           },
           React.createElement("i", {
             key: "chevron",

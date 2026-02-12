@@ -3,8 +3,7 @@ import type { ILertLayoutProps } from "./ILertLayoutProps";
 import type { ILertAlert } from "../../models/ILertAlert";
 import { getSeverityColor } from "../../models/IHyperLertV2Enums";
 import type { LertSeverityV2, LertAlertState } from "../../models/IHyperLertV2Enums";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const styles: Record<string, string> = require("./KanbanLayout.module.scss");
+import styles from "./KanbanLayout.module.scss";
 
 function formatTimeAgo(isoString: string): string {
   if (!isoString) return "";
@@ -61,7 +60,7 @@ const KanbanLayout: React.FC<ILertLayoutProps> = function (props) {
   var columnElements: React.ReactNode[] = [];
   KANBAN_COLUMNS.forEach(function (col: IKanbanColumn): void {
     var colAlerts = groups[col.state] || [];
-    var bgClass = styles[col.bgClass] || "";
+    var bgClass = (styles as Record<string, string>)[col.bgClass] || "";
 
     var cardElements: React.ReactNode[] = [];
     colAlerts.forEach(function (alert: ILertAlert): void {

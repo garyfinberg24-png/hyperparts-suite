@@ -35,8 +35,176 @@ export type HyperLinksBorderRadius = "none" | "small" | "medium" | "large" | "ro
 /** Compact layout alignment */
 export type HyperLinksAlignment = "left" | "center" | "right";
 
+/** Text label position relative to icon */
+export type HyperLinksTextPosition = "right" | "below" | "above" | "left" | "hidden";
+
+/** Button shape options */
+export type HyperLinksButtonShape = "default" | "square" | "rounded" | "pill" | "circle";
+
 /** Background mode for links container */
 export type HyperLinksBackgroundMode = "none" | "color" | "gradient" | "image";
+
+/** Style preset with background + colors */
+export interface IHyperLinksStylePreset {
+  id: string;
+  name: string;
+  backgroundMode: HyperLinksBackgroundMode;
+  backgroundColor: string;
+  backgroundGradient: string;
+  textColor: string;
+  iconColor: string;
+  hoverEffect: HyperLinksHoverEffect;
+  borderRadius: HyperLinksBorderRadius;
+  buttonShape: HyperLinksButtonShape;
+}
+
+/** World-class style presets */
+export var STYLE_PRESETS: IHyperLinksStylePreset[] = [
+  {
+    id: "midnight-blue",
+    name: "Midnight Blue",
+    backgroundMode: "gradient",
+    backgroundColor: "",
+    backgroundGradient: "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
+    textColor: "#ffffff",
+    iconColor: "#64b5f6",
+    hoverEffect: "lift",
+    borderRadius: "medium",
+    buttonShape: "rounded",
+  },
+  {
+    id: "sunset-glow",
+    name: "Sunset Glow",
+    backgroundMode: "gradient",
+    backgroundColor: "",
+    backgroundGradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #ff9a76 100%)",
+    textColor: "#ffffff",
+    iconColor: "#ffffff",
+    hoverEffect: "glow",
+    borderRadius: "large",
+    buttonShape: "pill",
+  },
+  {
+    id: "ocean-breeze",
+    name: "Ocean Breeze",
+    backgroundMode: "gradient",
+    backgroundColor: "",
+    backgroundGradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    textColor: "#ffffff",
+    iconColor: "#e0e7ff",
+    hoverEffect: "lift",
+    borderRadius: "medium",
+    buttonShape: "rounded",
+  },
+  {
+    id: "corporate-navy",
+    name: "Corporate Navy",
+    backgroundMode: "color",
+    backgroundColor: "#0a1628",
+    backgroundGradient: "",
+    textColor: "#ffffff",
+    iconColor: "#4fc3f7",
+    hoverEffect: "lift",
+    borderRadius: "small",
+    buttonShape: "square",
+  },
+  {
+    id: "fresh-mint",
+    name: "Fresh Mint",
+    backgroundMode: "gradient",
+    backgroundColor: "",
+    backgroundGradient: "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)",
+    textColor: "#ffffff",
+    iconColor: "#e0fff4",
+    hoverEffect: "zoom",
+    borderRadius: "large",
+    buttonShape: "rounded",
+  },
+  {
+    id: "warm-earth",
+    name: "Warm Earth",
+    backgroundMode: "color",
+    backgroundColor: "#faf3e0",
+    backgroundGradient: "",
+    textColor: "#3e2723",
+    iconColor: "#8d6e63",
+    hoverEffect: "lift",
+    borderRadius: "medium",
+    buttonShape: "rounded",
+  },
+  {
+    id: "glass-frost",
+    name: "Glass Frost",
+    backgroundMode: "color",
+    backgroundColor: "rgba(255, 255, 255, 0.85)",
+    backgroundGradient: "",
+    textColor: "#1a1a2e",
+    iconColor: "#0078d4",
+    hoverEffect: "glow",
+    borderRadius: "large",
+    buttonShape: "pill",
+  },
+  {
+    id: "neon-dark",
+    name: "Neon Dark",
+    backgroundMode: "color",
+    backgroundColor: "#1a1a2e",
+    backgroundGradient: "",
+    textColor: "#e0e0e0",
+    iconColor: "#00d4ff",
+    hoverEffect: "glow",
+    borderRadius: "medium",
+    buttonShape: "rounded",
+  },
+  {
+    id: "rose-gold",
+    name: "Rose Gold",
+    backgroundMode: "gradient",
+    backgroundColor: "",
+    backgroundGradient: "linear-gradient(135deg, #f4c4c4 0%, #e8b4b8 50%, #dba6a6 100%)",
+    textColor: "#4a2020",
+    iconColor: "#8b3a3a",
+    hoverEffect: "lift",
+    borderRadius: "large",
+    buttonShape: "pill",
+  },
+  {
+    id: "arctic-white",
+    name: "Arctic White",
+    backgroundMode: "color",
+    backgroundColor: "#f8f9fa",
+    backgroundGradient: "",
+    textColor: "#212529",
+    iconColor: "#0d6efd",
+    hoverEffect: "lift",
+    borderRadius: "small",
+    buttonShape: "default",
+  },
+  {
+    id: "aurora-borealis",
+    name: "Aurora Borealis",
+    backgroundMode: "gradient",
+    backgroundColor: "",
+    backgroundGradient: "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
+    textColor: "#e8e8e8",
+    iconColor: "#bb86fc",
+    hoverEffect: "shimmer",
+    borderRadius: "medium",
+    buttonShape: "rounded",
+  },
+  {
+    id: "sunshine-pop",
+    name: "Sunshine Pop",
+    backgroundMode: "gradient",
+    backgroundColor: "",
+    backgroundGradient: "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
+    textColor: "#4a2c1a",
+    iconColor: "#e65100",
+    hoverEffect: "bounce",
+    borderRadius: "large",
+    buttonShape: "pill",
+  },
+];
 
 /** Background configuration for the links container */
 export interface IHyperLinksBackground {

@@ -37,10 +37,22 @@ const HyperDirectoryUserCard: React.FC<IHyperDirectoryUserCardProps> = function 
     }
   }, [onClick, user]);
 
-  // Card style class
-  let cardClass = styles.userCard;
-  if (cardStyle === "compact") cardClass += " " + styles.userCardCompact;
-  if (cardStyle === "detailed") cardClass += " " + styles.userCardDetailed;
+  // Card style class — map each preset to its CSS class(es)
+  var cardStyleMap: Record<string, string> = {
+    standard: styles.userCard,
+    compact: styles.userCard + " " + styles.userCardCompact,
+    detailed: styles.userCard + " " + styles.userCardDetailed,
+    corporate: styles.userCard + " " + styles.userCardCorporate,
+    modern: styles.userCard + " " + styles.userCardModern,
+    minimal: styles.userCard + " " + styles.userCardMinimal,
+    executive: styles.userCard + " " + styles.userCardExecutive,
+    glassmorphic: styles.userCard + " " + styles.userCardGlassmorphic,
+    neon: styles.userCard + " " + styles.userCardNeon,
+    gradient: styles.userCard + " " + styles.userCardGradient,
+    elevated: styles.userCard + " " + styles.userCardElevated,
+    outlined: styles.userCard + " " + styles.userCardOutlined,
+  };
+  var cardClass = cardStyleMap[cardStyle || "standard"] || styles.userCard;
 
   // Photo size classes
   const photoSizeClass = photoSize === "small" ? styles.photoSmall :
@@ -86,13 +98,18 @@ const HyperDirectoryUserCard: React.FC<IHyperDirectoryUserCardProps> = function 
     );
   }
 
-  if (user.department && cardStyle === "detailed") {
+  // Styles that show extended fields (department, location)
+  var showExtendedFields = cardStyle === "detailed" || cardStyle === "corporate" ||
+    cardStyle === "executive" || cardStyle === "glassmorphic" ||
+    cardStyle === "neon" || cardStyle === "gradient" || cardStyle === "elevated";
+
+  if (user.department && showExtendedFields) {
     infoChildren.push(
       React.createElement("div", { key: "dept", className: styles.department }, user.department)
     );
   }
 
-  if (user.officeLocation && cardStyle === "detailed") {
+  if (user.officeLocation && showExtendedFields) {
     infoChildren.push(
       React.createElement("div", { key: "loc", className: styles.location }, user.officeLocation)
     );

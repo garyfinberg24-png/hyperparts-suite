@@ -26,7 +26,7 @@ import { EXPLORER_WIZARD_CONFIG, buildStateFromProps } from "./wizard/explorerWi
 import { filePlanWizardConfig } from "./filePlan/wizard/FilePlanWizardConfig";
 import { GridLayout, ListLayout, MasonryLayout, FilmstripLayout, TilesLayout } from "./layouts";
 import HyperExplorerDemoBar from "./HyperExplorerDemoBar";
-import { HyperEditOverlay } from "../../../common/components";
+import { HyperEditOverlay, HyperModal } from "../../../common/components";
 import styles from "./HyperExplorer.module.scss";
 
 export interface IHyperExplorerComponentProps extends IHyperExplorerWebPartProps {
@@ -203,6 +203,18 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
         break;
       case "addToZip":
         store.addToZipSelection(file.id);
+        break;
+      case "rename":
+        store.openRenameModal(file.id, file.name);
+        break;
+      case "move":
+        store.openMoveModal(file.id);
+        break;
+      case "delete":
+        store.deleteFile(file.id);
+        break;
+      case "share":
+        store.openShareModal(file.id);
         break;
       case "properties":
         store.setPreviewFile(file);
@@ -451,17 +463,16 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
   // ── Assemble main component ──
   var children: React.ReactNode[] = [];
 
-  // ── Main wizard (always rendered, controlled by store) ──
-  children.push(
-    React.createElement(HyperWizard, {
-      key: "wizard",
-      config: EXPLORER_WIZARD_CONFIG,
-      isOpen: store.isWizardOpen,
-      onClose: store.closeWizard,
-      onApply: handleWizardApply,
-      initialStateOverride: wizardStateOverride,
-    })
-  );
+  // NOTE: Wizard is rendered OUTSIDE HyperEditOverlay (as sibling via Fragment)
+  // so pointer-events:none on .contentDimmed doesn't block the modal.
+  var wizardElement = React.createElement(HyperWizard, {
+    key: "wizard",
+    config: EXPLORER_WIZARD_CONFIG,
+    isOpen: store.isWizardOpen,
+    onClose: store.closeWizard,
+    onApply: handleWizardApply,
+    initialStateOverride: wizardStateOverride,
+  });
 
   // Demo bar (rendered above everything when demo mode is on)
   if (showDemoBar) {
@@ -647,6 +658,7 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
         file: store.previewFile,
         previewMode: props.previewMode || "tab",
         siteUrl: "",
+        useSampleData: useSample,
         onClose: handleClosePreview,
       })
     );
@@ -819,6 +831,191 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
     })
   );
 
+  // Rename modal (simple inline prompt using HyperModal)
+  if (store.renameFileId) {
+    var renameInput = React.createElement("input", {
+      type: "text",
+      defaultValue: store.renameFileName,
+      id: "explorer-rename-input",
+      autoFocus: true,
+      style: {
+        width: "100%",
+        padding: "8px 12px",
+        border: "1px solid #c8c6c4",
+        borderRadius: "4px",
+        fontSize: "14px",
+        outline: "none",
+      },
+      onKeyDown: function (e: React.KeyboardEvent<HTMLInputElement>): void {
+        if (e.key === "Enter") {
+          var el = document.getElementById("explorer-rename-input") as HTMLInputElement | undefined;
+          if (el && el.value.length > 0) {
+            store.renameFile(store.renameFileId as string, el.value);
+          }
+        }
+      },
+    });
+
+    var renameFooter = React.createElement("div", { style: { display: "flex", gap: "8px", justifyContent: "flex-end" } },
+      React.createElement("button", {
+        type: "button",
+        onClick: store.closeRenameModal,
+        style: { padding: "6px 16px", border: "1px solid #c8c6c4", borderRadius: "4px", background: "#fff", cursor: "pointer" },
+      }, "Cancel"),
+      React.createElement("button", {
+        type: "button",
+        onClick: function (): void {
+          var el = document.getElementById("explorer-rename-input") as HTMLInputElement | undefined;
+          if (el && el.value.length > 0) {
+            store.renameFile(store.renameFileId as string, el.value);
+          }
+        },
+        style: { padding: "6px 16px", border: "none", borderRadius: "4px", background: "#0078d4", color: "#fff", cursor: "pointer", fontWeight: 600 },
+      }, "Rename")
+    );
+
+    children.push(
+      React.createElement(HyperModal, {
+        key: "rename-modal",
+        isOpen: true,
+        onClose: store.closeRenameModal,
+        title: "Rename File",
+        size: "small",
+        footer: renameFooter,
+      },
+        React.createElement("div", { style: { padding: "16px 0" } },
+          React.createElement("label", {
+            htmlFor: "explorer-rename-input",
+            style: { display: "block", marginBottom: "8px", fontSize: "13px", fontWeight: 600 },
+          }, "Enter new file name:"),
+          renameInput
+        )
+      )
+    );
+  }
+
+  // Share modal (simple copy-link + share UI)
+  if (store.shareFileId) {
+    var shareFile: IExplorerFile | undefined;
+    store.files.forEach(function (f) { if (f.id === store.shareFileId) { shareFile = f; } });
+    var shareUrl = shareFile && shareFile.serverRelativeUrl
+      ? window.location.origin + shareFile.serverRelativeUrl
+      : "Link not available for sample data";
+
+    var shareFooter = React.createElement("div", { style: { display: "flex", gap: "8px", justifyContent: "flex-end" } },
+      React.createElement("button", {
+        type: "button",
+        onClick: store.closeShareModal,
+        style: { padding: "6px 16px", border: "1px solid #c8c6c4", borderRadius: "4px", background: "#fff", cursor: "pointer" },
+      }, "Close"),
+      React.createElement("button", {
+        type: "button",
+        onClick: function (): void {
+          if (typeof navigator !== "undefined" && navigator.clipboard) {
+            navigator.clipboard.writeText(shareUrl).catch(function () { /* silent */ });
+          }
+        },
+        style: { padding: "6px 16px", border: "none", borderRadius: "4px", background: "#0078d4", color: "#fff", cursor: "pointer", fontWeight: 600 },
+      }, "Copy Link")
+    );
+
+    children.push(
+      React.createElement(HyperModal, {
+        key: "share-modal",
+        isOpen: true,
+        onClose: store.closeShareModal,
+        title: "Share File",
+        size: "small",
+        footer: shareFooter,
+      },
+        React.createElement("div", { style: { padding: "16px 0" } },
+          React.createElement("p", { style: { marginBottom: "12px", fontSize: "13px" } },
+            "Share \"" + (shareFile ? shareFile.name : "") + "\" with others:"
+          ),
+          React.createElement("input", {
+            type: "text",
+            readOnly: true,
+            value: shareUrl,
+            style: {
+              width: "100%",
+              padding: "8px 12px",
+              border: "1px solid #c8c6c4",
+              borderRadius: "4px",
+              fontSize: "12px",
+              fontFamily: "monospace",
+              background: "#faf9f8",
+              color: "#323130",
+            },
+            onClick: function (e: React.MouseEvent<HTMLInputElement>): void {
+              (e.target as HTMLInputElement).select();
+            },
+          })
+        )
+      )
+    );
+  }
+
+  // Move modal (simple folder picker stub)
+  if (store.moveFileId) {
+    var moveFile: IExplorerFile | undefined;
+    store.files.forEach(function (f) { if (f.id === store.moveFileId) { moveFile = f; } });
+
+    var moveFooter = React.createElement("div", { style: { display: "flex", gap: "8px", justifyContent: "flex-end" } },
+      React.createElement("button", {
+        type: "button",
+        onClick: store.closeMoveModal,
+        style: { padding: "6px 16px", border: "1px solid #c8c6c4", borderRadius: "4px", background: "#fff", cursor: "pointer" },
+      }, "Cancel"),
+      React.createElement("button", {
+        type: "button",
+        onClick: function (): void {
+          // In production: move file via PnP, then refresh. For now just close.
+          store.closeMoveModal();
+        },
+        style: { padding: "6px 16px", border: "none", borderRadius: "4px", background: "#0078d4", color: "#fff", cursor: "pointer", fontWeight: 600 },
+      }, "Move")
+    );
+
+    var folderElements = store.folders.map(function (folder) {
+      return React.createElement("div", {
+        key: folder.path,
+        style: {
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          padding: "8px 12px",
+          cursor: "pointer",
+          borderRadius: "4px",
+          border: "1px solid #edebe9",
+          marginBottom: "4px",
+          fontSize: "13px",
+        },
+        onClick: function (): void { store.closeMoveModal(); },
+      },
+        React.createElement("span", {}, "\uD83D\uDCC1"),
+        folder.name
+      );
+    });
+
+    children.push(
+      React.createElement(HyperModal, {
+        key: "move-modal",
+        isOpen: true,
+        onClose: store.closeMoveModal,
+        title: "Move File",
+        size: "small",
+        footer: moveFooter,
+      },
+        React.createElement("div", { style: { padding: "16px 0" } },
+          React.createElement("p", { style: { marginBottom: "12px", fontSize: "13px" } },
+            "Move \"" + (moveFile ? moveFile.name : "") + "\" to:"
+          ),
+          React.createElement("div", { style: { maxHeight: "250px", overflowY: "auto" } }, folderElements)
+        )
+      )
+    );
+  }
+
   // Keyboard Shortcuts panel
   children.push(
     React.createElement(HyperExplorerKeyboardShortcuts, {
@@ -844,12 +1041,15 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
     "data-instance-id": props.instanceId,
   }, children);
 
-  return React.createElement(HyperEditOverlay, {
-    wpName: "HyperExplorer",
-    isVisible: !!props.isEditMode,
-    onWizardClick: function () { store.openWizard(); },
-    onEditClick: function () { if (props.onConfigure) props.onConfigure(); },
-  }, mainContent);
+  return React.createElement(React.Fragment, undefined,
+    React.createElement(HyperEditOverlay, {
+      wpName: "HyperExplorer",
+      isVisible: !!props.isEditMode,
+      onWizardClick: function () { store.openWizard(); },
+      onEditClick: function () { if (props.onConfigure) props.onConfigure(); },
+    }, mainContent),
+    wizardElement
+  );
 };
 
 export default HyperExplorer;
