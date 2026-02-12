@@ -2,7 +2,7 @@ import * as React from "react";
 import { useMemo, useEffect } from "react";
 import type { IHyperNewsWebPartProps, IHyperNewsArticle, LayoutType } from "../models";
 import { DEFAULT_FILTER_CONFIG } from "../models";
-import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton } from "../../../common/components";
+import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton, HyperEditOverlay } from "../../../common/components";
 import { useNewsArticles, useReadingProgress, useNewsFilters, useInfiniteScroll } from "../hooks";
 import { useHyperNewsStore } from "../store/useHyperNewsStore";
 import { hyperAnalytics } from "../../../common/services/HyperAnalytics";
@@ -27,9 +27,8 @@ import HyperNewsDemoBar from "./HyperNewsDemoBar";
 import WelcomeStep from "./wizard/WelcomeStep";
 import { HyperWizard } from "../../../common/components/wizard/HyperWizard";
 import { NEWS_WIZARD_CONFIG, buildStateFromProps } from "./wizard/newsWizardConfig";
-// Cross-web-part import: HyperImageBrowser from HyperHero shared components (pitfall #29)
-import { HyperImageBrowser } from "../../hyperHero/components/shared/HyperImageBrowser";
-import type { IHyperImageBrowserProps } from "../../hyperHero/components/shared/HyperImageBrowser";
+import { HyperImageBrowser } from "../../../common/components/imageBrowser/HyperImageBrowser";
+import type { IHyperImageBrowserProps } from "../../../common/components/imageBrowser/HyperImageBrowser";
 import styles from "./HyperNews.module.scss";
 
 export interface IHyperNewsComponentProps extends IHyperNewsWebPartProps {
@@ -44,6 +43,8 @@ export interface IHyperNewsComponentProps extends IHyperNewsWebPartProps {
   onOpenWizard?: () => void;
   /** Callback when user selects an image from the browser */
   onImageSelect?: (imageUrl: string) => void;
+  /** Callback to open the property pane */
+  onConfigure?: () => void;
 }
 
 /** Select the correct layout component for a given layoutType */
@@ -388,7 +389,7 @@ const HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
   // ── Render layout ──
   const layoutElement = _renderLayout(effectiveLayout, displayArticles, handleCardClick);
 
-  return React.createElement(
+  var mainContent = React.createElement(
     "div",
     { className: styles.newsContainer, role: "region", "aria-label": title || "News" },
     // Demo bar (rendered above everything when demo mode is on)
@@ -440,6 +441,13 @@ const HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
     // WelcomeStep splash modal (always rendered, controlled by wizardOpen)
     welcomeElement
   );
+
+  return React.createElement(HyperEditOverlay, {
+    wpName: "HyperNews",
+    isVisible: !!props.isEditMode,
+    onWizardClick: function () { setWizardOpen(true); },
+    onEditClick: function () { if (props.onConfigure) props.onConfigure(); },
+  }, mainContent);
 };
 
 // ── Wrapper with Image Browser modal ──

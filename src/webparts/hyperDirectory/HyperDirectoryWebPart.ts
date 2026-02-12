@@ -11,6 +11,7 @@ import {
 
 import * as strings from "HyperDirectoryWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
+import { createGroupHeaderField } from "../../common/propertyPane";
 import HyperDirectory from "./components/HyperDirectory";
 import type { IHyperDirectoryComponentProps } from "./components/HyperDirectory";
 import type { IHyperDirectoryWebPartProps } from "./models";
@@ -34,6 +35,7 @@ export default class HyperDirectoryWebPart extends BaseHyperWebPart<IHyperDirect
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
       onWizardApply: this._onWizardApply,
+      onConfigure: (): void => { this.context.propertyPane.open(); },
     };
     const element: React.ReactElement<IHyperDirectoryComponentProps> =
       React.createElement(HyperDirectory, props);
@@ -175,6 +177,7 @@ export default class HyperDirectoryWebPart extends BaseHyperWebPart<IHyperDirect
             {
               groupName: strings.LayoutGroupName,
               groupFields: [
+                createGroupHeaderField("_layoutHeader", { icon: "\uD83C\uDFA8", title: "Layout", subtitle: "Display mode & grid", color: "blue" }),
                 PropertyPaneTextField("title", {
                   label: strings.TitleFieldLabel,
                 }),
@@ -234,6 +237,7 @@ export default class HyperDirectoryWebPart extends BaseHyperWebPart<IHyperDirect
             {
               groupName: strings.RollerDexGroupName,
               groupFields: [
+                createGroupHeaderField("_rollerDexHeader", { icon: "\uD83C\uDFA8", title: "RollerDex", subtitle: "3D card options", color: "blue" }),
                 PropertyPaneSlider("rollerDexSpeed", {
                   label: strings.RollerDexSpeedFieldLabel,
                   min: 1,
@@ -259,6 +263,7 @@ export default class HyperDirectoryWebPart extends BaseHyperWebPart<IHyperDirect
             {
               groupName: strings.FeaturesGroupName,
               groupFields: [
+                createGroupHeaderField("_featuresHeader", { icon: "\u2699\uFE0F", title: "Features", subtitle: "Search & presence", color: "orange" }),
                 PropertyPaneToggle("showSearch", {
                   label: strings.ShowSearchFieldLabel,
                 }),
@@ -286,6 +291,7 @@ export default class HyperDirectoryWebPart extends BaseHyperWebPart<IHyperDirect
             {
               groupName: strings.ActionsGroupName,
               groupFields: [
+                createGroupHeaderField("_actionsHeader", { icon: "\u2699\uFE0F", title: "Actions", subtitle: "Quick actions & vCard", color: "orange" }),
                 PropertyPaneToggle("showQuickActions", {
                   label: strings.ShowQuickActionsFieldLabel,
                 }),
@@ -301,6 +307,7 @@ export default class HyperDirectoryWebPart extends BaseHyperWebPart<IHyperDirect
             {
               groupName: strings.HyperFeaturesGroupName,
               groupFields: [
+                createGroupHeaderField("_hyperFeaturesHeader", { icon: "\u2699\uFE0F", title: "Hyper Features", subtitle: "Enhanced capabilities", color: "orange" }),
                 PropertyPaneToggle("enableExport", {
                   label: strings.EnableExportFieldLabel,
                 }),
@@ -330,6 +337,7 @@ export default class HyperDirectoryWebPart extends BaseHyperWebPart<IHyperDirect
             {
               groupName: strings.DataGroupName,
               groupFields: [
+                createGroupHeaderField("_dataHeader", { icon: "\uD83D\uDCCB", title: "Data Source", subtitle: "Users & pagination", color: "green" }),
                 PropertyPaneToggle("useSampleData", {
                   label: strings.UseSampleDataFieldLabel,
                 }),
@@ -357,6 +365,7 @@ export default class HyperDirectoryWebPart extends BaseHyperWebPart<IHyperDirect
             {
               groupName: strings.FieldsGroupName,
               groupFields: [
+                createGroupHeaderField("_fieldsHeader", { icon: "\uD83D\uDCCB", title: "Fields", subtitle: "Visible & custom", color: "green" }),
                 PropertyPaneTextField("visibleFields", {
                   label: strings.VisibleFieldsFieldLabel,
                   description: strings.VisibleFieldsDescription,
@@ -374,6 +383,7 @@ export default class HyperDirectoryWebPart extends BaseHyperWebPart<IHyperDirect
             {
               groupName: strings.PhotoGroupName,
               groupFields: [
+                createGroupHeaderField("_photoHeader", { icon: "\uD83C\uDFA8", title: "Photos", subtitle: "Size & placeholders", color: "blue" }),
                 PropertyPaneToggle("showPhotoPlaceholder", {
                   label: strings.ShowPhotoPlaceholderFieldLabel,
                 }),
@@ -390,6 +400,7 @@ export default class HyperDirectoryWebPart extends BaseHyperWebPart<IHyperDirect
             {
               groupName: strings.PerformanceGroupName,
               groupFields: [
+                createGroupHeaderField("_performanceHeader", { icon: "\u26A1", title: "Performance", subtitle: "Cache settings", color: "orange" }),
                 PropertyPaneToggle("cacheEnabled", {
                   label: strings.CacheEnabledFieldLabel,
                 }),

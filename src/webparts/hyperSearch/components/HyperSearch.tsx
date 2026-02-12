@@ -1,5 +1,5 @@
 import * as React from "react";
-import { HyperErrorBoundary } from "../../../common/components";
+import { HyperErrorBoundary, HyperEditOverlay } from "../../../common/components";
 import type {
   IHyperSearchWebPartProps,
   ISearchV2Features,
@@ -50,6 +50,7 @@ export interface IHyperSearchComponentProps extends IHyperSearchWebPartProps {
   instanceId: string;
   isEditMode: boolean;
   onWizardComplete?: (result: Record<string, unknown>) => void;
+  onConfigure?: () => void;
 }
 
 /** Parse JSON-stored V2 features */
@@ -252,7 +253,7 @@ var HyperSearchInner: React.FC<IHyperSearchComponentProps> = function (props) {
   // Determine accent color
   var accentColor = props.accentColor || "#0078d4";
 
-  return React.createElement("div", {
+  var mainContent = React.createElement("div", {
     className: styles.hyperSearch,
     style: { "--search-accent": accentColor, "--search-radius": String(props.borderRadius || 8) + "px" } as React.CSSProperties,
   },
@@ -393,6 +394,13 @@ var HyperSearchInner: React.FC<IHyperSearchComponentProps> = function (props) {
         )
       : undefined
   );
+
+  return React.createElement(HyperEditOverlay, {
+    wpName: "HyperSearch",
+    isVisible: !!props.isEditMode,
+    onWizardClick: function () { store.setWizardOpen(true); },
+    onEditClick: function () { if (props.onConfigure) props.onConfigure(); },
+  }, mainContent);
 };
 
 var HyperSearch: React.FC<IHyperSearchComponentProps> = function (props) {

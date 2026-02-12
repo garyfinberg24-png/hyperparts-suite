@@ -21,6 +21,7 @@ import {
   ALL_HEADER_STYLES, getHeaderStyleDisplayName,
   ALL_FOOTER_STYLES, getFooterStyleDisplayName,
 } from "./models";
+import { createGroupHeaderField } from "../../common/propertyPane";
 
 export default class HyperStyleWebPart extends BaseHyperWebPart<IHyperStyleWebPartProps> {
 
@@ -116,6 +117,7 @@ export default class HyperStyleWebPart extends BaseHyperWebPart<IHyperStyleWebPa
       isEditMode: this.displayMode === DisplayMode.Edit,
       onWizardApply: this._onWizardApply,
       onDemoModeChange: this._onDemoModeChange,
+      onConfigure: (): void => { this.context.propertyPane.open(); },
     };
     var element: React.ReactElement<IHyperStyleProps> =
       React.createElement(HyperStyle, componentProps);
@@ -249,6 +251,7 @@ export default class HyperStyleWebPart extends BaseHyperWebPart<IHyperStyleWebPa
             {
               groupName: strings.BrandingGroupName,
               groupFields: [
+                createGroupHeaderField("_brandingHeader", { icon: "\uD83D\uDCCB", title: "Branding", subtitle: "Identity & colors", color: "green" }),
                 PropertyPaneTextField("brandTitle", {
                   label: strings.TitleFieldLabel,
                 }),
@@ -312,6 +315,7 @@ export default class HyperStyleWebPart extends BaseHyperWebPart<IHyperStyleWebPa
             {
               groupName: strings.LayoutGroupName,
               groupFields: [
+                createGroupHeaderField("_layoutHeader", { icon: "\uD83C\uDFA8", title: "Layout", subtitle: "Header & footer", color: "blue" }),
                 PropertyPaneDropdown("headerStyle", {
                   label: strings.HeaderStyleLabel,
                   options: headerOptions,
@@ -364,6 +368,7 @@ export default class HyperStyleWebPart extends BaseHyperWebPart<IHyperStyleWebPa
             {
               groupName: strings.EffectsGroupName,
               groupFields: [
+                createGroupHeaderField("_effectsHeader", { icon: "\uD83C\uDFAF", title: "Effects", subtitle: "Visual effects", color: "red" }),
                 PropertyPaneDropdown("cardStyle", {
                   label: strings.CardStyleLabel,
                   options: [
@@ -418,6 +423,7 @@ export default class HyperStyleWebPart extends BaseHyperWebPart<IHyperStyleWebPa
             {
               groupName: "Web Part Styling",
               groupFields: [
+                createGroupHeaderField("_wpStylingHeader", { icon: "\uD83C\uDFAF", title: "Web Part Styling", subtitle: "Component styles", color: "red" }),
                 PropertyPaneDropdown("wpHeaderStyle", {
                   label: strings.WpHeaderStyleLabel,
                   options: [
@@ -487,6 +493,7 @@ export default class HyperStyleWebPart extends BaseHyperWebPart<IHyperStyleWebPa
             {
               groupName: strings.AdvancedGroupName,
               groupFields: [
+                createGroupHeaderField("_advancedHeader", { icon: "\u2699\uFE0F", title: "Advanced", subtitle: "Overrides & debug", color: "orange" }),
                 PropertyPaneTextField("wpHeaderAccentColor", {
                   label: "WP Header Accent Color",
                 }),

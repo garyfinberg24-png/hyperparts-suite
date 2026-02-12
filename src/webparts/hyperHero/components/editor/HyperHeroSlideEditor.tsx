@@ -22,7 +22,7 @@ import type {
 import { DEFAULT_GRADIENT, DEFAULT_ELEMENT_ANIMATION, DEFAULT_FONT_SETTINGS, DEFAULT_ROTATION } from "../../models";
 import { HyperHeroSlide } from "../HyperHeroSlide";
 import { HyperHeroLayerEditor } from "../canvas/HyperHeroLayerEditor";
-import { HyperImageBrowser } from "../shared/HyperImageBrowser";
+import { HyperImageBrowser } from "../../../../common/components/imageBrowser/HyperImageBrowser";
 import { HyperLottieGallery } from "../shared/HyperLottieGallery";
 import styles from "./HyperHeroSlideEditor.module.scss";
 

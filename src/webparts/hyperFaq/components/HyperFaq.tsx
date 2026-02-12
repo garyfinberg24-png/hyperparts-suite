@@ -2,7 +2,7 @@ import * as React from "react";
 import * as strings from "HyperFaqWebPartStrings";
 import type { IHyperFaqWebPartProps, IFaqItem, FaqAccordionStyle, FaqLayout } from "../models";
 import { groupFaqsByCategory } from "../models";
-import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton } from "../../../common/components";
+import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton, HyperEditOverlay } from "../../../common/components";
 import { useFaqItems, sortFaqItems } from "../hooks/useFaqItems";
 import { useFaqSearch } from "../hooks/useFaqSearch";
 import { useFaqVoting } from "../hooks/useFaqVoting";
@@ -36,6 +36,7 @@ import styles from "./HyperFaq.module.scss";
 export interface IHyperFaqComponentProps extends IHyperFaqWebPartProps {
   instanceId: string;
   isEditMode?: boolean;
+  onConfigure?: () => void;
   onWizardApply?: (result: Partial<IHyperFaqWebPartProps>) => void;
 }
 
@@ -484,7 +485,7 @@ var HyperFaqInner: React.FC<IHyperFaqComponentProps> = function (props) {
   // Build themed class — add themed class when template is active
   var containerClass = styles.faqContainer + (activeTemplate ? " " + styles.faqThemed : "");
 
-  return React.createElement(
+  var mainContent = React.createElement(
     "div",
     { className: containerClass, style: templateStyle as unknown as React.CSSProperties },
     demoBar,
@@ -511,6 +512,13 @@ var HyperFaqInner: React.FC<IHyperFaqComponentProps> = function (props) {
     ),
     submitModal
   );
+
+  return React.createElement(HyperEditOverlay, {
+    wpName: "HyperFaq",
+    isVisible: !!props.isEditMode,
+    onWizardClick: function () { setWizardOpen(true); },
+    onEditClick: function () { if (props.onConfigure) props.onConfigure(); },
+  }, mainContent);
 };
 
 // ── Wrapper with error boundary ──

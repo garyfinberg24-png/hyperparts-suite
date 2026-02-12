@@ -271,19 +271,28 @@ HyperParts Suite is a **single SPFx 1.20.0 solution** packaging 20 web parts (sh
 - Pattern B = dark navy sidebar stepper (left) + content panel (right)
 - WelcomeStep props: `isOpen`, `onClose`, `onApply`, `currentProps?`
 - Shared interfaces: `src/common/components/wizard/IHyperWizard.ts`
+- Standard property: `wizardCompleted` (default: `false`) — NOT `showWizardOnInit`
+- HyperFaq exception: uses BOTH `showWizardOnInit` AND `wizardCompleted` in tandem
 
-**DemoBar Rich Panel (shared SCSS):**
+**DemoBar Rich Panel (shared SCSS, enableDemoMode=true by default):**
 
 - All 20 WPs have DemoBar .tsx imported and rendered in main component
 - All DemoBars import shared `src/common/components/demoBar/DemoBarRichPanel.module.scss`
 - No per-WP DemoBar SCSS files — all use the shared stylesheet
 - Dark navy gradient toolbar, DEMO badge, grouped chip toggles, exit button
+- Standard property: `enableDemoMode` (default: `true`) — NOT `demoMode`
 
 **Sample Data:**
 
 - All applicable WPs have sample data wired with `useSampleData=true` default
 - Profile, Rollup, Ticker confirmed fully wired
 - Links and Spotlight defaults confirmed correct (`true`)
+
+**Property Naming Standards (enforced as of v0.0.22):**
+
+- `wizardCompleted: boolean` — wizard done flag (false = show wizard). NOT `showWizardOnInit`
+- `enableDemoMode: boolean` — demo bar toggle (true = show). NOT `demoMode`
+- `useSampleData: boolean` — sample data toggle (true = use sample data)
 
 ### Production Package Built
 

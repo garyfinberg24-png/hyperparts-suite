@@ -10,6 +10,7 @@ import {
 } from "@microsoft/sp-property-pane";
 import * as strings from "HyperProfileWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
+import { createGroupHeaderField } from "../../common/propertyPane";
 import type { IHyperProfileWebPartProps } from "./models";
 import type { IHyperTemplate } from "./models";
 import { TEMPLATES, getTemplateById } from "./constants/templates";
@@ -38,6 +39,7 @@ export default class HyperProfileWebPart extends BaseHyperWebPart<IHyperProfileW
       wizardCompleted: this.properties.wizardCompleted,
       onWizardComplete: this._onWizardComplete,
       onDemoModeChange: this._onDemoModeChange,
+      onConfigure: (): void => { this.context.propertyPane.open(); },
     };
     const element = React.createElement(HyperProfile, props);
     ReactDom.render(element, this.domElement);
@@ -185,6 +187,7 @@ export default class HyperProfileWebPart extends BaseHyperWebPart<IHyperProfileW
             {
               groupName: strings.BasicGroupName,
               groupFields: [
+                createGroupHeaderField("_basicHeader", { icon: "\uD83C\uDFA8", title: "Basic", subtitle: "Mode & template", color: "blue" }),
                 PropertyPaneChoiceGroup("displayMode", {
                   label: strings.DisplayModeFieldLabel,
                   options: [
@@ -204,6 +207,7 @@ export default class HyperProfileWebPart extends BaseHyperWebPart<IHyperProfileW
             {
               groupName: strings.QuickActionsGroupName,
               groupFields: [
+                createGroupHeaderField("_quickActionsHeader", { icon: "\u2699\uFE0F", title: "Quick Actions", subtitle: "Contact buttons", color: "orange" }),
                 PropertyPaneToggle("showQuickActions", {
                   label: strings.ShowQuickActionsFieldLabel,
                   checked: this.properties.showQuickActions !== false,
@@ -235,6 +239,7 @@ export default class HyperProfileWebPart extends BaseHyperWebPart<IHyperProfileW
             {
               groupName: strings.PresenceGroupName,
               groupFields: [
+                createGroupHeaderField("_presenceHeader", { icon: "\u2699\uFE0F", title: "Presence", subtitle: "Status & refresh", color: "orange" }),
                 PropertyPaneToggle("showPresence", {
                   label: strings.ShowPresenceFieldLabel,
                   checked: this.properties.showPresence !== false,
@@ -266,6 +271,7 @@ export default class HyperProfileWebPart extends BaseHyperWebPart<IHyperProfileW
             {
               groupName: strings.ProfileCompletenessGroupName,
               groupFields: [
+                createGroupHeaderField("_completenessHeader", { icon: "\u2699\uFE0F", title: "Completeness", subtitle: "Score display", color: "orange" }),
                 PropertyPaneToggle("showCompletenessScore", {
                   label: strings.ShowCompletenessScoreFieldLabel,
                   checked: this.properties.showCompletenessScore !== false,
@@ -298,6 +304,7 @@ export default class HyperProfileWebPart extends BaseHyperWebPart<IHyperProfileW
             {
               groupName: strings.LayoutGroupName,
               groupFields: [
+                createGroupHeaderField("_layoutHeader", { icon: "\uD83C\uDFA8", title: "Layout", subtitle: "Card & photo style", color: "blue" }),
                 PropertyPaneDropdown("cardStyle", {
                   label: "Card Style",
                   options: [
@@ -338,6 +345,7 @@ export default class HyperProfileWebPart extends BaseHyperWebPart<IHyperProfileW
             {
               groupName: strings.BackgroundGroupName,
               groupFields: [
+                createGroupHeaderField("_backgroundHeader", { icon: "\uD83C\uDFAF", title: "Background", subtitle: "Color & theme", color: "red" }),
                 PropertyPaneTextField("backgroundColor", {
                   label: "Background Color",
                   value: this.properties.backgroundColor || "#FFFFFF",
@@ -351,6 +359,7 @@ export default class HyperProfileWebPart extends BaseHyperWebPart<IHyperProfileW
             {
               groupName: strings.OverlayGroupName,
               groupFields: [
+                createGroupHeaderField("_overlayHeader", { icon: "\uD83C\uDFAF", title: "Overlay", subtitle: "Text & transparency", color: "red" }),
                 PropertyPaneToggle("enableOverlay", {
                   label: "Enable Overlay",
                   checked: this.properties.enableOverlay || false,

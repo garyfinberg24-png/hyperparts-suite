@@ -13,11 +13,12 @@ import {
   PropertyPaneButtonType,
   PropertyPaneLabel,
   PropertyPaneHorizontalRule,
-  PropertyPaneCheckbox,
 } from "@microsoft/sp-property-pane";
 
 import * as strings from "HyperNavWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
+import { createGroupHeaderField, createAccordionField } from "../../common/propertyPane";
+import type { IAccordionItem, IAccordionField } from "../../common/propertyPane";
 import HyperNav from "./components/HyperNav";
 import type { IHyperNavComponentProps } from "./components/HyperNav";
 import type { IHyperNavWebPartProps, IHyperNavLink } from "./models";
@@ -173,147 +174,148 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
     this.context.propertyPane.refresh();
   }
 
-  private _buildSingleLinkFields(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    fields: IPropertyPaneField<any>[],
-    link: IHyperNavLink,
-    index: number,
-    totalLinks: number
-  ): void {
-    fields.push(
-      PropertyPaneLabel("_linkLabel" + index, {
-        text: strings.LinkHeaderPrefix + " " + (index + 1) + ": " + link.title,
-      })
-    );
-
-    fields.push(
-      PropertyPaneTextField("_linkTitle" + index, {
-        label: strings.LinkTitleLabel,
-        value: link.title,
-      })
-    );
-
-    fields.push(
-      PropertyPaneTextField("_linkUrl" + index, {
-        label: strings.LinkUrlLabel,
-        value: link.url,
-      })
-    );
-
-    fields.push(
-      PropertyPaneTextField("_linkDescription" + index, {
-        label: strings.LinkDescriptionLabel,
-        value: link.description || "",
-        multiline: true,
-      })
-    );
-
-    fields.push(
-      PropertyPaneTextField("_linkIconName" + index, {
-        label: strings.LinkIconNameLabel,
-        value: link.icon ? link.icon.value : "",
-        description: "Fluent UI icon name (e.g. Home, Globe, Mail)",
-      })
-    );
-
-    fields.push(
-      PropertyPaneCheckbox("_linkNewTab" + index, {
-        text: strings.LinkOpenInNewTabLabel,
-        checked: link.openInNewTab,
-      })
-    );
-
-    if (this.properties.enableGrouping) {
-      fields.push(
-        PropertyPaneTextField("_linkGroupName" + index, {
-          label: strings.LinkGroupNameLabel,
-          value: link.groupName || "",
-        })
-      );
-    }
-
-    fields.push(
-      PropertyPaneButton("_linkMoveUp" + index, {
-        text: strings.MoveUpLabel,
-        buttonType: PropertyPaneButtonType.Normal,
-        icon: "ChevronUp",
-        disabled: index === 0,
-        onClick: this._createMoveHandler(index, index - 1),
-      })
-    );
-
-    fields.push(
-      PropertyPaneButton("_linkMoveDown" + index, {
-        text: strings.MoveDownLabel,
-        buttonType: PropertyPaneButtonType.Normal,
-        icon: "ChevronDown",
-        disabled: index === totalLinks - 1,
-        onClick: this._createMoveHandler(index, index + 1),
-      })
-    );
-
-    fields.push(
-      PropertyPaneButton("_linkRemove" + index, {
-        text: strings.RemoveLinkLabel,
-        buttonType: PropertyPaneButtonType.Normal,
-        icon: "Delete",
-        onClick: this._createRemoveHandler(link.id),
-      })
-    );
-
-    fields.push(PropertyPaneHorizontalRule());
-  }
-
-  private _createMoveHandler(fromIndex: number, toIndex: number): () => string {
-    return (): string => {
-      var currentLinks = parseLinks(this.properties.links);
-      var reordered = reorderLink(currentLinks, fromIndex, toIndex);
-      this._updateLinks(reordered);
-      return "";
-    };
-  }
-
-  private _createRemoveHandler(linkId: string): () => string {
-    return (): string => {
-      var currentLinks = parseLinks(this.properties.links);
-      var updated = removeLink(currentLinks, linkId);
-      this._updateLinks(updated);
-      return "";
-    };
-  }
-
-  private _createAddHandler(): () => string {
-    return (): string => {
-      var currentLinks = parseLinks(this.properties.links);
-      var newLink = createLink(
-        strings.NewLinkDefaultTitle + " " + (currentLinks.length + 1),
-        currentLinks.length
-      );
-      currentLinks.push(newLink);
-      this._updateLinks(currentLinks);
-      return "";
-    };
-  }
-
-  private _buildLinkFields(): IPropertyPaneField<unknown>[] {
+  private _buildAccordionItems(): IAccordionItem[] {
     var links = parseLinks(this.properties.links);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    var fields: IPropertyPaneField<any>[] = [];
+    var self = this;
+    var items: IAccordionItem[] = [];
 
-    for (var i = 0; i < links.length; i++) {
-      this._buildSingleLinkFields(fields, links[i], i, links.length);
-    }
+    links.forEach(function (link: IHyperNavLink, index: number): void {
+      var urlMeta = link.url || "";
+      if (urlMeta.length > 30) {
+        urlMeta = urlMeta.substring(0, 30) + "...";
+      }
 
-    fields.push(
-      PropertyPaneButton("_linkAdd", {
-        text: strings.AddLinkLabel,
-        buttonType: PropertyPaneButtonType.Primary,
-        icon: "Add",
-        onClick: this._createAddHandler(),
-      })
+      var fields: IAccordionField[] = [
+        {
+          key: "title",
+          label: "Title",
+          value: link.title,
+          type: "text",
+          onChange: function (newValue: string): void {
+            var currentLinks = parseLinks(self.properties.links);
+            if (index >= 0 && index < currentLinks.length) {
+              currentLinks[index].title = newValue;
+              self.properties.links = stringifyLinks(currentLinks);
+              self.render();
+              self.context.propertyPane.refresh();
+            }
+          },
+        },
+        {
+          key: "url",
+          label: "URL",
+          value: link.url,
+          type: "url",
+          onChange: function (newValue: string): void {
+            var currentLinks = parseLinks(self.properties.links);
+            if (index >= 0 && index < currentLinks.length) {
+              currentLinks[index].url = newValue;
+              self.properties.links = stringifyLinks(currentLinks);
+              self.render();
+              self.context.propertyPane.refresh();
+            }
+          },
+        },
+        {
+          key: "description",
+          label: "Description",
+          value: link.description || "",
+          type: "text",
+          onChange: function (newValue: string): void {
+            var currentLinks = parseLinks(self.properties.links);
+            if (index >= 0 && index < currentLinks.length) {
+              currentLinks[index].description = newValue || undefined;
+              self.properties.links = stringifyLinks(currentLinks);
+              self.render();
+              self.context.propertyPane.refresh();
+            }
+          },
+        },
+        {
+          key: "iconName",
+          label: "Icon Name",
+          value: link.icon ? link.icon.value : "",
+          type: "text",
+          onChange: function (newValue: string): void {
+            var currentLinks = parseLinks(self.properties.links);
+            if (index >= 0 && index < currentLinks.length) {
+              if (newValue) {
+                currentLinks[index].icon = { type: "fluent", value: newValue };
+              } else {
+                currentLinks[index].icon = undefined;
+              }
+              self.properties.links = stringifyLinks(currentLinks);
+              self.render();
+              self.context.propertyPane.refresh();
+            }
+          },
+        },
+        {
+          key: "openInNewTab",
+          label: "Open in new tab",
+          value: link.openInNewTab ? "true" : "false",
+          type: "toggle",
+          onChange: function (newValue: string): void {
+            var currentLinks = parseLinks(self.properties.links);
+            if (index >= 0 && index < currentLinks.length) {
+              currentLinks[index].openInNewTab = newValue === "true";
+              self.properties.links = stringifyLinks(currentLinks);
+              self.render();
+              self.context.propertyPane.refresh();
+            }
+          },
+        },
+      ];
+
+      if (self.properties.enableGrouping) {
+        fields.push({
+          key: "groupName",
+          label: "Group Name",
+          value: link.groupName || "",
+          type: "text",
+          onChange: function (newValue: string): void {
+            var currentLinks = parseLinks(self.properties.links);
+            if (index >= 0 && index < currentLinks.length) {
+              currentLinks[index].groupName = newValue || undefined;
+              self.properties.links = stringifyLinks(currentLinks);
+              self.render();
+              self.context.propertyPane.refresh();
+            }
+          },
+        });
+      }
+
+      items.push({
+        id: link.id,
+        title: link.title,
+        meta: urlMeta,
+        fields: fields,
+      });
+    });
+
+    return items;
+  }
+
+  private _handleLinkReorder(fromIndex: number, toIndex: number): void {
+    var currentLinks = parseLinks(this.properties.links);
+    var reordered = reorderLink(currentLinks, fromIndex, toIndex);
+    this._updateLinks(reordered);
+  }
+
+  private _handleLinkDelete(id: string): void {
+    var currentLinks = parseLinks(this.properties.links);
+    var updated = removeLink(currentLinks, id);
+    this._updateLinks(updated);
+  }
+
+  private _handleLinkAdd(): void {
+    var currentLinks = parseLinks(this.properties.links);
+    var newLink = createLink(
+      strings.NewLinkDefaultTitle + " " + (currentLinks.length + 1),
+      currentLinks.length
     );
-
-    return fields;
+    currentLinks.push(newLink);
+    this._updateLinks(currentLinks);
   }
 
   private _buildGroupFields(): IPropertyPaneField<unknown>[] {
@@ -501,7 +503,16 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     var linkManagementGroup: IPropertyPaneGroup = {
       groupName: strings.LinksGroupName,
-      groupFields: this._buildLinkFields(),
+      groupFields: ([
+        createGroupHeaderField("_linksHeader", { icon: "\uD83D\uDD17", title: "Links", subtitle: "Manage navigation items", color: "green" }),
+        createAccordionField("_navLinks", {
+          items: this._buildAccordionItems(),
+          onReorder: this._handleLinkReorder.bind(this),
+          onDelete: this._handleLinkDelete.bind(this),
+          onAdd: this._handleLinkAdd.bind(this),
+          addLabel: "Add Link",
+        }),
+      ] as IPropertyPaneField<never>[]),
     };
 
     var groupFields = this._buildGroupFields();
@@ -522,6 +533,7 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
             {
               groupName: strings.LayoutGroupName,
               groupFields: [
+                createGroupHeaderField("_layoutHeader", { icon: "\uD83C\uDFA8", title: "Layout", subtitle: "Display mode & grid", color: "blue" }),
                 PropertyPaneTextField("title", {
                   label: strings.TitleFieldLabel,
                 }),
@@ -562,6 +574,7 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
             {
               groupName: strings.StylingGroupName,
               groupFields: [
+                createGroupHeaderField("_stylingHeader", { icon: "\uD83C\uDFAF", title: "Styling", subtitle: "Theme & appearance", color: "red" }),
                 PropertyPaneDropdown("hoverEffect", {
                   label: strings.HoverEffectLabel,
                   options: [
@@ -617,6 +630,7 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
             {
               groupName: strings.FeaturesGroupName,
               groupFields: [
+                createGroupHeaderField("_featuresHeader", { icon: "\u2699\uFE0F", title: "Features", subtitle: "Advanced options", color: "orange" }),
                 PropertyPaneToggle("showSearch", {
                   label: strings.ShowSearchLabel,
                 }),

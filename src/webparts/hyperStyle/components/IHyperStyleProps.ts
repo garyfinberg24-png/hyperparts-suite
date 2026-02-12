@@ -5,4 +5,5 @@ export interface IHyperStyleProps extends IHyperStyleWebPartProps {
   isEditMode?: boolean;
   onWizardApply?: (result: Partial<IHyperStyleWebPartProps>) => void;
   onDemoModeChange?: (enabled: boolean) => void;
+  onConfigure?: () => void;
 }

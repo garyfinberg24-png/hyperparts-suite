@@ -1,7 +1,7 @@
 import * as React from "react";
 import type { IHyperChartsWebPartProps, IHyperChart } from "../models";
 import { parseCharts, parseDataSource, parseThresholds, evaluateThreshold } from "../models";
-import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton } from "../../../common/components";
+import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton, HyperEditOverlay } from "../../../common/components";
 import { HyperWizard } from "../../../common/components/wizard/HyperWizard";
 import { CHARTS_WIZARD_CONFIG, buildStateFromProps } from "./wizard/chartsWizardConfig";
 import { useChartData } from "../hooks/useChartData";
@@ -28,6 +28,7 @@ import styles from "./HyperCharts.module.scss";
 export interface IHyperChartsComponentProps extends IHyperChartsWebPartProps {
   instanceId: string;
   isEditMode?: boolean;
+  onConfigure?: () => void;
   /** Callback from web part class to persist wizard result */
   onWizardApply?: (result: Partial<IHyperChartsWebPartProps>) => void;
 }
@@ -492,7 +493,7 @@ const HyperChartsInner: React.FC<IHyperChartsComponentProps> = function (props) 
     })
   );
 
-  return React.createElement(
+  var mainContent = React.createElement(
     "div",
     {
       className: styles.chartsContainer,
@@ -501,6 +502,13 @@ const HyperChartsInner: React.FC<IHyperChartsComponentProps> = function (props) 
     },
     contentChildren
   );
+
+  return React.createElement(HyperEditOverlay, {
+    wpName: "HyperCharts",
+    isVisible: !!props.isEditMode,
+    onWizardClick: function () { store.openWizard(); },
+    onEditClick: function () { if (props.onConfigure) props.onConfigure(); },
+  }, mainContent);
 };
 
 const HyperCharts: React.FC<IHyperChartsComponentProps> = function (props) {

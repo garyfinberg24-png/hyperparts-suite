@@ -14,7 +14,7 @@ import type { ShapeMask } from "../models/IHyperImageShape";
 import type { FilterPreset } from "../models/IHyperImageFilter";
 import type { HoverEffect } from "../models/IHyperImageHover";
 import type { IFilterConfig, ITextOverlay, IBorderConfig, IImageLayoutConfig, IHyperImageItem } from "../models";
-import { HyperErrorBoundary, HyperEmptyState } from "../../../common/components";
+import { HyperErrorBoundary, HyperEmptyState, HyperEditOverlay } from "../../../common/components";
 import { HyperModal } from "../../../common/components";
 import { useHyperImageStyles } from "../hooks/useHyperImageStyles";
 import { useViewportTrigger } from "../hooks/useViewportTrigger";
@@ -24,9 +24,8 @@ import HyperImageTextOverlay from "./HyperImageTextOverlay";
 import HyperImageDemoBar from "./HyperImageDemoBar";
 import { HyperImageEditorModal } from "./editor";
 import type { IEditorChanges } from "./editor";
-// Cross-web-part import: HyperImageBrowser from HyperHero shared components (pitfall #29)
-import { HyperImageBrowser } from "../../hyperHero/components/shared/HyperImageBrowser";
-import type { IHyperImageBrowserProps } from "../../hyperHero/components/shared/HyperImageBrowser";
+import { HyperImageBrowser } from "../../../common/components/imageBrowser/HyperImageBrowser";
+import type { IHyperImageBrowserProps } from "../../../common/components/imageBrowser/HyperImageBrowser";
 import HyperImageLayoutGallery from "./HyperImageLayoutGallery";
 import type { IPresetLayout } from "../models/IHyperImagePresetLayout";
 import WelcomeStep from "./wizard/WelcomeStep";
@@ -44,6 +43,7 @@ export interface IHyperImageComponentProps extends IHyperImageWebPartProps {
   onImageSelect?: (imageUrl: string) => void;
   /** Callback when user selects a preset layout from the gallery */
   onLayoutSelect?: (preset: IPresetLayout) => void;
+  onConfigure?: () => void;
 }
 
 /** Safely parse a JSON string with a fallback default */
@@ -357,25 +357,34 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
   // ── Multi-image layout support ──
   var isMulti = effectiveLayout && effectiveLayout !== ImageLayout.Single && effectiveAdditional.length > 0;
 
+  var mainContent: React.ReactElement;
+
   if (isMulti) {
-    return _renderMultiImageLayout(
+    mainContent = _renderMultiImageLayout(
       props, effectiveLayout, imageUrl, alt, effectiveAdditional, layoutConfig,
       computedStyles, hoverClass, entranceClass, containerRef, containerChildren
     );
+  } else {
+    // ── Single image container ──
+    mainContent = React.createElement(
+      "div",
+      {
+        ref: containerRef,
+        className: styles.hyperImageContainer + " " + entranceClass,
+        style: computedStyles.containerStyle,
+        role: "region",
+        "aria-label": "HyperImage",
+      },
+      containerChildren
+    );
   }
 
-  // ── Single image container ──
-  return React.createElement(
-    "div",
-    {
-      ref: containerRef,
-      className: styles.hyperImageContainer + " " + entranceClass,
-      style: computedStyles.containerStyle,
-      role: "region",
-      "aria-label": "HyperImage",
-    },
-    containerChildren
-  );
+  return React.createElement(HyperEditOverlay, {
+    wpName: "HyperImage",
+    isVisible: !!props.isEditMode,
+    onWizardClick: function () { setWizardOpen(true); },
+    onEditClick: function () { if (props.onConfigure) props.onConfigure(); },
+  }, mainContent);
 };
 
 /** Render multi-image layouts (row, grid, collage, filmstrip) */

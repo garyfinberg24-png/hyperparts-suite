@@ -14,6 +14,7 @@ import HyperExplorer from "./components/HyperExplorer";
 import type { IHyperExplorerComponentProps } from "./components/HyperExplorer";
 import type { IHyperExplorerWebPartProps } from "./models";
 import { VIEW_MODE_OPTIONS, SORT_MODE_OPTIONS, PREVIEW_MODE_OPTIONS } from "./models";
+import { createGroupHeaderField } from "../../common/propertyPane";
 
 export default class HyperExplorerWebPart extends BaseHyperWebPart<IHyperExplorerWebPartProps> {
 
@@ -29,6 +30,7 @@ export default class HyperExplorerWebPart extends BaseHyperWebPart<IHyperExplore
         });
         self.render();
       },
+      onConfigure: (): void => { self.context.propertyPane.open(); },
     };
     const element: React.ReactElement<IHyperExplorerComponentProps> =
       React.createElement(HyperExplorer, props);
@@ -170,6 +172,7 @@ export default class HyperExplorerWebPart extends BaseHyperWebPart<IHyperExplore
             {
               groupName: strings.GeneralGroupName,
               groupFields: [
+                createGroupHeaderField("_generalHeader", { icon: "\uD83C\uDFA8", title: "General", subtitle: "Library & layout", color: "blue" }),
                 PropertyPaneTextField("title", {
                   label: strings.TitleFieldLabel,
                 }),
@@ -222,6 +225,7 @@ export default class HyperExplorerWebPart extends BaseHyperWebPart<IHyperExplore
             {
               groupName: strings.PreviewGroupName,
               groupFields: [
+                createGroupHeaderField("_previewHeader", { icon: "\uD83C\uDFA8", title: "Preview", subtitle: "Preview options", color: "blue" }),
                 PropertyPaneToggle("enablePreview", {
                   label: strings.EnablePreviewFieldLabel,
                 }),
@@ -260,6 +264,7 @@ export default class HyperExplorerWebPart extends BaseHyperWebPart<IHyperExplore
             {
               groupName: strings.FeaturesGroupName,
               groupFields: [
+                createGroupHeaderField("_featuresHeader", { icon: "\u2699\uFE0F", title: "Features", subtitle: "Tools & actions", color: "orange" }),
                 PropertyPaneToggle("enableUpload", {
                   label: strings.EnableUploadFieldLabel,
                 }),
@@ -301,6 +306,7 @@ export default class HyperExplorerWebPart extends BaseHyperWebPart<IHyperExplore
             {
               groupName: strings.FilePlanGroupName,
               groupFields: [
+                createGroupHeaderField("_filePlanHeader", { icon: "\uD83C\uDFA8", title: "File Plan", subtitle: "Compliance settings", color: "blue" }),
                 PropertyPaneToggle("enableFilePlan", {
                   label: strings.EnableFilePlanFieldLabel,
                 }),
@@ -315,6 +321,7 @@ export default class HyperExplorerWebPart extends BaseHyperWebPart<IHyperExplore
             {
               groupName: strings.MetadataProfilesGroupName,
               groupFields: [
+                createGroupHeaderField("_metadataHeader", { icon: "\uD83C\uDFA8", title: "Metadata", subtitle: "Profiles & naming", color: "blue" }),
                 PropertyPaneToggle("enableMetadataProfiles", {
                   label: strings.EnableMetadataProfilesFieldLabel,
                 }),

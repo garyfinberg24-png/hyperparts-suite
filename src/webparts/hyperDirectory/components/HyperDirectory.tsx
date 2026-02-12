@@ -3,6 +3,7 @@ import * as strings from "HyperDirectoryWebPartStrings";
 import { HyperErrorBoundary } from "../../../common/components";
 import { HyperSkeleton } from "../../../common/components";
 import { HyperEmptyState } from "../../../common/components";
+import { HyperEditOverlay } from "../../../common/components";
 import { HyperWizard } from "../../../common/components/wizard/HyperWizard";
 import type { IHyperDirectoryWebPartProps, IHyperDirectoryUser, DirectoryActionType } from "../models";
 import { useDirectoryUsers } from "../hooks/useDirectoryUsers";
@@ -28,6 +29,7 @@ export interface IHyperDirectoryComponentProps extends IHyperDirectoryWebPartPro
   instanceId: string;
   isEditMode?: boolean;
   onWizardApply?: (result: Partial<IHyperDirectoryWebPartProps>) => void;
+  onConfigure?: () => void;
 }
 
 /** Parse JSON string safely with fallback */
@@ -403,7 +405,7 @@ const HyperDirectoryInner: React.FC<IHyperDirectoryComponentProps> = function (p
     ? allUsers.filter(function (u) { return u.id === store.selectedUserId; })[0]
     : undefined;
 
-  return React.createElement("div", { className: styles.hyperDirectory },
+  var mainContent = React.createElement("div", { className: styles.hyperDirectory },
     title ? React.createElement("h2", { className: styles.title }, title) : undefined,
     showDemoBar
       ? React.createElement(HyperDirectoryDemoBar, {
@@ -453,6 +455,13 @@ const HyperDirectoryInner: React.FC<IHyperDirectoryComponentProps> = function (p
     }) : undefined,
     wizardElement
   );
+
+  return React.createElement(HyperEditOverlay, {
+    wpName: "HyperDirectory",
+    isVisible: !!props.isEditMode,
+    onWizardClick: function () { openWizard(); },
+    onEditClick: function () { if (props.onConfigure) props.onConfigure(); },
+  }, mainContent);
 };
 
 const HyperDirectory: React.FC<IHyperDirectoryComponentProps> = function (props) {

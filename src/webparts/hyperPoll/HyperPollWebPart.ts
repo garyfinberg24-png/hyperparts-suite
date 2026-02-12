@@ -17,6 +17,7 @@ import {
 
 import * as strings from "HyperPollWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
+import { createGroupHeaderField } from "../../common/propertyPane";
 import HyperPoll from "./components/HyperPoll";
 import type { IHyperPollComponentProps } from "./components/HyperPoll";
 import type { IHyperPollWebPartProps, IHyperPoll, IPollQuestion, IPollOption } from "./models";
@@ -80,6 +81,7 @@ export default class HyperPollWebPart extends BaseHyperWebPart<IHyperPollWebPart
       ...this.properties,
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
+      onConfigure: (): void => { self.context.propertyPane.open(); },
       onWizardComplete: function (): void {
         self.properties.wizardCompleted = true;
         self.render();
@@ -699,7 +701,7 @@ export default class HyperPollWebPart extends BaseHyperWebPart<IHyperPollWebPart
     // Build dynamic poll management group
     const pollManagementGroup: IPropertyPaneGroup = {
       groupName: strings.PollManagementGroupName,
-      groupFields: this._buildPollManagementFields(),
+      groupFields: ([createGroupHeaderField("_pollMgmtHeader", { icon: "\uD83D\uDCCB", title: "Polls", subtitle: "Questions & options", color: "green" })] as IPropertyPaneField<never>[]).concat(this._buildPollManagementFields() as IPropertyPaneField<never>[]),
     };
 
     return {
@@ -711,6 +713,7 @@ export default class HyperPollWebPart extends BaseHyperWebPart<IHyperPollWebPart
             {
               groupName: strings.GeneralGroupName,
               groupFields: [
+                createGroupHeaderField("_generalHeader", { icon: "\uD83C\uDFA8", title: "General", subtitle: "Display & charts", color: "blue" }),
                 PropertyPaneTextField("title", {
                   label: strings.TitleFieldLabel,
                 }),
@@ -741,6 +744,7 @@ export default class HyperPollWebPart extends BaseHyperWebPart<IHyperPollWebPart
             {
               groupName: strings.FeaturesGroupName,
               groupFields: [
+                createGroupHeaderField("_featuresHeader", { icon: "\u2699\uFE0F", title: "Features", subtitle: "Export & refresh", color: "orange" }),
                 PropertyPaneToggle("enableExport", {
                   label: strings.EnableExportLabel,
                 }),
@@ -764,6 +768,7 @@ export default class HyperPollWebPart extends BaseHyperWebPart<IHyperPollWebPart
             {
               groupName: strings.WizardGroupName,
               groupFields: [
+                createGroupHeaderField("_wizardHeader", { icon: "\u2699\uFE0F", title: "Setup", subtitle: "Wizard & demo", color: "orange" }),
                 PropertyPaneToggle("showWizardOnInit", {
                   label: strings.ShowWizardOnInitLabel,
                 }),

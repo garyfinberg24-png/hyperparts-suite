@@ -13,11 +13,12 @@ import {
   PropertyPaneButtonType,
   PropertyPaneLabel,
   PropertyPaneHorizontalRule,
-  PropertyPaneCheckbox,
 } from "@microsoft/sp-property-pane";
 
 import * as strings from "HyperLinksWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
+import { createGroupHeaderField, createAccordionField } from "../../common/propertyPane";
+import type { IAccordionItem, IAccordionField } from "../../common/propertyPane";
 import HyperLinks from "./components/HyperLinks";
 import type { IHyperLinksComponentProps } from "./components/HyperLinks";
 import type { IHyperLinksWebPartProps, IHyperLink } from "./models";
@@ -52,6 +53,7 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
       ...this.properties,
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
+      onConfigure: (): void => { this.context.propertyPane.open(); },
       onWizardApply: this._onWizardApply,
     };
     const element: React.ReactElement<IHyperLinksComponentProps> =
@@ -187,193 +189,231 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
     this.context.propertyPane.refresh();
   }
 
-  /** Build fields for a single link at the given index */
-  private _buildSingleLinkFields(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    fields: IPropertyPaneField<any>[],
-    link: IHyperLink,
-    index: number,
-    totalLinks: number
-  ): void {
-    // Link header label
-    fields.push(
-      PropertyPaneLabel("_linkLabel" + index, {
-        text: strings.LinkHeaderPrefix + " " + (index + 1) + ": " + link.title,
-      })
-    );
+  /** Build accordion items from the current links for the property pane accordion */
+  private _buildAccordionItems(): IAccordionItem[] {
+    const links = parseLinks(this.properties.links);
+    const self = this;
+    const items: IAccordionItem[] = [];
 
-    // Title
-    fields.push(
-      PropertyPaneTextField("_linkTitle" + index, {
+    links.forEach(function (link: IHyperLink) {
+      const fields: IAccordionField[] = [];
+
+      // Title
+      fields.push({
+        key: "title",
         label: strings.LinkTitleLabel,
         value: link.title,
-      })
-    );
+        type: "text",
+        onChange: function (newValue: string): void {
+          const currentLinks = parseLinks(self.properties.links);
+          const idx = self._findLinkIndex(currentLinks, link.id);
+          if (idx !== -1) {
+            currentLinks[idx].title = newValue;
+            self._updateLinks(currentLinks);
+          }
+        },
+      });
 
-    // URL
-    fields.push(
-      PropertyPaneTextField("_linkUrl" + index, {
+      // URL
+      fields.push({
+        key: "url",
         label: strings.LinkUrlLabel,
         value: link.url,
-      })
-    );
+        type: "url",
+        onChange: function (newValue: string): void {
+          const currentLinks = parseLinks(self.properties.links);
+          const idx = self._findLinkIndex(currentLinks, link.id);
+          if (idx !== -1) {
+            currentLinks[idx].url = newValue;
+            self._updateLinks(currentLinks);
+          }
+        },
+      });
 
-    // Description
-    fields.push(
-      PropertyPaneTextField("_linkDescription" + index, {
+      // Description
+      fields.push({
+        key: "description",
         label: strings.LinkDescriptionLabel,
         value: link.description || "",
-        multiline: true,
-      })
-    );
+        type: "text",
+        onChange: function (newValue: string): void {
+          const currentLinks = parseLinks(self.properties.links);
+          const idx = self._findLinkIndex(currentLinks, link.id);
+          if (idx !== -1) {
+            currentLinks[idx].description = newValue || undefined;
+            self._updateLinks(currentLinks);
+          }
+        },
+      });
 
-    // Icon type dropdown
-    fields.push(
-      PropertyPaneDropdown("_linkIconType" + index, {
+      // Icon type dropdown
+      fields.push({
+        key: "iconType",
         label: strings.LinkIconTypeLabel,
+        value: link.icon ? link.icon.type : "fluent",
+        type: "dropdown",
         options: [
           { key: "fluent", text: "Fluent UI Icon" },
           { key: "emoji", text: "Emoji" },
           { key: "custom", text: "Custom Image URL" },
         ],
-        selectedKey: link.icon ? link.icon.type : "fluent",
-      })
-    );
+        onChange: function (newValue: string): void {
+          const currentLinks = parseLinks(self.properties.links);
+          const idx = self._findLinkIndex(currentLinks, link.id);
+          if (idx !== -1) {
+            const iconType = newValue as "fluent" | "emoji" | "custom";
+            const existing = currentLinks[idx].icon;
+            if (existing) {
+              currentLinks[idx].icon = { type: iconType, value: existing.value, color: existing.color };
+            } else {
+              currentLinks[idx].icon = { type: iconType, value: "" };
+            }
+            self._updateLinks(currentLinks);
+          }
+        },
+      });
 
-    // Icon value
-    fields.push(
-      PropertyPaneTextField("_linkIconName" + index, {
+      // Icon name/value
+      fields.push({
+        key: "iconName",
         label: strings.LinkIconNameLabel,
         value: link.icon ? link.icon.value : "",
-        description: "Fluent icon name, emoji character, or image URL",
-      })
-    );
+        type: "text",
+        onChange: function (newValue: string): void {
+          const currentLinks = parseLinks(self.properties.links);
+          const idx = self._findLinkIndex(currentLinks, link.id);
+          if (idx !== -1) {
+            if (newValue) {
+              const existing = currentLinks[idx].icon;
+              const existingType = existing ? existing.type : "fluent";
+              currentLinks[idx].icon = { type: existingType, value: newValue };
+            } else {
+              currentLinks[idx].icon = undefined;
+            }
+            self._updateLinks(currentLinks);
+          }
+        },
+      });
 
-    // Thumbnail URL (when showThumbnails enabled)
-    if (this.properties.showThumbnails) {
-      fields.push(
-        PropertyPaneTextField("_linkThumbnailUrl" + index, {
+      // Thumbnail URL (conditional)
+      if (self.properties.showThumbnails) {
+        fields.push({
+          key: "thumbnailUrl",
           label: strings.LinkThumbnailUrlLabel,
           value: link.thumbnailUrl || "",
-        })
-      );
-    }
+          type: "text",
+          onChange: function (newValue: string): void {
+            const currentLinks = parseLinks(self.properties.links);
+            const idx = self._findLinkIndex(currentLinks, link.id);
+            if (idx !== -1) {
+              currentLinks[idx].thumbnailUrl = newValue || undefined;
+              self._updateLinks(currentLinks);
+            }
+          },
+        });
+      }
 
-    // Background color (when color customization enabled)
-    if (this.properties.enableColorCustomization) {
-      fields.push(
-        PropertyPaneTextField("_linkBackgroundColor" + index, {
+      // Background color (conditional)
+      if (self.properties.enableColorCustomization) {
+        fields.push({
+          key: "backgroundColor",
           label: strings.LinkBackgroundColorLabel,
           value: link.backgroundColor || "",
-          description: "CSS color (e.g. #0078D4, rgba(0,0,0,0.1))",
-        })
-      );
-    }
+          type: "text",
+          onChange: function (newValue: string): void {
+            const currentLinks = parseLinks(self.properties.links);
+            const idx = self._findLinkIndex(currentLinks, link.id);
+            if (idx !== -1) {
+              currentLinks[idx].backgroundColor = newValue || undefined;
+              self._updateLinks(currentLinks);
+            }
+          },
+        });
+      }
 
-    // Open in new tab
-    fields.push(
-      PropertyPaneCheckbox("_linkNewTab" + index, {
-        text: strings.LinkOpenInNewTabLabel,
-        checked: link.openInNewTab,
-      })
-    );
+      // Open in new tab
+      fields.push({
+        key: "openInNewTab",
+        label: strings.LinkOpenInNewTabLabel,
+        value: link.openInNewTab ? "true" : "false",
+        type: "toggle",
+        onChange: function (newValue: string): void {
+          const currentLinks = parseLinks(self.properties.links);
+          const idx = self._findLinkIndex(currentLinks, link.id);
+          if (idx !== -1) {
+            currentLinks[idx].openInNewTab = newValue === "true";
+            self._updateLinks(currentLinks);
+          }
+        },
+      });
 
-    // Group name (when grouping enabled)
-    if (this.properties.enableGrouping) {
-      fields.push(
-        PropertyPaneTextField("_linkGroupName" + index, {
+      // Group name (conditional)
+      if (self.properties.enableGrouping) {
+        fields.push({
+          key: "groupName",
           label: strings.LinkGroupNameLabel,
           value: link.groupName || "",
-        })
-      );
-    }
+          type: "text",
+          onChange: function (newValue: string): void {
+            const currentLinks = parseLinks(self.properties.links);
+            const idx = self._findLinkIndex(currentLinks, link.id);
+            if (idx !== -1) {
+              currentLinks[idx].groupName = newValue || undefined;
+              self._updateLinks(currentLinks);
+            }
+          },
+        });
+      }
 
-    // Move Up
-    fields.push(
-      PropertyPaneButton("_linkMoveUp" + index, {
-        text: strings.MoveUpLabel,
-        buttonType: PropertyPaneButtonType.Normal,
-        icon: "ChevronUp",
-        disabled: index === 0,
-        onClick: this._createMoveHandler(index, index - 1),
-      })
-    );
+      // Truncate URL for meta display
+      const metaUrl = link.url.length > 30
+        ? link.url.substring(0, 30) + "..."
+        : link.url;
 
-    // Move Down
-    fields.push(
-      PropertyPaneButton("_linkMoveDown" + index, {
-        text: strings.MoveDownLabel,
-        buttonType: PropertyPaneButtonType.Normal,
-        icon: "ChevronDown",
-        disabled: index === totalLinks - 1,
-        onClick: this._createMoveHandler(index, index + 1),
-      })
-    );
+      items.push({
+        id: link.id,
+        title: link.title,
+        meta: metaUrl,
+        fields: fields,
+      });
+    });
 
-    // Remove
-    fields.push(
-      PropertyPaneButton("_linkRemove" + index, {
-        text: strings.RemoveLinkLabel,
-        buttonType: PropertyPaneButtonType.Normal,
-        icon: "Delete",
-        onClick: this._createRemoveHandler(link.id),
-      })
-    );
-
-    fields.push(PropertyPaneHorizontalRule());
+    return items;
   }
 
-  private _createMoveHandler(fromIndex: number, toIndex: number): () => string {
-    return (): string => {
-      const currentLinks = parseLinks(this.properties.links);
-      const reordered = reorderLink(currentLinks, fromIndex, toIndex);
-      this._updateLinks(reordered);
-      return "";
-    };
-  }
-
-  private _createRemoveHandler(linkId: string): () => string {
-    return (): string => {
-      const currentLinks = parseLinks(this.properties.links);
-      const updated = removeLink(currentLinks, linkId);
-      this._updateLinks(updated);
-      return "";
-    };
-  }
-
-  private _createAddHandler(): () => string {
-    return (): string => {
-      const currentLinks = parseLinks(this.properties.links);
-      const newLink = createLink(
-        strings.NewLinkDefaultTitle + " " + (currentLinks.length + 1),
-        currentLinks.length
-      );
-      currentLinks.push(newLink);
-      this._updateLinks(currentLinks);
-      return "";
-    };
-  }
-
-  /** Build dynamic per-link fields for Page 2 */
-  private _buildLinkFields(): IPropertyPaneField<unknown>[] {
-    const links = parseLinks(this.properties.links);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const fields: IPropertyPaneField<any>[] = [];
-
+  /** Find the index of a link by ID, returns -1 if not found */
+  private _findLinkIndex(links: IHyperLink[], linkId: string): number {
     for (let i = 0; i < links.length; i++) {
-      this._buildSingleLinkFields(fields, links[i], i, links.length);
+      if (links[i].id === linkId) {
+        return i;
+      }
     }
+    return -1;
+  }
 
-    fields.push(
-      PropertyPaneButton("_linkAdd", {
-        text: strings.AddLinkLabel,
-        buttonType: PropertyPaneButtonType.Primary,
-        icon: "Add",
-        onClick: this._createAddHandler(),
-      })
+  /** Handle accordion reorder */
+  private _handleLinkReorder(fromIndex: number, toIndex: number): void {
+    const currentLinks = parseLinks(this.properties.links);
+    const reordered = reorderLink(currentLinks, fromIndex, toIndex);
+    this._updateLinks(reordered);
+  }
+
+  /** Handle accordion delete */
+  private _handleLinkDelete(id: string): void {
+    const currentLinks = parseLinks(this.properties.links);
+    const updated = removeLink(currentLinks, id);
+    this._updateLinks(updated);
+  }
+
+  /** Handle accordion add */
+  private _handleLinkAdd(): void {
+    const currentLinks = parseLinks(this.properties.links);
+    const newLink = createLink(
+      strings.NewLinkDefaultTitle + " " + (currentLinks.length + 1),
+      currentLinks.length
     );
-
-    return fields;
+    currentLinks.push(newLink);
+    this._updateLinks(currentLinks);
   }
 
   /** Build group management fields */
@@ -624,6 +664,7 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
     // Page 1 fields - conditionally add layout-specific options
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const page1Fields: IPropertyPaneField<any>[] = [
+      createGroupHeaderField("_layoutHeader", { icon: "\uD83C\uDFA8", title: "Layout", subtitle: "Display & appearance", color: "blue" }),
       PropertyPaneTextField("title", {
         label: strings.TitleFieldLabel,
       }),
@@ -788,7 +829,16 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
     // Page 2 - Links Management
     const linkManagementGroup: IPropertyPaneGroup = {
       groupName: strings.LinksGroupName,
-      groupFields: this._buildLinkFields(),
+      groupFields: ([
+        createGroupHeaderField("_linksHeader", { icon: "\uD83D\uDD17", title: "Links", subtitle: "Manage items", color: "green" }),
+        createAccordionField("_linkItems", {
+          items: this._buildAccordionItems(),
+          onReorder: this._handleLinkReorder.bind(this),
+          onDelete: this._handleLinkDelete.bind(this),
+          onAdd: this._handleLinkAdd.bind(this),
+          addLabel: "Add Link",
+        }),
+      ] as IPropertyPaneField<never>[]),
     };
 
     const groupFields = this._buildGroupFields();
@@ -824,6 +874,7 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
             {
               groupName: strings.FeaturesGroupName,
               groupFields: [
+                createGroupHeaderField("_featuresHeader", { icon: "\u2699\uFE0F", title: "Features", subtitle: "Advanced options", color: "orange" }),
                 PropertyPaneToggle("enableGrouping", {
                   label: strings.EnableGroupingLabel,
                 }),
@@ -850,6 +901,7 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
             {
               groupName: strings.DataDemoGroupName,
               groupFields: [
+                createGroupHeaderField("_dataHeader", { icon: "\uD83D\uDCCB", title: "Data Source", subtitle: "Content & presets", color: "green" }),
                 PropertyPaneToggle("useSampleData", {
                   label: strings.UseSampleDataLabel,
                 }),

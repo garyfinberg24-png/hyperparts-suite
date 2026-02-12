@@ -8,7 +8,7 @@ import type {
   IHyperLink,
 } from "../models";
 import { SAMPLE_LINKS } from "../models";
-import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton } from "../../../common/components";
+import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton, HyperEditOverlay } from "../../../common/components";
 import { useHyperLinks } from "../hooks/useHyperLinks";
 import { useLinksAudienceFilter } from "../hooks/useLinksAudienceFilter";
 import { useLinksSearch } from "../hooks/useLinksSearch";
@@ -36,6 +36,7 @@ import styles from "./HyperLinks.module.scss";
 export interface IHyperLinksComponentProps extends IHyperLinksWebPartProps {
   instanceId: string;
   isEditMode?: boolean;
+  onConfigure?: () => void;
   onWizardApply?: (result: Partial<IHyperLinksWebPartProps>) => void;
 }
 
@@ -469,7 +470,7 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
       )
     : layoutContent;
 
-  return React.createElement(
+  var mainContent = React.createElement(
     "div",
     {
       className: styles.hyperLinks,
@@ -484,6 +485,13 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
     mainBody,
     wizardElement
   );
+
+  return React.createElement(HyperEditOverlay, {
+    wpName: "HyperLinks",
+    isVisible: !!props.isEditMode,
+    onWizardClick: function () { openWizard(); },
+    onEditClick: function () { if (props.onConfigure) props.onConfigure(); },
+  }, mainContent);
 };
 
 const HyperLinks: React.FC<IHyperLinksComponentProps> = function (props) {

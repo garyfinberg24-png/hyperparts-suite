@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as strings from "HyperBirthdaysWebPartStrings";
 import type { IHyperBirthdaysWebPartProps, CelebrationType, BirthdaysViewMode, ICelebration, AnimationType } from "../models";
-import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton } from "../../../common/components";
+import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton, HyperEditOverlay } from "../../../common/components";
 import { HyperWizard } from "../../../common/components/wizard/HyperWizard";
 import { useCelebrationData } from "../hooks/useCelebrationData";
 import { useCelebrationPhotos } from "../hooks/useCelebrationPhotos";
@@ -32,6 +32,7 @@ export interface IHyperBirthdaysComponentProps extends IHyperBirthdaysWebPartPro
   instanceId: string;
   isEditMode?: boolean;
   onWizardApply?: (result: Partial<IHyperBirthdaysWebPartProps>) => void;
+  onConfigure?: () => void;
 }
 
 const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (props) {
@@ -433,7 +434,7 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
       })
     : undefined;
 
-  return React.createElement(
+  var mainContent = React.createElement(
     "div",
     { className: styles.birthdaysContainer },
     demoBarElement,
@@ -456,6 +457,13 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
     selfServiceModal,
     wizardElement
   );
+
+  return React.createElement(HyperEditOverlay, {
+    wpName: "HyperBirthdays",
+    isVisible: !!props.isEditMode,
+    onWizardClick: function () { openWizard(); },
+    onEditClick: function () { if (props.onConfigure) props.onConfigure(); },
+  }, mainContent);
 };
 
 const HyperBirthdays: React.FC<IHyperBirthdaysComponentProps> = function (props) {

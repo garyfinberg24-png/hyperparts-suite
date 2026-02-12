@@ -14,6 +14,7 @@ import {
 
 import * as strings from "HyperTickerWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
+import { createGroupHeaderField } from "../../common/propertyPane";
 import HyperTicker from "./components/HyperTicker";
 import type { IHyperTickerComponentProps } from "./components/HyperTicker";
 import type { IHyperTickerWebPartProps } from "./models";
@@ -41,6 +42,7 @@ export default class HyperTickerWebPart extends BaseHyperWebPart<IHyperTickerWeb
       ...this.properties,
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
+      onConfigure: (): void => { this.context.propertyPane.open(); },
       onItemsChange: this._onItemsChange,
       onWizardApply: this._onWizardApply,
     };
@@ -192,6 +194,7 @@ export default class HyperTickerWebPart extends BaseHyperWebPart<IHyperTickerWeb
             {
               groupName: strings.ContentSourcesGroupName,
               groupFields: [
+                createGroupHeaderField("_contentHeader", { icon: "\uD83D\uDCCB", title: "Content", subtitle: "Sources & data", color: "green" }),
                 PropertyPaneTextField("title", {
                   label: strings.TitleFieldLabel,
                 }),
@@ -248,6 +251,7 @@ export default class HyperTickerWebPart extends BaseHyperWebPart<IHyperTickerWeb
             {
               groupName: "Interactions",
               groupFields: [
+                createGroupHeaderField("_interactionsHeader", { icon: "\u2699\uFE0F", title: "Interactions", subtitle: "User actions", color: "orange" }),
                 PropertyPaneToggle("enableDismiss", {
                   label: strings.EnableDismissFieldLabel,
                 }),
@@ -265,6 +269,7 @@ export default class HyperTickerWebPart extends BaseHyperWebPart<IHyperTickerWeb
             {
               groupName: "Features",
               groupFields: [
+                createGroupHeaderField("_featuresHeader", { icon: "\u2699\uFE0F", title: "Features", subtitle: "Advanced options", color: "orange" }),
                 PropertyPaneToggle("enableEmergencyMode", {
                   label: strings.EnableEmergencyModeFieldLabel,
                 }),
@@ -288,6 +293,7 @@ export default class HyperTickerWebPart extends BaseHyperWebPart<IHyperTickerWeb
             {
               groupName: strings.AppearanceGroupName,
               groupFields: [
+                createGroupHeaderField("_appearanceHeader", { icon: "\uD83C\uDFAF", title: "Appearance", subtitle: "Theme & styling", color: "red" }),
                 PropertyPaneDropdown("heightPreset", {
                   label: strings.HeightPresetFieldLabel,
                   options: [
@@ -354,6 +360,7 @@ export default class HyperTickerWebPart extends BaseHyperWebPart<IHyperTickerWeb
             {
               groupName: strings.AdvancedGroupName,
               groupFields: [
+                createGroupHeaderField("_advancedHeader", { icon: "\u2699\uFE0F", title: "Advanced", subtitle: "Refresh & wizard", color: "orange" }),
                 PropertyPaneSlider("autoRefreshInterval", {
                   label: strings.AutoRefreshIntervalFieldLabel,
                   min: 0,

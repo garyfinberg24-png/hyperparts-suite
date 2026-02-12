@@ -12,6 +12,7 @@ import {
 
 import * as strings from "HyperLertWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
+import { createGroupHeaderField } from "../../common/propertyPane";
 import HyperLert from "./components/HyperLert";
 import type { IHyperLertComponentProps } from "./components/HyperLert";
 import type { IHyperLertWebPartProps } from "./models";
@@ -34,6 +35,7 @@ export default class HyperLertWebPart extends BaseHyperWebPart<IHyperLertWebPart
       ...this.properties,
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
+      onConfigure: (): void => { this.context.propertyPane.open(); },
       onRulesChange: this._onRulesChange,
       onWizardComplete: this._onWizardComplete,
     };
@@ -174,6 +176,7 @@ export default class HyperLertWebPart extends BaseHyperWebPart<IHyperLertWebPart
             {
               groupName: strings.RulesGroupName,
               groupFields: [
+                createGroupHeaderField("_configHeader", { icon: "\uD83C\uDFA8", title: "Configuration", subtitle: "Dashboard & layout", color: "blue" }),
                 PropertyPaneTextField("title", {
                   label: strings.TitleFieldLabel,
                 }),
@@ -226,6 +229,7 @@ export default class HyperLertWebPart extends BaseHyperWebPart<IHyperLertWebPart
             {
               groupName: strings.NotificationGroupName,
               groupFields: [
+                createGroupHeaderField("_notifHeader", { icon: "\uD83D\uDD14", title: "Notifications", subtitle: "Channels & delivery", color: "orange" }),
                 PropertyPaneToggle("enableToast", {
                   label: strings.V2EnableToastLabel,
                 }),
@@ -290,6 +294,7 @@ export default class HyperLertWebPart extends BaseHyperWebPart<IHyperLertWebPart
             {
               groupName: strings.AdvancedGroupName,
               groupFields: [
+                createGroupHeaderField("_advancedHeader", { icon: "\u2699\uFE0F", title: "Advanced", subtitle: "Escalation & history", color: "orange" }),
                 PropertyPaneToggle("enableEscalation", {
                   label: strings.V2EnableEscalationLabel,
                 }),

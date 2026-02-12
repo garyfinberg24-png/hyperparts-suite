@@ -15,7 +15,7 @@ import {
   parseSavedViews,
   parseCustomActions,
 } from "../models";
-import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton } from "../../../common/components";
+import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton, HyperEditOverlay } from "../../../common/components";
 import { useRollupItems, useRollupFilters, useRollupGrouping, useRollupAggregation, useRollupAutoRefresh, useRollupAudienceFilter } from "../hooks";
 import { useHyperRollupStore } from "../store/useHyperRollupStore";
 import { exportToCsv } from "../utils/exportUtils";
@@ -53,6 +53,7 @@ export interface IHyperRollupComponentProps extends IHyperRollupWebPartProps {
   instanceId: string;
   isEditMode?: boolean;
   onWizardComplete?: () => void;
+  onConfigure?: () => void;
 }
 
 const HyperRollupInner: React.FC<IHyperRollupComponentProps> = (props) => {
@@ -759,12 +760,19 @@ var HyperRollup: React.FC<IHyperRollupComponentProps> = function (props) {
     currentProps: props.wizardCompleted ? props as IHyperRollupWebPartProps : undefined,
   });
 
-  return React.createElement(
+  var mainContent = React.createElement(
     HyperErrorBoundary,
     undefined,
     React.createElement(HyperRollupInner, props),
     wizardElement
   );
+
+  return React.createElement(HyperEditOverlay, {
+    wpName: "HyperRollup",
+    isVisible: !!props.isEditMode,
+    onWizardClick: function () { setWizardOpen(true); },
+    onEditClick: function () { if (props.onConfigure) props.onConfigure(); },
+  }, mainContent);
 };
 
 export default HyperRollup;

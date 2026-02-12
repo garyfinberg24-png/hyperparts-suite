@@ -17,6 +17,7 @@ import {
 
 import * as strings from "HyperTabsWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
+import { createGroupHeaderField } from "../../common/propertyPane";
 import HyperTabs from "./components/HyperTabs";
 import type { IHyperTabsComponentProps } from "./components/HyperTabs";
 import type { IHyperTabsWebPartProps, IHyperTabPanel } from "./models";
@@ -45,6 +46,7 @@ export default class HyperTabsWebPart extends BaseHyperWebPart<IHyperTabsWebPart
       ...this.properties,
       instanceId: this.instanceId,
       isEditMode: this.displayMode === 2,
+      onConfigure: (): void => { this.context.propertyPane.open(); },
       onWizardComplete: this._onWizardComplete,
     };
     const element: React.ReactElement<IHyperTabsComponentProps> =
@@ -235,7 +237,9 @@ export default class HyperTabsWebPart extends BaseHyperWebPart<IHyperTabsWebPart
   private _buildPanelFields(): IPropertyPaneField<unknown>[] {
     const panels = parsePanels(this.properties.panels);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const fields: IPropertyPaneField<any>[] = [];
+    const fields: IPropertyPaneField<any>[] = [
+      createGroupHeaderField("_panelsHeader", { icon: "\uD83D\uDD17", title: "Panels", subtitle: "Manage tab panels", color: "green" }),
+    ];
 
     for (let i = 0; i < panels.length; i++) {
       this._buildSinglePanelFields(fields, panels[i], i, panels.length);
@@ -311,6 +315,7 @@ export default class HyperTabsWebPart extends BaseHyperWebPart<IHyperTabsWebPart
             {
               groupName: strings.LayoutGroupName,
               groupFields: [
+                createGroupHeaderField("_layoutHeader", { icon: "\uD83C\uDFA8", title: "Layout", subtitle: "Mode & animation", color: "blue" }),
                 PropertyPaneTextField("title", {
                   label: strings.TitleFieldLabel,
                 }),
@@ -351,6 +356,7 @@ export default class HyperTabsWebPart extends BaseHyperWebPart<IHyperTabsWebPart
             {
               groupName: strings.AdvancedGroupName,
               groupFields: [
+                createGroupHeaderField("_advancedHeader", { icon: "\u2699\uFE0F", title: "Advanced", subtitle: "Behavior & options", color: "orange" }),
                 PropertyPaneToggle("enableDeepLinking", {
                   label: strings.EnableDeepLinkingLabel,
                 }),

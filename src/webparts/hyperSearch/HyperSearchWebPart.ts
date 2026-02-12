@@ -14,6 +14,7 @@ import {
 
 import * as strings from "HyperSearchWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
+import { createGroupHeaderField } from "../../common/propertyPane";
 import HyperSearch from "./components/HyperSearch";
 import type { IHyperSearchComponentProps } from "./components/HyperSearch";
 import type { IHyperSearchWebPartProps } from "./models";
@@ -64,6 +65,7 @@ export default class HyperSearchWebPart extends BaseHyperWebPart<IHyperSearchWeb
       ...this.properties,
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
+      onConfigure: (): void => { this.context.propertyPane.open(); },
       onWizardComplete: (result: Record<string, unknown>): void => {
         // Apply wizard result to web part properties
         var propsRecord = this.properties as unknown as Record<string, unknown>;
@@ -238,6 +240,7 @@ export default class HyperSearchWebPart extends BaseHyperWebPart<IHyperSearchWeb
             {
               groupName: strings.SearchConfigGroupName,
               groupFields: [
+                createGroupHeaderField("_searchConfigHeader", { icon: "\uD83D\uDD0D", title: "Search", subtitle: "Scope & sorting", color: "blue" }),
                 PropertyPaneTextField("title", {
                   label: strings.TitleFieldLabel,
                 }),
@@ -263,6 +266,7 @@ export default class HyperSearchWebPart extends BaseHyperWebPart<IHyperSearchWeb
             {
               groupName: strings.V2TemplateGroupName,
               groupFields: [
+                createGroupHeaderField("_templateHeader", { icon: "\uD83C\uDFA8", title: "Template", subtitle: "Layout & bar style", color: "blue" }),
                 PropertyPaneDropdown("selectedTemplate", {
                   label: strings.SelectedTemplateLabel,
                   options: SEARCH_TEMPLATES.map(function (t) {
@@ -288,6 +292,7 @@ export default class HyperSearchWebPart extends BaseHyperWebPart<IHyperSearchWeb
             {
               groupName: strings.V2FeaturesGroupName,
               groupFields: [
+                createGroupHeaderField("_featuresHeader", { icon: "\u2699\uFE0F", title: "Features", subtitle: "Search capabilities", color: "orange" }),
                 PropertyPaneToggle("enableInstantSearch", {
                   label: strings.EnableInstantSearchLabel,
                 }),
@@ -326,6 +331,7 @@ export default class HyperSearchWebPart extends BaseHyperWebPart<IHyperSearchWeb
             {
               groupName: strings.RefinersGroupName,
               groupFields: [
+                createGroupHeaderField("_refinersHeader", { icon: "\u2699\uFE0F", title: "Refiners", subtitle: "Filters & previews", color: "orange" }),
                 PropertyPaneToggle("enableRefiners", {
                   label: strings.EnableRefinersLabel,
                 }),
@@ -356,6 +362,7 @@ export default class HyperSearchWebPart extends BaseHyperWebPart<IHyperSearchWeb
             {
               groupName: strings.V2AppearanceGroupName,
               groupFields: [
+                createGroupHeaderField("_appearanceHeader", { icon: "\uD83C\uDFAF", title: "Appearance", subtitle: "Colors & radius", color: "red" }),
                 PropertyPaneTextField("accentColor", {
                   label: strings.AccentColorLabel,
                 }),
@@ -375,6 +382,7 @@ export default class HyperSearchWebPart extends BaseHyperWebPart<IHyperSearchWeb
             {
               groupName: strings.AdvancedGroupName,
               groupFields: [
+                createGroupHeaderField("_advancedHeader", { icon: "\u2699\uFE0F", title: "Advanced", subtitle: "History & analytics", color: "orange" }),
                 PropertyPaneToggle("enableSearchHistory", {
                   label: strings.EnableSearchHistoryLabel,
                 }),

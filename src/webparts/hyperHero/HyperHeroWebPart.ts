@@ -11,6 +11,7 @@ import {
 
 import * as strings from "HyperHeroWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
+import { createGroupHeaderField } from "../../common/propertyPane";
 import HyperHero from "./components/HyperHero";
 import type { IHyperHeroComponentProps } from "./components/HyperHero";
 import type { IHyperHeroWebPartProps, IHyperHeroSlide } from "./models";
@@ -104,6 +105,7 @@ export default class HyperHeroWebPart extends BaseHyperWebPart<IHyperHeroWebPart
             {
               groupName: strings.LayoutGroupName,
               groupFields: [
+                createGroupHeaderField("_layoutHeader", { icon: "\uD83C\uDFA8", title: "Layout", subtitle: "Size & display", color: "blue" }),
                 PropertyPaneTextField("title", {
                   label: strings.TitleFieldLabel,
                 }),
@@ -133,6 +135,7 @@ export default class HyperHeroWebPart extends BaseHyperWebPart<IHyperHeroWebPart
             {
               groupName: strings.RotationGroupName,
               groupFields: [
+                createGroupHeaderField("_rotationHeader", { icon: "\uD83C\uDFA8", title: "Rotation", subtitle: "Auto-play & transitions", color: "blue" }),
                 PropertyPaneToggle("rotation.enabled", {
                   label: strings.RotationEnabledLabel,
                 }),
@@ -178,6 +181,7 @@ export default class HyperHeroWebPart extends BaseHyperWebPart<IHyperHeroWebPart
             {
               groupName: strings.ContentBindingGroupName,
               groupFields: [
+                createGroupHeaderField("_contentBindingHeader", { icon: "\uD83D\uDCCB", title: "Content Binding", subtitle: "Data source setup", color: "green" }),
                 PropertyPaneToggle("contentBinding.enabled", {
                   label: strings.ContentBindingEnabledLabel,
                 }),

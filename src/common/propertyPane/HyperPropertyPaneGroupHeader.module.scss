@@ -1,0 +1,82 @@
+/* HyperPropertyPaneGroupHeader — Standard 6 Variation A styled group headers */
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, #f8f9fb 0%, #f3f4f6 100%);
+  border-bottom: 1px solid #e8e6e3;
+  margin: 0 -20px;
+}
+
+.icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.iconBlue {
+  composes: icon;
+  background: #e8f0fe;
+  color: #0078d4;
+}
+
+.iconGreen {
+  composes: icon;
+  background: #e6f4ea;
+  color: #137333;
+}
+
+.iconRed {
+  composes: icon;
+  background: #fce8e6;
+  color: #c5221f;
+}
+
+.iconOrange {
+  composes: icon;
+  background: #fef3e0;
+  color: #e37400;
+}
+
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #323130;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  line-height: 1.3;
+}
+
+.subtitle {
+  font-size: 11px;
+  color: #a19f9d;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.3;
+}
+
+.itemCount {
+  background: #e8f0fe;
+  color: #0078d4;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}

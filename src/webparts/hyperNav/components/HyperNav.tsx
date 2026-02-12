@@ -7,7 +7,7 @@ import type {
   HyperNavHoverEffect,
   HyperNavTheme,
 } from "../models";
-import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton } from "../../../common/components";
+import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton, HyperEditOverlay } from "../../../common/components";
 import { parseLinks, parseGroups } from "../utils/linkUtils";
 import { isExternalLink } from "../utils/externalLinkUtils";
 import { detectDeepLinkType } from "../utils/deepLinkUtils";
@@ -429,7 +429,7 @@ const HyperNavInner: React.FC<IHyperNavComponentProps> = function (props) {
     themeClass = " " + styles.hyperNavDark;
   }
 
-  return React.createElement(
+  var mainContent = React.createElement(
     "nav",
     {
       className: styles.hyperNav + themeClass,
@@ -439,6 +439,13 @@ const HyperNavInner: React.FC<IHyperNavComponentProps> = function (props) {
     },
     children
   );
+
+  return React.createElement(HyperEditOverlay, {
+    wpName: "HyperNav",
+    isVisible: !!props.isEditMode,
+    onWizardClick: function () { setWizardOpen(true); },
+    onEditClick: function () { if (props.onConfigure) props.onConfigure(); },
+  }, mainContent);
 };
 
 var HyperNav: React.FC<IHyperNavComponentProps> = function (props) {

@@ -8,3 +8,7 @@ export { HyperCard } from "./HyperCard";
 export type { IHyperCardProps } from "./HyperCard";
 export { HyperModal } from "./HyperModal";
 export type { IHyperModalProps } from "./HyperModal";
+export { HyperImageBrowser } from "./imageBrowser/HyperImageBrowser";
+export type { IHyperImageBrowserProps } from "./imageBrowser/HyperImageBrowser";
+export { HyperEditOverlay } from "./editOverlay/HyperEditOverlay";
+export type { IHyperEditOverlayProps } from "./editOverlay/HyperEditOverlay";

@@ -14,6 +14,7 @@ import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
 import HyperBirthdays from "./components/HyperBirthdays";
 import type { IHyperBirthdaysComponentProps } from "./components/HyperBirthdays";
 import type { IHyperBirthdaysWebPartProps } from "./models";
+import { createGroupHeaderField } from "../../common/propertyPane";
 
 export default class HyperBirthdaysWebPart extends BaseHyperWebPart<IHyperBirthdaysWebPartProps> {
 
@@ -34,6 +35,7 @@ export default class HyperBirthdaysWebPart extends BaseHyperWebPart<IHyperBirthd
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
       onWizardApply: this._onWizardApply,
+      onConfigure: (): void => { this.context.propertyPane.open(); },
     };
     const element: React.ReactElement<IHyperBirthdaysComponentProps> =
       React.createElement(HyperBirthdays, props);
@@ -181,6 +183,7 @@ export default class HyperBirthdaysWebPart extends BaseHyperWebPart<IHyperBirthd
             {
               groupName: strings.DataSourcesGroupName,
               groupFields: [
+                createGroupHeaderField("_dataSourcesHeader", { icon: "\uD83D\uDCCB", title: "Data Sources", subtitle: "Sources & display", color: "green" }),
                 PropertyPaneTextField("title", {
                   label: strings.TitleFieldLabel,
                 }),
@@ -228,6 +231,7 @@ export default class HyperBirthdaysWebPart extends BaseHyperWebPart<IHyperBirthd
             {
               groupName: strings.CelebrationTypesGroupName,
               groupFields: [
+                createGroupHeaderField("_celebrationTypesHeader", { icon: "\uD83D\uDCCB", title: "Celebration Types", subtitle: "Event categories", color: "green" }),
                 PropertyPaneToggle("enableBirthdays", {
                   label: strings.EnableBirthdaysFieldLabel,
                 }),
@@ -267,6 +271,7 @@ export default class HyperBirthdaysWebPart extends BaseHyperWebPart<IHyperBirthd
             {
               groupName: strings.FeaturesGroupName,
               groupFields: [
+                createGroupHeaderField("_featuresHeader", { icon: "\u2699\uFE0F", title: "Features", subtitle: "Actions & limits", color: "orange" }),
                 PropertyPaneToggle("enableTeamsDeepLink", {
                   label: strings.EnableTeamsDeepLinkFieldLabel,
                 }),

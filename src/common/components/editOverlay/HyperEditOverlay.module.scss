@@ -1,0 +1,131 @@
+/* HyperEditOverlay — Frosted glass pill edit mode overlay (Standard 5, Variation A) */
+
+.overlayContainer {
+  position: relative;
+  width: 100%;
+  min-height: 120px;
+}
+
+.contentDimmed {
+  opacity: 0.35;
+  pointer-events: none;
+  filter: grayscale(20%);
+  transition: opacity 0.2s ease;
+}
+
+.glassPill {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+
+  display: flex;
+  align-items: center;
+  gap: 0;
+
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 120, 212, 0.25);
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15), 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.wpName {
+  font-size: 11px;
+  color: #605e5c;
+  padding: 0 12px 0 8px;
+  white-space: nowrap;
+}
+
+.divider {
+  width: 1px;
+  height: 24px;
+  background: #e1dfdd;
+  margin: 0 2px;
+  flex-shrink: 0;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:focus-visible {
+  outline: 2px solid #0078d4;
+  outline-offset: 2px;
+}
+
+.btnWizard {
+  composes: btn;
+  background: #0078d4;
+  color: #fff;
+}
+
+.btnWizard:hover {
+  background: #106ebe;
+}
+
+.btnEdit {
+  composes: btn;
+  background: transparent;
+  color: #323130;
+}
+
+.btnEdit:hover {
+  background: #f3f2f1;
+}
+
+.btnIcon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+/* Responsive — stack vertically on narrow WPs */
+@media (max-width: 480px) {
+  .glassPill {
+    flex-direction: column;
+    padding: 12px;
+    gap: 6px;
+  }
+
+  .divider {
+    width: 80%;
+    height: 1px;
+    margin: 2px 0;
+  }
+
+  .wpName {
+    padding: 0 0 4px 0;
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .contentDimmed {
+    transition: none;
+  }
+
+  .btn:hover {
+    transform: none;
+  }
+}

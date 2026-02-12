@@ -11,6 +11,7 @@ import {
 
 import * as strings from "HyperRollupWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
+import { createGroupHeaderField } from "../../common/propertyPane";
 import HyperRollup from "./components/HyperRollup";
 import type { IHyperRollupComponentProps } from "./components/HyperRollup";
 import type { IHyperRollupWebPartProps } from "./models";
@@ -28,6 +29,7 @@ export default class HyperRollupWebPart extends BaseHyperWebPart<IHyperRollupWeb
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
       onWizardComplete: this._onWizardComplete,
+      onConfigure: (): void => { this.context.propertyPane.open(); },
     };
     const element: React.ReactElement<IHyperRollupComponentProps> =
       React.createElement(HyperRollup, props);
@@ -202,6 +204,7 @@ export default class HyperRollupWebPart extends BaseHyperWebPart<IHyperRollupWeb
             {
               groupName: strings.BasicGroupName,
               groupFields: [
+                createGroupHeaderField("_basicHeader", { icon: "\uD83C\uDFA8", title: "Configuration", subtitle: "View mode & columns", color: "blue" }),
                 PropertyPaneTextField("title", {
                   label: strings.TitleFieldLabel,
                 }),
@@ -255,6 +258,7 @@ export default class HyperRollupWebPart extends BaseHyperWebPart<IHyperRollupWeb
             {
               groupName: strings.LayoutGroupName,
               groupFields: [
+                createGroupHeaderField("_layoutHeader", { icon: "\uD83C\uDFA8", title: "Layout", subtitle: "View-specific options", color: "blue" }),
                 PropertyPaneToggle("carouselAutoPlay", {
                   label: strings.CarouselAutoPlayLabel,
                   disabled: this.properties.viewMode !== "carousel",
@@ -307,6 +311,7 @@ export default class HyperRollupWebPart extends BaseHyperWebPart<IHyperRollupWeb
             {
               groupName: strings.FeaturesGroupName,
               groupFields: [
+                createGroupHeaderField("_featuresHeader", { icon: "\u2699\uFE0F", title: "Features", subtitle: "Filters & editing", color: "orange" }),
                 PropertyPaneToggle("enableFilters", {
                   label: strings.EnableFiltersLabel,
                 }),
@@ -357,6 +362,7 @@ export default class HyperRollupWebPart extends BaseHyperWebPart<IHyperRollupWeb
             {
               groupName: strings.AdvancedGroupName,
               groupFields: [
+                createGroupHeaderField("_advancedHeader", { icon: "\u2699\uFE0F", title: "Advanced", subtitle: "Refresh & targeting", color: "orange" }),
                 PropertyPaneToggle("enableAutoRefresh", {
                   label: strings.EnableAutoRefreshLabel,
                 }),
@@ -408,6 +414,7 @@ export default class HyperRollupWebPart extends BaseHyperWebPart<IHyperRollupWeb
             {
               groupName: strings.DataGroupName,
               groupFields: [
+                createGroupHeaderField("_dataHeader", { icon: "\uD83D\uDCCB", title: "Data Source", subtitle: "Sources & templates", color: "green" }),
                 PropertyPaneTextField("sources", {
                   label: strings.SourcesFieldLabel,
                   multiline: true,

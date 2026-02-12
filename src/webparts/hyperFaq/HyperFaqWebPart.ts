@@ -11,6 +11,7 @@ import {
 
 import * as strings from "HyperFaqWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
+import { createGroupHeaderField } from "../../common/propertyPane";
 import HyperFaq from "./components/HyperFaq";
 import type { IHyperFaqComponentProps } from "./components/HyperFaq";
 import type { IHyperFaqWebPartProps } from "./models";
@@ -53,6 +54,7 @@ export default class HyperFaqWebPart extends BaseHyperWebPart<IHyperFaqWebPartPr
       enableDemoMode: this.properties.enableDemoMode,
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
+      onConfigure: function (): void { self.context.propertyPane.open(); },
       onWizardApply: function (result: Partial<IHyperFaqWebPartProps>): void {
         Object.keys(result).forEach(function (key) {
           (self.properties as unknown as Record<string, unknown>)[key] = (result as unknown as Record<string, unknown>)[key];
@@ -185,6 +187,7 @@ export default class HyperFaqWebPart extends BaseHyperWebPart<IHyperFaqWebPartPr
             {
               groupName: strings.ContentGroupName,
               groupFields: [
+                createGroupHeaderField("_contentHeader", { icon: "\uD83D\uDCCB", title: "Content", subtitle: "Data source & sorting", color: "green" }),
                 PropertyPaneTextField("title", {
                   label: strings.TitleFieldLabel,
                 }),
@@ -214,6 +217,7 @@ export default class HyperFaqWebPart extends BaseHyperWebPart<IHyperFaqWebPartPr
             {
               groupName: "Layout",
               groupFields: [
+                createGroupHeaderField("_layoutHeader", { icon: "\uD83C\uDFA8", title: "Layout", subtitle: "Display mode", color: "blue" }),
                 PropertyPaneDropdown("layout", {
                   label: "Display Layout",
                   options: [
@@ -244,6 +248,7 @@ export default class HyperFaqWebPart extends BaseHyperWebPart<IHyperFaqWebPartPr
             {
               groupName: strings.FeaturesGroupName,
               groupFields: [
+                createGroupHeaderField("_featuresHeader", { icon: "\u2699\uFE0F", title: "Features", subtitle: "Interactive options", color: "orange" }),
                 PropertyPaneToggle("enableVoting", {
                   label: strings.EnableVotingFieldLabel,
                 }),
@@ -291,6 +296,7 @@ export default class HyperFaqWebPart extends BaseHyperWebPart<IHyperFaqWebPartPr
             {
               groupName: strings.AppearanceGroupName,
               groupFields: [
+                createGroupHeaderField("_appearanceHeader", { icon: "\uD83C\uDFAF", title: "Appearance", subtitle: "Style & caching", color: "red" }),
                 PropertyPaneDropdown("accordionStyle", {
                   label: strings.AccordionStyleFieldLabel,
                   options: [
@@ -321,6 +327,7 @@ export default class HyperFaqWebPart extends BaseHyperWebPart<IHyperFaqWebPartPr
             {
               groupName: "Wizard",
               groupFields: [
+                createGroupHeaderField("_wizardHeader", { icon: "\uD83C\uDFA8", title: "Wizard", subtitle: "Setup options", color: "blue" }),
                 PropertyPaneToggle("wizardCompleted", {
                   label: "Wizard Completed",
                 }),

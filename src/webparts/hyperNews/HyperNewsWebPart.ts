@@ -14,6 +14,7 @@ import {
 
 import * as strings from "HyperNewsWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
+import { createGroupHeaderField } from "../../common/propertyPane";
 import HyperNews from "./components/HyperNews";
 import type { IHyperNewsComponentProps } from "./components/HyperNews";
 import type { IHyperNewsWebPartProps } from "./models";
@@ -57,6 +58,7 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
       onWizardComplete: this._onWizardComplete,
       onWizardApply: this._onWizardApply,
       onOpenWizard: this._onOpenWizard,
+      onConfigure: (): void => { this.context.propertyPane.open(); },
       onImageSelect: (_imageUrl: string): void => {
         // Future: persist selected image URL for manual article editing
       },
@@ -194,6 +196,7 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
             {
               groupName: strings.WizardGroupName,
               groupFields: [
+                createGroupHeaderField("_wizardHeader", { icon: "\uD83C\uDFA8", title: "Wizard", subtitle: "Setup & configuration", color: "blue" }),
                 PropertyPaneButton("launchWizard", {
                   text: strings.LaunchWizardLabel,
                   buttonType: PropertyPaneButtonType.Hero,
@@ -212,6 +215,7 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
             {
               groupName: strings.SampleDataGroupName,
               groupFields: [
+                createGroupHeaderField("_sampleDataHeader", { icon: "\u2699\uFE0F", title: "Sample Data", subtitle: "Preview content", color: "orange" }),
                 PropertyPaneToggle("useSampleData", {
                   label: strings.UseSampleDataLabel,
                   onText: "On",
@@ -222,6 +226,7 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
             {
               groupName: strings.DemoModeGroupName,
               groupFields: [
+                createGroupHeaderField("_demoModeHeader", { icon: "\u2699\uFE0F", title: "Demo Mode", subtitle: "Interactive preview", color: "orange" }),
                 PropertyPaneToggle("enableDemoMode", {
                   label: strings.DemoModeLabel,
                   onText: "On",
@@ -232,6 +237,7 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
             {
               groupName: strings.BasicGroupName,
               groupFields: [
+                createGroupHeaderField("_basicHeader", { icon: "\uD83D\uDCCB", title: "Basic", subtitle: "Title & layout", color: "green" }),
                 PropertyPaneTextField("title", {
                   label: strings.TitleFieldLabel,
                 }),
@@ -250,6 +256,7 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
             {
               groupName: strings.LayoutGroupName,
               groupFields: [
+                createGroupHeaderField("_layoutHeader", { icon: "\uD83C\uDFA8", title: "Layout", subtitle: "Featured articles", color: "blue" }),
                 PropertyPaneToggle("showFeatured", {
                   label: strings.ShowFeaturedLabel,
                 }),
@@ -271,6 +278,7 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
             {
               groupName: strings.FeaturesGroupName,
               groupFields: [
+                createGroupHeaderField("_featuresHeader", { icon: "\u2699\uFE0F", title: "Features", subtitle: "Interactions & tracking", color: "orange" }),
                 PropertyPaneToggle("enableInfiniteScroll", {
                   label: strings.EnableInfiniteScrollLabel,
                 }),
@@ -294,6 +302,7 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
             {
               groupName: strings.FiltersGroupName,
               groupFields: [
+                createGroupHeaderField("_filtersHeader", { icon: "\u2699\uFE0F", title: "Filters", subtitle: "Date & category", color: "orange" }),
                 PropertyPaneToggle("filterConfig.enabled", {
                   label: strings.EnableFiltersLabel,
                 }),
@@ -320,6 +329,7 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
             {
               groupName: strings.DisplayGroupName,
               groupFields: [
+                createGroupHeaderField("_displayHeader", { icon: "\uD83C\uDFA8", title: "Display", subtitle: "Visibility options", color: "blue" }),
                 PropertyPaneToggle("showImages", {
                   label: strings.ShowImagesLabel,
                 }),
@@ -340,6 +350,7 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
             {
               groupName: strings.SourcesGroupName,
               groupFields: [
+                createGroupHeaderField("_sourcesHeader", { icon: "\uD83D\uDCCB", title: "Sources", subtitle: "Data & list names", color: "green" }),
                 PropertyPaneButton("_browseImage", {
                   text: strings.BrowseButtonLabel,
                   buttonType: PropertyPaneButtonType.Normal,

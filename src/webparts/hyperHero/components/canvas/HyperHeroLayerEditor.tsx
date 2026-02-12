@@ -1,6 +1,6 @@
 import * as React from "react";
 import { HyperModal } from "../../../../common/components/HyperModal";
-import { HyperImageBrowser } from "../shared/HyperImageBrowser";
+import { HyperImageBrowser } from "../../../../common/components/imageBrowser/HyperImageBrowser";
 import type { IHyperHeroLayer, IHyperHeroSlide, LayerType } from "../../models";
 import { createDefaultLayer } from "../../models";
 import { HyperHeroCanvasLayer } from "./HyperHeroCanvasLayer";

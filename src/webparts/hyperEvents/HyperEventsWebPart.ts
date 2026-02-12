@@ -17,6 +17,7 @@ import {
 
 import * as strings from "HyperEventsWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
+import { createGroupHeaderField } from "../../common/propertyPane";
 import HyperEvents from "./components/HyperEvents";
 import type { IHyperEventsComponentProps } from "./components/HyperEvents";
 import type { IHyperEventsWebPartProps, IEventSource, IEventCategory, IRegistrationField } from "./models";
@@ -71,6 +72,7 @@ export default class HyperEventsWebPart extends BaseHyperWebPart<IHyperEventsWeb
       isEditMode: this.displayMode === DisplayMode.Edit,
       siteUrl: this.context.pageContext.web.absoluteUrl,
       onWizardComplete: this._onWizardComplete,
+      onConfigure: (): void => { this.context.propertyPane.open(); },
       onWizardApply: function (result: Partial<IHyperEventsWebPartProps>): void {
         const keys = Object.keys(result);
         keys.forEach(function (key) {
@@ -697,7 +699,7 @@ export default class HyperEventsWebPart extends BaseHyperWebPart<IHyperEventsWeb
     // Build dynamic source management group
     const sourceManagementGroup: IPropertyPaneGroup = {
       groupName: strings.SourcesGroupName,
-      groupFields: this._buildSourceFields(),
+      groupFields: ([createGroupHeaderField("_sourcesHeader", { icon: "\uD83D\uDCCB", title: "Sources", subtitle: "Calendar sources", color: "green" })] as IPropertyPaneField<never>[]).concat(this._buildSourceFields() as IPropertyPaneField<never>[]),
     };
 
     // Build category management fields
@@ -711,12 +713,13 @@ export default class HyperEventsWebPart extends BaseHyperWebPart<IHyperEventsWeb
     if (categoryFields.length > 0) {
       page3Groups.push({
         groupName: strings.CategoriesGroupName,
-        groupFields: categoryFields,
+        groupFields: ([createGroupHeaderField("_categoriesHeader", { icon: "\uD83D\uDCCB", title: "Categories", subtitle: "Event categories", color: "green" })] as IPropertyPaneField<never>[]).concat(categoryFields as IPropertyPaneField<never>[]),
       });
     }
 
     // Storage group
     const storageFields: IPropertyPaneField<unknown>[] = [
+      createGroupHeaderField("_storageHeader", { icon: "\u2699\uFE0F", title: "Storage", subtitle: "Lists & cache", color: "orange" }),
       PropertyPaneTextField("rsvpListName", {
         label: strings.RsvpListNameLabel,
         disabled: !this.properties.enableRsvp,
@@ -741,7 +744,7 @@ export default class HyperEventsWebPart extends BaseHyperWebPart<IHyperEventsWeb
     if (regFields.length > 0) {
       page3Groups.push({
         groupName: strings.RegistrationFieldsGroupName,
-        groupFields: regFields,
+        groupFields: ([createGroupHeaderField("_regFieldsHeader", { icon: "\u2699\uFE0F", title: "Registration", subtitle: "Custom form fields", color: "orange" })] as IPropertyPaneField<never>[]).concat(regFields as IPropertyPaneField<never>[]),
       });
     }
 
@@ -754,6 +757,7 @@ export default class HyperEventsWebPart extends BaseHyperWebPart<IHyperEventsWeb
             {
               groupName: strings.LayoutGroupName,
               groupFields: [
+                createGroupHeaderField("_layoutHeader", { icon: "\uD83C\uDFA8", title: "Layout", subtitle: "View mode & refresh", color: "blue" }),
                 PropertyPaneTextField("title", {
                   label: strings.TitleFieldLabel,
                 }),
@@ -776,6 +780,7 @@ export default class HyperEventsWebPart extends BaseHyperWebPart<IHyperEventsWeb
             {
               groupName: strings.SetupGroupName,
               groupFields: [
+                createGroupHeaderField("_setupHeader", { icon: "\u2699\uFE0F", title: "Setup", subtitle: "Wizard & demo", color: "orange" }),
                 PropertyPaneToggle("showWizardOnInit", {
                   label: strings.ShowWizardOnInitLabel,
                 }),
@@ -796,6 +801,7 @@ export default class HyperEventsWebPart extends BaseHyperWebPart<IHyperEventsWeb
             {
               groupName: strings.FeaturesGroupName,
               groupFields: [
+                createGroupHeaderField("_featuresHeader", { icon: "\u2699\uFE0F", title: "Features", subtitle: "RSVP & notifications", color: "orange" }),
                 PropertyPaneToggle("enableRsvp", {
                   label: strings.EnableRsvpLabel,
                 }),

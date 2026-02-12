@@ -40,6 +40,7 @@ import {
 import HyperImage from "./components/HyperImage";
 import type { IHyperImageComponentProps } from "./components/HyperImage";
 import type { IPresetLayout } from "./models/IHyperImagePresetLayout";
+import { createGroupHeaderField } from "../../common/propertyPane";
 
 export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPartProps> {
 
@@ -151,6 +152,7 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
         });
         this.render();
       },
+      onConfigure: (): void => { this.context.propertyPane.open(); },
     };
     var element: React.ReactElement<IHyperImageComponentProps> =
       React.createElement(HyperImage, props);
@@ -196,6 +198,7 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
             {
               groupName: strings.ImageSourceGroupName,
               groupFields: [
+                createGroupHeaderField("_imageSourceHeader", { icon: "\uD83D\uDCCB", title: "Image Source", subtitle: "Source & alt text", color: "green" }),
                 PropertyPaneToggle("useSampleData", { label: strings.UseSampleDataLabel, onText: "On", offText: "Off" }),
                 PropertyPaneTextField("imageUrl", {
                   label: strings.ImageUrlLabel,
@@ -216,6 +219,7 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
             {
               groupName: strings.DemoModeGroupName,
               groupFields: [
+                createGroupHeaderField("_demoModeHeader", { icon: "\u2699\uFE0F", title: "Demo Mode", subtitle: "Demo controls", color: "orange" }),
                 PropertyPaneToggle("enableDemoMode", {
                   label: strings.DemoModeLabel,
                   onText: "On",
@@ -226,6 +230,7 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
             {
               groupName: strings.LayoutGroupName,
               groupFields: [
+                createGroupHeaderField("_layoutHeader", { icon: "\uD83C\uDFA8", title: "Layout", subtitle: "Multi-image layout", color: "blue" }),
                 PropertyPaneDropdown("imageLayout", { label: strings.ImageLayoutLabel, options: IMAGE_LAYOUT_OPTIONS }),
                 PropertyPaneButton("_openLayoutGallery", {
                   text: strings.BrowseLayoutGalleryLabel,
@@ -252,6 +257,7 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
             {
               groupName: strings.ShapeGroupName,
               groupFields: [
+                createGroupHeaderField("_shapeHeader", { icon: "\uD83C\uDFA8", title: "Shape", subtitle: "Mask & clipping", color: "blue" }),
                 PropertyPaneDropdown("shape", { label: strings.ShapeLabel, options: SHAPE_OPTIONS }),
                 PropertyPaneTextField("customClipPath", {
                   label: strings.CustomClipPathLabel,
@@ -271,6 +277,7 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
             {
               groupName: strings.EffectsGroupName,
               groupFields: [
+                createGroupHeaderField("_effectsHeader", { icon: "\uD83C\uDFAF", title: "Effects", subtitle: "Filters & hover", color: "red" }),
                 PropertyPaneDropdown("filterPreset", { label: strings.FilterPresetLabel, options: FILTER_PRESET_OPTIONS }),
                 PropertyPaneDropdown("hoverEffect", { label: strings.HoverEffectLabel, options: HOVER_EFFECT_OPTIONS }),
                 PropertyPaneTextField("flipBackTitle", {
@@ -293,6 +300,7 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
             {
               groupName: strings.TextGroupName,
               groupFields: [
+                createGroupHeaderField("_textHeader", { icon: "\uD83D\uDCCB", title: "Text", subtitle: "Overlay & caption", color: "green" }),
                 PropertyPaneToggle("_textEnabled", {
                   label: strings.TextEnabledLabel, onText: "On", offText: "Off",
                 }),
@@ -378,6 +386,7 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
             {
               groupName: strings.StylingGroupName,
               groupFields: [
+                createGroupHeaderField("_stylingHeader", { icon: "\uD83C\uDFAF", title: "Styling", subtitle: "Border & shadow", color: "red" }),
                 PropertyPaneSlider("_borderWidth", {
                   label: strings.BorderWidthLabel, min: 0, max: 10, step: 1,
                 }),
@@ -401,6 +410,7 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
             {
               groupName: "Sizing",
               groupFields: [
+                createGroupHeaderField("_sizingHeader", { icon: "\uD83C\uDFA8", title: "Sizing", subtitle: "Dimensions & fit", color: "blue" }),
                 PropertyPaneDropdown("aspectRatio", {
                   label: strings.AspectRatioLabel,
                   options: [
@@ -437,6 +447,7 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
               groupName: strings.ActionGroupName,
               isCollapsed: true,
               groupFields: [
+                createGroupHeaderField("_actionHeader", { icon: "\uD83D\uDD17", title: "Action", subtitle: "Link & lightbox", color: "orange" }),
                 PropertyPaneTextField("linkUrl", {
                   label: strings.LinkUrlLabel,
                 }),
@@ -456,6 +467,7 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
               groupName: strings.PerformanceGroupName,
               isCollapsed: true,
               groupFields: [
+                createGroupHeaderField("_performanceHeader", { icon: "\u26A1", title: "Performance", subtitle: "Loading options", color: "orange" }),
                 PropertyPaneToggle("lazyLoad", {
                   label: strings.LazyLoadLabel, onText: "On", offText: "Off",
                 }),
@@ -465,6 +477,7 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
               groupName: strings.AdvancedGroupName,
               isCollapsed: true,
               groupFields: [
+                createGroupHeaderField("_advancedHeader", { icon: "\u2699\uFE0F", title: "Advanced", subtitle: "Debug & editor", color: "orange" }),
                 PropertyPaneToggle("debugMode", {
                   label: strings.DebugModeLabel, onText: "On", offText: "Off",
                 }),

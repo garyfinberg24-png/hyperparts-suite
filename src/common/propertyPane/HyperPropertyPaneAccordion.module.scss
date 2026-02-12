@@ -1,0 +1,208 @@
+/* HyperPropertyPaneAccordion — Standard 6 Variation A collapsible item editor */
+
+.accordionContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0 -20px;
+  padding: 12px 20px 16px;
+}
+
+.item {
+  border: 1px solid #e1dfdd;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+.item:hover {
+  border-color: #c8c6c4;
+}
+
+.itemExpanded {
+  composes: item;
+  border-color: #0078d4;
+}
+
+.itemHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  background: #fafafa;
+  border-bottom: 1px solid transparent;
+  transition: background 0.12s;
+  user-select: none;
+}
+
+.itemHeader:hover {
+  background: #f3f2f1;
+}
+
+.itemExpanded .itemHeader {
+  background: #f0f6ff;
+  border-bottom-color: #e1dfdd;
+}
+
+.itemExpanded .itemHeader:hover {
+  background: #e8f0fe;
+}
+
+.chevron {
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+  color: #605e5c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.chevronExpanded {
+  composes: chevron;
+  transform: rotate(90deg);
+}
+
+.dragHandle {
+  width: 14px;
+  height: 14px;
+  font-size: 10px;
+  color: #c8c6c4;
+  cursor: grab;
+  flex-shrink: 0;
+}
+
+.itemTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323130;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.itemMeta {
+  font-size: 11px;
+  color: #a19f9d;
+  flex-shrink: 0;
+}
+
+.actions {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.actionBtn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  font-size: 12px;
+  color: #605e5c;
+  cursor: pointer;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+}
+
+.actionBtn:hover {
+  background: #edebe9;
+}
+
+.deleteBtn {
+  composes: actionBtn;
+}
+
+.deleteBtn:hover {
+  background: #fde7e9;
+  color: #a4262c;
+}
+
+.itemBody {
+  padding: 12px;
+}
+
+.addBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px;
+  border: 2px dashed #c8c6c4;
+  border-radius: 6px;
+  background: transparent;
+  color: #0078d4;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+  margin-top: 4px;
+}
+
+.addBtn:hover {
+  border-color: #0078d4;
+  background: #f0f6ff;
+}
+
+/* Confirm delete inline */
+.confirmRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #fde7e9;
+  font-size: 12px;
+  color: #a4262c;
+}
+
+.confirmRow button {
+  padding: 4px 10px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+}
+
+.confirmYes {
+  background: #a4262c;
+  color: #fff;
+}
+
+.confirmYes:hover {
+  background: #8c1d22;
+}
+
+.confirmNo {
+  background: #fff;
+  color: #323130;
+  border: 1px solid #8a8886;
+}
+
+.confirmNo:hover {
+  background: #f3f2f1;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .chevronExpanded {
+    transition: none;
+  }
+
+  .item,
+  .itemHeader,
+  .addBtn {
+    transition: none;
+  }
+}

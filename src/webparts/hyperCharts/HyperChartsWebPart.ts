@@ -16,6 +16,7 @@ import {
 
 import * as strings from "HyperChartsWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
+import { createGroupHeaderField } from "../../common/propertyPane";
 import HyperCharts from "./components/HyperCharts";
 import type { IHyperChartsComponentProps } from "./components/HyperCharts";
 import type { IHyperChartsWebPartProps, IHyperChart, ChartKind, MetricDisplayType } from "./models";
@@ -29,6 +30,7 @@ export default class HyperChartsWebPart extends BaseHyperWebPart<IHyperChartsWeb
       ...this.properties,
       instanceId: this.instanceId,
       isEditMode: this.displayMode === DisplayMode.Edit,
+      onConfigure: (): void => { this.context.propertyPane.open(); },
       onWizardApply: function (result: Partial<IHyperChartsWebPartProps>): void {
         var keys = Object.keys(result);
         keys.forEach(function (key) {
@@ -534,6 +536,7 @@ export default class HyperChartsWebPart extends BaseHyperWebPart<IHyperChartsWeb
             {
               groupName: strings.LayoutGroupName,
               groupFields: [
+                createGroupHeaderField("_layoutHeader", { icon: "\uD83C\uDFA8", title: "Layout", subtitle: "Grid & spacing", color: "blue" }),
                 PropertyPaneTextField("title", {
                   label: strings.TitleFieldLabel,
                 }),
@@ -554,6 +557,7 @@ export default class HyperChartsWebPart extends BaseHyperWebPart<IHyperChartsWeb
             {
               groupName: strings.SetupGroupName,
               groupFields: [
+                createGroupHeaderField("_setupHeader", { icon: "\uD83C\uDFA8", title: "Configuration", subtitle: "Setup & demo", color: "blue" }),
                 PropertyPaneToggle("wizardCompleted", {
                   label: strings.WizardCompletedLabel,
                 }),
@@ -567,7 +571,9 @@ export default class HyperChartsWebPart extends BaseHyperWebPart<IHyperChartsWeb
             },
             {
               groupName: strings.ChartsGroupName,
-              groupFields: this._buildChartFields(),
+              groupFields: ([
+                createGroupHeaderField("_chartsHeader", { icon: "\uD83D\uDCCB", title: "Charts", subtitle: "Manage chart items", color: "green" }),
+              ] as IPropertyPaneField<never>[]).concat(this._buildChartFields() as IPropertyPaneField<never>[]),
             },
           ],
         },
@@ -578,6 +584,7 @@ export default class HyperChartsWebPart extends BaseHyperWebPart<IHyperChartsWeb
             {
               groupName: strings.FeaturesGroupName,
               groupFields: [
+                createGroupHeaderField("_featuresHeader", { icon: "\u2699\uFE0F", title: "Features", subtitle: "Interactive options", color: "orange" }),
                 PropertyPaneToggle("enableDrillDown", {
                   label: strings.EnableDrillDownLabel,
                 }),
@@ -604,6 +611,7 @@ export default class HyperChartsWebPart extends BaseHyperWebPart<IHyperChartsWeb
             {
               groupName: strings.DataGroupName,
               groupFields: [
+                createGroupHeaderField("_dataHeader", { icon: "\uD83D\uDCCB", title: "Data", subtitle: "Refresh & caching", color: "green" }),
                 PropertyPaneSlider("refreshInterval", {
                   label: strings.RefreshIntervalFieldLabel,
                   min: 0,

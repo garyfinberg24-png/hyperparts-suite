@@ -2,7 +2,7 @@ import * as React from "react";
 import type { IHyperLertWebPartProps, IAlertRule, ILertAlert, ILertKpiCard } from "../models";
 import { parseRules, stringifyRules, DEFAULT_KPI_CARDS, computeKpiTrend } from "../models";
 import { getContext } from "../../../common/services/HyperPnP";
-import { HyperErrorBoundary, HyperEmptyState } from "../../../common/components";
+import { HyperErrorBoundary, HyperEmptyState, HyperEditOverlay } from "../../../common/components";
 import { useHyperLertStore } from "../store/useHyperLertStore";
 import { useAutoRefresh } from "../hooks/useAutoRefresh";
 import { useAlertNotifications } from "../hooks/useAlertNotifications";
@@ -35,6 +35,7 @@ import styles from "./HyperLert.module.scss";
 export interface IHyperLertComponentProps extends IHyperLertWebPartProps {
   instanceId: string;
   isEditMode?: boolean;
+  onConfigure?: () => void;
   onRulesChange?: (rulesJson: string) => void;
   onWizardComplete?: () => void;
 }
@@ -508,7 +509,7 @@ var HyperLertInner: React.FC<IHyperLertComponentProps> = function (props) {
     );
   });
 
-  return React.createElement(
+  var mainContent = React.createElement(
     "div",
     {
       className: styles.lertContainer,
@@ -551,6 +552,13 @@ var HyperLertInner: React.FC<IHyperLertComponentProps> = function (props) {
     // Wizard modal
     wizardElement
   );
+
+  return React.createElement(HyperEditOverlay, {
+    wpName: "HyperLert",
+    isVisible: !!props.isEditMode,
+    onWizardClick: function () { setWizardOpen(true); },
+    onEditClick: function () { if (props.onConfigure) props.onConfigure(); },
+  }, mainContent);
 };
 
 var HyperLert: React.FC<IHyperLertComponentProps> = function (props) {

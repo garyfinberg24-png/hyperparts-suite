@@ -26,6 +26,7 @@ import { EXPLORER_WIZARD_CONFIG, buildStateFromProps } from "./wizard/explorerWi
 import { filePlanWizardConfig } from "./filePlan/wizard/FilePlanWizardConfig";
 import { GridLayout, ListLayout, MasonryLayout, FilmstripLayout, TilesLayout } from "./layouts";
 import HyperExplorerDemoBar from "./HyperExplorerDemoBar";
+import { HyperEditOverlay } from "../../../common/components";
 import styles from "./HyperExplorer.module.scss";
 
 export interface IHyperExplorerComponentProps extends IHyperExplorerWebPartProps {
@@ -33,6 +34,7 @@ export interface IHyperExplorerComponentProps extends IHyperExplorerWebPartProps
   isEditMode: boolean;
   /** Callback from web part class to persist wizard result */
   onWizardApply?: (result: Partial<IHyperExplorerWebPartProps>) => void;
+  onConfigure?: () => void;
 }
 
 var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
@@ -836,11 +838,18 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
     );
   }
 
-  return React.createElement("div", {
+  var mainContent = React.createElement("div", {
     className: styles.hyperExplorer,
     style: (props.enableWatermark === true && store.showWatermark) ? { position: "relative" as const } : undefined,
     "data-instance-id": props.instanceId,
   }, children);
+
+  return React.createElement(HyperEditOverlay, {
+    wpName: "HyperExplorer",
+    isVisible: !!props.isEditMode,
+    onWizardClick: function () { store.openWizard(); },
+    onEditClick: function () { if (props.onConfigure) props.onConfigure(); },
+  }, mainContent);
 };
 
 export default HyperExplorer;

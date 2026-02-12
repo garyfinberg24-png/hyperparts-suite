@@ -1,6 +1,6 @@
 import * as React from "react";
 import type { IHyperPollWebPartProps } from "../models";
-import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton } from "../../../common/components";
+import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton, HyperEditOverlay } from "../../../common/components";
 import { HyperWizard } from "../../../common/components/wizard/HyperWizard";
 import { POLL_WIZARD_CONFIG } from "./wizard/pollWizardConfig";
 import { usePollData } from "../hooks/usePollData";
@@ -25,6 +25,8 @@ export interface IHyperPollComponentProps extends IHyperPollWebPartProps {
   onWizardComplete?: () => void;
   /** Callback from web part class to persist wizard result */
   onWizardApply?: (result: Partial<IHyperPollWebPartProps>) => void;
+  /** Callback to open the property pane */
+  onConfigure?: () => void;
 }
 
 /**
@@ -348,11 +350,18 @@ const HyperPollInner: React.FC<IHyperPollComponentProps> = function (props) {
     )
   );
 
-  return React.createElement(
+  var mainContent = React.createElement(
     "div",
     { className: styles.hyperPoll },
     contentChildren
   );
+
+  return React.createElement(HyperEditOverlay, {
+    wpName: "HyperPoll",
+    isVisible: !!props.isEditMode,
+    onWizardClick: function () { setWizardOpen(true); },
+    onEditClick: function () { if (props.onConfigure) props.onConfigure(); },
+  }, mainContent);
 };
 
 const HyperPoll: React.FC<IHyperPollComponentProps> = function (props) {

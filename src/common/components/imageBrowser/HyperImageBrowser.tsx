@@ -1,6 +1,6 @@
 import * as React from "react";
-import { HyperModal } from "../../../../common/components/HyperModal";
-import { getSP, getContext } from "../../../../common/services/HyperPnP";
+import { HyperModal } from "../HyperModal";
+import { getSP, getContext } from "../../services/HyperPnP";
 import styles from "./HyperImageBrowser.module.scss";
 
 // ── Props ──────────────────────────────────────────────────────────────────────

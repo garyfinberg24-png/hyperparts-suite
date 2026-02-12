@@ -3,7 +3,7 @@ import { useRef, useEffect, useMemo } from "react";
 import type { IHyperTabsWebPartProps, IHyperTabPanel, HyperTabsDisplayMode, HyperTabsTabStyle } from "../models";
 import type { Breakpoint } from "../../../common/models";
 import { useResponsive } from "../../../common/hooks";
-import { HyperErrorBoundary } from "../../../common/components";
+import { HyperErrorBoundary, HyperEditOverlay } from "../../../common/components";
 import { HyperEmptyState } from "../../../common/components";
 import { useDeepLinking } from "../hooks/useDeepLinking";
 import { useResponsiveMode } from "../hooks/useResponsiveMode";
@@ -24,6 +24,8 @@ export interface IHyperTabsComponentProps extends IHyperTabsWebPartProps {
   nestingDepth?: number;
   /** Callback when the wizard completes */
   onWizardComplete?: (result: Record<string, unknown>) => void;
+  /** Callback to open the property pane */
+  onConfigure?: () => void;
 }
 
 const HyperTabsInner: React.FC<IHyperTabsComponentProps> = function (props) {
@@ -254,11 +256,18 @@ const HyperTabsInner: React.FC<IHyperTabsComponentProps> = function (props) {
     currentProps: props.wizardCompleted ? props as unknown as IHyperTabsWebPartProps : undefined,
   }));
 
-  return React.createElement(
+  var mainContent = React.createElement(
     "div",
     { ref: containerRef, className: styles.hyperTabsContainer },
     containerChildren
   );
+
+  return React.createElement(HyperEditOverlay, {
+    wpName: "HyperTabs",
+    isVisible: !!props.isEditMode,
+    onWizardClick: function () { setWizardOpen(true); },
+    onEditClick: function () { if (props.onConfigure) props.onConfigure(); },
+  }, mainContent);
 };
 
 const HyperTabs: React.FC<IHyperTabsComponentProps> = function (props) {

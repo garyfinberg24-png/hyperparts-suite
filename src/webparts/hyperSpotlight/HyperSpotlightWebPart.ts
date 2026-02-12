@@ -11,6 +11,7 @@ import {
 
 import * as strings from "HyperSpotlightWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
+import { createGroupHeaderField } from "../../common/propertyPane";
 import type { IHyperSpotlightWebPartProps } from "./models";
 import {
   SelectionMode,
@@ -145,6 +146,7 @@ export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotli
       isEditMode: this.displayMode === 2,
       wizardCompleted: this.properties.wizardCompleted,
       onWizardComplete: this._onWizardComplete,
+      onConfigure: (): void => { this.context.propertyPane.open(); },
     } as IHyperSpotlightComponentProps);
 
     ReactDom.render(element, this.domElement);
@@ -176,6 +178,7 @@ export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotli
             {
               groupName: strings.DataSourceGroupName,
               groupFields: [
+                createGroupHeaderField("_dataSourceHeader", { icon: "\uD83D\uDCCB", title: "Data Source", subtitle: "Selection & filters", color: "green" }),
                 PropertyPaneToggle("useSampleData", { label: strings.UseSampleDataLabel, onText: "On", offText: "Off" }),
                 PropertyPaneDropdown("selectionMode", { label: strings.SelectionModeLabel, options: SELECTION_MODE_OPTIONS, disabled: this.properties.useSampleData }),
                 PropertyPaneTextField("manualEmployeeIdsText", {
@@ -201,6 +204,7 @@ export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotli
             {
               groupName: strings.LayoutGroupName,
               groupFields: [
+                createGroupHeaderField("_layoutHeader", { icon: "\uD83C\uDFA8", title: "Layout", subtitle: "Grid & card options", color: "blue" }),
                 PropertyPaneDropdown("layoutMode", { label: strings.LayoutModeLabel, options: LAYOUT_MODE_OPTIONS }),
                 PropertyPaneDropdown("cardStyle", { label: strings.CardStyleLabel, options: CARD_STYLE_OPTIONS }),
                 PropertyPaneDropdown("animationEntrance", { label: strings.AnimationLabel, options: ANIMATION_OPTIONS }),
@@ -217,6 +221,7 @@ export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotli
             {
               groupName: strings.ContentGroupName,
               groupFields: [
+                createGroupHeaderField("_contentHeader", { icon: "\uD83D\uDCCB", title: "Content", subtitle: "Visible fields", color: "green" }),
                 PropertyPaneToggle("showProfilePicture", { label: strings.ShowProfilePictureLabel, onText: "On", offText: "Off" }),
                 PropertyPaneToggle("showEmployeeName", { label: strings.ShowEmployeeNameLabel, onText: "On", offText: "Off" }),
                 PropertyPaneToggle("showJobTitle", { label: strings.ShowJobTitleLabel, onText: "On", offText: "Off" }),
@@ -236,6 +241,7 @@ export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotli
               groupName: strings.PersonalFieldsGroupName,
               isCollapsed: true,
               groupFields: [
+                createGroupHeaderField("_personalFieldsHeader", { icon: "\uD83D\uDCCB", title: "Personal Fields", subtitle: "Extended profile data", color: "green" }),
                 PropertyPaneToggle("showNickname", { label: strings.ShowNicknameLabel, onText: "On", offText: "Off" }),
                 PropertyPaneToggle("showPersonalQuote", { label: strings.ShowPersonalQuoteLabel, onText: "On", offText: "Off" }),
                 PropertyPaneToggle("showHobbies", { label: strings.ShowHobbiesLabel, onText: "On", offText: "Off" }),
@@ -249,6 +255,7 @@ export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotli
               groupName: strings.ActionsGroupName,
               isCollapsed: true,
               groupFields: [
+                createGroupHeaderField("_actionsHeader", { icon: "\u2699\uFE0F", title: "Actions", subtitle: "Contact buttons", color: "orange" }),
                 PropertyPaneToggle("showActionButtons", { label: strings.ShowActionButtonsLabel, onText: "On", offText: "Off" }),
                 PropertyPaneCheckbox("enableEmailButton", { text: strings.EnableEmailLabel, disabled: !this.properties.showActionButtons }),
                 PropertyPaneCheckbox("enableTeamsButton", { text: strings.EnableTeamsLabel, disabled: !this.properties.showActionButtons }),
@@ -264,6 +271,7 @@ export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotli
             {
               groupName: strings.StylingGroupName,
               groupFields: [
+                createGroupHeaderField("_stylingHeader", { icon: "\uD83C\uDFAF", title: "Styling", subtitle: "Theme & appearance", color: "red" }),
                 PropertyPaneToggle("useCategoryThemes", { label: strings.UseCategoryThemesLabel, onText: "On", offText: "Off" }),
                 PropertyPaneToggle("showAttributeLabels", { label: strings.ShowAttributeLabelsLabel, onText: "On", offText: "Off" }),
                 PropertyPaneToggle("showAttributeIcons", { label: strings.ShowAttributeIconsLabel, onText: "On", offText: "Off" }),
@@ -273,6 +281,7 @@ export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotli
               groupName: strings.PerformanceGroupName,
               isCollapsed: true,
               groupFields: [
+                createGroupHeaderField("_performanceHeader", { icon: "\u26A1", title: "Performance", subtitle: "Cache & loading", color: "orange" }),
                 PropertyPaneToggle("lazyLoadImages", { label: strings.LazyLoadLabel, onText: "On", offText: "Off" }),
                 PropertyPaneDropdown("imageQuality", { label: strings.ImageQualityLabel, options: IMAGE_QUALITY_OPTIONS }),
                 PropertyPaneToggle("cacheEnabled", { label: strings.CacheEnabledLabel, onText: "On", offText: "Off" }),
@@ -283,6 +292,7 @@ export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotli
               groupName: strings.RuntimeFeaturesGroupName,
               isCollapsed: false,
               groupFields: [
+                createGroupHeaderField("_runtimeFeaturesHeader", { icon: "\u2699\uFE0F", title: "Runtime Features", subtitle: "End-user controls", color: "orange" }),
                 PropertyPaneToggle("showRuntimeViewSwitcher", { label: strings.ShowRuntimeViewSwitcherLabel, onText: "On", offText: "Off" }),
                 PropertyPaneToggle("showRuntimeDepartmentFilter", { label: strings.ShowRuntimeDepartmentFilterLabel, onText: "On", offText: "Off" }),
                 PropertyPaneToggle("enableDemoMode", { label: strings.EnableDemoModeLabel, onText: "On", offText: "Off" }),
@@ -292,6 +302,7 @@ export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotli
               groupName: strings.AdvancedGroupName,
               isCollapsed: true,
               groupFields: [
+                createGroupHeaderField("_advancedHeader", { icon: "\u2699\uFE0F", title: "Advanced", subtitle: "Debug options", color: "orange" }),
                 PropertyPaneToggle("debugMode", { label: strings.DebugModeLabel, onText: "On", offText: "Off" }),
               ],
             },

@@ -11,6 +11,7 @@ import type { DemoPersonId } from "../models/IHyperProfileDemoConfig";
 import { HyperErrorBoundary } from "../../../common/components";
 import { HyperSkeleton } from "../../../common/components";
 import { HyperEmptyState } from "../../../common/components";
+import { HyperEditOverlay } from "../../../common/components";
 import { useProfileData } from "../hooks/useProfileData";
 import { usePresence } from "../hooks/usePresence";
 import { useHyperProfileStore } from "../store/useHyperProfileStore";
@@ -28,6 +29,8 @@ export interface IHyperProfileComponentProps extends IHyperProfileWebPartProps {
   onWizardComplete?: () => void;
   /** Callback to toggle demo mode from within the component */
   onDemoModeChange?: (enabled: boolean) => void;
+  /** Callback to open the property pane */
+  onConfigure?: () => void;
 }
 
 const HyperProfileInner: React.FC<IHyperProfileComponentProps> = function (props) {
@@ -252,7 +255,7 @@ const HyperProfileInner: React.FC<IHyperProfileComponentProps> = function (props
 
   // In demo mode, wrap with demo bar above the template
   if (isDemoMode) {
-    return React.createElement("div", { className: styles.demoWrapper },
+    var demoContent = React.createElement("div", { className: styles.demoWrapper },
       sampleBanner,
       React.createElement(HyperProfileDemoBar, {
         selectedPersonId: demoPersonId,
@@ -269,9 +272,23 @@ const HyperProfileInner: React.FC<IHyperProfileComponentProps> = function (props
       templateEl,
       wizardElement
     );
+
+    return React.createElement(HyperEditOverlay, {
+      wpName: "HyperProfile",
+      isVisible: !!props.isEditMode,
+      onWizardClick: function () { setWizardOpen(true); },
+      onEditClick: function () { if (props.onConfigure) props.onConfigure(); },
+    }, demoContent);
   }
 
-  return React.createElement(React.Fragment, undefined, templateEl, wizardElement);
+  var mainContent = React.createElement(React.Fragment, undefined, templateEl, wizardElement);
+
+  return React.createElement(HyperEditOverlay, {
+    wpName: "HyperProfile",
+    isVisible: !!props.isEditMode,
+    onWizardClick: function () { setWizardOpen(true); },
+    onEditClick: function () { if (props.onConfigure) props.onConfigure(); },
+  }, mainContent);
 };
 
 const HyperProfile: React.FC<IHyperProfileComponentProps> = function (props) {

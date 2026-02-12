@@ -1,7 +1,7 @@
 import * as React from "react";
 import type { IHyperEventsWebPartProps, IHyperEvent, HyperEventsViewMode } from "../models";
 import { parseSources, parseCategories, parseRegistrationFields } from "../models";
-import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton } from "../../../common/components";
+import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton, HyperEditOverlay } from "../../../common/components";
 import { HyperWizard } from "../../../common/components/wizard/HyperWizard";
 import { EVENTS_WIZARD_CONFIG, buildStateFromProps } from "./wizard/eventsWizardConfig";
 import { useHyperEventsStore } from "../store/useHyperEventsStore";
@@ -33,6 +33,8 @@ export interface IHyperEventsComponentProps extends IHyperEventsWebPartProps {
   onWizardApply?: (result: Partial<IHyperEventsWebPartProps>) => void;
   /** Callback from web part class to persist wizard completion */
   onWizardComplete?: (result: Record<string, unknown>) => void;
+  /** Callback to open the property pane */
+  onConfigure?: () => void;
 }
 
 /**
@@ -427,7 +429,14 @@ const HyperEvents: React.FC<IHyperEventsComponentProps> = function (props) {
   return React.createElement(
     HyperErrorBoundary,
     undefined,
-    React.createElement(HyperEventsInner, props),
+    React.createElement(HyperEditOverlay, {
+      wpName: "HyperEvents",
+      isVisible: !!props.isEditMode,
+      onWizardClick: function () { setWizardOpen(true); },
+      onEditClick: function () { if (props.onConfigure) props.onConfigure(); },
+    },
+      React.createElement(HyperEventsInner, props)
+    ),
     React.createElement(WelcomeStep, {
       isOpen: wizardOpen,
       onClose: handleWizardClose,

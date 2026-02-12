@@ -26,7 +26,7 @@ import type {
   ITimelineSettings,
   IWallOfFameSettings,
 } from "../models";
-import { HyperErrorBoundary, HyperEmptyState } from "../../../common/components";
+import { HyperErrorBoundary, HyperEmptyState, HyperEditOverlay } from "../../../common/components";
 import { HyperSkeleton } from "../../../common/components";
 import WelcomeStep from "./wizard/WelcomeStep";
 import { useSpotlightEmployees } from "../hooks";
@@ -46,6 +46,8 @@ export interface IHyperSpotlightComponentProps extends IHyperSpotlightWebPartPro
   isEditMode?: boolean;
   /** Callback when the wizard is completed — receives partial props to persist */
   onWizardComplete?: (result: Record<string, unknown>) => void;
+  /** Callback to open the property pane */
+  onConfigure?: () => void;
 }
 
 /** Safely parse a JSON string with a fallback default */
@@ -356,11 +358,18 @@ const HyperSpotlightInner: React.FC<IHyperSpotlightComponentProps> = function (p
 
   containerChildren.push(layoutElement);
 
-  return React.createElement(
+  var mainContent = React.createElement(
     "div",
     { className: styles.spotlightContainer, role: "region", "aria-label": "Employee Spotlight" },
     containerChildren
   );
+
+  return React.createElement(HyperEditOverlay, {
+    wpName: "HyperSpotlight",
+    isVisible: !!props.isEditMode,
+    onWizardClick: function () { setShowWizard(true); },
+    onEditClick: function () { if (props.onConfigure) props.onConfigure(); },
+  }, mainContent);
 };
 
 const HyperSpotlight: React.FC<IHyperSpotlightComponentProps> = function (props) {

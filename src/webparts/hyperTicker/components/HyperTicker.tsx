@@ -1,7 +1,7 @@
 import * as React from "react";
 import type { IHyperTickerWebPartProps } from "../models";
 import type { ITickerItem, TickerSeverity, TickerHeightPreset, TickerDirection, TickerDisplayMode } from "../models";
-import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton } from "../../../common/components";
+import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton, HyperEditOverlay } from "../../../common/components";
 import { useTickerItems } from "../hooks/useTickerItems";
 import { useTickerAudience } from "../hooks/useTickerAudience";
 import { useHyperTickerStore } from "../store/useHyperTickerStore";
@@ -24,6 +24,7 @@ import styles from "./HyperTicker.module.scss";
 export interface IHyperTickerComponentProps extends IHyperTickerWebPartProps {
   instanceId: string;
   isEditMode?: boolean;
+  onConfigure?: () => void;
   onItemsChange?: (itemsJson: string) => void;
   onWizardApply?: (result: Partial<IHyperTickerWebPartProps>) => void;
 }
@@ -427,7 +428,7 @@ const HyperTickerInner: React.FC<IHyperTickerComponentProps> = function (props) 
     );
   }
 
-  return React.createElement(
+  var mainContent = React.createElement(
     "div",
     {
       className: containerClassName,
@@ -437,6 +438,13 @@ const HyperTickerInner: React.FC<IHyperTickerComponentProps> = function (props) 
     },
     children
   );
+
+  return React.createElement(HyperEditOverlay, {
+    wpName: "HyperTicker",
+    isVisible: !!props.isEditMode,
+    onWizardClick: function () { setWizardOpen(true); },
+    onEditClick: function () { if (props.onConfigure) props.onConfigure(); },
+  }, mainContent);
 };
 
 const HyperTicker: React.FC<IHyperTickerComponentProps> = function (props) {
