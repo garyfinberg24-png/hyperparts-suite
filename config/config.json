@@ -161,6 +161,22 @@
           "manifest": "./src/webparts/hyperStyle/HyperStyleWebPart.manifest.json"
         }
       ]
+    },
+    "hyper-social-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hyperSocial/HyperSocialWebPart.js",
+          "manifest": "./src/webparts/hyperSocial/HyperSocialWebPart.manifest.json"
+        }
+      ]
+    },
+    "hyper-onboard-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hyperOnboard/HyperOnboardWebPart.js",
+          "manifest": "./src/webparts/hyperOnboard/HyperOnboardWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -184,6 +200,8 @@
     "HyperBirthdaysWebPartStrings": "lib/webparts/hyperBirthdays/loc/{locale}.js",
     "HyperExplorerWebPartStrings": "lib/webparts/hyperExplorer/loc/{locale}.js",
     "HyperImageWebPartStrings": "lib/webparts/hyperImage/loc/{locale}.js",
-    "HyperStyleWebPartStrings": "lib/webparts/hyperStyle/loc/{locale}.js"
+    "HyperStyleWebPartStrings": "lib/webparts/hyperStyle/loc/{locale}.js",
+    "HyperSocialWebPartStrings": "lib/webparts/hyperSocial/loc/{locale}.js",
+    "HyperOnboardWebPartStrings": "lib/webparts/hyperOnboard/loc/{locale}.js"
   }
 }

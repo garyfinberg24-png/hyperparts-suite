@@ -1,0 +1,36 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "b4c2d5e3-f6a7-48b9-c0d1-e2f3a4b5c6d7",
+  "alias": "HyperOnboardWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart", "TeamsPersonalApp", "TeamsTab", "SharePointFullPage"],
+  "supportsThemeVariants": true,
+
+  "preconfiguredEntries": [{
+    "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+    "group": { "default": "HyperParts" },
+    "title": { "default": "HyperOnboard" },
+    "description": { "default": "Supercharged employee onboarding with task checklists, progress tracking, milestone badges, mentor assignment, and gamification — powered by SharePoint Lists." },
+    "officeFabricIconFontName": "Onboarding",
+    "properties": {
+      "title": "Onboarding Journey",
+      "layoutMode": "dashboard",
+      "trackTemplate": "general",
+      "tasksListName": "HyperOnboard_Tasks",
+      "progressListName": "HyperOnboard_Progress",
+      "enableProgressRing": true,
+      "enableCheckInStreak": true,
+      "enableMilestones": true,
+      "enableMentor": true,
+      "enableResources": true,
+      "enableDependencies": true,
+      "enableConfetti": true,
+      "mentorEmail": "",
+      "maxTasks": 50,
+      "cacheDuration": 300
+    }
+  }]
+}

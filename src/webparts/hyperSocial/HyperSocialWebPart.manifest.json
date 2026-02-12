@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "a3b1c4d2-e5f6-47a8-b9c0-d1e2f3a4b5c6",
+  "alias": "HyperSocialWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart", "TeamsPersonalApp", "TeamsTab", "SharePointFullPage"],
+  "supportsThemeVariants": true,
+
+  "preconfiguredEntries": [{
+    "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+    "group": { "default": "HyperParts" },
+    "title": { "default": "HyperSocial" },
+    "description": { "default": "Next-generation internal social feed with reactions, comments, hashtags, media galleries, bookmarks, and content moderation — powered by SharePoint Lists." },
+    "officeFabricIconFontName": "People",
+    "properties": {
+      "title": "Social Feed",
+      "layoutMode": "feed",
+      "sortMode": "latest",
+      "postsPerLoad": 10,
+      "listName": "HyperSocial_Posts",
+      "visibility": "everyone",
+      "enableReactions": true,
+      "enableComments": true,
+      "enableBookmarks": true,
+      "enableHashtags": true,
+      "enableMentions": true,
+      "enableModeration": false,
+      "moderationThreshold": 3,
+      "autoHideFlagged": false,
+      "enableTrendingWidget": true,
+      "cacheDuration": 120,
+      "enableLazyLoad": true
+    }
+  }]
+}

@@ -1,0 +1,416 @@
+.hyperOnboard {
+  position: relative;
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.sampleBanner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  margin-bottom: 12px;
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 6px;
+  color: #5d4037;
+  font-size: 13px;
+}
+
+.progressHero {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 24px;
+  background: linear-gradient(135deg, #001d3d, #003060, #0078d4);
+  border-radius: 12px;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.progressRing {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+}
+
+.progressRingSvg {
+  width: 120px;
+  height: 120px;
+  transform: rotate(-90deg);
+}
+
+.progressRingBg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 8;
+}
+
+.progressRingFill {
+  fill: none;
+  stroke: #4fc3f7;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+.progressPercent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.progressInfo {
+  flex: 1;
+}
+
+.progressTitle {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.progressStats {
+  display: flex;
+  gap: 24px;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.progressStat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.streakBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.phaseSection {
+  margin-bottom: 20px;
+}
+
+.phaseHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 12px;
+}
+
+.phaseLabel {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.phaseProgress {
+  font-size: 13px;
+  color: #757575;
+  margin-left: auto;
+}
+
+.taskList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.taskCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  transition: box-shadow 0.2s ease;
+}
+
+.taskCard:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.taskCardCompleted {
+  composes: taskCard;
+  opacity: 0.7;
+  background: #fafafa;
+}
+
+.taskCardLocked {
+  composes: taskCard;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.taskCheckbox {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #d0d0d0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  margin-top: 2px;
+  transition: all 0.15s ease;
+}
+
+.taskCheckboxDone {
+  composes: taskCheckbox;
+  background: #107c10;
+  border-color: #107c10;
+  color: #ffffff;
+  font-size: 12px;
+}
+
+.taskBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.taskTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+}
+
+.taskTitleDone {
+  composes: taskTitle;
+  text-decoration: line-through;
+  color: #757575;
+}
+
+.taskDesc {
+  font-size: 13px;
+  color: #616161;
+  line-height: 1.4;
+}
+
+.taskMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.taskBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.taskTypeBadge {
+  composes: taskBadge;
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.priorityCritical {
+  composes: taskBadge;
+  background: #fde8e8;
+  color: #d13438;
+}
+
+.priorityHigh {
+  composes: taskBadge;
+  background: #fff3e0;
+  color: #ca5010;
+}
+
+.priorityNormal {
+  composes: taskBadge;
+  background: #e3f2fd;
+  color: #0078d4;
+}
+
+.priorityLow {
+  composes: taskBadge;
+  background: #f5f5f5;
+  color: #6b6b6b;
+}
+
+.lockIcon {
+  font-size: 14px;
+  color: #999;
+}
+
+.milestoneRow {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.milestoneCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  min-width: 120px;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.milestoneCard:hover {
+  transform: translateY(-2px);
+}
+
+.milestoneCardUnlocked {
+  composes: milestoneCard;
+  border-color: #107c10;
+  background: #f0faf0;
+}
+
+.milestoneCardLocked {
+  composes: milestoneCard;
+  opacity: 0.4;
+}
+
+.milestoneEmoji {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.milestoneTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.milestoneDesc {
+  font-size: 11px;
+  color: #757575;
+  margin-top: 4px;
+}
+
+.mentorCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.mentorAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.mentorInfo {
+  flex: 1;
+}
+
+.mentorName {
+  font-weight: 600;
+  font-size: 14px;
+  color: #1a1a1a;
+}
+
+.mentorRole {
+  font-size: 12px;
+  color: #757575;
+  margin-top: 2px;
+}
+
+.mentorBtn {
+  padding: 8px 16px;
+  border: 1px solid #0078d4;
+  border-radius: 6px;
+  background: transparent;
+  color: #0078d4;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.mentorBtn:hover {
+  background: #0078d4;
+  color: #ffffff;
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.timelineContainer {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+}
+
+.timelinePhase {
+  min-width: 260px;
+  flex-shrink: 0;
+}
+
+.checklistContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.emptyTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.emptyDesc {
+  font-size: 14px;
+  color: #757575;
+  max-width: 400px;
+}
