@@ -1,5 +1,6 @@
 import * as React from "react";
 import type { IExplorerBreadcrumb } from "../models";
+import ExplorerIcon from "../utils/ExplorerIcon";
 import styles from "./HyperExplorerBreadcrumb.module.scss";
 
 export interface IHyperExplorerBreadcrumbProps {
@@ -16,16 +17,25 @@ var HyperExplorerBreadcrumb: React.FC<IHyperExplorerBreadcrumbProps> = function 
   crumbs.forEach(function (crumb, index) {
     var isLast = index === crumbs.length - 1;
 
-    // Separator (skip before first)
+    // Separator (skip before first) — SVG chevron-right
     if (index > 0) {
       elements.push(
         React.createElement("span", {
           key: "sep-" + index,
           className: styles.separator,
           "aria-hidden": "true",
-        }, "/")
+        },
+          React.createElement(ExplorerIcon, { name: "chevron-right", size: 12 })
+        )
       );
     }
+
+    // Root icon: SVG folder icon instead of emoji
+    var rootIconEl = crumb.isRoot
+      ? React.createElement("span", { className: styles.rootIcon, "aria-hidden": "true" },
+          React.createElement(ExplorerIcon, { name: "folder", size: 16 })
+        )
+      : undefined;
 
     if (isLast) {
       // Current folder — not clickable
@@ -35,9 +45,7 @@ var HyperExplorerBreadcrumb: React.FC<IHyperExplorerBreadcrumbProps> = function 
           className: styles.breadcrumbItem + " " + styles.breadcrumbItemCurrent,
           "aria-current": "location",
         },
-          crumb.isRoot
-            ? React.createElement("span", { className: styles.rootIcon, "aria-hidden": "true" }, "\uD83D\uDCC1")
-            : undefined,
+          rootIconEl,
           crumb.isRoot ? " " + crumb.name : crumb.name
         )
       );
@@ -50,9 +58,7 @@ var HyperExplorerBreadcrumb: React.FC<IHyperExplorerBreadcrumbProps> = function 
           onClick: function () { props.onNavigate(crumb.path); },
           type: "button",
         },
-          crumb.isRoot
-            ? React.createElement("span", { className: styles.rootIcon, "aria-hidden": "true" }, "\uD83D\uDCC1")
-            : undefined,
+          rootIconEl,
           crumb.isRoot ? " " + crumb.name : crumb.name
         )
       );

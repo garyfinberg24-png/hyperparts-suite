@@ -1,14 +1,36 @@
 @import '~@fluentui/react/dist/sass/References';
 
+/* 2-row toolbar container */
 .toolbar {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  padding: 8px 0;
+  flex-direction: column;
+  background: "[theme:white, default:#ffffff]";
   border-bottom: 1px solid "[theme:neutralLight, default:#edebe9]";
+  flex-shrink: 0;
 }
 
+/* Each toolbar row */
+.toolbarRow {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  gap: 8px;
+}
+
+.toolbarRowTop {
+  border-bottom: 1px solid "[theme:neutralLight, default:#edebe9]";
+  padding: 10px 16px;
+}
+
+/* Vertical separator between button groups */
+.toolbarSep {
+  width: 1px;
+  height: 20px;
+  background: "[theme:neutralTertiaryAlt, default:#c8c6c4]";
+  flex-shrink: 0;
+}
+
+/* Demo toggle */
 .demoToggle {
   display: inline-flex;
   align-items: center;
@@ -32,24 +54,125 @@
   letter-spacing: 0.5px;
 }
 
-.searchInput {
+/* App title in toolbar */
+.appTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: "[theme:neutralPrimary, default:#323130]";
+  white-space: nowrap;
+  margin-right: 4px;
+}
+
+/* Button base style — clean rectangular */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 4px;
+  padding: 6px 14px;
+  border: 1px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
+  background: "[theme:white, default:#ffffff]";
+  font-size: 12px;
+  font-weight: 500;
+  color: "[theme:neutralPrimary, default:#323130]";
+  cursor: pointer;
+  transition: all 200ms ease;
+  white-space: nowrap;
+
+  &:hover {
+    background: "[theme:neutralLighterAlt, default:#faf9f8]";
+    border-color: "[theme:neutralTertiaryAlt, default:#c8c6c4]";
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.btnPrimary {
+  background: "[theme:themePrimary, default:#0078d4]";
+  border-color: "[theme:themePrimary, default:#0078d4]";
+  color: "[theme:white, default:#ffffff]";
+
+  &:hover {
+    background: "[theme:themeDarkAlt, default:#106ebe]";
+    border-color: "[theme:themeDarkAlt, default:#106ebe]";
+  }
+}
+
+.btnDanger {
+  color: #d13438;
+
+  &:hover {
+    background: #fde7e9;
+  }
+}
+
+/* Search wrapper */
+.searchWrap {
+  position: relative;
+  max-width: 320px;
   flex: 1;
-  min-width: 200px;
-  max-width: 400px;
-  padding: 6px 12px;
+  min-width: 180px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 6px 12px 6px 34px;
   border: 1px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 12px;
+  background: "[theme:white, default:#ffffff]";
   outline: none;
+  transition: border-color 200ms;
 
   &:focus {
     border-color: "[theme:themePrimary, default:#0078d4]";
   }
 }
 
-.viewModeGroup {
+.searchIcon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: "[theme:neutralTertiary, default:#a19f9d]";
+  pointer-events: none;
   display: flex;
-  gap: 2px;
+}
+
+.searchClear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: "[theme:neutralTertiary, default:#a19f9d]";
+  cursor: pointer;
+  display: none;
+  padding: 2px;
+  border: none;
+  background: none;
+  border-radius: 3px;
+
+  &:hover {
+    background: "[theme:neutralLighterAlt, default:#faf9f8]";
+    color: "[theme:neutralPrimary, default:#323130]";
+  }
+}
+
+.searchWrapHasValue .searchClear {
+  display: flex;
+}
+
+.searchFeedback {
+  font-size: 11px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  white-space: nowrap;
+}
+
+/* Segmented view mode group */
+.viewModeGroup {
+  display: inline-flex;
   border: 1px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
   border-radius: 4px;
   overflow: hidden;
@@ -57,71 +180,64 @@
 
 .viewModeButton {
   padding: 6px 10px;
-  border: none;
-  background: "[theme:neutralLighter, default:#f3f2f1]";
-  cursor: pointer;
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: 500;
   color: "[theme:neutralSecondary, default:#605e5c]";
+  border: none;
+  border-right: 1px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
+  background: "[theme:white, default:#ffffff]";
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: all 200ms;
+
+  &:last-child {
+    border-right: none;
+  }
 
   &:hover {
-    background: "[theme:neutralLight, default:#edebe9]";
+    background: "[theme:neutralLighterAlt, default:#faf9f8]";
   }
 }
 
 .viewModeButtonActive {
-  background: "[theme:themePrimary, default:#0078d4]";
-  color: "[theme:white, default:#ffffff]";
+  background: "[theme:themeLighterAlt, default:#eff6fc]";
+  color: "[theme:themePrimary, default:#0078d4]";
 
   &:hover {
-    background: "[theme:themeDarkAlt, default:#106ebe]";
+    background: "[theme:themeLighterAlt, default:#eff6fc]";
   }
 }
 
-.sortGroup {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.sortSelect {
-  padding: 6px 8px;
-  border: 1px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
-  border-radius: 4px;
-  font-size: 13px;
-  background: "[theme:white, default:#ffffff]";
-}
-
-.sortDirectionButton {
-  padding: 6px 8px;
-  border: 1px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
-  border-radius: 4px;
-  background: "[theme:neutralLighter, default:#f3f2f1]";
-  cursor: pointer;
-  font-size: 13px;
-
-  &:hover {
-    background: "[theme:neutralLight, default:#edebe9]";
-  }
-}
-
-/* Feature toggle buttons group */
+/* Feature toggle buttons */
 .featureGroup {
   display: flex;
   gap: 4px;
+  flex-wrap: wrap;
 }
 
 .featureButton {
-  padding: 4px 10px;
-  border: 1px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   border-radius: 4px;
+  padding: 6px 10px;
+  border: 1px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
   background: "[theme:white, default:#ffffff]";
-  cursor: pointer;
   font-size: 12px;
+  font-weight: 500;
   color: "[theme:neutralSecondary, default:#605e5c]";
-  transition: background 0.15s, border-color 0.15s;
+  cursor: pointer;
+  transition: all 200ms;
+  white-space: nowrap;
 
   &:hover {
-    background: "[theme:neutralLighter, default:#f3f2f1]";
+    background: "[theme:neutralLighterAlt, default:#faf9f8]";
+  }
+
+  &:active {
+    transform: scale(0.98);
   }
 }
 
@@ -131,23 +247,67 @@
   color: "[theme:themePrimary, default:#0078d4]";
 }
 
-.actionGroup {
+/* Sort controls */
+.sortGroup {
   display: flex;
+  align-items: center;
   gap: 4px;
-  margin-left: auto;
 }
 
-.actionButton {
-  padding: 6px 12px;
+.sortSelect {
+  padding: 6px 10px;
+  border: 1px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
+  border-radius: 4px;
+  font-size: 12px;
+  background: "[theme:white, default:#ffffff]";
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  cursor: pointer;
+  font-family: $ms-font-family-fallbacks;
+}
+
+.sortDirectionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
   border: 1px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
   border-radius: 4px;
   background: "[theme:white, default:#ffffff]";
   cursor: pointer;
-  font-size: 13px;
-  color: "[theme:neutralPrimary, default:#323130]";
+  transition: all 200ms;
+  color: "[theme:neutralSecondary, default:#605e5c]";
 
   &:hover {
-    background: "[theme:neutralLighter, default:#f3f2f1]";
+    background: "[theme:neutralLighterAlt, default:#faf9f8]";
+  }
+}
+
+/* Action button group (right-aligned) */
+.actionGroup {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+  align-items: center;
+}
+
+.actionButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid "[theme:neutralTertiaryAlt, default:#c8c6c4]";
+  border-radius: 4px;
+  background: "[theme:white, default:#ffffff]";
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: "[theme:neutralPrimary, default:#323130]";
+  transition: all 200ms;
+  white-space: nowrap;
+
+  &:hover {
+    background: "[theme:neutralLighterAlt, default:#faf9f8]";
   }
 }
 
@@ -165,4 +325,9 @@
   font-size: 13px;
   color: "[theme:neutralSecondary, default:#605e5c]";
   padding: 0 8px;
+}
+
+/* Spacer pushes right items */
+.spacer {
+  flex: 1;
 }

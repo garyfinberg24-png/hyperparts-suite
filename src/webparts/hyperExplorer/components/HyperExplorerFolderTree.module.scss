@@ -1,62 +1,88 @@
 @import '~@fluentui/react/dist/sass/References';
 
 .folderTree {
-  width: 220px;
-  min-width: 180px;
+  width: 240px;
+  min-width: 200px;
   max-width: 280px;
+  background: "[theme:neutralLighterAlt, default:#faf9f8]";
   border-right: 1px solid "[theme:neutralLight, default:#edebe9]";
-  padding-right: 12px;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
   overflow-x: hidden;
+  flex-shrink: 0;
+}
+
+.sidebarHeader {
+  padding: 12px 14px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: "[theme:neutralTertiary, default:#a19f9d]";
 }
 
 .folderItem {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 6px 8px;
+  gap: 8px;
+  padding: 7px 14px;
   border: none;
   background: none;
   cursor: pointer;
   width: 100%;
   text-align: left;
   font-size: 13px;
-  color: "[theme:neutralPrimary, default:#323130]";
-  border-radius: 4px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  border-left: 3px solid transparent;
+  transition: all 200ms;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 
   &:hover {
     background: "[theme:neutralLighter, default:#f3f2f1]";
+    color: "[theme:neutralPrimary, default:#323130]";
   }
 }
 
 .folderItemActive {
-  background: "[theme:themeLighter, default:#deecf9]";
+  border-left-color: "[theme:themePrimary, default:#0078d4]";
+  background: #e6f0fa;
   color: "[theme:themePrimary, default:#0078d4]";
-  font-weight: 600;
+  font-weight: 500;
 
   &:hover {
-    background: "[theme:themeLighter, default:#deecf9]";
+    background: #e6f0fa;
   }
 }
 
 .chevron {
   font-size: 10px;
-  width: 16px;
+  width: 12px;
   text-align: center;
   transition: transform 0.2s ease;
   color: "[theme:neutralTertiary, default:#a19f9d]";
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .chevronExpanded {
   transform: rotate(90deg);
 }
 
+/* Folder icon — solid yellow (Standard 8 + user's explicit instruction) */
 .folderIcon {
-  font-size: 16px;
+  display: flex;
+  align-items: center;
   flex-shrink: 0;
+  color: #e6a817;
+
+  :global(svg) {
+    fill: #f9c929;
+    stroke: #d4a017;
+  }
 }
 
 .folderName {
@@ -66,9 +92,25 @@
 }
 
 .folderCount {
-  font-size: 11px;
-  color: "[theme:neutralTertiary, default:#a19f9d]";
+  font-size: 10px;
+  background: "[theme:neutralLight, default:#e1dfdd]";
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-weight: 500;
   flex-shrink: 0;
+}
+
+.folderCountActive {
+  background: #cce4f7;
+  color: "[theme:themePrimary, default:#0078d4]";
+}
+
+.folderItemDropTarget {
+  border-left-color: "[theme:themePrimary, default:#0078d4]";
+  background: "[theme:themeLighterAlt, default:#eff6fc]";
+  outline: 2px dashed "[theme:themePrimary, default:#0078d4]";
+  outline-offset: -2px;
 }
 
 .children {

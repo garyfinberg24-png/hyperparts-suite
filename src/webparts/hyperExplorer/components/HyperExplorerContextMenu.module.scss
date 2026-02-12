@@ -5,25 +5,27 @@
   max-width: 280px;
   background: "[theme:white, default:#ffffff]";
   border: 1px solid "[theme:neutralLight, default:#edebe9]";
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
   padding: 4px 0;
-  animation: menuFadeIn 0.12s ease-out;
+  animation: menuFadeIn 0.15s ease-out;
 }
 
-@keyframes menuFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+:global {
+  @keyframes menuFadeIn {
+    from {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 }
 
 .menuHeader {
-  padding: 8px 12px;
+  padding: 8px 14px;
   border-bottom: 1px solid "[theme:neutralLighter, default:#f3f2f1]";
 }
 
@@ -42,14 +44,14 @@
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 8px 12px;
+  padding: 7px 14px;
   border: none;
   background: transparent;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px;
   color: "[theme:neutralPrimary, default:#323130]";
   text-align: left;
-  transition: background 0.1s;
+  transition: background 150ms;
 
   &:hover {
     background: "[theme:neutralLighterAlt, default:#faf9f8]";
@@ -67,18 +69,23 @@
 }
 
 .menuItemDanger {
-  color: #c62828;
+  color: #d13438;
 
   &:hover {
-    background: #fce4ec;
+    background: #fde7e9;
   }
 }
 
 .menuItemIcon {
-  font-size: 16px;
-  width: 20px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  width: 16px;
   flex-shrink: 0;
+}
+
+.menuItemDanger .menuItemIcon {
+  color: #d13438;
 }
 
 .menuItemLabel {
@@ -88,6 +95,6 @@
 
 .menuDivider {
   height: 1px;
-  background: "[theme:neutralLighter, default:#f3f2f1]";
+  background: "[theme:neutralLight, default:#edebe9]";
   margin: 4px 0;
 }

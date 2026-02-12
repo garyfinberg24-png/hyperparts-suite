@@ -3,17 +3,19 @@
 .fileCard {
   display: flex;
   flex-direction: column;
+  background: "[theme:white, default:#ffffff]";
   border: 1px solid "[theme:neutralLight, default:#edebe9]";
   border-radius: 6px;
-  overflow: hidden;
+  padding: 14px;
   cursor: pointer;
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
-  background: "[theme:white, default:#ffffff]";
+  transition: all 200ms ease;
   position: relative;
+  user-select: none;
 
   &:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-    border-color: "[theme:themePrimary, default:#0078d4]";
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    border-color: "[theme:neutralTertiaryAlt, default:#c8c6c4]";
+    transform: translateY(-1px);
   }
 
   &:focus {
@@ -29,6 +31,12 @@
 
 .fileCardFolder {
   border-style: dashed;
+  border-color: #d2b48c;
+}
+
+.fileCardDragging {
+  opacity: 0.5;
+  transform: scale(0.95);
 }
 
 /* Checkbox overlay */
@@ -69,12 +77,21 @@
 /* Thumbnail area */
 .thumbnailArea {
   position: relative;
-  height: 140px;
+  width: 100%;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: "[theme:neutralLighterAlt, default:#faf9f8]";
+  border-radius: 4px;
+  margin-bottom: 10px;
   overflow: hidden;
+  color: "[theme:neutralTertiary, default:#a19f9d]";
+}
+
+.thumbnailAreaFolder {
+  background: linear-gradient(145deg, #fff8f0, #ffefd5);
+  color: #e6a817;
 }
 
 .thumbnailImage {
@@ -84,31 +101,37 @@
 }
 
 .fileTypeIcon {
-  font-size: 48px;
-  line-height: 1;
-  opacity: 0.8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .folderLargeIcon {
-  font-size: 56px;
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e6a817;
+
+  :global(svg) {
+    fill: #f9c929;
+    stroke: #d4a017;
+  }
 }
 
 .versionBadge {
   position: absolute;
   top: 8px;
   right: 8px;
-  padding: 2px 6px;
-  border-radius: 10px;
-  background: "[theme:themeDarkAlt, default:#106ebe]";
-  color: "[theme:white, default:#ffffff]";
-  font-size: 11px;
+  font-size: 9px;
+  background: "[theme:neutralLight, default:#e1dfdd]";
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  padding: 0 5px;
+  border-radius: 3px;
   font-weight: 600;
 }
 
 /* File info */
 .fileInfo {
-  padding: 10px 12px;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -116,20 +139,20 @@
 
 .fileName {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: "[theme:neutralPrimary, default:#323130]";
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* Category badges */
+/* Category tags */
 .categoryBadge {
   display: inline-block;
-  padding: 1px 8px;
-  border-radius: 10px;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-weight: 500;
   width: fit-content;
 }
 
@@ -160,7 +183,7 @@
 
 .categoryFolder {
   background: #fff8e1;
-  color: #f57f17;
+  color: #f9a825;
 }
 
 .categoryOther {
@@ -168,12 +191,33 @@
   color: "[theme:neutralSecondary, default:#605e5c]";
 }
 
+/* Compliance dot */
+.complianceDot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.complianceDotGreen {
+  background: #107c10;
+}
+
+.complianceDotYellow {
+  background: #ffaa44;
+}
+
+.complianceDotRed {
+  background: #d13438;
+}
+
 /* Meta row */
 .metaRow {
   display: flex;
   gap: 8px;
-  font-size: 12px;
-  color: "[theme:neutralSecondary, default:#605e5c]";
+  font-size: 11px;
+  color: "[theme:neutralTertiary, default:#a19f9d]";
+  align-items: center;
 }
 
 .metaItem {
@@ -188,24 +232,30 @@
   text-overflow: ellipsis;
 }
 
-/* List view variant — applied via parent container override */
+/* Tags row */
+.tagsRow {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* List view variant */
 :global(.hyperExplorerListView) .fileCard {
   flex-direction: row;
   align-items: center;
+  padding: 8px 12px;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
 
   .thumbnailArea {
     width: 40px;
     height: 40px;
     min-width: 40px;
     flex-shrink: 0;
-  }
-
-  .fileTypeIcon {
-    font-size: 24px;
-  }
-
-  .folderLargeIcon {
-    font-size: 28px;
+    margin-bottom: 0;
+    margin-right: 10px;
   }
 
   .fileInfo {

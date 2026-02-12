@@ -1,5 +1,6 @@
 import * as React from "react";
 import type { IExplorerFile } from "../models";
+import ExplorerIcon from "../utils/ExplorerIcon";
 import styles from "./HyperExplorerContextMenu.module.scss";
 
 export interface IContextMenuAction {
@@ -32,36 +33,36 @@ var HyperExplorerContextMenu: React.FC<IHyperExplorerContextMenuProps> = functio
   var actions: IContextMenuAction[] = [];
 
   if (props.file.isPreviewable && props.enablePreview) {
-    actions.push({ key: "preview", label: "Preview", icon: "\uD83D\uDC41\uFE0F" });
+    actions.push({ key: "preview", label: "Preview", icon: "eye" });
   }
 
   if (!props.file.isFolder) {
-    actions.push({ key: "download", label: "Download", icon: "\u2B07\uFE0F" });
-    actions.push({ key: "copyLink", label: "Copy Link", icon: "\uD83D\uDD17", dividerAfter: true });
+    actions.push({ key: "download", label: "Download", icon: "download" });
+    actions.push({ key: "copyLink", label: "Copy Link", icon: "link", dividerAfter: true });
   }
 
-  actions.push({ key: "share", label: "Share", icon: "\uD83D\uDCE4" });
+  actions.push({ key: "share", label: "Share", icon: "share" });
 
   if (props.enableFilePlan && !props.file.isFolder) {
-    actions.push({ key: "applyLabel", label: "Apply Retention Label", icon: "\uD83C\uDFF7\uFE0F" });
+    actions.push({ key: "applyLabel", label: "Apply Retention Label", icon: "tag" });
   }
 
   if (props.enableMetadataProfiles && !props.file.isFolder) {
-    actions.push({ key: "uploadWithProfile", label: "Upload with Profile", icon: "\uD83D\uDCCB" });
+    actions.push({ key: "uploadWithProfile", label: "Upload with Profile", icon: "clipboard-up" });
   }
 
   if (props.enableCompare && !props.file.isFolder) {
-    actions.push({ key: "compare", label: "Compare", icon: "\u2194\uFE0F" });
+    actions.push({ key: "compare", label: "Compare", icon: "compare" });
   }
 
   if (props.enableZipDownload && !props.file.isFolder) {
-    actions.push({ key: "addToZip", label: "Add to ZIP Download", icon: "\uD83D\uDCE6", dividerAfter: true });
+    actions.push({ key: "addToZip", label: "Add to ZIP Download", icon: "file-archive", dividerAfter: true });
   }
 
-  actions.push({ key: "rename", label: "Rename", icon: "\u270F\uFE0F" });
-  actions.push({ key: "move", label: "Move", icon: "\uD83D\uDCC2" });
-  actions.push({ key: "delete", label: "Delete", icon: "\uD83D\uDDD1\uFE0F", dividerAfter: true });
-  actions.push({ key: "properties", label: "Properties", icon: "\u2139\uFE0F" });
+  actions.push({ key: "rename", label: "Rename", icon: "pencil" });
+  actions.push({ key: "move", label: "Move", icon: "move" });
+  actions.push({ key: "delete", label: "Delete", icon: "trash", dividerAfter: true });
+  actions.push({ key: "properties", label: "Properties", icon: "info" });
 
   // Close on Escape
   React.useEffect(function () {
@@ -100,7 +101,7 @@ var HyperExplorerContextMenu: React.FC<IHyperExplorerContextMenuProps> = functio
         role: "menuitem",
         type: "button",
       },
-        React.createElement("span", { className: styles.menuItemIcon, "aria-hidden": "true" }, action.icon),
+        React.createElement(ExplorerIcon, { name: action.icon, size: 16, className: styles.menuItemIcon }),
         React.createElement("span", { className: styles.menuItemLabel }, action.label)
       )
     );

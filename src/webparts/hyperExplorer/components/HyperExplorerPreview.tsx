@@ -1,6 +1,8 @@
 import * as React from "react";
 import type { IExplorerFile, PreviewMode } from "../models";
 import { formatFileSize } from "../utils/fileTypeUtils";
+import ExplorerIcon from "../utils/ExplorerIcon";
+// explorerIcons utility available if needed for icon lookups
 import styles from "./HyperExplorerPreview.module.scss";
 
 export interface IHyperExplorerPreviewProps {
@@ -43,13 +45,13 @@ function getPreviewType(file: IExplorerFile): string {
   return "unsupported";
 }
 
-/** Category → emoji icon mapping for placeholder preview */
+/** Category to SVG icon name mapping for placeholder preview */
 var PREVIEW_ICONS: Record<string, string> = {
-  image: "\uD83D\uDDBC\uFE0F",
-  video: "\uD83C\uDFA5",
-  pdf: "\uD83D\uDCCB",
-  wopi: "\uD83D\uDCC4",
-  unsupported: "\uD83D\uDCC3",
+  image: "file-image",
+  video: "file-video",
+  pdf: "file-pdf",
+  wopi: "file-doc",
+  unsupported: "file",
 };
 
 var HyperExplorerPreview: React.FC<IHyperExplorerPreviewProps> = function (props) {
@@ -65,9 +67,9 @@ var HyperExplorerPreview: React.FC<IHyperExplorerPreviewProps> = function (props
   // Build preview content
   var previewContent: React.ReactNode;
 
-  // Sample data → show styled placeholder instead of broken iframe/img
+  // Sample data: show styled placeholder instead of broken iframe/img
   if (isSamplePreview) {
-    var icon = PREVIEW_ICONS[previewType] || "\uD83D\uDCC3";
+    var icon = PREVIEW_ICONS[previewType] || "file";
     previewContent = React.createElement("div", {
       style: {
         display: "flex",
@@ -81,7 +83,7 @@ var HyperExplorerPreview: React.FC<IHyperExplorerPreviewProps> = function (props
         borderRadius: "8px",
       },
     },
-      React.createElement("span", { style: { fontSize: "56px", lineHeight: "1", marginBottom: "12px" } }, icon),
+      React.createElement(ExplorerIcon, { name: icon, size: 56, style: { marginBottom: "12px", color: "#a19f9d" } }),
       React.createElement("p", { style: { fontSize: "15px", fontWeight: 600, color: "#323130", margin: "0 0 4px 0" } }, file.name),
       React.createElement("p", { style: { fontSize: "12px", color: "#605e5c", margin: "0 0 8px 0" } },
         previewType === "wopi" ? "Office Document Preview" :
@@ -142,7 +144,7 @@ var HyperExplorerPreview: React.FC<IHyperExplorerPreviewProps> = function (props
     });
   } else {
     previewContent = React.createElement("div", { className: styles.previewUnsupported },
-      React.createElement("span", { className: styles.unsupportedIcon }, "\uD83D\uDCC4"),
+      React.createElement(ExplorerIcon, { name: "file", size: 48, className: styles.unsupportedIcon }),
       React.createElement("p", undefined, "Preview not available for ." + file.fileType + " files"),
       React.createElement("p", { className: styles.unsupportedHint }, "Download the file to view it")
     );
@@ -172,6 +174,81 @@ var HyperExplorerPreview: React.FC<IHyperExplorerPreviewProps> = function (props
     panelClass = panelClass + " " + styles.previewPanelSplit;
   }
 
+  // Action buttons
+  var actionButtons = React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: "8px",
+      padding: "0 14px 14px",
+      flexWrap: "wrap" as const,
+    },
+  },
+    React.createElement("button", {
+      style: {
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "6px",
+        padding: "6px 14px",
+        border: "1px solid #c8c6c4",
+        borderRadius: "4px",
+        background: "#fff",
+        fontSize: "12px",
+        fontWeight: 500,
+        cursor: "pointer",
+        flex: "1",
+        minWidth: "80px",
+        justifyContent: "center",
+      },
+      type: "button",
+    },
+      React.createElement(ExplorerIcon, { name: "download", size: 14 }),
+      "Download"
+    ),
+    React.createElement("button", {
+      style: {
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "6px",
+        padding: "6px 14px",
+        border: "1px solid #c8c6c4",
+        borderRadius: "4px",
+        background: "#fff",
+        fontSize: "12px",
+        fontWeight: 500,
+        cursor: "pointer",
+        flex: "1",
+        minWidth: "80px",
+        justifyContent: "center",
+      },
+      type: "button",
+    },
+      React.createElement(ExplorerIcon, { name: "share", size: 14 }),
+      "Share"
+    ),
+    React.createElement("button", {
+      style: {
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "6px",
+        padding: "6px 14px",
+        border: "1px solid #0078d4",
+        borderRadius: "4px",
+        background: "#0078d4",
+        color: "#fff",
+        fontSize: "12px",
+        fontWeight: 500,
+        cursor: "pointer",
+        flex: "1",
+        minWidth: "80px",
+        justifyContent: "center",
+      },
+      type: "button",
+    },
+      React.createElement(ExplorerIcon, { name: "eye", size: 14 }),
+      "Open"
+    )
+  );
+
   return React.createElement("div", {
     className: panelClass,
     role: "complementary",
@@ -185,10 +262,12 @@ var HyperExplorerPreview: React.FC<IHyperExplorerPreviewProps> = function (props
         onClick: props.onClose,
         "aria-label": "Close preview",
         type: "button",
-      }, "\u2715")
+      }, React.createElement(ExplorerIcon, { name: "x-close", size: 14 }))
     ),
     // Preview content
-    React.createElement("div", { className: styles.previewBody }, previewContent)
+    React.createElement("div", { className: styles.previewBody }, previewContent),
+    // Action buttons
+    actionButtons
   );
 };
 

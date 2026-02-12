@@ -4,40 +4,43 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 4px 0;
-  font-size: 14px;
-  flex-wrap: wrap;
+  font-size: 13px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  margin-right: auto;
 }
 
 .breadcrumbItem {
-  padding: 2px 6px;
+  padding: 2px 4px;
   border: none;
   background: none;
   cursor: pointer;
-  color: "[theme:themePrimary, default:#0078d4]";
-  border-radius: 2px;
-  font-size: 14px;
+  color: "[theme:neutralSecondary, default:#605e5c]";
+  border-radius: 3px;
+  font-size: 13px;
+  transition: background 200ms, color 200ms;
 
   &:hover {
-    background: "[theme:themeLighter, default:#deecf9]";
-    text-decoration: underline;
+    background: "[theme:neutralLighterAlt, default:#faf9f8]";
+    color: "[theme:neutralPrimary, default:#323130]";
   }
 }
 
 .breadcrumbItemCurrent {
   color: "[theme:neutralPrimary, default:#323130]";
-  font-weight: 600;
+  font-weight: 500;
   cursor: default;
 
   &:hover {
     background: none;
-    text-decoration: none;
+    color: "[theme:neutralPrimary, default:#323130]";
   }
 }
 
 .separator {
   color: "[theme:neutralTertiary, default:#a19f9d]";
   user-select: none;
+  display: flex;
+  align-items: center;
 }
 
 .rootIcon {

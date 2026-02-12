@@ -1,6 +1,8 @@
 import * as React from "react";
 import type { IExplorerFile, IComplianceStatus } from "../models";
 import { formatFileSize } from "../utils/fileTypeUtils";
+import ExplorerIcon from "../utils/ExplorerIcon";
+import { getFileTypeIconName } from "../utils/explorerIcons";
 import ComplianceBadge from "./filePlan/ComplianceBadge";
 import styles from "./HyperExplorerFileCard.module.scss";
 
@@ -16,7 +18,7 @@ export interface IHyperExplorerFileCardProps {
   onContextMenu: (file: IExplorerFile, x: number, y: number) => void;
 }
 
-/** Category → badge color class mapping */
+/** Category -> badge color class mapping */
 var CATEGORY_CLASS: Record<string, string> = {
   document: "categoryDocument",
   image: "categoryImage",
@@ -25,17 +27,6 @@ var CATEGORY_CLASS: Record<string, string> = {
   archive: "categoryArchive",
   folder: "categoryFolder",
   other: "categoryOther",
-};
-
-/** Category → emoji icon mapping */
-var CATEGORY_ICON: Record<string, string> = {
-  document: "\uD83D\uDCC4",
-  image: "\uD83D\uDDBC\uFE0F",
-  video: "\uD83C\uDFA5",
-  audio: "\uD83C\uDFB5",
-  archive: "\uD83D\uDDC3\uFE0F",
-  folder: "\uD83D\uDCC1",
-  other: "\uD83D\uDCC3",
 };
 
 /** Format a relative time label */
@@ -121,7 +112,7 @@ var HyperExplorerFileCard: React.FC<IHyperExplorerFileCardProps> = function (pro
 
   if (file.isFolder) {
     thumbnailChildren.push(
-      React.createElement("span", { key: "folder-icon", className: styles.folderLargeIcon }, "\uD83D\uDCC1")
+      React.createElement(ExplorerIcon, { key: "folder-icon", name: "folder", size: 32, className: styles.folderLargeIcon })
     );
   } else if (file.isImage && props.showThumbnails && file.thumbnailUrl) {
     thumbnailChildren.push(
@@ -135,10 +126,9 @@ var HyperExplorerFileCard: React.FC<IHyperExplorerFileCardProps> = function (pro
     );
   } else {
     // File type icon
+    var iconName = getFileTypeIconName(file.fileType);
     thumbnailChildren.push(
-      React.createElement("span", { key: "file-icon", className: styles.fileTypeIcon },
-        CATEGORY_ICON[categoryKey] || "\uD83D\uDCC3"
-      )
+      React.createElement(ExplorerIcon, { key: "file-icon", name: iconName, size: 32, className: styles.fileTypeIcon })
     );
   }
 
@@ -151,8 +141,12 @@ var HyperExplorerFileCard: React.FC<IHyperExplorerFileCardProps> = function (pro
     );
   }
 
+  var thumbnailAreaClass = file.isFolder
+    ? styles.thumbnailArea + " " + styles.thumbnailAreaFolder
+    : styles.thumbnailArea;
+
   elements.push(
-    React.createElement("div", { key: "thumb-area", className: styles.thumbnailArea },
+    React.createElement("div", { key: "thumb-area", className: thumbnailAreaClass },
       thumbnailChildren
     )
   );

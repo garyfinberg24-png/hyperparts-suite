@@ -1,5 +1,6 @@
 import * as React from "react";
 import type { IExplorerFolder } from "../models";
+import ExplorerIcon from "../utils/ExplorerIcon";
 import styles from "./HyperExplorerFolderTree.module.scss";
 
 export interface IHyperExplorerFolderTreeProps {
@@ -45,7 +46,7 @@ function renderFolderItem(
           onToggleExpand(folder.path);
         },
         "aria-hidden": "true",
-      }, "\u25B6")
+      }, React.createElement(ExplorerIcon, { name: "chevron-right", size: 12 }))
     );
   } else {
     elements.push(
@@ -55,11 +56,12 @@ function renderFolderItem(
 
   // Folder icon
   elements.push(
-    React.createElement("span", {
+    React.createElement(ExplorerIcon, {
       key: "icon",
+      name: folder.isExpanded ? "folder-open" : "folder",
+      size: 16,
       className: styles.folderIcon,
-      "aria-hidden": "true",
-    }, folder.isExpanded ? "\uD83D\uDCC2" : "\uD83D\uDCC1")
+    })
   );
 
   // Folder name
@@ -70,8 +72,10 @@ function renderFolderItem(
   // Item count
   if (folder.itemCount > 0) {
     elements.push(
-      React.createElement("span", { key: "count", className: styles.folderCount },
-        "(" + folder.itemCount + ")")
+      React.createElement("span", {
+        key: "count",
+        className: isActive ? styles.folderCount + " " + styles.folderCountActive : styles.folderCount,
+      }, String(folder.itemCount))
     );
   }
 
@@ -125,7 +129,10 @@ var HyperExplorerFolderTree: React.FC<IHyperExplorerFolderTreeProps> = function 
     className: styles.folderTree,
     role: "tree",
     "aria-label": "Folder tree",
-  }, rootFolders);
+  },
+    React.createElement("div", { className: styles.sidebarHeader }, "Folders"),
+    rootFolders
+  );
 };
 
 export default HyperExplorerFolderTree;

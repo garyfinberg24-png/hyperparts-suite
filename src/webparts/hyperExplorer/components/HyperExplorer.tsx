@@ -27,6 +27,7 @@ import { filePlanWizardConfig } from "./filePlan/wizard/FilePlanWizardConfig";
 import { GridLayout, ListLayout, MasonryLayout, FilmstripLayout, TilesLayout } from "./layouts";
 import HyperExplorerDemoBar from "./HyperExplorerDemoBar";
 import { HyperEditOverlay, HyperModal } from "../../../common/components";
+import ExplorerIcon from "../utils/ExplorerIcon";
 import styles from "./HyperExplorer.module.scss";
 
 export interface IHyperExplorerComponentProps extends IHyperExplorerWebPartProps {
@@ -507,7 +508,7 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
     children.push(
       React.createElement("div", { key: "sample-banner", className: styles.sampleBanner },
         React.createElement("span", {},
-          "\u26A0\uFE0F Sample data is active. Connect a document library in the property pane to use real files."
+          "Sample data active \u2014 Connect a document library in the property pane to use real files."
         ),
         React.createElement("button", {
           className: styles.bannerDismiss,
@@ -579,6 +580,7 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
       onOpenMetadataUpload: store.openMetadataUpload,
       onOpenNamingConvention: store.openNamingConvention,
       onToggleKeyboardShortcuts: store.toggleKeyboardShortcuts,
+      onOpenWizard: store.openWizard,
     })
   );
 
@@ -629,7 +631,7 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
   if (store.filteredFiles.length === 0) {
     mainContentChildren.push(
       React.createElement("div", { key: "empty", className: styles.emptyState },
-        React.createElement("span", { className: styles.emptyIcon }, "\uD83D\uDCC2"),
+        React.createElement(ExplorerIcon, { name: "folder-open", size: 48, className: styles.emptyIcon }),
         React.createElement("h3", { className: styles.emptyTitle }, "No Files Found"),
         React.createElement("p", { className: styles.emptyDescription },
           store.searchQuery
@@ -670,11 +672,62 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
     )
   );
 
-  // File count footer
+  // Selection bar (floating)
+  if (store.selectedFileIds.length > 0) {
+    children.push(
+      React.createElement("div", {
+        key: "selection-bar",
+        className: styles.selectionBar + " " + styles.selectionBarVisible,
+      },
+        React.createElement("span", { className: styles.selectionCount },
+          store.selectedFileIds.length + " selected"
+        ),
+        React.createElement("span", { className: styles.selectionSep }),
+        React.createElement("button", {
+          className: styles.selectionButton,
+          onClick: handleDownloadSelected,
+          type: "button",
+        },
+          React.createElement(ExplorerIcon, { name: "download", size: 14 }),
+          "Download"
+        ),
+        React.createElement("button", {
+          className: styles.selectionButton,
+          onClick: store.clearSelection,
+          type: "button",
+        },
+          React.createElement(ExplorerIcon, { name: "x-close", size: 14 }),
+          "Clear"
+        ),
+        React.createElement("button", {
+          className: styles.selectionButton + " " + styles.selectionDelete,
+          onClick: function () { /* delete is destructive, needs confirmation */ },
+          type: "button",
+        },
+          React.createElement(ExplorerIcon, { name: "trash", size: 14 }),
+          "Delete"
+        )
+      )
+    );
+  }
+
+  // File count footer (status bar)
   children.push(
     React.createElement("div", { key: "footer", className: styles.footer },
-      store.filteredFiles.length + " item" + (store.filteredFiles.length !== 1 ? "s" : "")
-      + (store.searchQuery ? " matching \"" + store.searchQuery + "\"" : "")
+      React.createElement("div", { className: styles.footerLeft },
+        React.createElement("span", { className: styles.footerDot }),
+        React.createElement("span", {}, "Connected"),
+        React.createElement("span", {},
+          store.filteredFiles.length + " item" + (store.filteredFiles.length !== 1 ? "s" : "")
+          + (store.searchQuery ? " matching \"" + store.searchQuery + "\"" : "")
+        )
+      ),
+      React.createElement("div", { className: styles.footerRight },
+        React.createElement("span", {},
+          React.createElement("kbd", {}, "?"),
+          " Shortcuts"
+        )
+      )
     )
   );
 
@@ -992,7 +1045,7 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
         },
         onClick: function (): void { store.closeMoveModal(); },
       },
-        React.createElement("span", {}, "\uD83D\uDCC1"),
+        React.createElement(ExplorerIcon, { name: "folder", size: 16, style: { color: "#e6a817" } }),
         folder.name
       );
     });
