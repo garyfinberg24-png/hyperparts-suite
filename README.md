@@ -1,6 +1,6 @@
 # HyperParts Suite
 
-A next-generation ecosystem of **20 SPFx web parts** (shipping) that extend and replace every standard SharePoint Online web part with richer features, deeper Graph integration, and full visual customization.
+A next-generation ecosystem of **23 SPFx web parts** (20 shipping + 2 scaffolded + 1 full-featured) that extend and replace every standard SharePoint Online web part with richer features, deeper Graph integration, and full visual customization.
 
 ![SPFx](https://img.shields.io/badge/SPFx-1.20.0-green.svg)
 ![React](https://img.shields.io/badge/React-17.0.1-blue.svg)
@@ -70,7 +70,10 @@ src/
     ├── hyperBirthdays/            # Celebrations hub (8 types, 3 views, animations)
     ├── hyperExplorer/             # File/document explorer (EX1 scaffold — components TBD)
     ├── hyperImage/                # Image gallery & media display
-    └── hyperStyle/                # Global branding engine with CSS injection
+    ├── hyperStyle/                # Global branding engine with CSS injection
+    ├── hyperSocial/               # Social feed (scaffolded — components TBD)
+    ├── hyperOnboard/              # Onboarding journey (scaffolded — components TBD)
+    └── hyperFlow/                 # Process stepper & visual diagram builder (45 files)
 ```
 
 ## Prerequisites
@@ -163,6 +166,12 @@ gulp package-solution --ship  # Create .sppkg
 - [x] HyperLinks style presets — 12 world-class presets (text position, button shape, colors, effects)
 - [x] HyperDirectory card presets — 12 visual card style presets for directory cards
 
+### Phase 4 — Advanced
+
+- [x] HyperSocial (scaffolded) — LinkedIn/Yammer-style social feed, 4 layouts, reactions, comments, moderation
+- [x] HyperOnboard (scaffolded) — Employee onboarding journey, 4 layouts, 5 phases, task tracking, gamification
+- [x] HyperFlow — Process stepper & visual diagram builder, 2 modes (visual + functional), 5 diagram styles, 4 stepper layouts, 6 color themes, drag-drop designer canvas, 36+ SVG icons
+
 ### Future
 
 - [ ] HyperAction, HyperRecognition, HyperExternal
@@ -203,6 +212,7 @@ gulp package-solution --ship  # Create .sppkg
 | 0.0.22  | February 11, 2026 | enableDemoMode=true default 20/20, wizardCompleted standardized, demoMode renamed             |
 | 0.0.23  | February 12, 2026 | Standards 5-7: edit overlay, styled property pane, image browser consolidation (57 files)     |
 | 0.0.24  | February 12, 2026 | Multi-WP enhancements: charts resize/drag-drop, links presets/shapes, FAQ padding (57 files)  |
+| 0.0.25  | February 12, 2026 | HyperFlow: process stepper & visual diagram builder (bundle #24, 45 new files)                |
 
 ## References
 
