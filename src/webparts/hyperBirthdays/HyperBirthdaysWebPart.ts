@@ -14,7 +14,7 @@ import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
 import HyperBirthdays from "./components/HyperBirthdays";
 import type { IHyperBirthdaysComponentProps } from "./components/HyperBirthdays";
 import type { IHyperBirthdaysWebPartProps } from "./models";
-import { createGroupHeaderField } from "../../common/propertyPane";
+import { createGroupHeaderField, createQuickActionsGroup } from "../../common/propertyPane";
 
 export default class HyperBirthdaysWebPart extends BaseHyperWebPart<IHyperBirthdaysWebPartProps> {
 
@@ -148,7 +148,7 @@ export default class HyperBirthdaysWebPart extends BaseHyperWebPart<IHyperBirthd
       this.properties.wizardCompleted = false;
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = true;
+      this.properties.enableDemoMode = false;
     }
 
     // When sample data is on, enable all celebration types by default
@@ -180,6 +180,11 @@ export default class HyperBirthdaysWebPart extends BaseHyperWebPart<IHyperBirthd
         {
           header: { description: strings.PropertyPaneDescription },
           groups: [
+            createQuickActionsGroup({
+              onReopenWizard: this._handleReopenWizard.bind(this),
+              onEditInEditor: this._handleEditInEditor.bind(this),
+              onToggleDemoMode: this._handleToggleDemoMode.bind(this),
+            }),
             {
               groupName: strings.DataSourcesGroupName,
               groupFields: [

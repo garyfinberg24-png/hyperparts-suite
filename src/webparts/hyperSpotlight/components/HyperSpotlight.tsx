@@ -91,7 +91,7 @@ const HyperSpotlightInner: React.FC<IHyperSpotlightComponentProps> = function (p
   var setShowWizard = wizardState[1];
 
   React.useEffect(function () {
-    if (props.isEditMode && !props.wizardCompleted) {
+    if (!props.isEditMode && !props.wizardCompleted) {
       setShowWizard(true);
     }
   }, [props.isEditMode, props.wizardCompleted]);

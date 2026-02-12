@@ -10,7 +10,7 @@ import {
 } from "@microsoft/sp-property-pane";
 import * as strings from "HyperProfileWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
-import { createGroupHeaderField } from "../../common/propertyPane";
+import { createGroupHeaderField, createQuickActionsGroup } from "../../common/propertyPane";
 import type { IHyperProfileWebPartProps } from "./models";
 import type { IHyperTemplate } from "./models";
 import { TEMPLATES, getTemplateById } from "./constants/templates";
@@ -145,7 +145,7 @@ export default class HyperProfileWebPart extends BaseHyperWebPart<IHyperProfileW
       this.properties.animation = "none";
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = true;
+      this.properties.enableDemoMode = false;
     }
     if (this.properties.useSampleData === undefined) {
       this.properties.useSampleData = true;
@@ -184,6 +184,11 @@ export default class HyperProfileWebPart extends BaseHyperWebPart<IHyperProfileW
         {
           header: { description: strings.PropertyPaneDescription },
           groups: [
+            createQuickActionsGroup({
+              onReopenWizard: this._handleReopenWizard.bind(this),
+              onEditInEditor: this._handleEditInEditor.bind(this),
+              onToggleDemoMode: this._handleToggleDemoMode.bind(this),
+            }),
             {
               groupName: strings.BasicGroupName,
               groupFields: [

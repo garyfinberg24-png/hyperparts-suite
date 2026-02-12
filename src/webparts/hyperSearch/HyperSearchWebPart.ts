@@ -14,7 +14,7 @@ import {
 
 import * as strings from "HyperSearchWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
-import { createGroupHeaderField } from "../../common/propertyPane";
+import { createGroupHeaderField, createQuickActionsGroup } from "../../common/propertyPane";
 import HyperSearch from "./components/HyperSearch";
 import type { IHyperSearchComponentProps } from "./components/HyperSearch";
 import type { IHyperSearchWebPartProps } from "./models";
@@ -156,7 +156,7 @@ export default class HyperSearchWebPart extends BaseHyperWebPart<IHyperSearchWeb
       this.properties.showScopeTabs = true;
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = true;
+      this.properties.enableDemoMode = false;
     }
     if (this.properties.wizardCompleted === undefined) {
       this.properties.wizardCompleted = false;
@@ -237,6 +237,11 @@ export default class HyperSearchWebPart extends BaseHyperWebPart<IHyperSearchWeb
         {
           header: { description: strings.PropertyPaneDescription },
           groups: [
+            createQuickActionsGroup({
+              onReopenWizard: this._handleReopenWizard.bind(this),
+              onEditInEditor: this._handleEditInEditor.bind(this),
+              onToggleDemoMode: this._handleToggleDemoMode.bind(this),
+            }),
             {
               groupName: strings.SearchConfigGroupName,
               groupFields: [
@@ -370,9 +375,6 @@ export default class HyperSearchWebPart extends BaseHyperWebPart<IHyperSearchWeb
                   label: strings.BorderRadiusLabel,
                   min: 0,
                   max: 24,
-                }),
-                PropertyPaneToggle("enableDemoMode", {
-                  label: strings.EnableDemoModeLabel,
                 }),
                 PropertyPaneToggle("showWizardOnInit", {
                   label: strings.ShowWizardOnInitLabel,

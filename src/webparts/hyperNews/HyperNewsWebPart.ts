@@ -14,7 +14,7 @@ import {
 
 import * as strings from "HyperNewsWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
-import { createGroupHeaderField } from "../../common/propertyPane";
+import { createGroupHeaderField, createQuickActionsGroup } from "../../common/propertyPane";
 import HyperNews from "./components/HyperNews";
 import type { IHyperNewsComponentProps } from "./components/HyperNews";
 import type { IHyperNewsWebPartProps } from "./models";
@@ -155,7 +155,7 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
     }
     // Demo mode
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = true;
+      this.properties.enableDemoMode = false;
     }
   }
 
@@ -193,6 +193,11 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
         {
           header: { description: strings.PropertyPaneDescription },
           groups: [
+            createQuickActionsGroup({
+              onReopenWizard: this._handleReopenWizard.bind(this),
+              onEditInEditor: this._handleEditInEditor.bind(this),
+              onToggleDemoMode: this._handleToggleDemoMode.bind(this),
+            }),
             {
               groupName: strings.WizardGroupName,
               groupFields: [
@@ -218,17 +223,6 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
                 createGroupHeaderField("_sampleDataHeader", { icon: "\u2699\uFE0F", title: "Sample Data", subtitle: "Preview content", color: "orange" }),
                 PropertyPaneToggle("useSampleData", {
                   label: strings.UseSampleDataLabel,
-                  onText: "On",
-                  offText: "Off",
-                }),
-              ],
-            },
-            {
-              groupName: strings.DemoModeGroupName,
-              groupFields: [
-                createGroupHeaderField("_demoModeHeader", { icon: "\u2699\uFE0F", title: "Demo Mode", subtitle: "Interactive preview", color: "orange" }),
-                PropertyPaneToggle("enableDemoMode", {
-                  label: strings.DemoModeLabel,
                   onText: "On",
                   offText: "Off",
                 }),

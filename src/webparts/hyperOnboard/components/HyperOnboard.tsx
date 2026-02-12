@@ -46,7 +46,7 @@ var HyperOnboardInner: React.FC<IHyperOnboardComponentProps> = function (props) 
 
   // Auto-open wizard on first load
   React.useEffect(function () {
-    if (props.isEditMode && !props.wizardCompleted) {
+    if (!props.isEditMode && !props.wizardCompleted) {
       openWizard();
     }
   }, [props.isEditMode, props.wizardCompleted]);

@@ -207,15 +207,12 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
   var demoVideo = demoVideoState[0];
   var setDemoVideo = demoVideoState[1];
 
-  // Auto-open wizard on first use in edit mode
+  // Auto-open wizard in read mode when not yet completed
   React.useEffect(function () {
-    if (isEditMode && !wizardCompleted && slides && slides.length === 1) {
-      const firstSlide = slides[0];
-      if (firstSlide && firstSlide.id === "default-1") {
-        setShowWizard(true);
-      }
+    if (!isEditMode && !wizardCompleted) {
+      setShowWizard(true);
     }
-  }, [isEditMode, wizardCompleted, slides]);
+  }, [isEditMode, wizardCompleted]);
 
   // ── Wizard callbacks ──
   const handleWizardClose = React.useCallback(function () {

@@ -104,9 +104,9 @@ const HyperDirectoryInner: React.FC<IHyperDirectoryComponentProps> = function (p
   // Show demo bar when sample data is active AND not in edit mode
   var showDemoBar = !!props.useSampleData && !props.isEditMode;
 
-  // Auto-open wizard on first load when not yet configured
+  // Auto-open wizard in read mode when not yet completed
   React.useEffect(function () {
-    if (props.isEditMode && !props.wizardCompleted) {
+    if (!props.isEditMode && !props.wizardCompleted) {
       openWizard();
     }
   }, [props.isEditMode, props.wizardCompleted]);

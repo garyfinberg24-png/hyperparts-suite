@@ -105,7 +105,7 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
 
   // Auto-open wizard on first load when not yet configured
   React.useEffect(function () {
-    if (props.isEditMode && !props.wizardCompleted) {
+    if (!props.isEditMode && !props.wizardCompleted) {
       openWizard();
     }
   }, [props.isEditMode, props.wizardCompleted]);

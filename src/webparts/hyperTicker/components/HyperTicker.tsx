@@ -141,7 +141,7 @@ const HyperTickerInner: React.FC<IHyperTickerComponentProps> = function (props) 
 
   // Show wizard on first load if configured and not yet completed
   React.useEffect(function () {
-    if (props.isEditMode && !props.wizardCompleted) {
+    if (!props.isEditMode && !props.wizardCompleted) {
       setWizardOpen(true);
     }
   }, [props.isEditMode, props.wizardCompleted]);

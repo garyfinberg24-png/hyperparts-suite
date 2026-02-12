@@ -11,7 +11,7 @@ import {
 
 import * as strings from "HyperHeroWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
-import { createGroupHeaderField } from "../../common/propertyPane";
+import { createGroupHeaderField, createQuickActionsGroup } from "../../common/propertyPane";
 import HyperHero from "./components/HyperHero";
 import type { IHyperHeroComponentProps } from "./components/HyperHero";
 import type { IHyperHeroWebPartProps, IHyperHeroSlide } from "./models";
@@ -83,7 +83,7 @@ export default class HyperHeroWebPart extends BaseHyperWebPart<IHyperHeroWebPart
       this.properties.wizardCompleted = false;
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = true;
+      this.properties.enableDemoMode = false;
     }
   }
 
@@ -102,6 +102,11 @@ export default class HyperHeroWebPart extends BaseHyperWebPart<IHyperHeroWebPart
         {
           header: { description: strings.PropertyPaneDescription },
           groups: [
+            createQuickActionsGroup({
+              onReopenWizard: this._handleReopenWizard.bind(this),
+              onEditInEditor: this._handleEditInEditor.bind(this),
+              onToggleDemoMode: this._handleToggleDemoMode.bind(this),
+            }),
             {
               groupName: strings.LayoutGroupName,
               groupFields: [

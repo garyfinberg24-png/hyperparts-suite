@@ -14,7 +14,7 @@ import {
 
 import * as strings from "HyperTickerWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
-import { createGroupHeaderField } from "../../common/propertyPane";
+import { createGroupHeaderField, createQuickActionsGroup } from "../../common/propertyPane";
 import HyperTicker from "./components/HyperTicker";
 import type { IHyperTickerComponentProps } from "./components/HyperTicker";
 import type { IHyperTickerWebPartProps } from "./models";
@@ -123,7 +123,7 @@ export default class HyperTickerWebPart extends BaseHyperWebPart<IHyperTickerWeb
       this.properties.enableCopy = false;
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = true;
+      this.properties.enableDemoMode = false;
     }
     if (this.properties.useSampleData === undefined) {
       this.properties.useSampleData = true;
@@ -192,6 +192,11 @@ export default class HyperTickerWebPart extends BaseHyperWebPart<IHyperTickerWeb
         {
           header: { description: strings.PropertyPaneDescription },
           groups: [
+            createQuickActionsGroup({
+              onReopenWizard: this._handleReopenWizard.bind(this),
+              onEditInEditor: this._handleEditInEditor.bind(this),
+              onToggleDemoMode: this._handleToggleDemoMode.bind(this),
+            }),
             {
               groupName: strings.ContentSourcesGroupName,
               groupFields: [
@@ -279,9 +284,6 @@ export default class HyperTickerWebPart extends BaseHyperWebPart<IHyperTickerWeb
                 }),
                 PropertyPaneToggle("enableAnalytics", {
                   label: strings.EnableAnalyticsFieldLabel,
-                }),
-                PropertyPaneToggle("enableDemoMode", {
-                  label: strings.EnableDemoModeFieldLabel,
                 }),
               ],
             },

@@ -304,7 +304,7 @@ const HyperChartsInner: React.FC<IHyperChartsComponentProps> = function (props) 
 
   // Auto-open wizard on first load when wizardCompleted is false
   React.useEffect(function () {
-    if (props.isEditMode && !props.wizardCompleted) {
+    if (!props.isEditMode && !props.wizardCompleted) {
       store.openWizard();
     }
   }, [props.isEditMode, props.wizardCompleted]);

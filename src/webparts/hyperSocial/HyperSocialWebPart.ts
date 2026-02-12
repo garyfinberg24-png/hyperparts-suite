@@ -14,7 +14,7 @@ import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
 import HyperSocial from "./components/HyperSocial";
 import type { IHyperSocialComponentProps } from "./components/HyperSocial";
 import type { IHyperSocialWebPartProps } from "./models";
-import { createGroupHeaderField } from "../../common/propertyPane";
+import { createGroupHeaderField, createQuickActionsGroup } from "../../common/propertyPane";
 
 export default class HyperSocialWebPart extends BaseHyperWebPart<IHyperSocialWebPartProps> {
 
@@ -103,7 +103,7 @@ export default class HyperSocialWebPart extends BaseHyperWebPart<IHyperSocialWeb
       this.properties.wizardCompleted = false;
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = true;
+      this.properties.enableDemoMode = false;
     }
   }
 
@@ -122,6 +122,11 @@ export default class HyperSocialWebPart extends BaseHyperWebPart<IHyperSocialWeb
         {
           header: { description: strings.PropertyPaneDescription },
           groups: [
+            createQuickActionsGroup({
+              onReopenWizard: this._handleReopenWizard.bind(this),
+              onEditInEditor: this._handleEditInEditor.bind(this),
+              onToggleDemoMode: this._handleToggleDemoMode.bind(this),
+            }),
             {
               groupName: strings.ContentGroupName,
               groupFields: [

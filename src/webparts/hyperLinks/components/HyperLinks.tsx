@@ -209,7 +209,7 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
 
   // Auto-open wizard on first load when not yet configured
   React.useEffect(function () {
-    if (props.isEditMode && !props.wizardCompleted) {
+    if (!props.isEditMode && !props.wizardCompleted) {
       openWizard();
     }
   }, [props.isEditMode, props.wizardCompleted]);

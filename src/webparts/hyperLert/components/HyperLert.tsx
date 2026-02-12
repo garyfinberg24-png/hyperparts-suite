@@ -138,7 +138,7 @@ var HyperLertInner: React.FC<IHyperLertComponentProps> = function (props) {
 
   // Auto-open wizard on first load if in edit mode and not yet completed
   React.useEffect(function () {
-    if (props.isEditMode && !props.wizardCompleted) {
+    if (!props.isEditMode && !props.wizardCompleted) {
       setWizardOpen(true);
     }
   }, [props.isEditMode, props.wizardCompleted]);

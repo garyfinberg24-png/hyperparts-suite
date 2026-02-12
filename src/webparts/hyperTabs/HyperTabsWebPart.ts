@@ -17,7 +17,7 @@ import {
 
 import * as strings from "HyperTabsWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
-import { createGroupHeaderField } from "../../common/propertyPane";
+import { createGroupHeaderField, createQuickActionsGroup } from "../../common/propertyPane";
 import HyperTabs from "./components/HyperTabs";
 import type { IHyperTabsComponentProps } from "./components/HyperTabs";
 import type { IHyperTabsWebPartProps, IHyperTabPanel } from "./models";
@@ -102,7 +102,7 @@ export default class HyperTabsWebPart extends BaseHyperWebPart<IHyperTabsWebPart
       this.properties.animationEnabled = true;
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = true;
+      this.properties.enableDemoMode = false;
     }
     if (this.properties.wizardCompleted === undefined) {
       this.properties.wizardCompleted = false;
@@ -351,6 +351,11 @@ export default class HyperTabsWebPart extends BaseHyperWebPart<IHyperTabsWebPart
         {
           header: { description: strings.PropertyPaneDescription },
           groups: [
+            createQuickActionsGroup({
+              onReopenWizard: this._handleReopenWizard.bind(this),
+              onEditInEditor: this._handleEditInEditor.bind(this),
+              onToggleDemoMode: this._handleToggleDemoMode.bind(this),
+            }),
             {
               groupName: strings.LayoutGroupName,
               groupFields: [
@@ -445,9 +450,6 @@ export default class HyperTabsWebPart extends BaseHyperWebPart<IHyperTabsWebPart
                 PropertyPaneToggle("wizardLinearMode", {
                   label: strings.WizardLinearModeLabel,
                   disabled: this.properties.displayMode !== "wizard",
-                }),
-                PropertyPaneToggle("enableDemoMode", {
-                  label: strings.EnableDemoModeLabel,
                 }),
               ],
             },

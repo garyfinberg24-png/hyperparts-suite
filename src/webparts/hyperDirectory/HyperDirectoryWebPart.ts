@@ -11,7 +11,7 @@ import {
 
 import * as strings from "HyperDirectoryWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
-import { createGroupHeaderField } from "../../common/propertyPane";
+import { createGroupHeaderField, createQuickActionsGroup } from "../../common/propertyPane";
 import HyperDirectory from "./components/HyperDirectory";
 import type { IHyperDirectoryComponentProps } from "./components/HyperDirectory";
 import type { IHyperDirectoryWebPartProps } from "./models";
@@ -155,7 +155,7 @@ export default class HyperDirectoryWebPart extends BaseHyperWebPart<IHyperDirect
       this.properties.useSampleData = true;
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = true;
+      this.properties.enableDemoMode = false;
     }
   }
 
@@ -174,6 +174,11 @@ export default class HyperDirectoryWebPart extends BaseHyperWebPart<IHyperDirect
         {
           header: { description: strings.LayoutPageDescription },
           groups: [
+            createQuickActionsGroup({
+              onReopenWizard: this._handleReopenWizard.bind(this),
+              onEditInEditor: this._handleEditInEditor.bind(this),
+              onToggleDemoMode: this._handleToggleDemoMode.bind(this),
+            }),
             {
               groupName: strings.LayoutGroupName,
               groupFields: [

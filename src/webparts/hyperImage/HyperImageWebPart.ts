@@ -41,7 +41,7 @@ import HyperImage from "./components/HyperImage";
 import type { IHyperImageComponentProps } from "./components/HyperImage";
 import type { IEditorChanges } from "./components/editor";
 import type { IPresetLayout } from "./models/IHyperImagePresetLayout";
-import { createGroupHeaderField, createColorPickerField } from "../../common/propertyPane";
+import { createGroupHeaderField, createColorPickerField, createQuickActionsGroup } from "../../common/propertyPane";
 
 export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPartProps> {
 
@@ -62,7 +62,7 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
     if (p.useSampleData === undefined) p.useSampleData = true;
 
     // Demo mode
-    if (p.enableDemoMode === undefined) p.enableDemoMode = true;
+    if (p.enableDemoMode === undefined) p.enableDemoMode = false;
 
     // Image source
     if (p.imageUrl === undefined) p.imageUrl = "";
@@ -289,6 +289,11 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
         {
           header: { description: "Configure image source and shape" },
           groups: [
+            createQuickActionsGroup({
+              onReopenWizard: this._handleReopenWizard.bind(this),
+              onEditInEditor: this._handleEditInEditor.bind(this),
+              onToggleDemoMode: this._handleToggleDemoMode.bind(this),
+            }),
             {
               groupName: strings.ImageSourceGroupName,
               groupFields: [
@@ -308,17 +313,6 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
                   disabled: this.properties.isDecorative,
                 }),
                 PropertyPaneToggle("isDecorative", { label: strings.IsDecorativeLabel, onText: "Yes", offText: "No" }),
-              ],
-            },
-            {
-              groupName: strings.DemoModeGroupName,
-              groupFields: [
-                createGroupHeaderField("_demoModeHeader", { icon: "\u2699\uFE0F", title: "Demo Mode", subtitle: "Demo controls", color: "orange" }),
-                PropertyPaneToggle("enableDemoMode", {
-                  label: strings.DemoModeLabel,
-                  onText: "On",
-                  offText: "Off",
-                }),
               ],
             },
             {

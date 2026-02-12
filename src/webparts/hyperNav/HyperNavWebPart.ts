@@ -17,7 +17,7 @@ import {
 
 import * as strings from "HyperNavWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
-import { createGroupHeaderField, createAccordionField } from "../../common/propertyPane";
+import { createGroupHeaderField, createAccordionField, createQuickActionsGroup } from "../../common/propertyPane";
 import type { IAccordionItem, IAccordionField } from "../../common/propertyPane";
 import HyperNav from "./components/HyperNav";
 import type { IHyperNavComponentProps } from "./components/HyperNav";
@@ -138,7 +138,7 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
       this.properties.useSampleData = true;
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = true;
+      this.properties.enableDemoMode = false;
     }
     if (this.properties.enableStickyNav === undefined) {
       this.properties.enableStickyNav = false;
@@ -530,6 +530,11 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
         {
           header: { description: strings.PropertyPaneDescription },
           groups: [
+            createQuickActionsGroup({
+              onReopenWizard: this._handleReopenWizard.bind(this),
+              onEditInEditor: this._handleEditInEditor.bind(this),
+              onToggleDemoMode: this._handleToggleDemoMode.bind(this),
+            }),
             {
               groupName: strings.LayoutGroupName,
               groupFields: [
@@ -681,9 +686,6 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
                 PropertyPaneHorizontalRule(),
                 PropertyPaneToggle("useSampleData", {
                   label: strings.UseSampleDataLabel,
-                }),
-                PropertyPaneToggle("enableDemoMode", {
-                  label: strings.EnableDemoModeLabel,
                 }),
               ],
             },

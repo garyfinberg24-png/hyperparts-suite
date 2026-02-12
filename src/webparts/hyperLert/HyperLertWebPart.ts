@@ -12,7 +12,7 @@ import {
 
 import * as strings from "HyperLertWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
-import { createGroupHeaderField } from "../../common/propertyPane";
+import { createGroupHeaderField, createQuickActionsGroup } from "../../common/propertyPane";
 import HyperLert from "./components/HyperLert";
 import type { IHyperLertComponentProps } from "./components/HyperLert";
 import type { IHyperLertWebPartProps } from "./models";
@@ -157,7 +157,7 @@ export default class HyperLertWebPart extends BaseHyperWebPart<IHyperLertWebPart
       this.properties.wizardCompleted = false;
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = true;
+      this.properties.enableDemoMode = false;
     }
   }
 
@@ -178,6 +178,11 @@ export default class HyperLertWebPart extends BaseHyperWebPart<IHyperLertWebPart
         {
           header: { description: strings.PropertyPaneDescription },
           groups: [
+            createQuickActionsGroup({
+              onReopenWizard: this._handleReopenWizard.bind(this),
+              onEditInEditor: this._handleEditInEditor.bind(this),
+              onToggleDemoMode: this._handleToggleDemoMode.bind(this),
+            }),
             {
               groupName: strings.RulesGroupName,
               groupFields: [

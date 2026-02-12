@@ -16,7 +16,7 @@ import {
 
 import * as strings from "HyperChartsWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
-import { createGroupHeaderField } from "../../common/propertyPane";
+import { createGroupHeaderField, createQuickActionsGroup } from "../../common/propertyPane";
 import HyperCharts from "./components/HyperCharts";
 import type { IHyperChartsComponentProps } from "./components/HyperCharts";
 import type { IHyperChartsWebPartProps, IHyperChart, ChartKind, MetricDisplayType } from "./models";
@@ -112,7 +112,7 @@ export default class HyperChartsWebPart extends BaseHyperWebPart<IHyperChartsWeb
       this.properties.useSampleData = true;
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = true;
+      this.properties.enableDemoMode = false;
     }
   }
 
@@ -553,6 +553,11 @@ export default class HyperChartsWebPart extends BaseHyperWebPart<IHyperChartsWeb
         {
           header: { description: strings.PropertyPaneDescription },
           groups: [
+            createQuickActionsGroup({
+              onReopenWizard: this._handleReopenWizard.bind(this),
+              onEditInEditor: this._handleEditInEditor.bind(this),
+              onToggleDemoMode: this._handleToggleDemoMode.bind(this),
+            }),
             {
               groupName: strings.LayoutGroupName,
               groupFields: [
@@ -583,9 +588,6 @@ export default class HyperChartsWebPart extends BaseHyperWebPart<IHyperChartsWeb
                 }),
                 PropertyPaneToggle("useSampleData", {
                   label: strings.UseSampleDataLabel,
-                }),
-                PropertyPaneToggle("enableDemoMode", {
-                  label: strings.DemoModeLabel,
                 }),
               ],
             },

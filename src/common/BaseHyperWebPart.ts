@@ -24,4 +24,28 @@ export abstract class BaseHyperWebPart<T extends IBaseHyperWebPartProps> extends
       customCssClass: "",
     };
   }
+
+  /** Resets wizardCompleted so wizard reopens on next published view */
+  protected _handleReopenWizard(): string {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (this.properties as any).wizardCompleted = false;
+    this.render();
+    return "";
+  }
+
+  /** Toggles enableDemoMode on/off */
+  protected _handleToggleDemoMode(): string {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    var props = this.properties as any;
+    props.enableDemoMode = !props.enableDemoMode;
+    this.render();
+    this.context.propertyPane.refresh();
+    return "";
+  }
+
+  /** Placeholder for Edit in Editor — opens property pane for now */
+  protected _handleEditInEditor(): string {
+    this.context.propertyPane.open();
+    return "";
+  }
 }

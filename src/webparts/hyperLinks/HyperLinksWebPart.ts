@@ -17,7 +17,7 @@ import {
 
 import * as strings from "HyperLinksWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
-import { createGroupHeaderField, createAccordionField, createColorPickerField } from "../../common/propertyPane";
+import { createGroupHeaderField, createAccordionField, createColorPickerField, createQuickActionsGroup } from "../../common/propertyPane";
 import type { IAccordionItem, IAccordionField } from "../../common/propertyPane";
 import HyperLinks from "./components/HyperLinks";
 import type { IHyperLinksComponentProps } from "./components/HyperLinks";
@@ -176,7 +176,7 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
       this.properties.useSampleData = true;
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = true;
+      this.properties.enableDemoMode = false;
     }
   }
 
@@ -939,6 +939,11 @@ export default class HyperLinksWebPart extends BaseHyperWebPart<IHyperLinksWebPa
         {
           header: { description: strings.PropertyPaneDescription },
           groups: [
+            createQuickActionsGroup({
+              onReopenWizard: this._handleReopenWizard.bind(this),
+              onEditInEditor: this._handleEditInEditor.bind(this),
+              onToggleDemoMode: this._handleToggleDemoMode.bind(this),
+            }),
             {
               groupName: strings.LayoutGroupName,
               groupFields: page1Fields,

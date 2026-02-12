@@ -17,7 +17,7 @@ import {
 
 import * as strings from "HyperPollWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
-import { createGroupHeaderField } from "../../common/propertyPane";
+import { createGroupHeaderField, createQuickActionsGroup } from "../../common/propertyPane";
 import HyperPoll from "./components/HyperPoll";
 import type { IHyperPollComponentProps } from "./components/HyperPoll";
 import type { IHyperPollWebPartProps, IHyperPoll, IPollQuestion, IPollOption } from "./models";
@@ -139,7 +139,7 @@ export default class HyperPollWebPart extends BaseHyperWebPart<IHyperPollWebPart
       this.properties.useSampleData = true;
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = true;
+      this.properties.enableDemoMode = false;
     }
     if (this.properties.wizardCompleted === undefined) {
       this.properties.wizardCompleted = false;
@@ -710,6 +710,11 @@ export default class HyperPollWebPart extends BaseHyperWebPart<IHyperPollWebPart
         {
           header: { description: strings.PropertyPaneDescription },
           groups: [
+            createQuickActionsGroup({
+              onReopenWizard: this._handleReopenWizard.bind(this),
+              onEditInEditor: this._handleEditInEditor.bind(this),
+              onToggleDemoMode: this._handleToggleDemoMode.bind(this),
+            }),
             {
               groupName: strings.GeneralGroupName,
               groupFields: [
@@ -774,9 +779,6 @@ export default class HyperPollWebPart extends BaseHyperWebPart<IHyperPollWebPart
                 }),
                 PropertyPaneToggle("useSampleData", {
                   label: strings.UseSampleDataLabel,
-                }),
-                PropertyPaneToggle("enableDemoMode", {
-                  label: strings.EnableDemoModeLabel,
                 }),
               ],
             },

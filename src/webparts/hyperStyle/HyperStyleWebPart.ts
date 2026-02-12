@@ -21,7 +21,7 @@ import {
   ALL_HEADER_STYLES, getHeaderStyleDisplayName,
   ALL_FOOTER_STYLES, getFooterStyleDisplayName,
 } from "./models";
-import { createGroupHeaderField } from "../../common/propertyPane";
+import { createGroupHeaderField, createQuickActionsGroup } from "../../common/propertyPane";
 
 export default class HyperStyleWebPart extends BaseHyperWebPart<IHyperStyleWebPartProps> {
 
@@ -131,7 +131,7 @@ export default class HyperStyleWebPart extends BaseHyperWebPart<IHyperStyleWebPa
     // Wizard state
     if (p.wizardCompleted === undefined) { p.wizardCompleted = false; }
     if (p.showWizardOnInit === undefined) { p.showWizardOnInit = true; }
-    if (p.enableDemoMode === undefined) { p.enableDemoMode = true; }
+    if (p.enableDemoMode === undefined) { p.enableDemoMode = false; }
     // Template
     if (p.selectedTemplate === undefined) { p.selectedTemplate = ""; }
     // Branding
@@ -248,6 +248,11 @@ export default class HyperStyleWebPart extends BaseHyperWebPart<IHyperStyleWebPa
         {
           header: { description: strings.PropertyPaneDescription },
           groups: [
+            createQuickActionsGroup({
+              onReopenWizard: this._handleReopenWizard.bind(this),
+              onEditInEditor: this._handleEditInEditor.bind(this),
+              onToggleDemoMode: this._handleToggleDemoMode.bind(this),
+            }),
             {
               groupName: strings.BrandingGroupName,
               groupFields: [
@@ -520,9 +525,6 @@ export default class HyperStyleWebPart extends BaseHyperWebPart<IHyperStyleWebPa
                 }),
                 PropertyPaneTextField("gradientTextColor2", {
                   label: "Gradient Color 2",
-                }),
-                PropertyPaneToggle("enableDemoMode", {
-                  label: "Enable Demo Mode",
                 }),
                 PropertyPaneToggle("showWizardOnInit", {
                   label: "Show Wizard on First Load",

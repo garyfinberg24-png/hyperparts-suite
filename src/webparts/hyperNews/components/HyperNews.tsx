@@ -88,7 +88,7 @@ const HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
   var setWizardOpen = wizardOpenState[1];
 
   React.useEffect(function () {
-    if (props.isEditMode && !props.wizardCompleted) {
+    if (!props.isEditMode && !props.wizardCompleted) {
       setWizardOpen(true);
     }
   }, [props.isEditMode, props.wizardCompleted]);
@@ -180,9 +180,9 @@ const HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
   const openWizard = storeState.openWizard;
   const closeWizard = storeState.closeWizard;
 
-  // Auto-open wizard on first load in edit mode when not yet completed
+  // Auto-open wizard in read mode when not yet completed
   useEffect(function () {
-    if (props.isEditMode && !props.wizardCompleted) {
+    if (!props.isEditMode && !props.wizardCompleted) {
       openWizard();
     }
   }, [props.isEditMode, props.wizardCompleted]);

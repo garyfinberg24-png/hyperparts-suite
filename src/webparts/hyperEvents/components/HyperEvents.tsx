@@ -55,7 +55,7 @@ const HyperEventsInner: React.FC<IHyperEventsComponentProps> = function (props) 
 
   // Auto-open wizard on first load when wizard not yet completed
   React.useEffect(function () {
-    if (props.isEditMode && !props.wizardCompleted) {
+    if (!props.isEditMode && !props.wizardCompleted) {
       store.openWizard();
     }
   }, [props.isEditMode, props.wizardCompleted]);
@@ -409,7 +409,7 @@ const HyperEvents: React.FC<IHyperEventsComponentProps> = function (props) {
   var setWizardOpen = wizardOpenState[1];
 
   React.useEffect(function () {
-    if (props.isEditMode && !props.wizardCompleted) {
+    if (!props.isEditMode && !props.wizardCompleted) {
       setWizardOpen(true);
     }
   }, [props.isEditMode, props.wizardCompleted]);

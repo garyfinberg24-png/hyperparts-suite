@@ -14,7 +14,7 @@ import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
 import HyperOnboard from "./components/HyperOnboard";
 import type { IHyperOnboardComponentProps } from "./components/HyperOnboard";
 import type { IHyperOnboardWebPartProps } from "./models";
-import { createGroupHeaderField } from "../../common/propertyPane";
+import { createGroupHeaderField, createQuickActionsGroup } from "../../common/propertyPane";
 
 export default class HyperOnboardWebPart extends BaseHyperWebPart<IHyperOnboardWebPartProps> {
 
@@ -97,7 +97,7 @@ export default class HyperOnboardWebPart extends BaseHyperWebPart<IHyperOnboardW
       this.properties.wizardCompleted = false;
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = true;
+      this.properties.enableDemoMode = false;
     }
   }
 
@@ -116,6 +116,11 @@ export default class HyperOnboardWebPart extends BaseHyperWebPart<IHyperOnboardW
         {
           header: { description: strings.PropertyPaneDescription },
           groups: [
+            createQuickActionsGroup({
+              onReopenWizard: this._handleReopenWizard.bind(this),
+              onEditInEditor: this._handleEditInEditor.bind(this),
+              onToggleDemoMode: this._handleToggleDemoMode.bind(this),
+            }),
             {
               groupName: strings.ContentGroupName,
               groupFields: [

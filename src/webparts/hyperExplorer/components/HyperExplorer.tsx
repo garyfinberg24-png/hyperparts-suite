@@ -44,7 +44,7 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
 
   // Auto-open wizard on first load when wizard not yet completed
   React.useEffect(function () {
-    if (props.isEditMode && !props.wizardCompleted) {
+    if (!props.isEditMode && !props.wizardCompleted) {
       store.openWizard();
     }
   }, [props.isEditMode, props.wizardCompleted]);

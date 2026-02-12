@@ -11,7 +11,7 @@ import {
 
 import * as strings from "HyperRollupWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
-import { createGroupHeaderField } from "../../common/propertyPane";
+import { createGroupHeaderField, createQuickActionsGroup } from "../../common/propertyPane";
 import HyperRollup from "./components/HyperRollup";
 import type { IHyperRollupComponentProps } from "./components/HyperRollup";
 import type { IHyperRollupWebPartProps } from "./models";
@@ -149,7 +149,7 @@ export default class HyperRollupWebPart extends BaseHyperWebPart<IHyperRollupWeb
       this.properties.newBadgeDays = 0;
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = true;
+      this.properties.enableDemoMode = false;
     }
     if (this.properties.useSampleData === undefined) {
       this.properties.useSampleData = true;
@@ -201,6 +201,11 @@ export default class HyperRollupWebPart extends BaseHyperWebPart<IHyperRollupWeb
         {
           header: { description: strings.PropertyPaneDescription },
           groups: [
+            createQuickActionsGroup({
+              onReopenWizard: this._handleReopenWizard.bind(this),
+              onEditInEditor: this._handleEditInEditor.bind(this),
+              onToggleDemoMode: this._handleToggleDemoMode.bind(this),
+            }),
             {
               groupName: strings.BasicGroupName,
               groupFields: [
@@ -388,9 +393,6 @@ export default class HyperRollupWebPart extends BaseHyperWebPart<IHyperRollupWeb
                   min: 0,
                   max: 90,
                   step: 1,
-                }),
-                PropertyPaneToggle("enableDemoMode", {
-                  label: strings.EnableDemoModeLabel,
                 }),
                 PropertyPaneDropdown("demoPresetId", {
                   label: strings.DemoPresetLabel,

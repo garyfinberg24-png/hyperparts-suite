@@ -13,7 +13,7 @@ import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
 import HyperFlow from "./components/HyperFlow";
 import type { IHyperFlowComponentProps } from "./components/HyperFlow";
 import type { IHyperFlowWebPartProps } from "./models";
-import { createGroupHeaderField } from "../../common/propertyPane";
+import { createGroupHeaderField, createQuickActionsGroup } from "../../common/propertyPane";
 
 export default class HyperFlowWebPart extends BaseHyperWebPart<IHyperFlowWebPartProps> {
 
@@ -87,7 +87,7 @@ export default class HyperFlowWebPart extends BaseHyperWebPart<IHyperFlowWebPart
       this.properties.wizardCompleted = false;
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = true;
+      this.properties.enableDemoMode = false;
     }
   }
 
@@ -106,6 +106,11 @@ export default class HyperFlowWebPart extends BaseHyperWebPart<IHyperFlowWebPart
         {
           header: { description: strings.PropertyPaneDescription },
           groups: [
+            createQuickActionsGroup({
+              onReopenWizard: this._handleReopenWizard.bind(this),
+              onEditInEditor: this._handleEditInEditor.bind(this),
+              onToggleDemoMode: this._handleToggleDemoMode.bind(this),
+            }),
             {
               groupName: strings.ContentGroupName,
               groupFields: [
@@ -195,9 +200,6 @@ export default class HyperFlowWebPart extends BaseHyperWebPart<IHyperFlowWebPart
                 }),
                 PropertyPaneToggle("showConnectorLabels", {
                   label: strings.ShowConnectorLabelsFieldLabel,
-                }),
-                PropertyPaneToggle("enableDemoMode", {
-                  label: strings.EnableDemoModeFieldLabel,
                 }),
               ],
             },

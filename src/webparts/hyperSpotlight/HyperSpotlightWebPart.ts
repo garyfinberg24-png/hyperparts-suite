@@ -11,7 +11,7 @@ import {
 
 import * as strings from "HyperSpotlightWebPartStrings";
 import { BaseHyperWebPart } from "../../common/BaseHyperWebPart";
-import { createGroupHeaderField } from "../../common/propertyPane";
+import { createGroupHeaderField, createQuickActionsGroup } from "../../common/propertyPane";
 import type { IHyperSpotlightWebPartProps } from "./models";
 import {
   SelectionMode,
@@ -135,7 +135,7 @@ export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotli
     if (p.wallOfFameSettings === undefined) {
       p.wallOfFameSettings = JSON.stringify({ columns: 3, showConfetti: true, cycleInterval: 10 });
     }
-    if (p.enableDemoMode === undefined) p.enableDemoMode = true;
+    if (p.enableDemoMode === undefined) p.enableDemoMode = false;
     if (p.wizardCompleted === undefined) p.wizardCompleted = false;
   }
 
@@ -175,6 +175,11 @@ export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotli
         {
           header: { description: "Configure data source and layout" },
           groups: [
+            createQuickActionsGroup({
+              onReopenWizard: this._handleReopenWizard.bind(this),
+              onEditInEditor: this._handleEditInEditor.bind(this),
+              onToggleDemoMode: this._handleToggleDemoMode.bind(this),
+            }),
             {
               groupName: strings.DataSourceGroupName,
               groupFields: [
@@ -295,7 +300,6 @@ export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotli
                 createGroupHeaderField("_runtimeFeaturesHeader", { icon: "\u2699\uFE0F", title: "Runtime Features", subtitle: "End-user controls", color: "orange" }),
                 PropertyPaneToggle("showRuntimeViewSwitcher", { label: strings.ShowRuntimeViewSwitcherLabel, onText: "On", offText: "Off" }),
                 PropertyPaneToggle("showRuntimeDepartmentFilter", { label: strings.ShowRuntimeDepartmentFilterLabel, onText: "On", offText: "Off" }),
-                PropertyPaneToggle("enableDemoMode", { label: strings.EnableDemoModeLabel, onText: "On", offText: "Off" }),
               ],
             },
             {

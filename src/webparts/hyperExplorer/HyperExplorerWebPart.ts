@@ -14,7 +14,7 @@ import HyperExplorer from "./components/HyperExplorer";
 import type { IHyperExplorerComponentProps } from "./components/HyperExplorer";
 import type { IHyperExplorerWebPartProps } from "./models";
 import { VIEW_MODE_OPTIONS, SORT_MODE_OPTIONS, PREVIEW_MODE_OPTIONS } from "./models";
-import { createGroupHeaderField } from "../../common/propertyPane";
+import { createGroupHeaderField, createQuickActionsGroup } from "../../common/propertyPane";
 
 export default class HyperExplorerWebPart extends BaseHyperWebPart<IHyperExplorerWebPartProps> {
 
@@ -151,7 +151,7 @@ export default class HyperExplorerWebPart extends BaseHyperWebPart<IHyperExplore
       this.properties.wizardCompleted = false;
     }
     if (this.properties.enableDemoMode === undefined) {
-      this.properties.enableDemoMode = true;
+      this.properties.enableDemoMode = false;
     }
   }
 
@@ -170,6 +170,11 @@ export default class HyperExplorerWebPart extends BaseHyperWebPart<IHyperExplore
         {
           header: { description: strings.PropertyPaneDescription },
           groups: [
+            createQuickActionsGroup({
+              onReopenWizard: this._handleReopenWizard.bind(this),
+              onEditInEditor: this._handleEditInEditor.bind(this),
+              onToggleDemoMode: this._handleToggleDemoMode.bind(this),
+            }),
             {
               groupName: strings.GeneralGroupName,
               groupFields: [
