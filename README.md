@@ -45,9 +45,10 @@ src/
 │   │   └── HyperImageBrowser    # SP image library browser
 │   ├── propertyPane/              # Shared property pane components
 │   │   ├── HyperPropertyPaneGroupHeader  # Color-coded group headers
-│   │   ├── HyperPropertyPaneAccordion    # Collapsible item editor
+│   │   ├── HyperPropertyPaneAccordion    # Collapsible item editor (text/url/dropdown/toggle/color)
 │   │   ├── createGroupHeaderField.ts     # SPFx custom field helper
-│   │   └── createAccordionField.ts       # SPFx accordion field helper
+│   │   ├── createAccordionField.ts       # SPFx accordion field helper
+│   │   └── createColorPickerField.ts     # SPFx color picker field (swatch + hex)
 │   └── models/                    # Shared TypeScript interfaces
 └── webparts/
     ├── hyperHero/                 # Hero banners (12 features)
@@ -55,17 +56,17 @@ src/
     ├── hyperSpotlight/            # Employee spotlight (6 layouts, 7 categories)
     ├── hyperProfile/              # User profile card (7 templates, 9 actions)
     ├── hyperTabs/                 # Tab/accordion/wizard container (12 features)
-    ├── hyperDirectory/            # Employee directory with RollerDex (14 features)
+    ├── hyperDirectory/            # Employee directory with RollerDex (14 features, 12 card presets)
     ├── hyperRollup/               # Cross-site content rollup (15 features)
     ├── hyperNav/                  # Navigation & quick links (13 features, 8 layouts)
     ├── hyperEvents/               # Calendar & events (13 features, 6 views)
     ├── hyperPoll/                 # In-page polling & voting (12 features, 6 question types)
     ├── hyperSearch/               # Federated search (8 features, 5 result types)
-    ├── hyperLinks/                # Enhanced Quick Links (12 features, 8 layouts)
-    ├── hyperCharts/               # BI/Analytics dashboard (15 features, 6 chart types)
+    ├── hyperLinks/                # Enhanced Quick Links (8 layouts, 5 text positions, 5 shapes, 12 style presets)
+    ├── hyperCharts/               # BI/Analytics dashboard (6 chart types, resize handles, drag-drop reorder)
     ├── hyperLert/                 # Alerting & notifications (12 features, 4-step rule builder)
     ├── hyperTicker/               # News ticker & emergency banner (4 display modes, 3 severities)
-    ├── hyperFaq/                  # Searchable FAQ accordion (4 styles, voting, deep linking)
+    ├── hyperFaq/                  # Searchable FAQ accordion (7 layouts, voting, deep linking)
     ├── hyperBirthdays/            # Celebrations hub (8 types, 3 views, animations)
     ├── hyperExplorer/             # File/document explorer (EX1 scaffold — components TBD)
     ├── hyperImage/                # Image gallery & media display
@@ -157,6 +158,10 @@ gulp package-solution --ship  # Create .sppkg
 - [x] Edit Mode Overlay (Standard 5) — Frosted glass pill overlay for 19 web parts (HyperHero excluded)
 - [x] Styled Property Pane (Standard 6) — Color-coded group headers for all 20 WPs + accordion editor for Nav/Links
 - [x] Image Browser Consolidation (Standard 7) — Shared HyperImageBrowser moved to common components
+- [x] Color Picker Fields — Shared createColorPickerField.ts (swatch + hex input) for all color properties
+- [x] HyperCharts resize/drag — Edit-mode drag handles + resize handles for chart dashboard grid
+- [x] HyperLinks style presets — 12 world-class presets (text position, button shape, colors, effects)
+- [x] HyperDirectory card presets — 12 visual card style presets for directory cards
 
 ### Future
 
@@ -172,31 +177,32 @@ gulp package-solution --ship  # Create .sppkg
 
 ## Version History
 
-| Version | Date              | Comments                                                                                    |
-| ------- | ----------------- | ------------------------------------------------------------------------------------------- |
-| 0.0.1   | February 7, 2026  | Phase 1, Step 1: Solution scaffold + shared service layer                                   |
-| 0.0.2   | February 7, 2026  | Phase 1, Step 2: HyperHero web part (all 12 features)                                       |
-| 0.0.3   | February 7, 2026  | Phase 1, Step 3: HyperNews web part (all 14 features)                                       |
-| 0.0.4   | February 8, 2026  | Phase 1, Steps 4-5: HyperSpotlight + HyperProfile (Hyperized ports)                         |
-| 0.0.5   | February 8, 2026  | Phase 1, Step 6: HyperTabs web part (all 12 features)                                       |
-| 0.0.6   | February 8, 2026  | Phase 1, Step 7: HyperDirectory web part (all 14 features)                                  |
-| 0.0.7   | February 8, 2026  | Phase 1, Step 8: HyperRollup web part (all 15 features)                                     |
-| 0.0.8   | February 8, 2026  | Phase 2, Step 1: HyperNav web part (all 13 features, 8 layouts)                             |
-| 0.0.9   | February 8, 2026  | Phase 2, Step 2: HyperEvents web part (all 13 features, 6 views)                            |
-| 0.0.10  | February 8, 2026  | Phase 2, Step 3: HyperPoll web part (all 12 features, 3 charts)                             |
-| 0.0.11  | February 8, 2026  | Phase 2, Step 4: HyperSearch web part (8 features, federated search)                        |
-| 0.0.12  | February 8, 2026  | Phase 2, Step 5: HyperLinks web part (12 features, 8 layouts)                               |
-| 0.0.13  | February 8, 2026  | Phase 2, Step 6: HyperCharts web part (15 features, 6 chart types)                          |
-| 0.0.14  | February 8, 2026  | Phase 2, Step 7: HyperLert web part (12 features, rule builder)                             |
-| 0.0.15  | February 8, 2026  | Phase 3: HyperTicker + HyperFAQ + HyperBirthdays (3 web parts)                              |
-| 0.0.16  | February 8, 2026  | Phase 3, Step 4: HyperSlider (layer-based slider, 78 files)                                 |
-| 0.0.17  | February 9, 2026  | HyperExplorer EX1 scaffold + HyperHero V2 editor + DWx splash screens                       |
-| 0.0.18  | February 9, 2026  | Production .sppkg build (19 web parts)                                                      |
-| 0.0.19  | February 9, 2026  | HyperImage + HyperStyle + HyperProfile V2 + HyperSearch V2 + HyperLert V2                   |
-| 0.0.20  | February 9, 2026  | Bug fixes + new features across 17 web parts (82 files)                                     |
-| 0.0.21  | February 11, 2026 | DemoBar Rich Panel 20/20, wizard Pattern B 20/20, HyperSlider removed, sample data wired    |
-| 0.0.22  | February 11, 2026 | enableDemoMode=true default 20/20, wizardCompleted standardized, demoMode renamed           |
-| 0.0.23  | February 12, 2026 | Standards 5-7: edit overlay, styled property pane, image browser consolidation (57 files)   |
+| Version | Date              | Comments                                                                                      |
+| ------- | ----------------- | --------------------------------------------------------------------------------------------- |
+| 0.0.1   | February 7, 2026  | Phase 1, Step 1: Solution scaffold + shared service layer                                     |
+| 0.0.2   | February 7, 2026  | Phase 1, Step 2: HyperHero web part (all 12 features)                                         |
+| 0.0.3   | February 7, 2026  | Phase 1, Step 3: HyperNews web part (all 14 features)                                         |
+| 0.0.4   | February 8, 2026  | Phase 1, Steps 4-5: HyperSpotlight + HyperProfile (Hyperized ports)                           |
+| 0.0.5   | February 8, 2026  | Phase 1, Step 6: HyperTabs web part (all 12 features)                                         |
+| 0.0.6   | February 8, 2026  | Phase 1, Step 7: HyperDirectory web part (all 14 features)                                    |
+| 0.0.7   | February 8, 2026  | Phase 1, Step 8: HyperRollup web part (all 15 features)                                       |
+| 0.0.8   | February 8, 2026  | Phase 2, Step 1: HyperNav web part (all 13 features, 8 layouts)                               |
+| 0.0.9   | February 8, 2026  | Phase 2, Step 2: HyperEvents web part (all 13 features, 6 views)                              |
+| 0.0.10  | February 8, 2026  | Phase 2, Step 3: HyperPoll web part (all 12 features, 3 charts)                               |
+| 0.0.11  | February 8, 2026  | Phase 2, Step 4: HyperSearch web part (8 features, federated search)                          |
+| 0.0.12  | February 8, 2026  | Phase 2, Step 5: HyperLinks web part (12 features, 8 layouts)                                 |
+| 0.0.13  | February 8, 2026  | Phase 2, Step 6: HyperCharts web part (15 features, 6 chart types)                            |
+| 0.0.14  | February 8, 2026  | Phase 2, Step 7: HyperLert web part (12 features, rule builder)                               |
+| 0.0.15  | February 8, 2026  | Phase 3: HyperTicker + HyperFAQ + HyperBirthdays (3 web parts)                                |
+| 0.0.16  | February 8, 2026  | Phase 3, Step 4: HyperSlider (layer-based slider, 78 files)                                   |
+| 0.0.17  | February 9, 2026  | HyperExplorer EX1 scaffold + HyperHero V2 editor + DWx splash screens                         |
+| 0.0.18  | February 9, 2026  | Production .sppkg build (19 web parts)                                                        |
+| 0.0.19  | February 9, 2026  | HyperImage + HyperStyle + HyperProfile V2 + HyperSearch V2 + HyperLert V2                     |
+| 0.0.20  | February 9, 2026  | Bug fixes + new features across 17 web parts (82 files)                                       |
+| 0.0.21  | February 11, 2026 | DemoBar Rich Panel 20/20, wizard Pattern B 20/20, HyperSlider removed, sample data wired      |
+| 0.0.22  | February 11, 2026 | enableDemoMode=true default 20/20, wizardCompleted standardized, demoMode renamed             |
+| 0.0.23  | February 12, 2026 | Standards 5-7: edit overlay, styled property pane, image browser consolidation (57 files)     |
+| 0.0.24  | February 12, 2026 | Multi-WP enhancements: charts resize/drag-drop, links presets/shapes, FAQ padding (57 files)  |
 
 ## References
 
