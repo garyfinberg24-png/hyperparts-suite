@@ -1,5 +1,5 @@
 import * as React from "react";
-import { HyperErrorBoundary, HyperEditOverlay } from "../../../common/components";
+import { HyperErrorBoundary, HyperEmptyState, HyperEditOverlay } from "../../../common/components";
 import type {
   IHyperSearchWebPartProps,
   ISearchV2Features,
@@ -30,6 +30,7 @@ import HyperSearchV2FilterPanel from "./HyperSearchV2FilterPanel";
 
 // Demo bar
 import HyperSearchDemoBar from "./HyperSearchDemoBar";
+import WelcomeStep from "./wizard/WelcomeStep";
 
 import styles from "./HyperSearch.module.scss";
 
@@ -236,13 +237,6 @@ var HyperSearchInner: React.FC<IHyperSearchComponentProps> = function (props) {
     store.setFilterPanelOpen(!store.filterPanelOpen);
   };
 
-  // Wizard — auto-open on first load in edit mode when not yet completed
-  React.useEffect(function () {
-    if (!props.isEditMode && !props.wizardCompleted) {
-      store.setWizardOpen(true);
-    }
-  }, [props.isEditMode, props.wizardCompleted]);
-
   var showWizard = store.wizardOpen;
 
   var handleOpenWizard = function (): void {
@@ -252,6 +246,29 @@ var HyperSearchInner: React.FC<IHyperSearchComponentProps> = function (props) {
   var handleCloseWizard = function (): void {
     store.setWizardOpen(false);
   };
+
+  if (!props.wizardCompleted) {
+    return React.createElement("div", undefined,
+      React.createElement(WelcomeStep, {
+        key: "wizard",
+        isOpen: showWizard,
+        onClose: handleCloseWizard,
+        onApply: function (result: Record<string, unknown>) {
+          if (props.onWizardComplete) {
+            props.onWizardComplete(result);
+          }
+          handleCloseWizard();
+        },
+        currentProps: undefined,
+      }),
+      React.createElement(HyperEmptyState, {
+        title: "HyperSearch",
+        description: "Complete the setup wizard to configure this web part.",
+        actionLabel: "Complete Setup",
+        onAction: function () { store.setWizardOpen(true); },
+      })
+    );
+  }
 
   // Check if we need to show zero-query experience
   var showZeroQuery = features.zeroQuery && !store.hasSearched && !store.loading && !store.demoMode;

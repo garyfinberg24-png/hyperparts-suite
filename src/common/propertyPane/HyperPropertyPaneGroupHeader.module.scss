@@ -8,6 +8,22 @@
   background: linear-gradient(135deg, #f8f9fb 0%, #f3f4f6 100%);
   border-bottom: 1px solid #e8e6e3;
   margin: 0 -20px;
+  user-select: none;
+}
+
+.headerClickable {
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: linear-gradient(135deg, #f0f2f5 0%, #eaecef 100%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #0078d4;
+    outline-offset: -2px;
+    border-radius: 2px;
+  }
 }
 
 .icon {
@@ -79,4 +95,17 @@
   padding: 2px 8px;
   border-radius: 10px;
   flex-shrink: 0;
+}
+
+.chevron {
+  font-size: 12px;
+  color: #605e5c;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  transform: rotate(90deg);
+}
+
+.chevronCollapsed {
+  composes: chevron;
+  transform: rotate(0deg);
 }

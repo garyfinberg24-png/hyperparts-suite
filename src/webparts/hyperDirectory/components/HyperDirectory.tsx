@@ -104,13 +104,6 @@ const HyperDirectoryInner: React.FC<IHyperDirectoryComponentProps> = function (p
   // Show demo bar when sample data is active AND not in edit mode
   var showDemoBar = !!props.useSampleData && !props.isEditMode;
 
-  // Auto-open wizard in read mode when not yet completed
-  React.useEffect(function () {
-    if (!props.isEditMode && !props.wizardCompleted) {
-      openWizard();
-    }
-  }, [props.isEditMode, props.wizardCompleted]);
-
   // Build wizard state override from current props (for re-editing)
   var wizardStateOverride = React.useMemo(function () {
     return buildStateFromProps(props);
@@ -139,6 +132,26 @@ const HyperDirectoryInner: React.FC<IHyperDirectoryComponentProps> = function (p
   var handleConfigureClick = React.useCallback(function (): void {
     openWizard();
   }, [openWizard]);
+
+  // Show setup prompt when wizard not yet completed
+  if (!props.wizardCompleted) {
+    return React.createElement("div", undefined,
+      React.createElement(HyperWizard, {
+        key: "wizard",
+        config: DIRECTORY_WIZARD_CONFIG,
+        isOpen: isWizardOpen,
+        onClose: closeWizard,
+        onApply: handleWizardApply,
+        initialStateOverride: wizardStateOverride,
+      }),
+      React.createElement(HyperEmptyState, {
+        title: "HyperDirectory",
+        description: "Complete the setup wizard to configure this web part.",
+        actionLabel: "Complete Setup",
+        onAction: function () { openWizard(); },
+      })
+    );
+  }
 
   // Wizard element — rendered in ALL code paths
   var wizardElement = React.createElement(HyperWizard, {

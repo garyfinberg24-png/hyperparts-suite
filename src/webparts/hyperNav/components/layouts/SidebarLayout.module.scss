@@ -13,14 +13,18 @@
   gap: 8px;
   padding: 8px 12px;
   text-decoration: none;
-  color: $ms-color-neutralPrimary;
+  color: var(--hnav-link-default, #323130);
   font-size: $ms-font-size-14;
-  border-radius: 4px;
+  border-radius: var(--hnav-border-radius, 4px);
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease, background 0.2s ease, color 0.2s ease;
 
   &:hover {
-    background: $ms-color-neutralLighter;
+    transform: var(--hnav-hover-transform, none);
+    box-shadow: var(--hnav-hover-shadow, none);
+    filter: var(--hnav-hover-filter, none);
+    background: var(--hnav-hover-bg, $ms-color-neutralLighter);
+    color: var(--hnav-hover-color, var(--hnav-link-default, #323130));
   }
 
   &:focus {
@@ -31,7 +35,7 @@
 
 .sidebarIcon {
   font-size: $ms-font-size-16;
-  color: $ms-color-themePrimary;
+  color: var(--hnav-link-hover, #0078d4);
   flex-shrink: 0;
   width: 20px;
   text-align: center;
@@ -48,7 +52,7 @@
   width: 100%;
   font-size: $ms-font-size-14;
   font-weight: $ms-font-weight-semibold;
-  color: $ms-color-neutralPrimary;
+  color: var(--hnav-link-default, #323130);
   border-radius: 4px;
 
   &:hover {

@@ -151,7 +151,7 @@ export default class HyperNewsWebPart extends BaseHyperWebPart<IHyperNewsWebPart
 
     // Sample data — on by default so the web part renders immediately
     if (this.properties.useSampleData === undefined) {
-      this.properties.useSampleData = true;
+      this.properties.useSampleData = false;
     }
     // Demo mode
     if (this.properties.enableDemoMode === undefined) {

@@ -4,7 +4,7 @@ import type { IHyperStyleWebPartProps } from "../models";
 import type {
   StyleTemplate, HeaderStyle, FooterStyle, CardStyle,
 } from "../models/IHyperStyleEnums";
-import { HyperErrorBoundary } from "../../../common/components";
+import { HyperErrorBoundary, HyperEmptyState } from "../../../common/components";
 import WelcomeStep from "./wizard/WelcomeStep";
 import HyperStyleDemoBar from "./HyperStyleDemoBar";
 import { STYLE_TEMPLATES } from "../models";
@@ -260,13 +260,6 @@ var HyperStyleInner: React.FC<IHyperStyleProps> = function (props) {
     effectiveDarkMode, effectiveScrollReveal, effectiveHoverMicro, effectiveCustomScrollbar,
   ]);
 
-  // Show wizard on first load if configured
-  React.useEffect(function () {
-    if (!props.isEditMode && !props.wizardCompleted) {
-      setWizardOpen(true);
-    }
-  }, [props.isEditMode, props.wizardCompleted]);
-
   // ── Inject CSS ──
   React.useEffect(function () {
     if (!props.wizardCompleted) {
@@ -345,6 +338,25 @@ var HyperStyleInner: React.FC<IHyperStyleProps> = function (props) {
   var handleReRunWizard = React.useCallback(function (): void {
     setWizardOpen(true);
   }, []);
+
+  // ── Empty state: wizard not yet completed ──
+  if (!props.wizardCompleted) {
+    return React.createElement("div", undefined,
+      React.createElement(WelcomeStep, {
+        key: "wizard",
+        isOpen: wizardOpen,
+        onClose: handleWizardClose,
+        onApply: handleWizardApply,
+        currentProps: undefined,
+      }),
+      React.createElement(HyperEmptyState, {
+        title: "HyperStyle",
+        description: "Complete the setup wizard to configure this web part.",
+        actionLabel: "Complete Setup",
+        onAction: function () { setWizardOpen(true); },
+      })
+    );
+  }
 
   // Find selected template name
   var templateName = "";

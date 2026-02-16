@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useMemo, useEffect } from "react";
+import { useMemo } from "react";
 import type { IHyperNewsWebPartProps, IHyperNewsArticle, LayoutType } from "../models";
 import { DEFAULT_FILTER_CONFIG } from "../models";
 import { HyperErrorBoundary, HyperEmptyState, HyperSkeleton, HyperEditOverlay } from "../../../common/components";
@@ -86,12 +86,6 @@ const HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
   var wizardOpenState = React.useState(false);
   var wizardOpen = wizardOpenState[0];
   var setWizardOpen = wizardOpenState[1];
-
-  React.useEffect(function () {
-    if (!props.isEditMode && !props.wizardCompleted) {
-      setWizardOpen(true);
-    }
-  }, [props.isEditMode, props.wizardCompleted]);
 
   var handleWelcomeApply = function (result: Partial<IHyperNewsWebPartProps>): void {
     if (props.onWizardComplete) {
@@ -180,13 +174,6 @@ const HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
   const openWizard = storeState.openWizard;
   const closeWizard = storeState.closeWizard;
 
-  // Auto-open wizard in read mode when not yet completed
-  useEffect(function () {
-    if (!props.isEditMode && !props.wizardCompleted) {
-      openWizard();
-    }
-  }, [props.isEditMode, props.wizardCompleted]);
-
   // Build wizard state override from current props (for re-editing)
   const wizardStateOverride = useMemo(function () {
     return buildStateFromProps(props);
@@ -203,6 +190,33 @@ const HyperNewsInner: React.FC<IHyperNewsComponentProps> = function (props) {
     }
     closeWizard();
   }, [onWizardApply, closeWizard]);
+
+  // Show setup prompt when wizard not yet completed
+  if (!props.wizardCompleted) {
+    return React.createElement("div", undefined,
+      React.createElement(WelcomeStep, {
+        key: "welcome",
+        isOpen: wizardOpen,
+        onClose: handleWelcomeClose,
+        onApply: handleWelcomeApply,
+        currentProps: undefined,
+      }),
+      React.createElement(HyperWizard, {
+        key: "wizard",
+        config: NEWS_WIZARD_CONFIG,
+        isOpen: isWizardOpen,
+        onClose: closeWizard,
+        onApply: handleWizardApply,
+        initialStateOverride: wizardStateOverride,
+      }),
+      React.createElement(HyperEmptyState, {
+        title: "HyperNews",
+        description: "Complete the setup wizard to configure this web part.",
+        actionLabel: "Complete Setup",
+        onAction: function () { setWizardOpen(true); },
+      })
+    );
+  }
 
   // Enrich articles with "isNew" flag based on reading progress
   const enrichedArticles = useMemo(function (): IHyperNewsArticle[] {

@@ -41,12 +41,6 @@ const HyperProfileInner: React.FC<IHyperProfileComponentProps> = function (props
   var wizardOpen = wizardOpenState[0];
   var setWizardOpen = wizardOpenState[1];
 
-  React.useEffect(function () {
-    if (!props.isEditMode && !props.wizardCompleted) {
-      setWizardOpen(true);
-    }
-  }, [props.isEditMode, props.wizardCompleted]);
-
   var handleWizardApply = function (_result: Partial<IHyperProfileWebPartProps>): void {
     if (props.onWizardComplete) {
       props.onWizardComplete();
@@ -70,6 +64,25 @@ const HyperProfileInner: React.FC<IHyperProfileComponentProps> = function (props
     onApply: handleWizardApply,
     currentProps: props.wizardCompleted ? props as IHyperProfileWebPartProps : undefined,
   });
+
+  // Show setup prompt when wizard not yet completed
+  if (!props.wizardCompleted) {
+    return React.createElement("div", undefined,
+      React.createElement(WelcomeStep, {
+        key: "wizard",
+        isOpen: wizardOpen,
+        onClose: handleWizardClose,
+        onApply: handleWizardApply,
+        currentProps: undefined,
+      }),
+      React.createElement(HyperEmptyState, {
+        title: "HyperProfile",
+        description: "Complete the setup wizard to configure this web part.",
+        actionLabel: "Complete Setup",
+        onAction: function () { setWizardOpen(true); },
+      })
+    );
+  }
 
   // Determine template
   const templateId: TemplateType = props.selectedTemplate || store.selectedTemplateId || "standard";

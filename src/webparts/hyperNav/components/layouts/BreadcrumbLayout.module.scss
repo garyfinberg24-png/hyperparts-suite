@@ -26,15 +26,19 @@
   gap: 6px;
   padding: 4px 8px;
   text-decoration: none;
-  color: $ms-color-themePrimary;
+  color: var(--hnav-link-hover, #0078d4);
   font-size: $ms-font-size-14;
-  border-radius: 4px;
+  border-radius: var(--hnav-border-radius, 4px);
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 
   &:hover {
-    background: $ms-color-neutralLighter;
+    background: var(--hnav-hover-bg, $ms-color-neutralLighter);
+    color: var(--hnav-hover-color, var(--hnav-link-hover, #0078d4));
     text-decoration: underline;
+    transform: var(--hnav-hover-transform, none);
+    box-shadow: var(--hnav-hover-shadow, none);
+    filter: var(--hnav-hover-filter, none);
   }
 
   &:focus {
@@ -48,7 +52,7 @@
   align-items: center;
   gap: 6px;
   padding: 4px 8px;
-  color: $ms-color-neutralPrimary;
+  color: var(--hnav-link-default, #323130);
   font-size: $ms-font-size-14;
   font-weight: $ms-font-weight-semibold;
 }

@@ -53,13 +53,6 @@ const HyperEventsInner: React.FC<IHyperEventsComponentProps> = function (props) 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Auto-open wizard on first load when wizard not yet completed
-  React.useEffect(function () {
-    if (!props.isEditMode && !props.wizardCompleted) {
-      store.openWizard();
-    }
-  }, [props.isEditMode, props.wizardCompleted]);
-
   // ── Sample data ──
   var sampleEvents = React.useMemo(function () {
     if (props.useSampleData) {
@@ -408,12 +401,6 @@ const HyperEvents: React.FC<IHyperEventsComponentProps> = function (props) {
   var wizardOpen = wizardOpenState[0];
   var setWizardOpen = wizardOpenState[1];
 
-  React.useEffect(function () {
-    if (!props.isEditMode && !props.wizardCompleted) {
-      setWizardOpen(true);
-    }
-  }, [props.isEditMode, props.wizardCompleted]);
-
   var handleWizardApply = function (result: Partial<IHyperEventsWebPartProps>): void {
     if (props.onWizardComplete) {
       props.onWizardComplete(result as Record<string, unknown>);
@@ -424,6 +411,24 @@ const HyperEvents: React.FC<IHyperEventsComponentProps> = function (props) {
   var handleWizardClose = function (): void {
     setWizardOpen(false);
   };
+
+  if (!props.wizardCompleted) {
+    return React.createElement("div", undefined,
+      React.createElement(WelcomeStep, {
+        key: "wizard",
+        isOpen: wizardOpen,
+        onClose: handleWizardClose,
+        onApply: handleWizardApply,
+        currentProps: undefined,
+      }),
+      React.createElement(HyperEmptyState, {
+        title: "HyperEvents",
+        description: "Complete the setup wizard to configure this web part.",
+        actionLabel: "Complete Setup",
+        onAction: function () { setWizardOpen(true); },
+      })
+    );
+  }
 
   return React.createElement(
     HyperErrorBoundary,

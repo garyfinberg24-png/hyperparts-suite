@@ -90,27 +90,34 @@ const HyperSpotlightInner: React.FC<IHyperSpotlightComponentProps> = function (p
   var showWizard = wizardState[0];
   var setShowWizard = wizardState[1];
 
-  React.useEffect(function () {
-    if (!props.isEditMode && !props.wizardCompleted) {
-      setShowWizard(true);
+  var handleWizardApply = function (result: Partial<IHyperSpotlightWebPartProps>): void {
+    if (props.onWizardComplete) {
+      props.onWizardComplete(result as Record<string, unknown>);
     }
-  }, [props.isEditMode, props.wizardCompleted]);
+    setShowWizard(false);
+  };
 
-  // Show WelcomeStep wizard if not completed and in edit mode
-  if (showWizard) {
-    return React.createElement(WelcomeStep, {
-      isOpen: true,
-      onClose: function (): void {
-        setShowWizard(false);
-      },
-      onApply: function (result: Partial<IHyperSpotlightWebPartProps>): void {
-        if (props.onWizardComplete) {
-          props.onWizardComplete(result as Record<string, unknown>);
-        }
-        setShowWizard(false);
-      },
-      currentProps: props as IHyperSpotlightWebPartProps,
-    });
+  var handleWizardClose = function (): void {
+    setShowWizard(false);
+  };
+
+  // Show setup prompt when wizard not yet completed
+  if (!props.wizardCompleted) {
+    return React.createElement("div", undefined,
+      React.createElement(WelcomeStep, {
+        key: "wizard",
+        isOpen: showWizard,
+        onClose: handleWizardClose,
+        onApply: handleWizardApply,
+        currentProps: undefined,
+      }),
+      React.createElement(HyperEmptyState, {
+        title: "HyperSpotlight",
+        description: "Complete the setup wizard to configure this web part.",
+        actionLabel: "Complete Setup",
+        onAction: function () { setShowWizard(true); },
+      })
+    );
   }
 
   // ── Demo mode state (local, transient UI overrides) ──

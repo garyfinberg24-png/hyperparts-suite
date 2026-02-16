@@ -2,7 +2,7 @@ import * as React from "react";
 import styles from "./HyperSocial.module.scss";
 import type { IHyperSocialWebPartProps, ISocialPost, SocialLayoutMode, SocialSortMode } from "../models";
 import { REACTION_DEFINITIONS } from "../models";
-import { HyperErrorBoundary, HyperEditOverlay } from "../../../common/components";
+import { HyperErrorBoundary, HyperEditOverlay, HyperEmptyState } from "../../../common/components";
 import { useHyperSocialStore } from "../store/useHyperSocialStore";
 import { SAMPLE_POSTS } from "../utils/sampleData";
 import WelcomeStep from "./wizard/WelcomeStep";
@@ -48,12 +48,29 @@ var HyperSocialInner: React.FC<IHyperSocialComponentProps> = function (props) {
   var activeComments = props.enableDemoMode ? demoComments : props.enableComments;
   var activeHashtags = props.enableDemoMode ? demoHashtags : props.enableHashtags;
 
-  // Auto-open wizard on first load
-  React.useEffect(function () {
-    if (!props.isEditMode && !props.wizardCompleted) {
-      openWizard();
-    }
-  }, [props.isEditMode, props.wizardCompleted]);
+  // ── Empty state: wizard not yet completed ──
+  if (!props.wizardCompleted) {
+    return React.createElement("div", undefined,
+      isWizardOpen
+        ? React.createElement(WelcomeStep, {
+            key: "wizard",
+            isOpen: isWizardOpen,
+            onClose: closeWizard,
+            onApply: function (result: Partial<IHyperSocialWebPartProps>) {
+              props.onWizardApply(result);
+              closeWizard();
+            },
+            currentProps: undefined,
+          })
+        : undefined,
+      React.createElement(HyperEmptyState, {
+        title: "HyperSocial",
+        description: "Complete the setup wizard to configure this web part.",
+        actionLabel: "Complete Setup",
+        onAction: function () { openWizard(); },
+      })
+    );
+  }
 
   // Get posts
   var posts = React.useMemo(function (): ISocialPost[] {

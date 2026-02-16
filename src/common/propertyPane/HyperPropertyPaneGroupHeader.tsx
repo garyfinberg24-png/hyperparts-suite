@@ -14,6 +14,10 @@ export interface IHyperPropertyPaneGroupHeaderProps {
   itemCount?: number;
   /** Color theme for the icon background */
   color: GroupHeaderColor;
+  /** If true, header is clickable and toggles sibling field visibility */
+  collapsible?: boolean;
+  /** If true AND collapsible, start collapsed */
+  startCollapsed?: boolean;
 }
 
 var COLOR_CLASS_MAP: Record<GroupHeaderColor, string> = {
@@ -23,10 +27,21 @@ var COLOR_CLASS_MAP: Record<GroupHeaderColor, string> = {
   orange: styles.iconOrange,
 };
 
+/**
+ * Pure visual component — renders the header UI only.
+ * All collapse/expand behavior is handled by createGroupHeaderField.ts
+ * at the DOM level (outside React).
+ */
 var HyperPropertyPaneGroupHeaderInner: React.FC<IHyperPropertyPaneGroupHeaderProps> = function (props) {
   var iconClass = COLOR_CLASS_MAP[props.color] || styles.iconBlue;
 
-  return React.createElement("div", { className: styles.header },
+  var headerClass = props.collapsible
+    ? styles.header + " " + styles.headerClickable
+    : styles.header;
+
+  return React.createElement("div", {
+    className: headerClass,
+  },
     React.createElement("span", {
       className: iconClass,
       "aria-hidden": "true",
@@ -39,6 +54,13 @@ var HyperPropertyPaneGroupHeaderInner: React.FC<IHyperPropertyPaneGroupHeaderPro
     ),
     props.itemCount !== undefined
       ? React.createElement("span", { className: styles.itemCount }, String(props.itemCount))
+      : undefined,
+    props.collapsible
+      ? React.createElement("span", {
+          "data-hyper-chevron": "true",
+          className: props.startCollapsed ? styles.chevronCollapsed : styles.chevron,
+          "aria-hidden": "true",
+        }, "\u276F")
       : undefined
   );
 };

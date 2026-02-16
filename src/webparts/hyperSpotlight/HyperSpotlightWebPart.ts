@@ -52,7 +52,7 @@ export default class HyperSpotlightWebPart extends BaseHyperWebPart<IHyperSpotli
 
     // Set defaults for any properties not yet initialised
     const p = this.properties;
-    if (p.useSampleData === undefined) p.useSampleData = true;
+    if (p.useSampleData === undefined) p.useSampleData = false;
     if (p.selectionMode === undefined) p.selectionMode = SelectionMode.Automatic;
     if (p.category === undefined) p.category = SpotlightCategory.Birthday;
     if (p.dateRange === undefined) p.dateRange = DateRange.ThisMonth;

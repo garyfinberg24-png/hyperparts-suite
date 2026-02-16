@@ -16,7 +16,7 @@ import {
 } from "../models";
 import type { Breakpoint } from "../../../common/models";
 import { useResponsive } from "../../../common/hooks";
-import { HyperErrorBoundary } from "../../../common/components";
+import { HyperErrorBoundary, HyperEmptyState } from "../../../common/components";
 import { HyperHeroSlide } from "./HyperHeroSlide";
 import { HyperHeroTransitionWrapper } from "./HyperHeroTransitionWrapper";
 import { HyperHeroSkeleton } from "./HyperHeroSkeleton";
@@ -207,13 +207,6 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
   var demoVideo = demoVideoState[0];
   var setDemoVideo = demoVideoState[1];
 
-  // Auto-open wizard in read mode when not yet completed
-  React.useEffect(function () {
-    if (!isEditMode && !wizardCompleted) {
-      setShowWizard(true);
-    }
-  }, [isEditMode, wizardCompleted]);
-
   // ── Wizard callbacks ──
   const handleWizardClose = React.useCallback(function () {
     setShowWizard(false);
@@ -388,6 +381,26 @@ const HyperHeroInner: React.FC<IHyperHeroComponentProps> = function (props) {
     }
     setShowWizard(true);
   }, [onSettingsChange]);
+
+  // Show setup prompt when wizard not yet completed
+  if (!wizardCompleted) {
+    return React.createElement("div", undefined,
+      React.createElement(HyperWizard, {
+        key: "wizard",
+        config: HERO_WIZARD_CONFIG,
+        isOpen: showWizard,
+        onClose: handleWizardClose,
+        onApply: handleWizardApply,
+        initialStateOverride: buildStateFromProps(props),
+      }),
+      React.createElement(HyperEmptyState, {
+        title: "HyperHero",
+        description: "Complete the setup wizard to configure this web part.",
+        actionLabel: "Complete Setup",
+        onAction: function () { setShowWizard(true); },
+      })
+    );
+  }
 
   // ── Slides Manager (opens editor in manager view) + Slider Manager ──
   const handleOpenSlidesManager = React.useCallback(function () {

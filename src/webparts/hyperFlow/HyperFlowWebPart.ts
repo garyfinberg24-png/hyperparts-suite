@@ -81,7 +81,7 @@ export default class HyperFlowWebPart extends BaseHyperWebPart<IHyperFlowWebPart
       this.properties.listId = "";
     }
     if (this.properties.useSampleData === undefined) {
-      this.properties.useSampleData = true;
+      this.properties.useSampleData = false;
     }
     if (this.properties.wizardCompleted === undefined) {
       this.properties.wizardCompleted = false;

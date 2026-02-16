@@ -146,7 +146,7 @@ export default class HyperLertWebPart extends BaseHyperWebPart<IHyperLertWebPart
       this.properties.digestFrequency = "realtime";
     }
     if (this.properties.useSampleData === undefined) {
-      this.properties.useSampleData = true;
+      this.properties.useSampleData = false;
     }
 
     // Wizard defaults

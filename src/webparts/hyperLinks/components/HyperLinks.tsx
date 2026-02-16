@@ -207,13 +207,6 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
   // Search within links
   const searchResult = useLinksSearch(audienceLinks, props.enableSearch);
 
-  // Auto-open wizard on first load when not yet configured
-  React.useEffect(function () {
-    if (!props.isEditMode && !props.wizardCompleted) {
-      openWizard();
-    }
-  }, [props.isEditMode, props.wizardCompleted]);
-
   // Handle wizard apply
   var handleWizardApply = React.useCallback(function (result: Partial<IHyperLinksWebPartProps>): void {
     if (props.onWizardApply) {
@@ -221,6 +214,24 @@ const HyperLinksInner: React.FC<IHyperLinksComponentProps> = function (props) {
     }
     closeWizard();
   }, [props.onWizardApply, closeWizard]);
+
+  if (!props.wizardCompleted) {
+    return React.createElement("div", undefined,
+      React.createElement(WelcomeStep, {
+        key: "wizard",
+        isOpen: isWizardOpen,
+        onClose: closeWizard,
+        onApply: handleWizardApply,
+        currentProps: undefined,
+      }),
+      React.createElement(HyperEmptyState, {
+        title: "HyperLinks",
+        description: "Complete the setup wizard to configure this web part.",
+        actionLabel: "Complete Setup",
+        onAction: function () { openWizard(); },
+      })
+    );
+  }
 
   // Handle configure button click
   var handleConfigureClick = React.useCallback(function (): void {

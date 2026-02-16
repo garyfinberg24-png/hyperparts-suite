@@ -108,7 +108,7 @@ export default class HyperTabsWebPart extends BaseHyperWebPart<IHyperTabsWebPart
       this.properties.wizardCompleted = false;
     }
     if (this.properties.useSampleData === undefined) {
-      this.properties.useSampleData = true;
+      this.properties.useSampleData = false;
     }
     if (this.properties.tabAlignment === undefined) {
       this.properties.tabAlignment = "left";

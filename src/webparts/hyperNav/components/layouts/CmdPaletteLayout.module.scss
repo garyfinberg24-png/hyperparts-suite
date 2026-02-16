@@ -116,10 +116,14 @@
   gap: 12px;
   padding: 10px 16px;
   cursor: pointer;
-  transition: background 0.1s ease;
+  transition: background 0.1s ease, color 0.1s ease, transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
 
   &:hover {
-    background: $ms-color-neutralLighter;
+    background: var(--hnav-hover-bg, $ms-color-neutralLighter);
+    color: var(--hnav-hover-color, inherit);
+    transform: var(--hnav-hover-transform, none);
+    box-shadow: var(--hnav-hover-shadow, none);
+    filter: var(--hnav-hover-filter, none);
   }
 }
 
@@ -133,7 +137,7 @@
 
 .cmdResultIcon {
   font-size: $ms-font-size-16;
-  color: $ms-color-themePrimary;
+  color: var(--hnav-link-hover, #0078d4);
   flex-shrink: 0;
   width: 20px;
   text-align: center;
@@ -149,7 +153,7 @@
 
 .cmdResultTitle {
   font-size: $ms-font-size-14;
-  color: $ms-color-neutralPrimary;
+  color: var(--hnav-link-default, #323130);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

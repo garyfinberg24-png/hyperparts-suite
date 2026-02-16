@@ -97,7 +97,7 @@ export default class HyperSocialWebPart extends BaseHyperWebPart<IHyperSocialWeb
       this.properties.enableLazyLoad = true;
     }
     if (this.properties.useSampleData === undefined) {
-      this.properties.useSampleData = true;
+      this.properties.useSampleData = false;
     }
     if (this.properties.wizardCompleted === undefined) {
       this.properties.wizardCompleted = false;

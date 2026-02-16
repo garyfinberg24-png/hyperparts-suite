@@ -103,13 +103,6 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
   var activeAnimationsEnabled = props.enableDemoMode ? demoAnimationsEnabled : props.enableAnimations;
   var activeMilestoneBadges = props.enableDemoMode ? demoMilestoneBadges : props.enableMilestoneBadges;
 
-  // Auto-open wizard on first load when not yet configured
-  React.useEffect(function () {
-    if (!props.isEditMode && !props.wizardCompleted) {
-      openWizard();
-    }
-  }, [props.isEditMode, props.wizardCompleted]);
-
   // Build wizard state override from current props (for re-editing)
   var wizardStateOverride = React.useMemo(function () {
     return buildStateFromProps(props);
@@ -135,6 +128,26 @@ const HyperBirthdaysInner: React.FC<IHyperBirthdaysComponentProps> = function (p
   var handleConfigureClick = React.useCallback(function (): void {
     openWizard();
   }, [openWizard]);
+
+  // ── Empty state: wizard not yet completed ──
+  if (!props.wizardCompleted) {
+    return React.createElement("div", undefined,
+      React.createElement(HyperWizard, {
+        key: "wizard",
+        config: BIRTHDAYS_WIZARD_CONFIG,
+        isOpen: isWizardOpen,
+        onClose: closeWizard,
+        onApply: handleWizardApply,
+        initialStateOverride: wizardStateOverride,
+      }),
+      React.createElement(HyperEmptyState, {
+        title: "HyperBirthdays",
+        description: "Complete the setup wizard to configure this web part.",
+        actionLabel: "Complete Setup",
+        onAction: function () { openWizard(); },
+      })
+    );
+  }
 
   // Build enabled types from props on first render
   const hasInitRef = React.useRef<boolean>(false);

@@ -26,7 +26,7 @@ import { EXPLORER_WIZARD_CONFIG, buildStateFromProps } from "./wizard/explorerWi
 import { filePlanWizardConfig } from "./filePlan/wizard/FilePlanWizardConfig";
 import { GridLayout, ListLayout, MasonryLayout, FilmstripLayout, TilesLayout } from "./layouts";
 import HyperExplorerDemoBar from "./HyperExplorerDemoBar";
-import { HyperEditOverlay, HyperModal } from "../../../common/components";
+import { HyperEditOverlay, HyperModal, HyperEmptyState } from "../../../common/components";
 import ExplorerIcon from "../utils/ExplorerIcon";
 import styles from "./HyperExplorer.module.scss";
 
@@ -41,13 +41,6 @@ export interface IHyperExplorerComponentProps extends IHyperExplorerWebPartProps
 var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
   // Store
   var store = useHyperExplorerStore();
-
-  // Auto-open wizard on first load when wizard not yet completed
-  React.useEffect(function () {
-    if (!props.isEditMode && !props.wizardCompleted) {
-      store.openWizard();
-    }
-  }, [props.isEditMode, props.wizardCompleted]);
 
   // Build wizard state override from current props (for re-editing)
   var wizardStateOverride = React.useMemo(function () {
@@ -68,6 +61,26 @@ var HyperExplorer: React.FC<IHyperExplorerComponentProps> = function (props) {
     }
     store.closeWizard();
   }, [props.onWizardApply, store]);
+
+  // ── Empty state: wizard not yet completed ──
+  if (!props.wizardCompleted) {
+    return React.createElement("div", undefined,
+      React.createElement(HyperWizard, {
+        key: "wizard",
+        config: EXPLORER_WIZARD_CONFIG,
+        isOpen: store.isWizardOpen,
+        onClose: store.closeWizard,
+        onApply: handleWizardApply,
+        initialStateOverride: wizardStateOverride,
+      }),
+      React.createElement(HyperEmptyState, {
+        title: "HyperExplorer",
+        description: "Complete the setup wizard to configure this web part.",
+        actionLabel: "Complete Setup",
+        onAction: function () { store.openWizard(); },
+      })
+    );
+  }
 
   // Demo bar: folder tree + preview toggles
   var demoFolderTreeState = React.useState(true);

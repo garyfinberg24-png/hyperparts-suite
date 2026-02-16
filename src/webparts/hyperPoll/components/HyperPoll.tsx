@@ -58,12 +58,6 @@ const HyperPollInner: React.FC<IHyperPollComponentProps> = function (props) {
   var wizardOpen = wizardOpenState[0];
   var setWizardOpen = wizardOpenState[1];
 
-  React.useEffect(function () {
-    if (!props.isEditMode && !props.wizardCompleted) {
-      setWizardOpen(true);
-    }
-  }, [props.isEditMode, props.wizardCompleted]);
-
   var handleWelcomeApply = function (result: Partial<IHyperPollWebPartProps>): void {
     if (props.onWizardComplete) {
       props.onWizardComplete();
@@ -75,6 +69,24 @@ const HyperPollInner: React.FC<IHyperPollComponentProps> = function (props) {
   var handleWelcomeClose = function (): void {
     setWizardOpen(false);
   };
+
+  if (!props.wizardCompleted) {
+    return React.createElement("div", undefined,
+      React.createElement(WelcomeStep, {
+        key: "wizard",
+        isOpen: wizardOpen,
+        onClose: handleWelcomeClose,
+        onApply: handleWelcomeApply,
+        currentProps: undefined,
+      }),
+      React.createElement(HyperEmptyState, {
+        title: "HyperPoll",
+        description: "Complete the setup wizard to configure this web part.",
+        actionLabel: "Complete Setup",
+        onAction: function () { setWizardOpen(true); },
+      })
+    );
+  }
 
   // Demo mode overrides
   var demoChartTypeState = React.useState<ChartType>(props.defaultChartType || "bar");

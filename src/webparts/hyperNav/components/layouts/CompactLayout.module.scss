@@ -12,17 +12,20 @@
   align-items: center;
   gap: 6px;
   padding: 6px 14px;
-  border-radius: 20px;
+  border-radius: var(--hnav-border-radius, 20px);
   background: $ms-color-neutralLighter;
-  color: $ms-color-neutralPrimary;
+  color: var(--hnav-link-default, #323130);
   font-size: $ms-font-size-14;
   text-decoration: none;
-  transition: background 0.15s ease, box-shadow 0.15s ease;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease, filter 0.15s ease, color 0.15s ease;
   cursor: pointer;
 
   &:hover {
-    background: $ms-color-neutralLight;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    transform: var(--hnav-hover-transform, none);
+    box-shadow: var(--hnav-hover-shadow, 0 1px 4px rgba(0, 0, 0, 0.1));
+    filter: var(--hnav-hover-filter, none);
+    background: var(--hnav-hover-bg, $ms-color-neutralLight);
+    color: var(--hnav-hover-color, var(--hnav-link-hover, #0078d4));
   }
 
   &:focus {
@@ -33,5 +36,5 @@
 
 .chipIcon {
   font-size: $ms-font-size-14;
-  color: $ms-color-themePrimary;
+  color: var(--hnav-link-hover, #0078d4);
 }

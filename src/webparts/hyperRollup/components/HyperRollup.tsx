@@ -734,13 +734,6 @@ var HyperRollup: React.FC<IHyperRollupComponentProps> = function (props) {
   var wizardOpen = wizardOpenState[0];
   var setWizardOpen = wizardOpenState[1];
 
-  // Auto-open wizard in read mode when not yet completed
-  React.useEffect(function () {
-    if (!props.isEditMode && !props.wizardCompleted) {
-      setWizardOpen(true);
-    }
-  }, [props.isEditMode, props.wizardCompleted]);
-
   var handleWizardApply = function (_result: Partial<IHyperRollupWebPartProps>): void {
     if (props.onWizardComplete) {
       props.onWizardComplete();
@@ -759,6 +752,25 @@ var HyperRollup: React.FC<IHyperRollupComponentProps> = function (props) {
     onApply: handleWizardApply,
     currentProps: props.wizardCompleted ? props as IHyperRollupWebPartProps : undefined,
   });
+
+  // Show setup prompt when wizard not yet completed
+  if (!props.wizardCompleted) {
+    return React.createElement("div", undefined,
+      React.createElement(WelcomeStep, {
+        key: "wizard",
+        isOpen: wizardOpen,
+        onClose: handleWizardClose,
+        onApply: handleWizardApply,
+        currentProps: undefined,
+      }),
+      React.createElement(HyperEmptyState, {
+        title: "HyperRollup",
+        description: "Complete the setup wizard to configure this web part.",
+        actionLabel: "Complete Setup",
+        onAction: function () { setWizardOpen(true); },
+      })
+    );
+  }
 
   var mainContent = React.createElement(
     HyperErrorBoundary,

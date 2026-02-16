@@ -40,12 +40,6 @@ const HyperTabsInner: React.FC<IHyperTabsComponentProps> = function (props) {
   var wizardOpen = wizardOpenState[0];
   var setWizardOpen = wizardOpenState[1];
 
-  React.useEffect(function () {
-    if (!props.isEditMode && !props.wizardCompleted) {
-      setWizardOpen(true);
-    }
-  }, [props.isEditMode, props.wizardCompleted]);
-
   var handleWizardApply = function (result: Partial<IHyperTabsWebPartProps>): void {
     if (props.onWizardComplete) {
       props.onWizardComplete(result as Record<string, unknown>);
@@ -56,6 +50,25 @@ const HyperTabsInner: React.FC<IHyperTabsComponentProps> = function (props) {
   var handleWizardClose = function (): void {
     setWizardOpen(false);
   };
+
+  // Show setup prompt when wizard not yet completed
+  if (!props.wizardCompleted) {
+    return React.createElement("div", undefined,
+      React.createElement(WelcomeStep, {
+        key: "wizard",
+        isOpen: wizardOpen,
+        onClose: handleWizardClose,
+        onApply: handleWizardApply,
+        currentProps: undefined,
+      }),
+      React.createElement(HyperEmptyState, {
+        title: "HyperTabs",
+        description: "Complete the setup wizard to configure this web part.",
+        actionLabel: "Complete Setup",
+        onAction: function () { setWizardOpen(true); },
+      })
+    );
+  }
 
   // ── Demo mode state (local, transient UI overrides) ──
   var demoDisplayModeState = React.useState(props.displayMode as HyperTabsDisplayMode);

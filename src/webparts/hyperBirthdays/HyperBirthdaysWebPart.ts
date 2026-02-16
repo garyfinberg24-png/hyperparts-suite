@@ -142,7 +142,7 @@ export default class HyperBirthdaysWebPart extends BaseHyperWebPart<IHyperBirthd
       this.properties.photoSize = 48;
     }
     if (this.properties.useSampleData === undefined) {
-      this.properties.useSampleData = true;
+      this.properties.useSampleData = false;
     }
     if (this.properties.wizardCompleted === undefined) {
       this.properties.wizardCompleted = false;

@@ -135,7 +135,7 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
       this.properties.wizardCompleted = false;
     }
     if (this.properties.useSampleData === undefined) {
-      this.properties.useSampleData = true;
+      this.properties.useSampleData = false;
     }
     if (this.properties.enableDemoMode === undefined) {
       this.properties.enableDemoMode = false;
@@ -536,9 +536,9 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
               onToggleDemoMode: this._handleToggleDemoMode.bind(this),
             }),
             {
-              groupName: strings.LayoutGroupName,
+              groupName: "",
               groupFields: [
-                createGroupHeaderField("_layoutHeader", { icon: "\uD83C\uDFA8", title: "Layout", subtitle: "Display mode & grid", color: "blue" }),
+                createGroupHeaderField("_layoutHeader", { icon: "\uD83C\uDFA8", title: "Layout", subtitle: "Display mode & grid", color: "blue", collapsible: true }),
                 PropertyPaneTextField("title", {
                   label: strings.TitleFieldLabel,
                 }),
@@ -574,12 +574,7 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
                 PropertyPaneToggle("showDescriptions", {
                   label: strings.ShowDescriptionsLabel,
                 }),
-              ],
-            },
-            {
-              groupName: strings.StylingGroupName,
-              groupFields: [
-                createGroupHeaderField("_stylingHeader", { icon: "\uD83C\uDFAF", title: "Styling", subtitle: "Theme & appearance", color: "red" }),
+                createGroupHeaderField("_stylingHeader", { icon: "\uD83C\uDFAF", title: "Styling", subtitle: "Theme & appearance", color: "red", collapsible: true }),
                 PropertyPaneDropdown("hoverEffect", {
                   label: strings.HoverEffectLabel,
                   options: [
@@ -633,9 +628,9 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
           header: { description: strings.AdvancedPageDescription },
           groups: [
             {
-              groupName: strings.FeaturesGroupName,
+              groupName: "",
               groupFields: [
-                createGroupHeaderField("_featuresHeader", { icon: "\u2699\uFE0F", title: "Features", subtitle: "Advanced options", color: "orange" }),
+                createGroupHeaderField("_displayHeader", { icon: "\uD83D\uDD0D", title: "Display", subtitle: "Search, badges & grouping", color: "blue", collapsible: true }),
                 PropertyPaneToggle("showSearch", {
                   label: strings.ShowSearchLabel,
                 }),
@@ -646,6 +641,13 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
                   label: strings.ExternalBadgeIconLabel,
                   disabled: !this.properties.showExternalBadge,
                 }),
+                PropertyPaneToggle("enableGrouping", {
+                  label: strings.EnableGroupingLabel,
+                }),
+                PropertyPaneToggle("enableDeepLinks", {
+                  label: strings.EnableDeepLinksLabel,
+                }),
+                createGroupHeaderField("_smartHeader", { icon: "\uD83C\uDFAF", title: "Smart Features", subtitle: "Targeting, analytics & health", color: "green", collapsible: true, startCollapsed: true }),
                 PropertyPaneToggle("enableAudienceTargeting", {
                   label: strings.EnableAudienceTargetingLabel,
                 }),
@@ -658,13 +660,7 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
                 PropertyPaneToggle("enableLinkHealthCheck", {
                   label: strings.EnableLinkHealthCheckLabel,
                 }),
-                PropertyPaneToggle("enableGrouping", {
-                  label: strings.EnableGroupingLabel,
-                }),
-                PropertyPaneToggle("enableDeepLinks", {
-                  label: strings.EnableDeepLinksLabel,
-                }),
-                PropertyPaneHorizontalRule(),
+                createGroupHeaderField("_navUxHeader", { icon: "\uD83D\uDDA5\uFE0F", title: "Navigation UX", subtitle: "Sticky, tooltips & shortcuts", color: "orange", collapsible: true, startCollapsed: true }),
                 PropertyPaneToggle("enableStickyNav", {
                   label: strings.EnableStickyNavLabel,
                 }),
@@ -683,7 +679,7 @@ export default class HyperNavWebPart extends BaseHyperWebPart<IHyperNavWebPartPr
                 PropertyPaneToggle("enableDarkModeToggle", {
                   label: strings.EnableDarkModeToggleLabel,
                 }),
-                PropertyPaneHorizontalRule(),
+                createGroupHeaderField("_dataHeader", { icon: "\uD83D\uDCBE", title: "Data", subtitle: "Sample data & source", color: "red", collapsible: true, startCollapsed: true }),
                 PropertyPaneToggle("useSampleData", {
                   label: strings.UseSampleDataLabel,
                 }),

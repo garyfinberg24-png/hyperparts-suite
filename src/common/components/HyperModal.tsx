@@ -80,33 +80,35 @@ export const HyperModal: React.FC<IHyperModalProps> = (props) => {
         overflow: "hidden",
       } : {
         backgroundColor: "#ffffff",
-        borderRadius: size === "fullscreen" ? "4px" : "8px",
-        boxShadow: "0 8px 24px rgba(0,0,0,0.14)",
-        width: size === "fullscreen" ? "960px" : "90%",
-        maxWidth: size === "fullscreen" ? "95vw" : sizeMap[size],
-        height: size === "fullscreen" ? "85vh" : undefined,
-        maxHeight: "90vh",
+        borderRadius: size === "fullscreen" ? "8px" : "8px",
+        boxShadow: size === "fullscreen" ? "0 25px 60px rgba(0,0,0,0.25)" : "0 8px 24px rgba(0,0,0,0.14)",
+        width: size === "fullscreen" ? "1020px" : "90%",
+        maxWidth: size === "fullscreen" ? "94vw" : sizeMap[size],
+        height: size === "fullscreen" ? undefined : undefined,
+        maxHeight: size === "fullscreen" ? "92vh" : "90vh",
         display: "flex",
         flexDirection: "column" as const,
         overflow: "hidden",
       },
     },
-      // Header
+      // Header — slim for fullscreen, standard for others
       React.createElement("div", {
         style: {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          padding: "16px 24px",
+          padding: size === "fullscreen" ? "8px 20px" : "16px 24px",
           borderBottom: "1px solid #edebe9",
+          background: size === "fullscreen" ? "#faf9f8" : undefined,
+          flexShrink: 0,
         },
       },
-        React.createElement("h2", {
+        React.createElement(size === "fullscreen" ? "h3" : "h2", {
           style: {
             margin: 0,
-            fontSize: "20px",
+            fontSize: size === "fullscreen" ? "14px" : "20px",
             fontWeight: 600,
-            color: "#323130",
+            color: size === "fullscreen" ? "#605e5c" : "#323130",
           },
         }, title),
         React.createElement("button", {
@@ -115,18 +117,19 @@ export const HyperModal: React.FC<IHyperModalProps> = (props) => {
           style: {
             border: "none",
             background: "none",
-            fontSize: "20px",
+            fontSize: size === "fullscreen" ? "18px" : "20px",
             cursor: "pointer",
             padding: "4px 8px",
             color: "#605e5c",
             borderRadius: "4px",
+            lineHeight: "1",
           },
         }, "\u00D7") // × character
       ),
-      // Body
+      // Body — no padding for fullscreen (wizard handles its own layout)
       React.createElement("div", {
         style: {
-          padding: "24px",
+          padding: size === "fullscreen" ? "0" : "24px",
           overflowY: "auto" as const,
           flex: 1,
         },

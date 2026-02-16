@@ -11,10 +11,13 @@ const TemplatesStep: React.FC<IWizardStepProps<IHyperNavWizardState>> = function
       if (t.id === templateId) template = t;
     });
     if (template) {
-      props.onChange({
-        templateId: templateId,
-        layoutMode: template.layout,
+      // Apply ALL preset values (colors, features, layout, theme, etc.)
+      var update: Partial<IHyperNavWizardState> = { templateId: templateId };
+      var presetKeys = Object.keys(template.preset);
+      presetKeys.forEach(function (key) {
+        (update as Record<string, unknown>)[key] = (template as { preset: Record<string, unknown> }).preset[key];
       });
+      props.onChange(update);
     } else {
       props.onChange({ templateId: "" });
     }
@@ -39,7 +42,7 @@ const TemplatesStep: React.FC<IWizardStepProps<IHyperNavWizardState>> = function
       React.createElement("div", { className: styles.templateInfo },
         React.createElement("div", { className: styles.templateName }, tmpl.name),
         React.createElement("div", { className: styles.templateDesc }, tmpl.description),
-        React.createElement("span", { className: styles.templateLayout }, tmpl.layout)
+        React.createElement("span", { className: styles.templateLayout }, tmpl.preset.layoutMode || "topbar")
       )
     );
   });

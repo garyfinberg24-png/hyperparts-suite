@@ -144,12 +144,6 @@ const HyperNavInner: React.FC<IHyperNavComponentProps> = function (props) {
   var wizardOpen = wizardOpenState[0];
   var setWizardOpen = wizardOpenState[1];
 
-  React.useEffect(function () {
-    if (!props.isEditMode && !props.wizardCompleted) {
-      setWizardOpen(true);
-    }
-  }, [props.isEditMode, props.wizardCompleted]);
-
   var handleWizardApply = function (result: Partial<IHyperNavWebPartProps>): void {
     if (props.onWizardComplete) {
       props.onWizardComplete(result as Record<string, unknown>);
@@ -219,9 +213,53 @@ const HyperNavInner: React.FC<IHyperNavComponentProps> = function (props) {
     return parsePanelConfig(props.panelConfig);
   }, [props.panelConfig]);
 
+  // Resolve active hoverEffect and borderRadius
+  var activeHover = props.enableDemoMode ? demoHover : (props.hoverEffect || "lift");
+  var activeBorderRadius = props.borderRadius || "slight";
+
+  var RADIUS_MAP: Record<string, string> = {
+    none: "0",
+    slight: "4px",
+    rounded: "8px",
+    pill: "100px",
+  };
+
   var cssVars = React.useMemo(function () {
-    return buildNavCssVars(colorConfig, panelConfig);
-  }, [colorConfig, panelConfig]);
+    var vars = buildNavCssVars(colorConfig, panelConfig);
+    vars["--hnav-border-radius"] = RADIUS_MAP[activeBorderRadius] || "4px";
+
+    // Hover effect CSS variables
+    var hoverTransform = "none";
+    var hoverShadow = "none";
+    var hoverFilter = "none";
+    var hoverBgOverride = "";
+    var hoverColorOverride = "";
+
+    if (activeHover === "lift") {
+      hoverTransform = "translateY(-2px)";
+      hoverShadow = "0 4px 8px rgba(0,0,0,0.12)";
+    } else if (activeHover === "glow") {
+      hoverShadow = "0 0 8px 2px " + (colorConfig.linkHover || "#0078d4");
+    } else if (activeHover === "zoom") {
+      hoverTransform = "scale(1.05)";
+    } else if (activeHover === "darken") {
+      hoverFilter = "brightness(0.85)";
+    } else if (activeHover === "bgfill") {
+      hoverBgOverride = colorConfig.linkHover || "#0078d4";
+      hoverColorOverride = "#ffffff";
+    }
+    // "underline" and "none" leave defaults as "none"
+
+    vars["--hnav-hover-transform"] = hoverTransform;
+    vars["--hnav-hover-shadow"] = hoverShadow;
+    vars["--hnav-hover-filter"] = hoverFilter;
+    if (hoverBgOverride) {
+      vars["--hnav-hover-bg"] = hoverBgOverride;
+      vars["--hnav-hover-color"] = hoverColorOverride;
+    }
+
+    return vars;
+  }, [colorConfig, panelConfig, activeBorderRadius, activeHover]);
 
   // Enrich links
   var siteUrl = props.siteUrl || (typeof window !== "undefined" ? window.location.origin : "");
@@ -265,18 +303,46 @@ const HyperNavInner: React.FC<IHyperNavComponentProps> = function (props) {
     analytics.trackLinkClick(link.id, link.title, link.url);
   }, [analytics]);
 
+  // ── Wizard modal (ALWAYS rendered to keep hook count stable) ──
+  var wizardElement = React.createElement(WelcomeStep, {
+    key: "wizard",
+    isOpen: wizardOpen,
+    onClose: handleWizardClose,
+    onApply: handleWizardApply,
+    currentProps: props.wizardCompleted ? props as any : undefined,
+  });
+
+  // ── Setup prompt when wizard not yet completed ──
+  if (!props.wizardCompleted) {
+    return React.createElement("div", undefined,
+      wizardElement,
+      React.createElement(HyperEmptyState, {
+        title: "HyperNav",
+        description: "Complete the setup wizard to configure this web part.",
+        actionLabel: "Complete Setup",
+        onAction: function () { setWizardOpen(true); },
+      })
+    );
+  }
+
   // Loading
   if (audienceResult.loading) {
-    return React.createElement(HyperSkeleton, { count: 3, variant: "rectangular", height: 40 });
+    return React.createElement("div", undefined,
+      wizardElement,
+      React.createElement(HyperSkeleton, { count: 3, variant: "rectangular", height: 40 })
+    );
   }
 
   // Empty state
   if (allLinks.length === 0) {
-    return React.createElement(HyperEmptyState, {
-      iconName: "Nav2DMapView",
-      title: "No Navigation Links",
-      description: "Add links using the property pane to get started.",
-    });
+    return React.createElement("div", undefined,
+      wizardElement,
+      React.createElement(HyperEmptyState, {
+        iconName: "Nav2DMapView",
+        title: "No Navigation Links",
+        description: "Add links using the property pane to get started.",
+      })
+    );
   }
 
   // Build layout props
@@ -303,16 +369,8 @@ const HyperNavInner: React.FC<IHyperNavComponentProps> = function (props) {
 
   var children: React.ReactNode[] = [];
 
-  // Wizard modal (always rendered, controlled by wizardOpen state)
-  children.push(
-    React.createElement(WelcomeStep, {
-      key: "wizard",
-      isOpen: wizardOpen,
-      onClose: handleWizardClose,
-      onApply: handleWizardApply,
-      currentProps: props.wizardCompleted ? props as any : undefined,
-    })
-  );
+  // Wizard modal (same instance as above — always first child)
+  children.push(wizardElement);
 
   // V2: Demo bar (top)
   if (props.enableDemoMode) {
@@ -436,6 +494,8 @@ const HyperNavInner: React.FC<IHyperNavComponentProps> = function (props) {
       "aria-label": props.title || "Navigation",
       role: "navigation",
       style: cssVars as React.CSSProperties,
+      "data-hover-effect": activeHover,
+      "data-border-radius": activeBorderRadius,
     },
     children
   );

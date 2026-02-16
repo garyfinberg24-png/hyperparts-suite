@@ -152,7 +152,7 @@ export default class HyperDirectoryWebPart extends BaseHyperWebPart<IHyperDirect
       this.properties.enableSkillsSearch = false;
     }
     if (this.properties.useSampleData === undefined) {
-      this.properties.useSampleData = true;
+      this.properties.useSampleData = false;
     }
     if (this.properties.enableDemoMode === undefined) {
       this.properties.enableDemoMode = false;

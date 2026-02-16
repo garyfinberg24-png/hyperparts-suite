@@ -13,18 +13,21 @@
   gap: 8px;
   padding: 20px 12px;
   border: 1px solid $ms-color-neutralLight;
-  border-radius: 8px;
+  border-radius: var(--hnav-border-radius, 8px);
   background: #ffffff;
   text-decoration: none;
-  color: $ms-color-neutralPrimary;
+  color: var(--hnav-link-default, #323130);
   cursor: pointer;
   text-align: center;
-  transition: box-shadow 0.2s ease, transform 0.15s ease;
+  transition: box-shadow 0.2s ease, transform 0.15s ease, filter 0.15s ease, background 0.15s ease, color 0.15s ease;
   min-height: 100px;
 
   &:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-    transform: translateY(-2px);
+    transform: var(--hnav-hover-transform, translateY(-2px));
+    box-shadow: var(--hnav-hover-shadow, 0 2px 8px rgba(0, 0, 0, 0.12));
+    filter: var(--hnav-hover-filter, none);
+    background: var(--hnav-hover-bg, #ffffff);
+    color: var(--hnav-hover-color, var(--hnav-link-hover, #0078d4));
   }
 
   &:focus {
@@ -35,7 +38,7 @@
 
 .tileIcon {
   font-size: $ms-font-size-28;
-  color: $ms-color-themePrimary;
+  color: var(--hnav-link-hover, #0078d4);
 }
 
 .tileTitle {

@@ -70,12 +70,6 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
   var wizardOpen = wizardOpenState[0];
   var setWizardOpen = wizardOpenState[1];
 
-  React.useEffect(function () {
-    if (!props.isEditMode && !props.wizardCompleted) {
-      setWizardOpen(true);
-    }
-  }, [props.isEditMode, props.wizardCompleted]);
-
   var handleWizardApply = React.useCallback(function (result: Partial<IHyperImageWebPartProps>): void {
     setWizardOpen(false);
     if (props.onWizardApply) {
@@ -86,6 +80,25 @@ var HyperImageInner: React.FC<IHyperImageComponentProps> = function (props) {
   var handleWizardClose = React.useCallback(function (): void {
     setWizardOpen(false);
   }, [setWizardOpen]);
+
+  // ── Empty state: wizard not yet completed ──
+  if (!props.wizardCompleted) {
+    return React.createElement("div", undefined,
+      React.createElement(WelcomeStep, {
+        key: "wizard",
+        isOpen: wizardOpen,
+        onClose: handleWizardClose,
+        onApply: handleWizardApply,
+        currentProps: undefined,
+      }),
+      React.createElement(HyperEmptyState, {
+        title: "HyperImage",
+        description: "Complete the setup wizard to configure this web part.",
+        actionLabel: "Complete Setup",
+        onAction: function () { setWizardOpen(true); },
+      })
+    );
+  }
 
   // ── Flip effect state ──
   var flipState = React.useState(false);

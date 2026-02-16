@@ -502,8 +502,8 @@
 
 .wizardLayout {
   display: flex;
-  min-height: 70vh;
-  max-height: 80vh;
+  flex: 1;
+  overflow: hidden;
 }
 
 // ── Left Sidebar (step list) ──

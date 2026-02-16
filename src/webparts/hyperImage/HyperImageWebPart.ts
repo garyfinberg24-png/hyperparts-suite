@@ -59,7 +59,7 @@ export default class HyperImageWebPart extends BaseHyperWebPart<IHyperImageWebPa
     if (p.wizardCompleted === undefined) p.wizardCompleted = false;
 
     // Sample data — on by default so the web part renders immediately
-    if (p.useSampleData === undefined) p.useSampleData = true;
+    if (p.useSampleData === undefined) p.useSampleData = false;
 
     // Demo mode
     if (p.enableDemoMode === undefined) p.enableDemoMode = false;

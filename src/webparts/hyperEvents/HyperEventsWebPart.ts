@@ -154,7 +154,7 @@ export default class HyperEventsWebPart extends BaseHyperWebPart<IHyperEventsWeb
       this.properties.showWizardOnInit = true;
     }
     if (this.properties.useSampleData === undefined) {
-      this.properties.useSampleData = true;
+      this.properties.useSampleData = false;
     }
     if (this.properties.enableDemoMode === undefined) {
       this.properties.enableDemoMode = false;

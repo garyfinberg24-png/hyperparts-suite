@@ -16,19 +16,20 @@
   height: 56px;
   border-radius: 50%;
   border: none;
-  background: $ms-color-themePrimary;
+  background: var(--hnav-btn-default-bg, #0078d4);
   color: #ffffff;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease, color 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
 
   &:hover {
-    background: $ms-color-themeDarker;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-    transform: scale(1.05);
+    background: var(--hnav-btn-hover-bg, #106ebe);
+    box-shadow: var(--hnav-hover-shadow, 0 6px 16px rgba(0, 0, 0, 0.25));
+    transform: var(--hnav-hover-transform, scale(1.05));
+    filter: var(--hnav-hover-filter, none);
   }
 
   &:focus {
@@ -87,19 +88,20 @@
   height: 44px;
   border-radius: 50%;
   background: #ffffff;
-  color: $ms-color-themePrimary;
+  color: var(--hnav-link-hover, #0078d4);
   display: flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  transition: background 0.15s ease, transform 0.15s ease;
+  transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease, color 0.15s ease;
   font-size: $ms-font-size-18;
   flex-shrink: 0;
 
   &:hover {
     background: $ms-color-themeLighter;
-    transform: scale(1.1);
+    transform: var(--hnav-hover-transform, scale(1.1));
+    filter: var(--hnav-hover-filter, none);
   }
 
   &:focus {
