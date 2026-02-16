@@ -8,27 +8,73 @@
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
     "developer": {
-      "name": "",
-      "websiteUrl": "",
-      "privacyUrl": "",
-      "termsOfUseUrl": "",
+      "name": "First Digital — Digital Workplace Excellence",
+      "websiteUrl": "https://firstdigital.com",
+      "privacyUrl": "https://firstdigital.com/privacy",
+      "termsOfUseUrl": "https://firstdigital.com/terms",
       "mpnId": "Undefined-1.20.0"
     },
     "metadata": {
       "shortDescription": {
-        "default": "hyperparts-suite description"
+        "default": "HyperParts Suite — 20+ premium web parts for SharePoint Online"
       },
       "longDescription": {
-        "default": "hyperparts-suite description"
+        "default": "HyperParts Suite by DWx (Digital Workplace Excellence) is a comprehensive collection of 20+ enterprise-grade SharePoint web parts. Includes HyperHero, HyperNews, HyperNav, HyperEvents, HyperCharts, HyperFlow, and more. Each web part features a guided setup wizard, live demo mode, sample data, and full accessibility compliance."
       },
       "screenshotPaths": [],
       "videoUrl": "",
       "categories": []
     },
+    "webApiPermissionRequests": [
+      {
+        "resource": "Microsoft Graph",
+        "scope": "User.Read.All"
+      },
+      {
+        "resource": "Microsoft Graph",
+        "scope": "User.ReadBasic.All"
+      },
+      {
+        "resource": "Microsoft Graph",
+        "scope": "Presence.Read.All"
+      },
+      {
+        "resource": "Microsoft Graph",
+        "scope": "Calendars.Read"
+      },
+      {
+        "resource": "Microsoft Graph",
+        "scope": "Calendars.ReadWrite"
+      },
+      {
+        "resource": "Microsoft Graph",
+        "scope": "Group.Read.All"
+      },
+      {
+        "resource": "Microsoft Graph",
+        "scope": "Sites.Read.All"
+      },
+      {
+        "resource": "Microsoft Graph",
+        "scope": "Mail.Send"
+      },
+      {
+        "resource": "Microsoft Graph",
+        "scope": "Chat.ReadWrite"
+      },
+      {
+        "resource": "Microsoft Graph",
+        "scope": "Files.Read.All"
+      },
+      {
+        "resource": "Microsoft Graph",
+        "scope": "People.Read"
+      }
+    ],
     "features": [
       {
-        "title": "hyperparts-suite Feature",
-        "description": "The feature that activates elements of the hyperparts-suite solution.",
+        "title": "HyperParts Suite",
+        "description": "20+ premium web parts for SharePoint Online by DWx (Digital Workplace Excellence). Includes HyperHero, HyperNews, HyperNav, HyperEvents, HyperCharts, HyperFlow, and more.",
         "id": "4c137d6a-7e80-46c6-8936-e7f7639893bc",
         "version": "1.0.0.0"
       }

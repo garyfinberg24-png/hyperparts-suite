@@ -1,0 +1,129 @@
+# =============================================================================
+# HyperParts Suite — Azure DevOps CI/CD Pipeline
+# =============================================================================
+# Triggers on pushes to main and develop branches.
+# Stage 1: Build — installs deps, bundles, packages .sppkg, publishes artifact.
+# Stage 2: Deploy — uploads .sppkg to SharePoint tenant App Catalog via M365 CLI.
+#
+# Prerequisites:
+#   1. Azure AD App Registration with certificate auth (see DEPLOYMENT.md)
+#   2. ADO Variable Group "HyperParts-Deploy" with:
+#        - TENANT_ID        (Azure AD tenant ID)
+#        - APP_ID            (App Registration client ID)
+#        - CERTIFICATE_BASE64 (PFX cert, base64-encoded, secret)
+#        - APP_CATALOG_URL   (https://mf7m.sharepoint.com/sites/appcatalog)
+#   3. Node 18.x agent
+# =============================================================================
+
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+
+pr:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  - group: HyperParts-Deploy
+  - name: nodeVersion
+    value: "18.x"
+  - name: sppkgName
+    value: "hyperparts-suite.sppkg"
+  - name: workingDir
+    value: "hyperparts-suite"
+
+# =============================================================================
+# Stage 1: Build
+# =============================================================================
+stages:
+  - stage: Build
+    displayName: "Build & Package"
+    jobs:
+      - job: BuildSPFx
+        displayName: "SPFx Build"
+        steps:
+          # ---- Node.js ----
+          - task: NodeTool@0
+            displayName: "Use Node.js $(nodeVersion)"
+            inputs:
+              versionSpec: $(nodeVersion)
+
+          # ---- Install dependencies ----
+          - script: npm ci
+            displayName: "npm ci"
+            workingDirectory: $(workingDir)
+
+          # ---- Production bundle ----
+          - script: npx gulp bundle --ship
+            displayName: "gulp bundle --ship"
+            workingDirectory: $(workingDir)
+
+          # ---- Package .sppkg ----
+          - script: npx gulp package-solution --ship
+            displayName: "gulp package-solution --ship"
+            workingDirectory: $(workingDir)
+
+          # ---- Publish .sppkg as pipeline artifact ----
+          - publish: $(workingDir)/sharepoint/solution/$(sppkgName)
+            displayName: "Publish .sppkg artifact"
+            artifact: sppkg
+
+  # =============================================================================
+  # Stage 2: Deploy to SharePoint App Catalog
+  # =============================================================================
+  - stage: Deploy
+    displayName: "Deploy to App Catalog"
+    dependsOn: Build
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - deployment: DeploySPFx
+        displayName: "Deploy .sppkg"
+        environment: "SharePoint-Production"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                # ---- Install CLI for Microsoft 365 ----
+                - script: npm install -g @pnp/cli-microsoft365
+                  displayName: "Install CLI for Microsoft 365"
+
+                # ---- Decode certificate ----
+                - script: |
+                    echo "$(CERTIFICATE_BASE64)" | base64 --decode > $(Agent.TempDirectory)/cert.pfx
+                  displayName: "Decode certificate"
+
+                # ---- Login via certificate ----
+                - script: |
+                    m365 login \
+                      --authType certificate \
+                      --certificateFile $(Agent.TempDirectory)/cert.pfx \
+                      --appId $(APP_ID) \
+                      --tenant $(TENANT_ID)
+                  displayName: "M365 CLI Login"
+
+                # ---- Upload .sppkg to App Catalog ----
+                - script: |
+                    m365 spo app add \
+                      --filePath $(Pipeline.Workspace)/sppkg/$(sppkgName) \
+                      --appCatalogUrl $(APP_CATALOG_URL) \
+                      --overwrite
+                  displayName: "Upload .sppkg"
+
+                # ---- Deploy (make available to sites) ----
+                - script: |
+                    m365 spo app deploy \
+                      --name $(sppkgName) \
+                      --appCatalogUrl $(APP_CATALOG_URL) \
+                      --skipFeatureDeployment
+                  displayName: "Deploy .sppkg"
+
+                # ---- Cleanup ----
+                - script: rm -f $(Agent.TempDirectory)/cert.pfx
+                  displayName: "Cleanup certificate"
+                  condition: always()
