@@ -87,7 +87,7 @@ src/
 ## Getting Started
 
 ```bash
-git clone https://github.com/garyfinberg24-png/hyperparts-suite.git
+git clone https://dev.azure.com/your-org/hyperparts-suite/_git/hyperparts-suite
 cd hyperparts-suite
 npm install
 gulp serve
@@ -100,6 +100,28 @@ gulp build              # Development build
 gulp test               # Run tests
 gulp bundle --ship      # Production bundle
 gulp package-solution --ship  # Create .sppkg
+```
+
+## Deploy
+
+Deployment targets the tenant App Catalog at `https://mf7m.sharepoint.com/sites/appcatalog`. See [DEPLOYMENT.md](DEPLOYMENT.md) for full setup guide.
+
+### CI/CD (Azure DevOps)
+
+Pipeline: `azure-pipelines.yml` (2-stage: Build + Deploy via M365 CLI with certificate auth)
+
+| Trigger | Stage |
+| --- | --- |
+| Push to `main` | Build + Deploy |
+| Push to `develop` | Build only |
+| PR to `main` | Build validation |
+
+### Local Deploy
+
+```powershell
+npm install -g @pnp/cli-microsoft365
+m365 login
+.\scripts\deploy-local.ps1 -AppCatalogUrl "https://mf7m.sharepoint.com/sites/appcatalog"
 ```
 
 ## Tech Stack
@@ -186,33 +208,35 @@ gulp package-solution --ship  # Create .sppkg
 
 ## Version History
 
-| Version | Date              | Comments                                                                                      |
-| ------- | ----------------- | --------------------------------------------------------------------------------------------- |
-| 0.0.1   | February 7, 2026  | Phase 1, Step 1: Solution scaffold + shared service layer                                     |
-| 0.0.2   | February 7, 2026  | Phase 1, Step 2: HyperHero web part (all 12 features)                                         |
-| 0.0.3   | February 7, 2026  | Phase 1, Step 3: HyperNews web part (all 14 features)                                         |
-| 0.0.4   | February 8, 2026  | Phase 1, Steps 4-5: HyperSpotlight + HyperProfile (Hyperized ports)                           |
-| 0.0.5   | February 8, 2026  | Phase 1, Step 6: HyperTabs web part (all 12 features)                                         |
-| 0.0.6   | February 8, 2026  | Phase 1, Step 7: HyperDirectory web part (all 14 features)                                    |
-| 0.0.7   | February 8, 2026  | Phase 1, Step 8: HyperRollup web part (all 15 features)                                       |
-| 0.0.8   | February 8, 2026  | Phase 2, Step 1: HyperNav web part (all 13 features, 8 layouts)                               |
-| 0.0.9   | February 8, 2026  | Phase 2, Step 2: HyperEvents web part (all 13 features, 6 views)                              |
-| 0.0.10  | February 8, 2026  | Phase 2, Step 3: HyperPoll web part (all 12 features, 3 charts)                               |
-| 0.0.11  | February 8, 2026  | Phase 2, Step 4: HyperSearch web part (8 features, federated search)                          |
-| 0.0.12  | February 8, 2026  | Phase 2, Step 5: HyperLinks web part (12 features, 8 layouts)                                 |
-| 0.0.13  | February 8, 2026  | Phase 2, Step 6: HyperCharts web part (15 features, 6 chart types)                            |
-| 0.0.14  | February 8, 2026  | Phase 2, Step 7: HyperLert web part (12 features, rule builder)                               |
-| 0.0.15  | February 8, 2026  | Phase 3: HyperTicker + HyperFAQ + HyperBirthdays (3 web parts)                                |
-| 0.0.16  | February 8, 2026  | Phase 3, Step 4: HyperSlider (layer-based slider, 78 files)                                   |
-| 0.0.17  | February 9, 2026  | HyperExplorer EX1 scaffold + HyperHero V2 editor + DWx splash screens                         |
-| 0.0.18  | February 9, 2026  | Production .sppkg build (19 web parts)                                                        |
-| 0.0.19  | February 9, 2026  | HyperImage + HyperStyle + HyperProfile V2 + HyperSearch V2 + HyperLert V2                     |
-| 0.0.20  | February 9, 2026  | Bug fixes + new features across 17 web parts (82 files)                                       |
-| 0.0.21  | February 11, 2026 | DemoBar Rich Panel 20/20, wizard Pattern B 20/20, HyperSlider removed, sample data wired      |
-| 0.0.22  | February 11, 2026 | enableDemoMode=true default 20/20, wizardCompleted standardized, demoMode renamed             |
-| 0.0.23  | February 12, 2026 | Standards 5-7: edit overlay, styled property pane, image browser consolidation (57 files)     |
-| 0.0.24  | February 12, 2026 | Multi-WP enhancements: charts resize/drag-drop, links presets/shapes, FAQ padding (57 files)  |
-| 0.0.25  | February 12, 2026 | HyperFlow: process stepper & visual diagram builder (bundle #24, 45 new files)                |
+| Version | Date              | Comments                                                                                       |
+| ------- | ----------------- | ---------------------------------------------------------------------------------------------- |
+| 0.0.1   | February 7, 2026  | Phase 1, Step 1: Solution scaffold + shared service layer                                      |
+| 0.0.2   | February 7, 2026  | Phase 1, Step 2: HyperHero web part (all 12 features)                                          |
+| 0.0.3   | February 7, 2026  | Phase 1, Step 3: HyperNews web part (all 14 features)                                          |
+| 0.0.4   | February 8, 2026  | Phase 1, Steps 4-5: HyperSpotlight + HyperProfile (Hyperized ports)                            |
+| 0.0.5   | February 8, 2026  | Phase 1, Step 6: HyperTabs web part (all 12 features)                                          |
+| 0.0.6   | February 8, 2026  | Phase 1, Step 7: HyperDirectory web part (all 14 features)                                     |
+| 0.0.7   | February 8, 2026  | Phase 1, Step 8: HyperRollup web part (all 15 features)                                        |
+| 0.0.8   | February 8, 2026  | Phase 2, Step 1: HyperNav web part (all 13 features, 8 layouts)                                |
+| 0.0.9   | February 8, 2026  | Phase 2, Step 2: HyperEvents web part (all 13 features, 6 views)                               |
+| 0.0.10  | February 8, 2026  | Phase 2, Step 3: HyperPoll web part (all 12 features, 3 charts)                                |
+| 0.0.11  | February 8, 2026  | Phase 2, Step 4: HyperSearch web part (8 features, federated search)                           |
+| 0.0.12  | February 8, 2026  | Phase 2, Step 5: HyperLinks web part (12 features, 8 layouts)                                  |
+| 0.0.13  | February 8, 2026  | Phase 2, Step 6: HyperCharts web part (15 features, 6 chart types)                             |
+| 0.0.14  | February 8, 2026  | Phase 2, Step 7: HyperLert web part (12 features, rule builder)                                |
+| 0.0.15  | February 8, 2026  | Phase 3: HyperTicker + HyperFAQ + HyperBirthdays (3 web parts)                                 |
+| 0.0.16  | February 8, 2026  | Phase 3, Step 4: HyperSlider (layer-based slider, 78 files)                                    |
+| 0.0.17  | February 9, 2026  | HyperExplorer EX1 scaffold + HyperHero V2 editor + DWx splash screens                          |
+| 0.0.18  | February 9, 2026  | Production .sppkg build (19 web parts)                                                         |
+| 0.0.19  | February 9, 2026  | HyperImage + HyperStyle + HyperProfile V2 + HyperSearch V2 + HyperLert V2                      |
+| 0.0.20  | February 9, 2026  | Bug fixes + new features across 17 web parts (82 files)                                        |
+| 0.0.21  | February 11, 2026 | DemoBar Rich Panel 20/20, wizard Pattern B 20/20, HyperSlider removed, sample data wired       |
+| 0.0.22  | February 11, 2026 | enableDemoMode=true default 20/20, wizardCompleted standardized, demoMode renamed              |
+| 0.0.23  | February 12, 2026 | Standards 5-7: edit overlay, styled property pane, image browser consolidation (57 files)      |
+| 0.0.24  | February 12, 2026 | Multi-WP enhancements: charts resize/drag-drop, links presets/shapes, FAQ padding (57 files)   |
+| 0.0.25  | February 12, 2026 | HyperFlow: process stepper & visual diagram builder (bundle #24, 45 new files)                 |
+| 0.0.26  | February 16, 2026 | Collapsible property pane headers, wizard empty state pattern, HyperNav refinements (61 files) |
+| 0.0.27  | February 16, 2026 | ADO CI/CD pipeline, deployment config, Graph API permissions, DEPLOYMENT.md                    |
 
 ## References
 
